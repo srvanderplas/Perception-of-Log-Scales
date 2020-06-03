@@ -1,0 +1,207 @@
+---
+title: "Exploring Experimental Design Options"
+author: "Susan Vanderplas"
+date: "6/2/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, warning = F, fig.width = 10, fig.height = 5, dpi = 300)
+library(tidyverse)
+theme_set(theme_bw())
+```
+
+```{r}
+library(nullabor)
+```
+
+# The Problem
+
+```{r}
+
+df <- bind_rows(
+  tibble(x = seq(1, 5, length.out = 50), y = x, type = "linear"),
+  tibble(x = seq(1, 5, length.out = 50), y = x^2, type = "quadratic"),
+  tibble(x = seq(1, 5, length.out = 50), y = x^4, type = "quartic"),
+  tibble(x = seq(1, 5, length.out = 50), y = exp(x), type = "exponential")
+) %>%
+  mutate(type = factor(type, levels = c("linear", "quadratic", "quartic", "exponential")))
+
+gridExtra::grid.arrange(
+  ggplot(df, aes(x = x, y=y)) + geom_point() + facet_wrap(~type, scales = "free_y", nrow = 1),
+ggplot(df, aes(x = x, y=y)) + geom_point() + facet_wrap(~type, scales = "free_y", nrow = 1) + scale_y_log10(),
+nrow = 2
+)
+```
+
+With free y-axis scaling, it's (relatively) easy to distinguish the shapes of various curves on a linear scale (quartic is included because it's temporarily larger than exponential). However, once the log scale is introduced, it's hard to distinguish the shape of the linear, quadratic, and quartic curves. 
+
+## Other issues...
+
+If we instead control the y scaling and scale x, you can actually distinguish the curves: 
+```{r}
+
+df <- bind_rows(
+  tibble(x = seq(1, 100, length.out = 50), y = x, type = "linear"),
+  tibble(x = seq(1, 10, length.out = 50), y = x^2, type = "quadratic"),
+  tibble(x = seq(1, 100^(1/4), length.out = 50), y = x^4, type = "quartic"),
+  tibble(x = seq(1, log(100), length.out = 50), y = exp(x), type = "exponential")
+) %>%
+  mutate(type = factor(type, levels = c("linear", "quadratic", "quartic", "exponential")))
+
+gridExtra::grid.arrange(
+  ggplot(df, aes(x = x, y=y)) + geom_point() + facet_wrap(~type, scales = "free_x", nrow = 1),
+ggplot(df, aes(x = x, y=y)) + geom_point() + facet_wrap(~type, scales = "free_x", nrow = 1) + scale_y_log10(),
+nrow = 2
+)
+```
+
+
+If we instead scale y manually, things get a little more distinguishable...
+```{r}
+
+df <- bind_rows(
+  tibble(x = seq(1, 5, length.out = 50), y = x, type = "linear"),
+  tibble(x = seq(1, 5, length.out = 50), y = x^2, type = "quadratic"),
+  tibble(x = seq(1, 5, length.out = 50), y = x^4, type = "quartic"),
+  tibble(x = seq(1, 5, length.out = 50), y = exp(x), type = "exponential")
+) %>%
+  mutate(type = factor(type, levels = c("linear", "quadratic", "quartic", "exponential"))) %>%
+  group_by(type) %>%
+  mutate(y = 1 + (y - min(y))/(max(y) - min(y))*10)
+
+gridExtra::grid.arrange(
+  ggplot(df, aes(x = x, y=y)) + geom_point() + facet_wrap(~type, nrow = 1),
+  ggplot(df, aes(x = x, y=y)) + geom_point() + facet_wrap(~type, nrow = 1) + scale_y_log10(),
+  nrow = 2
+)
+```
+
+## One solution
+
+If we control the start and end points of each function, we can fit quadratic/quartic/linear/exponential functions to the points, solve for other parameters, and get reasonably flexible functions that have the same domain and range.
+
+```{r}
+
+make_fcns <- function(x, y) { # vectors of points the line needs to fit as much as possible
+  identity <- function(z) z
+  linear <- function(z) as.numeric(predict(lm(y ~ x), newdata = list(x = z)))
+  quad <- function(z) {
+    if (length(x) > 3) {
+      as.numeric(predict(lm(y ~ I(x^2)) + x, newdata = list(x = z)))
+    } else {
+      as.numeric(predict(lm(y ~ I(x^2)), newdata = list(x = z)))
+    }
+    
+  }
+  cubic <- function(z) {
+    if (length(x) > 3) {
+      as.numeric(predict(lm(y ~ I(x^3) + x), newdata = list(x = z)))
+    } else {
+      as.numeric(predict(lm(y ~ I(x^3)), newdata = list(x = z)))
+    }
+    
+  }
+  quartic <- function(z) {
+    if (length(x) > 3) {
+    as.numeric(predict(lm(y ~ I(x^4) + I(x^2)), newdata = list(x = z)))
+    } else {
+    as.numeric(predict(lm(y ~ I(x^4)), newdata = list(x = z)))
+    }
+  }
+  exponential <- function(z) {
+    as.numeric(predict(lm(y ~ 0 + exp(x)), newdata = list(x = z)))
+  }
+  
+  list(x = identity, linear = linear, quadratic = quad, cubic = cubic, quartic = quartic, exponential = exponential)
+}
+
+df <- map_dfc(make_fcns(c(.1, 10), c(.05, 250)), ~.x(seq(.1, 10, .1))) %>%
+  pivot_longer(cols = -1, names_to = "type", values_to = "y") %>% 
+  mutate(type = factor(type, levels = c("linear", "quadratic", "cubic", "quartic", "exponential")))
+
+gridExtra::grid.arrange(
+  ggplot(df, aes(x = x, y = y)) + geom_line() + facet_wrap(~type, nrow = 1), 
+  ggplot(df, aes(x = x, y = y)) + geom_line() + facet_wrap(~type, nrow = 1) + scale_y_log10(), 
+  nrow = 2
+)
+  
+```
+
+A better plan might be to just use Taylor expansion - saves us the trouble of fitting regressions...
+
+```{r}
+
+texp <- function(order = 4, a = 5) {
+  ord <- 0:order
+  function(x, a) {
+    expand <- exp(a) * (x - a)^ord/factorial(ord)
+    sum(expand)
+  }
+}
+
+myexp <- function(x, ...) {
+  exp(x)
+}
+
+res <- tibble(order = c(1:4), fun = map(order, texp)) %>%
+  bind_rows(tibble(order = 5, fun = list(myexp))) %>%
+  mutate(x = list(seq(2, 10, length.out = 100))) %>%
+  unnest(x) %>%
+  mutate(y = map2_dbl(fun, x,  ~.x(.y, a = 5))) %>%
+  mutate(type = factor(order, labels = c("linear", "quadratic", "cubic", "quartic", "exponential"), ordered = T))
+
+gridExtra::grid.arrange(
+  ggplot(res, aes(x = x, y = y)) + geom_line() + facet_wrap(~type, nrow = 1), 
+  ggplot(res, aes(x = x, y = y)) + geom_line() + facet_wrap(~type, nrow = 1) + scale_y_log10(), 
+  nrow = 2
+)
+
+
+```
+
+The problem is that for odd-order approximations, y is negative for x < a (expansion center). That's not super optimal... also, because we're not fitting both endpoints, the ranges don't match *that* well.
+
+We can expand at a point slightly outside the domain, which results in more reasonable *looking* plots, but we're still right back at the range problem.
+```{r}
+
+res <- tibble(order = c(1:4), fun = map(order, texp)) %>%
+  bind_rows(tibble(order = 5, fun = list(myexp))) %>%
+  mutate(x = list(seq(2, 10, length.out = 100))) %>%
+  unnest(x) %>%
+  mutate(y = map2_dbl(fun, x,  ~.x(.y, a = 1))) %>%
+  mutate(type = factor(order, labels = c("linear", "quadratic", "cubic", "quartic", "exponential"), ordered = T))
+
+gridExtra::grid.arrange(
+  ggplot(res, aes(x = x, y = y)) + geom_line() + facet_wrap(~type, scales = "free", nrow = 1), 
+  ggplot(res, aes(x = x, y = y)) + geom_line() + facet_wrap(~type, scales = "free", nrow = 1) + scale_y_log10(), 
+  nrow = 2
+)
+
+```
+
+
+
+
+# Main Factors
+
+- Axis transformation: linear or log?
+
+- Data relationship: linear, polynomial, exponential, sigmoidal?
+
+- Protocols:
+    - lineups - pick out the one that's different in some way
+        - allows detection of differences in perception
+        - lots of validation of the method
+        - Aesthetics/setups:
+            - Compare two series
+            - prediction with dots - can they detect mismatch?
+            - prediction with dots + trendline - can they detect mismatch?
+    - you draw it - draw the next N observations in the series
+        - more relevant to what to expect from COVID-19 graphs
+        - doesn't measure actual numerical understanding so much as visual prediction ability
+    - answer some question involving estimation/prediction
+        - requires more numerical understanding to translate the problem into a different response domain
+        - have to deal with rounding artifacts
+
+
