@@ -38,7 +38,7 @@ With free y-axis scaling, it's (relatively) easy to distinguish the shapes of va
 
 ## Other issues...
 
-If we instead control the y scaling and scale x, you can actually distinguish the curves: 
+If we instead control the y scaling and scale x, you can actually distinguish the curves on the log axis, but not on the linear axis. The cognitive load of having to read the axes isn't as overwhelming, though, because the scales line up vertically.
 ```{r}
 
 df <- bind_rows(
