@@ -6,16 +6,56 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = F, warning = F, fig.width = 10, fig.height = 5, dpi = 300)
+knitr::opts_chunk$set(echo = F, warning = F, message = F, fig.width = 10, fig.height = 5, dpi = 300)
 library(tidyverse)
 theme_set(theme_bw())
 ```
 
 ```{r}
 library(nullabor)
+answer_count <- 0
+answer <- function(x) {
+  answer_count <<- answer_count + 1
+  knitr::raw_html(sprintf(
+    '<div id="spoiler%d" style="display:none">
+Plot %d
+</div>
+
+<button title="Reveal" type="button"
+   onclick=\'if(document.getElementById("spoiler%d").style.display=="none\")
+              {document.getElementById("spoiler%d").style.display=""}
+            else{document.getElementById("spoiler%d").style.display="none"}\'>
+  Show/hide
+</button>', answer_count, x, answer_count, answer_count, answer_count))
+}
+
 ```
 
-# The Problem
+
+# Main Factors
+
+- Axis transformation: linear or log?
+
+- Data relationship: linear, polynomial, exponential, sigmoidal?
+
+- Protocols:
+    - lineups - pick out the one that's different in some way
+        - allows detection of differences in perception
+        - lots of validation of the method
+        - Aesthetics/setups:
+            - Compare two series
+            - prediction with dots - can they detect mismatch?
+            - prediction with dots + trendline - can they detect mismatch?
+    - you draw it - draw the next N observations in the series
+        - more relevant to what to expect from COVID-19 graphs
+        - doesn't measure actual numerical understanding so much as visual prediction ability
+    - answer some question involving estimation/prediction
+        - requires more numerical understanding to translate the problem into a different response domain
+        - have to deal with rounding artifacts
+
+
+
+# The Problem with creating stimuli
 
 ```{r}
 
@@ -180,28 +220,427 @@ gridExtra::grid.arrange(
 
 ```
 
+```{r cache = F}
+knitr::opts_chunk$set(echo = F, warning = F, message = F, fig.width = 8, fig.height = 8, dpi = 300)
+# Lineup dimensions
+```
+# Lineup Options
+
+## Quadratic vs. Cubic (Plot #1)
+Distinguishing between polynomial effects:
+```{r, fig.width = 8, fig.height = 8, out.width = "48%"}
+
+gen_data <- function(f1, f2, npoints, scale = T) {
+  df <- bind_rows(
+    tibble(x = seq(1, 5, length.out = npoints), y = f1(x), group = "A"),
+    
+    tibble(x = seq(1, 5, length.out = npoints), y = f2(x), group = "B")
+  )
+  
+  df %>% group_by(group) %>% mutate(y = (y - min(y))/(max(y)-min(y))*10 + rnorm(npoints, 1, .3)) %>%
+    ungroup()
+}
+
+df <- tibble(
+  id = 1:20,
+  f1 = rep(list(function(x) x^2, function(x) x^3), times = 10),
+  f2 = rep(list(function(x) x^2, function(x) x^3), times = 10)
+) 
+df$f2[1] <- list(function(x) x^3)
+df <- df %>% mutate(
+  data = map2(f1, f2, ~gen_data(.x, .y, 50))
+)
+
+df %>%
+  unnest(data) %>%
+  ggplot(aes(x = x, y = y, color = group)) + geom_point() + 
+  facet_wrap(~id, ncol = 4) +
+  scale_color_discrete(guide = F)
+
+
+df %>%
+  unnest(data) %>%
+  ggplot(aes(x = x, y = y, color = group)) + geom_point() + 
+  facet_wrap(~id, ncol = 4) + 
+  scale_y_log10() +
+  scale_color_discrete(guide = F)
+```
+
+## Quartic vs. Exponential (Plot #1)
+
+```{r, fig.width = 8, fig.height = 8, out.width = "48%"}
+df <- tibble(
+  id = 1:20,
+  f1 = rep(list(quartic = function(x) x^4, exponential = function(x) exp(x)), times = 10),
+  f2 = rep(list(quartic = function(x) x^4, exponential = function(x) exp(x)), times = 10)
+) 
+df$f2[1] <- list(exponential = function(x) exp(x))
+names(df$f2)[1] <- "exponential"
+df <- df %>% mutate(
+  data = map2(f1, f2, ~gen_data(.x, .y, 50)),
+  fcn1 = names(df$f1),
+  fcn2 = names(df$f2)
+)
+
+df %>%
+  unnest(data) %>%
+  ggplot(aes(x = x, y = y, color = group)) + geom_point() + 
+  facet_wrap(~id, ncol = 4) +
+  scale_color_discrete(guide = F)
+
+
+df %>%
+  unnest(data) %>%
+  ggplot(aes(x = x, y = y, color = group)) + geom_point() + 
+  facet_wrap(~id, ncol = 4) + 
+  scale_y_log10() +
+  scale_color_discrete(guide = F)
+```
+
+## Quadratic vs. Exponential (Plot #1)
+
+```{r, fig.width = 8, fig.height = 8, out.width = "48%"}
+df <- tibble(
+  id = 1:20,
+  f1 = rep(list(quadratic = function(x) x^2, exponential = function(x) exp(x)), times = 10),
+  f2 = rep(list(quadratic = function(x) x^2, exponential = function(x) exp(x)), times = 10)
+) 
+df$f2[1] <- list(exponential = function(x) exp(x))
+names(df$f2)[1] <- "exponential"
+df <- df %>% mutate(
+  data = map2(f1, f2, ~gen_data(.x, .y, 50)),
+  fcn1 = names(df$f1),
+  fcn2 = names(df$f2)
+)
+
+df %>%
+  unnest(data) %>%
+  ggplot(aes(x = x, y = y, color = group)) + 
+  geom_point() + 
+  facet_wrap(~id, ncol = 4) +
+  scale_color_discrete(guide = F)
+
+
+df %>%
+  unnest(data) %>%
+  ggplot(aes(x = x, y = y, color = group)) + 
+  geom_point() + 
+  facet_wrap(~id, ncol = 4) + 
+  scale_y_log10() +
+  scale_color_discrete(guide = F)
+```
+
+
+## Random coefficients (slight variations)
+
+Error structure is going to matter a *ton*, as is any scaling method.
+
+### Scaling w/ additive errors on log scale
+
+Here, $\epsilon \sim N(0, .25^2)$
+
+```{r, out.width = "48%"}
+gen_exp_data <- function(coef, n = 30) {
+  tibble(
+    x = seq(-15, 15, length.out = n), 
+    y = coef * x,
+    err = rnorm(n, 0, .25)
+  )
+}
+
+df <- tibble(c1 = rnorm(20, 1, .05),
+       c2 = c(1.3, rep(1, 19)), 
+       .id = 1:20) %>%
+  pivot_longer(cols = c("c1", "c2"), names_to = "group", values_to = "coef") %>%
+  mutate(data = map(coef, gen_exp_data)) %>%
+  unnest(data) %>%
+  group_by(.id) %>%
+  # Scaling is done by plot, not by group within plot
+  mutate(yfix = exp((y - mean(y))/sd(y) + err)) %>%
+  ungroup() %>% 
+  nest(c(-.id)) %>%
+  mutate(pos = sample(1:20, 20)) %>%
+  unnest(data)
+
+df %>%
+  ggplot(aes(x = x, y = yfix, color = group)) + 
+  geom_point() + 
+  facet_wrap(~pos, ncol = 4)  +
+  scale_color_discrete(guide = F)
+
+df %>%
+  ggplot(aes(x = x, y = yfix, color = group)) + 
+  geom_point() + 
+  facet_wrap(~pos, ncol = 4) +
+  scale_y_log10() +
+  scale_color_discrete(guide = F)
+```
+
+```{r}
+answer(unique(df$pos[df$.id == 1]))
+```
 
 
 
-# Main Factors
+### Scaling w/ additive errors on linear scale
 
-- Axis transformation: linear or log?
+Here, $\epsilon \sim N(1, .25^2)$ because we can't show below-0 values on the log scale
 
-- Data relationship: linear, polynomial, exponential, sigmoidal?
+```{r, out.width = "48%"}
+gen_exp_data <- function(coef, n = 30) {
+  tibble(
+    x = seq(-15, 15, length.out = n), 
+    y = coef * x,
+    err = rnorm(n, 1, .25)
+  )
+}
 
-- Protocols:
-    - lineups - pick out the one that's different in some way
-        - allows detection of differences in perception
-        - lots of validation of the method
-        - Aesthetics/setups:
-            - Compare two series
-            - prediction with dots - can they detect mismatch?
-            - prediction with dots + trendline - can they detect mismatch?
-    - you draw it - draw the next N observations in the series
-        - more relevant to what to expect from COVID-19 graphs
-        - doesn't measure actual numerical understanding so much as visual prediction ability
-    - answer some question involving estimation/prediction
-        - requires more numerical understanding to translate the problem into a different response domain
-        - have to deal with rounding artifacts
+df <- tibble(c1 = rnorm(20, 1, .05),
+       c2 = c(1.3, rep(1, 19)), 
+       .id = 1:20) %>%
+  pivot_longer(cols = c("c1", "c2"), names_to = "group", values_to = "coef") %>%
+  mutate(data = map(coef, gen_exp_data)) %>%
+  unnest(data) %>%
+  group_by(.id) %>%
+  # Scaling is done by plot, not by group within plot
+  mutate(yfix = exp((y - mean(y))/sd(y)) + err) %>%
+  ungroup() %>% 
+  nest(c(-.id)) %>%
+  mutate(pos = sample(1:20, 20)) %>%
+  unnest(data)
+
+df %>%
+  ggplot(aes(x = x, y = yfix, color = group)) + 
+  geom_point() + 
+  facet_wrap(~pos, ncol = 4)  +
+  scale_color_discrete(guide = F)
+
+df %>%
+  ggplot(aes(x = x, y = yfix, color = group)) + 
+  geom_point() + 
+  facet_wrap(~pos, ncol = 4) +
+  scale_y_log10() +
+  scale_color_discrete(guide = F)
+
+unique(df$pos[df$.id == 1])
+```
 
 
+### Scaling w/ additive errors on log AND linear scale
+
+This corresponds to data where there are both additive and multiplicative errors... Here, $\epsilon_a \sim N(1, .125^2)$ because we can't show below-0 values on the log scale, and $\epsilon_b\sim N(0, .125^2)$ is the error on the log scale. (variance change because using a SD of 0.25 for both errors overwhelmed any signal.)
+
+```{r, out.width = "48%"}
+gen_exp_data <- function(coef, n = 30) {
+  tibble(
+    x = seq(-15, 15, length.out = n), 
+    y = coef * x,
+    erra = rnorm(n, 1, .125),
+    errb = rnorm(n, 0, .125)
+  )
+}
+
+df <- tibble(c1 = rnorm(20, 1, .05),
+       c2 = c(1.3, rep(1, 19)), 
+       .id = 1:20) %>%
+  pivot_longer(cols = c("c1", "c2"), names_to = "group", values_to = "coef") %>%
+  mutate(data = map(coef, gen_exp_data)) %>%
+  unnest(data) %>%
+  group_by(.id) %>%
+  # Scaling is done by plot, not by group within plot
+  mutate(yfix = exp((y - mean(y))/sd(y) + errb) + erra) %>%
+  ungroup() %>% 
+  nest(c(-.id)) %>%
+  mutate(pos = sample(1:20, 20)) %>%
+  unnest(data)
+
+df %>%
+  ggplot(aes(x = x, y = yfix, color = group)) + 
+  geom_point() + 
+  facet_wrap(~pos, ncol = 4)  +
+  scale_color_discrete(guide = F)
+
+df %>%
+  ggplot(aes(x = x, y = yfix, color = group)) + 
+  geom_point() + 
+  facet_wrap(~pos, ncol = 4) +
+  scale_y_log10() +
+  scale_color_discrete(guide = F)
+
+unique(df$pos[df$.id == 1])
+```
+
+
+## Additional failed attempts... 
+Lesson: Order of operations matters a lot. Sigh.
+
+
+### Additive errors at original scale
+
+Here, $\epsilon \sim N(1, 0.25^2)$ because we need nonnegative values for the log transform to work.
+
+```{r, out.width = "48%"}
+gen_exp_data <- function(coef, n = 30) {
+  tibble(
+    x = seq(1, 15, length.out = n), 
+    y = exp(coef * x),
+    err = rnorm(n, 1, .25)
+  )
+}
+
+df <- tibble(c1 = rnorm(20, 1, .05),
+       c2 = c(1.3, rep(1, 19)), 
+       .id = 1:20) %>%
+  pivot_longer(cols = c("c1", "c2"), names_to = "group", values_to = "coef") %>%
+  mutate(data = map(coef, gen_exp_data)) %>%
+  unnest(data) %>%
+  group_by(.id) %>%
+  mutate(yfix = (y - min(y))/(max(y) - min(y)) * 10 + err) %>%
+  ungroup() %>% 
+  nest(c(-.id)) %>%
+  mutate(pos = sample(1:20, 20)) %>%
+  unnest(data)
+
+df %>%
+  ggplot(aes(x = x, y = yfix, color = group)) + 
+  geom_point() + 
+  facet_wrap(~pos, ncol = 4)  +
+  scale_color_discrete(guide = F)
+
+df %>%
+  ggplot(aes(x = x, y = yfix, color = group)) + 
+  geom_point() + 
+  facet_wrap(~pos, ncol = 4) +
+  scale_y_log10() +
+  scale_color_discrete(guide = F)
+
+unique(df$pos[df$.id == 1])
+```
+
+That seems to rather negate the utility of the log scale (at least, at this scale... )
+
+If we instead just don't scale things, and use $\epsilon \sim N(0, .25^2)$, that doesn't really work.
+```{r, out.width = "48%"}
+gen_exp_data <- function(coef, n = 30) {
+  tibble(
+    x = seq(1, 15, length.out = n), 
+    y = exp(coef * x),
+    err = rnorm(n, 0, .25)
+  )
+}
+
+df <- tibble(c1 = rnorm(20, 1, .05),
+       c2 = c(1.3, rep(1, 19)), 
+       .id = 1:20) %>%
+  pivot_longer(cols = c("c1", "c2"), names_to = "group", values_to = "coef") %>%
+  mutate(data = map(coef, gen_exp_data)) %>%
+  unnest(data) %>%
+  group_by(.id) %>%
+  # mutate(yfix = (y - min(y))/(max(y) - min(y)) * 10 + err) %>%
+  mutate(yfix = y + err) %>%
+  ungroup() %>% 
+  nest(c(-.id)) %>%
+  mutate(pos = sample(1:20, 20)) %>%
+  unnest(data)
+
+df %>%
+  ggplot(aes(x = x, y = yfix, color = group)) + 
+  geom_point() + 
+  facet_wrap(~pos, ncol = 4)  +
+  scale_color_discrete(guide = F)
+
+df %>%
+  ggplot(aes(x = x, y = yfix, color = group)) + 
+  geom_point() + 
+  facet_wrap(~pos, ncol = 4) +
+  scale_y_log10() +
+  scale_color_discrete(guide = F)
+
+unique(df$pos[df$.id == 1])
+```
+
+### Multiplicative errors at original scale (Additive at log scale)
+
+If we add $\epsilon \sim N(0, \sigma^2)$ in before exponentiation, and then scale, the plots look like this:
+```{r, out.width = "48%"}
+gen_exp_data <- function(coef, n = 30) {
+  tibble(
+    x = seq(1, 15, length.out = n),
+    err = rnorm(n, 0, .25), 
+    y = exp(coef * x + err)
+  )
+}
+
+df <- tibble(c1 = rnorm(20, 1, .05),
+       c2 = c(1.3, rep(1, 19)), 
+       .id = 1:20) %>%
+  pivot_longer(cols = c("c1", "c2"), names_to = "group", values_to = "coef") %>%
+  mutate(data = map(coef, gen_exp_data)) %>%
+  unnest(data) %>%
+  group_by(.id) %>%
+  mutate(yfix = (y - min(y))/(max(y) - min(y)) * 10) %>%
+  ungroup() %>% 
+  nest(c(-.id)) %>%
+  mutate(pos = sample(1:20, 20)) %>%
+  unnest(data)
+
+df %>%
+  ggplot(aes(x = x, y = yfix, color = group)) + 
+  geom_point() + 
+  facet_wrap(~pos, ncol = 4)  +
+  scale_color_discrete(guide = F)
+
+df %>%
+  ggplot(aes(x = x, y = yfix, color = group)) + 
+  geom_point() + 
+  facet_wrap(~pos, ncol = 4) +
+  scale_y_log10() +
+  scale_color_discrete(guide = F)
+
+unique(df$pos[df$.id == 1])
+```
+
+But, then, our errors are not all on the same scale. That could introduce visual artifacts (though in this case it's hard to really see a variability difference). 
+
+Alternately, we could add the errors post-scaling. 
+
+This requires us to scale the data, then log transform, then add error, then exponentiate again, because the scaling is essential to end up with comparable y axes. This leads to some interesting visual artifacts...
+
+
+```{r, out.width = "48%"}
+gen_exp_data <- function(coef, n = 30) {
+  tibble(
+    x = seq(1, 15, length.out = n),
+    err = rnorm(n, 0, .25), 
+    y = exp(coef * x)
+  )
+}
+
+df <- tibble(c1 = rnorm(20, 1, .05),
+       c2 = c(1.3, rep(1, 19)), 
+       .id = 1:20) %>%
+  pivot_longer(cols = c("c1", "c2"), names_to = "group", values_to = "coef") %>%
+  mutate(data = map(coef, gen_exp_data)) %>%
+  unnest(data) %>%
+  group_by(.id) %>%
+  mutate(yfix = exp(log((y - min(y))/(max(y) - min(y)) * 10)) + err) %>%
+  ungroup() %>% 
+  nest(c(-.id)) %>%
+  mutate(pos = sample(1:20, 20)) %>%
+  unnest(data)
+
+df %>%
+  ggplot(aes(x = x, y = yfix, color = group)) + 
+  geom_point() + 
+  facet_wrap(~pos, ncol = 4)  +
+  scale_color_discrete(guide = F)
+
+df %>%
+  ggplot(aes(x = x, y = yfix, color = group)) + 
+  geom_point() + 
+  facet_wrap(~pos, ncol = 4) +
+  scale_y_log10() +
+  scale_color_discrete(guide = F)
+
+unique(df$pos[df$.id == 1])
+```
