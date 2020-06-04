@@ -2,11 +2,13 @@
 title: "Exploring Experimental Design Options"
 author: "Susan Vanderplas"
 date: "6/2/2020"
-output: html_document
+output: 
+  html_document:
+    self_contained: false
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = F, warning = F, message = F, fig.width = 10, fig.height = 5, dpi = 300)
+knitr::opts_chunk$set(echo = F, warning = F, message = F, fig.width = 10, fig.height = 5, dpi = 300, cache = T)
 library(tidyverse)
 theme_set(theme_bw())
 ```
