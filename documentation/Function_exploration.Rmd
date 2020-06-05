@@ -46,6 +46,7 @@ Plot %d
             - Compare two series
             - prediction with dots - can they detect mismatch?
             - prediction with dots + trendline - can they detect mismatch?
+            - Real data?
     - you draw it - draw the next N observations in the series
         - more relevant to what to expect from COVID-19 graphs
         - doesn't measure actual numerical understanding so much as visual prediction ability
@@ -53,7 +54,7 @@ Plot %d
         - requires more numerical understanding to translate the problem into a different response domain
         - have to deal with rounding artifacts
 
-# Lineup Options
+# Lineup Options - Compare two series
 
 ## Quadratic vs. Cubic
 Distinguishing between polynomial effects:
