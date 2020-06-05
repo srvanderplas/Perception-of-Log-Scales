@@ -189,7 +189,7 @@ summary {
 <ul>
 <li><p>Axis transformation: linear or log?</p></li>
 <li><p>Data relationship: linear, polynomial, exponential, sigmoidal?</p></li>
-<li>Protocols:
+<li><p>Protocols:</p>
 <ul>
 <li>lineups - pick out the one that’s different in some way
 <ul>
@@ -215,48 +215,14 @@ summary {
 </ul></li>
 </ul>
 </div>
-<div id="the-problem-with-creating-stimuli" class="section level1">
-<h1>The Problem with creating stimuli</h1>
-<p><img src="Function_exploration_files/figure-html/unnamed-chunk-2-1.png" width="3000" /></p>
-<p>With free y-axis scaling, it’s (relatively) easy to distinguish the shapes of various curves on a linear scale (quartic is included because it’s temporarily larger than exponential). However, once the log scale is introduced, it’s hard to distinguish the shape of the linear, quadratic, and quartic curves.</p>
-<div id="other-issues" class="section level2">
-<h2>Other issues…</h2>
-<p>If we instead control the y scaling and scale x, you can actually distinguish the curves on the log axis, but not on the linear axis. The cognitive load of having to read the axes isn’t as overwhelming, though, because the scales line up vertically. <img src="Function_exploration_files/figure-html/unnamed-chunk-3-1.png" width="3000" /></p>
-<p>If we instead scale y manually, things get a little more distinguishable… <img src="Function_exploration_files/figure-html/unnamed-chunk-4-1.png" width="3000" /></p>
-</div>
-<div id="one-solution" class="section level2">
-<h2>One solution</h2>
-<p>If we control the start and end points of each function, we can fit quadratic/quartic/linear/exponential functions to the points, solve for other parameters, and get reasonably flexible functions that have the same domain and range.</p>
-<p><img src="Function_exploration_files/figure-html/unnamed-chunk-5-1.png" width="3000" /></p>
-<p>A better plan might be to just use Taylor expansion - saves us the trouble of fitting regressions…</p>
-<p><img src="Function_exploration_files/figure-html/unnamed-chunk-6-1.png" width="3000" /></p>
-<p>The problem is that for odd-order approximations, y is negative for x &lt; a (expansion center). That’s not super optimal… also, because we’re not fitting both endpoints, the ranges don’t match <em>that</em> well.</p>
-<p>We can expand at a point slightly outside the domain, which results in more reasonable <em>looking</em> plots, but we’re still right back at the range problem. <img src="Function_exploration_files/figure-html/unnamed-chunk-7-1.png" width="3000" /></p>
-</div>
-</div>
 <div id="lineup-options" class="section level1">
 <h1>Lineup Options</h1>
-<div id="quadratic-vs.cubic-plot-1" class="section level2">
-<h2>Quadratic vs. Cubic (Plot #1)</h2>
-<p>Distinguishing between polynomial effects: <img src="Function_exploration_files/figure-html/unnamed-chunk-9-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-9-2.png" width="48%" /></p>
-</div>
-<div id="quartic-vs.exponential-plot-1" class="section level2">
-<h2>Quartic vs. Exponential (Plot #1)</h2>
-<p><img src="Function_exploration_files/figure-html/unnamed-chunk-10-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-10-2.png" width="48%" /></p>
-</div>
-<div id="quadratic-vs.exponential-plot-1" class="section level2">
-<h2>Quadratic vs. Exponential (Plot #1)</h2>
-<p><img src="Function_exploration_files/figure-html/unnamed-chunk-11-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-11-2.png" width="48%" /></p>
-</div>
-<div id="random-coefficients-slight-variations" class="section level2">
-<h2>Random coefficients (slight variations)</h2>
-<p>Error structure is going to matter a <em>ton</em>, as is any scaling method.</p>
-<div id="scaling-w-additive-errors-on-log-scale" class="section level3">
-<h3>Scaling w/ additive errors on log scale</h3>
-<p>Here, <span class="math inline">\(\epsilon \sim N(0, .25^2)\)</span></p>
-<p><img src="Function_exploration_files/figure-html/unnamed-chunk-12-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-12-2.png" width="48%" /></p>
+<div id="quadratic-vs.-cubic" class="section level2">
+<h2>Quadratic vs. Cubic</h2>
+<p>Distinguishing between polynomial effects:</p>
+<p><img src="Function_exploration_files/figure-html/unnamed-chunk-2-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-2-2.png" width="48%" /></p>
 <div id="spoiler1" style="display:none">
-Plot 5
+Plot 17
 </div>
 
 <button title="Reveal" type="button"
@@ -266,41 +232,124 @@ Plot 5
   Show/hide
 </button>
 </div>
+<div id="quartic-vs.-exponential-plot-1" class="section level2">
+<h2>Quartic vs. Exponential (Plot #1)</h2>
+<p><img src="Function_exploration_files/figure-html/unnamed-chunk-4-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-4-2.png" width="48%" /></p>
+<div id="spoiler2" style="display:none">
+Plot 13
+</div>
+
+<button title="Reveal" type="button"
+   onclick='if(document.getElementById("spoiler2").style.display=="none")
+              {document.getElementById("spoiler2").style.display=""}
+            else{document.getElementById("spoiler2").style.display="none"}'>
+  Show/hide
+</button>
+</div>
+<div id="quadratic-vs.-exponential" class="section level2">
+<h2>Quadratic vs. Exponential</h2>
+<p><img src="Function_exploration_files/figure-html/unnamed-chunk-6-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-6-2.png" width="48%" /></p>
+<div id="spoiler3" style="display:none">
+Plot 12
+</div>
+
+<button title="Reveal" type="button"
+   onclick='if(document.getElementById("spoiler3").style.display=="none")
+              {document.getElementById("spoiler3").style.display=""}
+            else{document.getElementById("spoiler3").style.display="none"}'>
+  Show/hide
+</button>
+</div>
+<div id="random-coefficients-slight-variations" class="section level2">
+<h2>Random coefficients (slight variations)</h2>
+<p>Error structure is going to matter a <em>ton</em>, as is any scaling method.</p>
+<div id="scaling-w-additive-errors-on-log-scale" class="section level3">
+<h3>Scaling w/ additive errors on log scale</h3>
+<p>Here, <span class="math inline">\(\epsilon \sim N(0, .25^2)\)</span></p>
+<p><img src="Function_exploration_files/figure-html/unnamed-chunk-8-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-8-2.png" width="48%" /></p>
+<div id="spoiler4" style="display:none">
+Plot 14
+</div>
+
+<button title="Reveal" type="button"
+   onclick='if(document.getElementById("spoiler4").style.display=="none")
+              {document.getElementById("spoiler4").style.display=""}
+            else{document.getElementById("spoiler4").style.display="none"}'>
+  Show/hide
+</button>
+</div>
 <div id="scaling-w-additive-errors-on-linear-scale" class="section level3">
 <h3>Scaling w/ additive errors on linear scale</h3>
 <p>Here, <span class="math inline">\(\epsilon \sim N(1, .25^2)\)</span> because we can’t show below-0 values on the log scale</p>
-<p><img src="Function_exploration_files/figure-html/unnamed-chunk-14-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-14-2.png" width="48%" /></p>
-<pre><code>## [1] 5</code></pre>
+<p><img src="Function_exploration_files/figure-html/unnamed-chunk-10-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-10-2.png" width="48%" /></p>
+<div id="spoiler1" style="display:none">
+Plot 18
+</div>
+
+<button title="Reveal" type="button"
+   onclick='if(document.getElementById("spoiler1").style.display=="none")
+              {document.getElementById("spoiler1").style.display=""}
+            else{document.getElementById("spoiler1").style.display="none"}'>
+  Show/hide
+</button>
 </div>
 <div id="scaling-w-additive-errors-on-log-and-linear-scale" class="section level3">
 <h3>Scaling w/ additive errors on log AND linear scale</h3>
 <p>This corresponds to data where there are both additive and multiplicative errors… Here, <span class="math inline">\(\epsilon_a \sim N(1, .125^2)\)</span> because we can’t show below-0 values on the log scale, and <span class="math inline">\(\epsilon_b\sim N(0, .125^2)\)</span> is the error on the log scale. (variance change because using a SD of 0.25 for both errors overwhelmed any signal.)</p>
-<p><img src="Function_exploration_files/figure-html/unnamed-chunk-15-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-15-2.png" width="48%" /></p>
-<pre><code>## [1] 10</code></pre>
+<p><img src="Function_exploration_files/figure-html/unnamed-chunk-12-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-12-2.png" width="48%" /></p>
+<div id="spoiler2" style="display:none">
+Plot 16
+</div>
+
+<button title="Reveal" type="button"
+   onclick='if(document.getElementById("spoiler2").style.display=="none")
+              {document.getElementById("spoiler2").style.display=""}
+            else{document.getElementById("spoiler2").style.display="none"}'>
+  Show/hide
+</button>
 </div>
 </div>
-<div id="additional-failed-attempts" class="section level2">
-<h2>Additional failed attempts…</h2>
+</div>
+<div id="the-problem-with-creating-stimuli" class="section level1">
+<h1>The Problem with creating stimuli</h1>
+<p><img src="Function_exploration_files/figure-html/unnamed-chunk-14-1.png" width="3000" /></p>
+<p>With free y-axis scaling, it’s (relatively) easy to distinguish the shapes of various curves on a linear scale (quartic is included because it’s temporarily larger than exponential). However, once the log scale is introduced, it’s hard to distinguish the shape of the linear, quadratic, and quartic curves.</p>
+<div id="other-issues" class="section level2">
+<h2>Other issues…</h2>
+<p>If we instead control the y scaling and scale x, you can actually distinguish the curves on the log axis, but not on the linear axis. The cognitive load of having to read the axes isn’t as overwhelming, though, because the scales line up vertically. <img src="Function_exploration_files/figure-html/unnamed-chunk-15-1.png" width="3000" /></p>
+<p>If we instead scale y manually, things get a little more distinguishable… <img src="Function_exploration_files/figure-html/unnamed-chunk-16-1.png" width="3000" /></p>
+</div>
+<div id="one-solution" class="section level2">
+<h2>One solution</h2>
+<p>If we control the start and end points of each function, we can fit quadratic/quartic/linear/exponential functions to the points, solve for other parameters, and get reasonably flexible functions that have the same domain and range.</p>
+<p><img src="Function_exploration_files/figure-html/unnamed-chunk-17-1.png" width="3000" /></p>
+<p>A better plan might be to just use Taylor expansion - saves us the trouble of fitting regressions…</p>
+<p><img src="Function_exploration_files/figure-html/unnamed-chunk-18-1.png" width="3000" /></p>
+<p>The problem is that for odd-order approximations, y is negative for x &lt; a (expansion center). That’s not super optimal… also, because we’re not fitting both endpoints, the ranges don’t match <em>that</em> well.</p>
+<p>We can expand at a point slightly outside the domain, which results in more reasonable <em>looking</em> plots, but we’re still right back at the range problem. <img src="Function_exploration_files/figure-html/unnamed-chunk-19-1.png" width="3000" /></p>
+</div>
+</div>
+<div id="failed-lineup-attempts" class="section level1">
+<h1>Failed Lineup Attempts</h1>
 <p>Lesson: Order of operations matters a lot. Sigh.</p>
-<div id="additive-errors-at-original-scale" class="section level3">
-<h3>Additive errors at original scale</h3>
+<div id="additive-errors-at-original-scale" class="section level2">
+<h2>Additive errors at original scale</h2>
 <p>Here, <span class="math inline">\(\epsilon \sim N(1, 0.25^2)\)</span> because we need nonnegative values for the log transform to work.</p>
-<p><img src="Function_exploration_files/figure-html/unnamed-chunk-16-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-16-2.png" width="48%" /></p>
-<pre><code>## [1] 17</code></pre>
+<p><img src="Function_exploration_files/figure-html/unnamed-chunk-21-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-21-2.png" width="48%" /></p>
+<pre><code>## [1] 7</code></pre>
 <p>That seems to rather negate the utility of the log scale (at least, at this scale… )</p>
-<p>If we instead just don’t scale things, and use <span class="math inline">\(\epsilon \sim N(0, .25^2)\)</span>, that doesn’t really work. <img src="Function_exploration_files/figure-html/unnamed-chunk-17-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-17-2.png" width="48%" /></p>
-<pre><code>## [1] 5</code></pre>
+<p>If we instead just don’t scale things, and use <span class="math inline">\(\epsilon \sim N(0, .25^2)\)</span>, that doesn’t really work. <img src="Function_exploration_files/figure-html/unnamed-chunk-22-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-22-2.png" width="48%" /></p>
+<pre><code>## [1] 20</code></pre>
 </div>
-<div id="multiplicative-errors-at-original-scale-additive-at-log-scale" class="section level3">
-<h3>Multiplicative errors at original scale (Additive at log scale)</h3>
-<p>If we add <span class="math inline">\(\epsilon \sim N(0, \sigma^2)\)</span> in before exponentiation, and then scale, the plots look like this: <img src="Function_exploration_files/figure-html/unnamed-chunk-18-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-18-2.png" width="48%" /></p>
-<pre><code>## [1] 6</code></pre>
+<div id="multiplicative-errors-at-original-scale-additive-at-log-scale" class="section level2">
+<h2>Multiplicative errors at original scale (Additive at log scale)</h2>
+<p>If we add <span class="math inline">\(\epsilon \sim N(0, \sigma^2)\)</span> in before exponentiation, and then scale, the plots look like this: <img src="Function_exploration_files/figure-html/unnamed-chunk-23-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-23-2.png" width="48%" /></p>
+<pre><code>## [1] 8</code></pre>
 <p>But, then, our errors are not all on the same scale. That could introduce visual artifacts (though in this case it’s hard to really see a variability difference).</p>
 <p>Alternately, we could add the errors post-scaling.</p>
 <p>This requires us to scale the data, then log transform, then add error, then exponentiate again, because the scaling is essential to end up with comparable y axes. This leads to some interesting visual artifacts…</p>
-<p><img src="Function_exploration_files/figure-html/unnamed-chunk-19-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-19-2.png" width="48%" /></p>
-<pre><code>## [1] 20</code></pre>
-</div>
+<p><img src="Function_exploration_files/figure-html/unnamed-chunk-24-1.png" width="48%" /><img src="Function_exploration_files/figure-html/unnamed-chunk-24-2.png" width="48%" /></p>
+<pre><code>## [1] 3</code></pre>
 </div>
 </div>
 
