@@ -325,6 +325,11 @@ answer(unique(df$pos[df$.id == 1]))
 
 
 
+
+# Lineup Options - Prediction mismatch
+
+Transition from e.g. exponential to quadratic - can they detect the piecewise change?
+
 # The Problem with creating stimuli
 
 ```{r}
