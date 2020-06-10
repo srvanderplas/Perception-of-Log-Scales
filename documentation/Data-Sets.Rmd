@@ -48,16 +48,18 @@ nrow = 1
 ```
 
 ```{r, message = F, warning = F}
+
+combine_plots <- function(p1, p2) {
+  legend <- get_legend(p1 + theme(legend.position = "bottom")) %>% as_ggplot()
+  p1a <- p1 + theme(legend.position = "none")
+  p2a <- p2 + theme(legend.position = "none")
+  grid.arrange(p1a, p2a, legend, layout_matrix = matrix(c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3), nrow = 5, byrow = T))
+}
+
 p1 <- ggplot(disk_data2, aes(x = dec_date, y = price_per_mb, color = disk_type)) + geom_line() + ggtitle("Disk Drives") + theme(legend.position = "bottom")
 p2 <- ggplot(disk_data2, aes(x = dec_date, y = price_per_mb, color = disk_type)) + geom_line() + scale_y_log10() + ggtitle("Disk Drives") + guides(color = F)
-p3 <- p1 + guides(color = F)
 
-legend <- get_legend(p1) %>% as_ggplot()
-
-grid.arrange(
-p3, p2, legend, 
-layout_matrix = matrix(c(1, 2, 1, 2, 1, 2, 3, 3), nrow = 4, byrow = T)
-)
+combine_plots(p1, p2)
 ```
 
 ```{r}
@@ -108,8 +110,9 @@ nrow = 1
 
 
 # Computing Power
+Data from https://www.top500.org/lists/
 
-```{r, fig.width = 4, out.width = "45%"}
+```{r}
 url <- "https://www.top500.org/lists/"
 data_file <- here::here("data/supercomputers.Rdata")
 if (!file.exists(data_file)) {
@@ -118,10 +121,17 @@ if (!file.exists(data_file)) {
       html_table() %>%
       unlist(recursive = F) %>%
       as_tibble() %>%
-      set_names(c("rank", "site", "system", "cores", "rmax_tflops_s", "rpeak_tflops_s", "power_kw"))
+      set_names(
+        names(.) %>%
+          str_to_lower() %>%
+          str_replace_all("[ [:punct:]]{1,}", " ") %>%
+          str_trim() %>%
+          str_replace_all(" ", "_") 
+      )
+      # set_names(c("rank", "site", "system", "cores", "rmax_tflops_s", "rpeak_tflops_s", "power_kw"))
     
     tmp %>% 
-      mutate(across(cores:power_kw, ~(if(is.character(.)) {parse_number(.)} else {.})))
+      mutate(across(matches("cores|rmax|rpeak|power"), ~(if(is.character(.)) {parse_number(.)} else {.})))
   }
   
   list_links <- read_html(url) %>%
@@ -134,21 +144,55 @@ if (!file.exists(data_file)) {
   computing_power <- list_links %>%
     select(date, data) %>%
     unnest(data) %>%
-    mutate(rank = factor(rank, ordered = T))
+    mutate(rank = factor(rank, ordered = T)) %>%
+    mutate(rmax_tflop_s = ifelse(is.na(rmax_tflop_s), rmax_gflop_s / 1000, rmax_tflop_s),
+           rpeak_tflop_s = ifelse(is.na(rpeak_tflop_s), rpeak_gflop_s / 1000, rpeak_tflop_s))
   
   save(list_links, computing_power, file = data_file)
 }
 load(data_file)
+```
+
+```{r}
+combine_plots(
+computing_power %>%
+  filter(rank <= 3) %>%
+  ggplot(aes(x = date, y = cores, color = rank)) + geom_line() + theme(axis.title.x = element_blank()) + 
+  ggtitle("Cores in Top 3 Supercomputers"),
 
 computing_power %>%
   filter(rank <= 3) %>%
-  ggplot(aes(x = date, y = cores, color = rank)) + geom_line() + 
+  ggplot(aes(x = date, y = cores, color = rank)) + geom_line() + scale_y_log10() + theme(axis.title.x = element_blank()) + 
   ggtitle("Cores in Top 3 Supercomputers")
+)
 
+```
+
+```{r}
+combine_plots(
 computing_power %>%
   filter(rank <= 3) %>%
-  ggplot(aes(x = date, y = cores, color = rank)) + geom_line() + scale_y_log10() + 
-  ggtitle("Cores in Top 3 Supercomputers")
+  ggplot(aes(x = date, y = rmax_tflop_s, color = rank)) + geom_line() + theme(axis.title.x = element_blank()) + 
+  ggtitle("Max Performance in Top 3 Supercomputers")
+,
+computing_power %>%
+  filter(rank <= 3) %>%
+  ggplot(aes(x = date, y = rmax_tflop_s, color = rank)) + geom_line() + theme(axis.title.x = element_blank()) + scale_y_log10() + 
+  ggtitle("Max Performance in Top 3 Supercomputers")
+)
 
+```
 
+```{r}
+combine_plots(
+computing_power %>%
+  filter(rank <= 3) %>%
+  ggplot(aes(x = date, y = rpeak_tflop_s, color = rank)) + geom_line() + theme(axis.title.x = element_blank()) + 
+  ggtitle("Theoretical Peak Performance\n in Top 3 Supercomputers")
+,
+computing_power %>%
+  filter(rank <= 3) %>%
+  ggplot(aes(x = date, y = rpeak_tflop_s, color = rank)) + geom_line() + theme(axis.title.x = element_blank()) + scale_y_log10() + 
+  ggtitle("Theoretical Peak Performance\n in Top 3 Supercomputers")
+)
 ```
