@@ -5,6 +5,13 @@ library(tidyverse)
 library(gridSVG)
 # library(plotly)
 
+mem_path <- here::here("data", "mem-disk-price.xlsx")
+if (!file.exists(mem_path)) download.file("https://jcmit.net/MemDiskPrice-xl95.xls", mem_path, mode = "wb")
+
+cnames <- c("dec_date", "price_per_mb", "year", "md", "ref1", "ref2", "ref3", "size_kb", "price", "speed", "memtype")
+ctype <- c(rep("numeric", 3), rep("text", 4), rep("numeric", 2), rep("text", 2), rep("skip", 3))
+mem_data <- read_xls(mem_path, sheet = "MEMORY", skip = 4, col_names= cnames, col_types = ctype)
+mem_data$mb_per_dollar <- 1/mem_data$price_per_mb
 
 inputUserid <- function(inputId, value='') {
     #   print(paste(inputId, "=", value))
@@ -110,7 +117,20 @@ ui <- navbarPage(
         )
     ),
     tabPanel(
-        title = "Estimation"#,
+        title = "Estimation",
+        fluidRow(
+            column(
+                width = 8, offset = 2,
+                p("Determined by experimental design"),
+                checkboxInput("mem_linear_axis", "Linear Y Axis?", value = T),
+                tags$hr(),
+                p("This plot shows the amount of computer memory (RAM) that could be purchased for $1 over time."),
+                p("With a budget of $100 for memory, how much memory could be purchased (approximately) in 2020?"),
+                numericInput("mem_2020", "Enter your estimate here (in MB):", min = 0, max = 500),
+                tags$hr(),
+                plotOutput("memplot", width = "800px", height = "600px")
+            )
+        )
         # icon = "ruler-combined"
     ),
     tabPanel(
