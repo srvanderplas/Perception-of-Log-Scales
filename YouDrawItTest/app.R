@@ -13,6 +13,26 @@ ctype <- c(rep("numeric", 3), rep("text", 4), rep("numeric", 2), rep("text", 2),
 mem_data <- read_xls(mem_path, sheet = "MEMORY", skip = 4, col_names= cnames, col_types = ctype)
 mem_data$mb_per_dollar <- 1/mem_data$price_per_mb
 
+inputUserid <- function(inputId, value='') {
+    #   print(paste(inputId, "=", value))
+    tagList(
+        singleton(tags$head(tags$script(src = "js/md5.js", type='text/javascript'))),
+        singleton(tags$head(tags$script(src = "js/shinyBindings.js", type='text/javascript'))),
+        tags$body(onload="setvalues()"),
+        tags$input(id = inputId, class = "userid", value=as.character(value), type="text", style="display:none;")
+    )
+}
+
+inputIp <- function(inputId, value=''){
+    tagList(
+        singleton(tags$head(tags$script(src = "js/md5.js", type='text/javascript'))),
+        singleton(tags$head(tags$script(src = "js/shinyBindings.js", type='text/javascript'))),
+        tags$body(onload="setvalues()"),
+        tags$input(id = inputId, class = "ipaddr", value=as.character(value), type="text", style="display:none;")
+    )
+}
+
+
 # Redefine drawr function
 drawr <- function(data, linear = "true", draw_start = mean(data$x),
           title = "", x_range = NULL, y_range = NULL,
@@ -113,7 +133,55 @@ ui <- navbarPage(
         )
         # icon = "ruler-combined"
     ),
-    includeScript("www/js/action.js")
+    tabPanel(
+        title = "Other Information",
+        fluidRow(
+            column(
+                width = 8, offset = 2,
+                inputIp("ipid"),
+                inputUserid("fingerprint"),
+                textOutput("testtext"),
+                h3("Demographic Information"),
+                selectInput("age", label = "Age?", 
+                            choices = c("12-18", "19-24", "25-34", "35-44", "45-64", "65+"), 
+                            selected = NULL, multiple = F),
+                selectInput("gender", label = "Gender Identity?", 
+                            choices = c("Male", "Female", "Nonbinary", "Prefer not to say"), 
+                            multiple = F),
+                selectInput("education", label = "Education", 
+                            choices = c("some K-12", "completed K-12 or equivalent", 
+                                        "some college/university", 
+                                        "completed 2-year degree", "completed 4-year degree", 
+                                        "some graduate/professional school", 
+                                        "completed graduate/professional degree"), 
+                            multiple = F),
+                tags$hr(),
+                h3("Math Use"),
+                selectInput("mathed", label = "What is the highest level math class you've taken?",
+                            choices = c("high school math", 
+                                        "college-level math (not calculus based)",
+                                        "college-level calculus",
+                                        "college-level statistics",
+                                        "college-level math (above calculus)",
+                                        "graduate-level math class",
+                                        "graduate-level statistics class",
+                                        "graduate-level physics or engineering class"),
+                            multiple = T),
+                selectInput("graph_excel", label = "How often do you create graphs or charts in Excel or another software program?",
+                            choices = c("Daily", "Once a week", "Once a month", "A few times a year", "Less than once a year", "Never")),
+                selectInput("log", label = "How often do you use logarithms?",
+                            choices = c("I don't know what that means",
+                                        "I don't use logarithms",
+                                        "I use logarithms occasionally", 
+                                        "I use logarithms at least once a week")),
+                checkboxInput("stem", "I am in a STEM-related field"),
+                textInput("occupation", label = "What is your occupation?"),
+                tags$hr(),
+                h3("Other Comments?"),
+                textAreaInput(inputId = "other_comments", label = "Please leave any other comments you have about this study here")
+            )
+        )
+    )
 )
 
 # Define server logic required to draw a histogram
@@ -193,6 +261,11 @@ server <- function(input, output, session) {
         lineup_plot
     })
 
+    
+    
+    # ---- Tab 4 ---------------------------------------------------------------
+    output$testtext <- renderText(paste("Participant Browser fingerprint: ", input$fingerprint))
+    
 }
 
 # Run the application
