@@ -6,7 +6,7 @@ library(gridSVG)
 library(lubridate)
 
 # Data Sets for Estimation Task
-source(here::here("YouDrawItTest", "format_estimation_data.R"))
+source("format_estimation_data.R")
 
 inputUserid <- function(inputId, value='') {
   #   print(paste(inputId, "=", value))
@@ -149,7 +149,7 @@ ui <- navbarPage(
           p("You are voluntarily making a decision whether or not to participate in this research study. By clicking on the I Agree button below, your consent to participate is implied. You should print a copy of this page for your records. "),
           fluidRow(
             column(width = 4, offset = 2, actionButton("consent", "I agree", class = "btn-success")),
-            column(width = 4, tags$button("I do not agree", class = "btn btn-danger", href = "www.google.com"))
+            column(width = 4, tags$a("I do not agree", class = "btn btn-danger", href = "http://www.google.com"))
           )
         )
       )
