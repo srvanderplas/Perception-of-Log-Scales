@@ -81,52 +81,77 @@ ui <- navbarPage(
     fluidRow(
       column(
         width = 6, offset = 3,
-        radioButtons(
+        wellPanel(
+          radioButtons(
           "consent_type", label = "Recruitment Method", 
           choices = c("Reddit - pilot" = 1, "Prolific" = 2, "Reddit - in parallel with Prolific" = 3), 
           width = "100%", inline = T)
+        )
+      )
+    ),
+    fluidRow(
+      column(4, img(src = "unl-logo.png", width = "90%")),
+      column(
+        8, 
+        p("IRB Project ID #: 20178"),
+        h3("Perception and Decision Making Using Statistical Graphs")
       )
     ),
     fluidRow(
       column(
         width = 10, offset = 1,
-        h3("Perception and Decision Making Using Statistical Graphs"),
+        h4("Introduction"),
         p("This study is intended to assess how people perceive statistical graphs and charts, and how charts are used to make decisions. If you are 19 years of age or older, and have normal or corrected-to-normal vision, you may participate in this research."),
+        br(),
         h4("What is the reason for doing this research study?"),
         p("Statistical charts and graphs are everywhere – in news articles, advertisements, and on TV. We are interested in whether people read information from charts accurately, and whether certain types of charts are more useful when making data-informed decisions. Unfortunately, we know relatively little about how people read and perceive charts. This study is designed to address this gap in research by systematically investigating the use of charts in different tasks and contexts. In order to participate you must be 19 years of age or older and have normal or corrected-to-normal vision."),
+        br(),
         h4("What will be done during this research study?"),
         p("Participation in this study should require less than 30 minutes of your time. You will be asked to look at statistical charts and then answer questions or complete tasks based on the visualization and contextual information."),
         p("You may be asked to estimate, predict, or make decisions based on one or more graphs. You will be able to provide an explanation of your response, if you choose to do so. "),
         p("We expect that each of these tasks will take less than 3 minutes to complete. We will start out with practice questions so that you can become accustomed to the interface. After the practice task(s), there will be a series of questions. At the end of the study, you will be asked for some demographic information, such as your age, education level, and occupation."),
         p("Participation will take place in a location of your choosing, on your computer."),
+        br(),
         h4("What are the possible risks of being in this research study?"),
         p("There are no known risks to you from being in this research study."),
+        br(),
         h4("What are the possible benefits to you?"),
         p("You are not expected to get any benefit from being in this study."),
+        br(),
         h4("Will you be compensated for being in this research study?"),
         conditionalPanel('input.consent_type == 2', p("We will pay you $XX for participating in this study through Prolific. At the conclusion of this study, you will be provided a URL that will direct you back to Prolific, signaling study completion. While you are free to quit at any time or to decline to answer any question, you will only be compensated if you complete the study and click on the redirect URL provided at the end of the study."),
                          p("In order to document your receipt of the payment, you must provide your name and address through Prolific. Payment records will be stored for up to 7 years and may be stored with Financial Personnel at the University. ")),
         conditionalPanel('input.consent_type == 1', "You will not be paid to take part in this study. "),
         conditionalPanel('input.consent_type == 3', "You will not be paid to take part in this study if you participate through Reddit. In recognition of the fact that not all individuals who want to contribute to science are comfortable providing identifying information to an outside service, we have designed this study with two different participation options. If you wish to be compensated for your participation, you may register with Prolific and locate the study on that platform."),
+        br(),
         h4("How will information about you be protected?"),
         p("Reasonable steps will be taken to protect the privacy and the confidentiality of your study data; however, in some circumstances we cannot guarantee absolute privacy and/or confidentiality. This study will never link personally identifying information with your responses. "),
         conditionalPanel('input.consent_type == 2', "If you are participating through an outside service, such as Prolific, your participation will be recorded and linked to your Prolific account so that you can receive payment. At no point will any identifiable information be linked with your data: any responses you provide are completely anonymous. "),
         p("The research records will be securely stored electronically through University approved methods and will only be seen by the research team and/or those authorized to view, access, or use the records during the study."),
         p("Those who will have access to your research records are the study personnel, the Institutional Review Board (IRB), and any other person, agency, or sponsor as required by law or contract or institutional responsibility. The information from this study may be published in scientific journals or presented at scientific meetings. The individual data records, plus summaries and group-level analyses, will be published, but your identity will be kept strictly confidential."),
+        br(),
         h4("What are your rights as a research participant?"),
         p("You may ask any questions concerning this research and have those questions answered before agreeing to participate in or during the study."),
         p("For study related questions, please contact Dr. Susan Vanderplas (susan.vanderplas@unl.edu)"),
         p("For questions concerning your rights or complaints about the research contact the Institutional Review Board (IRB):"),
         tags$ul(tags$li("Phone: 1 (402) 472-6965"), tags$li("Email: irb@unl.edu")),
+        br(),
         h4("What will happen if you decide not to be in this research study, or decide to stop participating once you start?"),
         p("You can decide not to be in this research study, or you can stop being in this research study (“withdraw’) at any time before, during, or after the research begins for any reason. Deciding not to be in this research study or deciding to withdraw will not affect your relationship with the investigator or with the University of Nebraska-Lincoln."),
         conditionalPanel('input.consent_type == 2', "You will not lose any benefits to which you are entitled. However, if you withdraw before you receive a redirect link, we cannot compensate you for participation in the study."),
-        h4("Documentation of Informed Consent"),
-        p("You are voluntarily making a decision whether or not to participate in this research study. By clicking on the I Agree button below, your consent to participate is implied. You should print a copy of this page for your records. ")
-      ),
-      fluidRow(
-        column(width = 4, offset = 2, actionButton("consent", "I agree", class = "btn-success")),
-        column(width = 4, tags$button("I do not agree", class = "btn btn-danger", href = "www.google.com"))
+      )
+    ),
+    fluidRow(
+      column(
+        width = 8, offset = 2,
+        wellPanel(
+          h4("Documentation of Informed Consent"),
+          p("You are voluntarily making a decision whether or not to participate in this research study. By clicking on the I Agree button below, your consent to participate is implied. You should print a copy of this page for your records. "),
+          fluidRow(
+            column(width = 4, offset = 2, actionButton("consent", "I agree", class = "btn-success")),
+            column(width = 4, tags$button("I do not agree", class = "btn btn-danger", href = "www.google.com"))
+          )
+        )
       )
     )
   ),
