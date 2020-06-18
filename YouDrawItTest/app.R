@@ -138,7 +138,7 @@ ui <- navbarPage(
         tags$ul(tags$li("Phone: 1 (402) 472-6965"), tags$li("Email: irb@unl.edu")),
         br(),
         h4("What will happen if you decide not to be in this research study, or decide to stop participating once you start?"),
-        p("You can decide not to be in this research study, or you can stop being in this research study (“withdraw’) at any time before, during, or after the research begins for any reason. Deciding not to be in this research study or deciding to withdraw will not affect your relationship with the investigator or with the University of Nebraska-Lincoln."),
+        p("You can decide not to be in this research study, or you can stop being in this research study (withdraw) at any time before, during, or after the research begins for any reason. Deciding not to be in this research study or deciding to withdraw will not affect your relationship with the investigator or with the University of Nebraska-Lincoln."),
         conditionalPanel('input.consent_type == 2', "You will not lose any benefits to which you are entitled. However, if you withdraw before you receive a redirect link, we cannot compensate you for participation in the study."),
       )
     ),
