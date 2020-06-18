@@ -4,6 +4,7 @@ library(r2d3)
 library(tidyverse)
 library(gridSVG)
 library(lubridate)
+library(readxl)
 
 # Data Sets for Estimation Task
 source("format_estimation_data.R")
@@ -57,11 +58,11 @@ drawr <- function(data, linear = "true", draw_start = mean(data$x),
       stop("Supplied y range doesn't cover data fully.")
     }
   }
-  
+
   if ((draw_start <= x_min) | (draw_start >= x_max)) {
     stop("Draw start is out of data range.")
   }
-  
+
   r2d3::r2d3(plot_data, "main.js",
              dependencies = c("d3-jetpack"),
              options = list(draw_start = draw_start, linear = as.character(linear),
@@ -77,14 +78,14 @@ ui <- navbarPage(
   "Testing Graphics",
   # ---- Informed Consent ----------------------------------------------------
   tabPanel(
-    title = "About This Study",  
+    title = "About This Study",
     fluidRow(
       column(
         width = 6, offset = 3,
         wellPanel(
           radioButtons(
-          "consent_type", label = "Recruitment Method", 
-          choices = c("Reddit - pilot" = 1, "Prolific" = 2, "Reddit - in parallel with Prolific" = 3), 
+          "consent_type", label = "Recruitment Method",
+          choices = c("Reddit - pilot" = 1, "Prolific" = 2, "Reddit - in parallel with Prolific" = 3),
           width = "100%", inline = T)
         )
       )
@@ -92,7 +93,7 @@ ui <- navbarPage(
     fluidRow(
       column(4, img(src = "unl-logo.png", width = "90%")),
       column(
-        8, 
+        8,
         p("IRB Project ID #: 20178"),
         h3("Perception and Decision Making Using Statistical Graphs")
       )
@@ -256,7 +257,7 @@ ui <- navbarPage(
                                 "completed graduate/professional degree"),
                     multiple = F),
         textInput("occupation", label = "What is your occupation?"),
-        
+
         inputIp("ipid"),
         inputUserid("fingerprint"),
         textOutput("testtext")
@@ -312,14 +313,14 @@ ui <- navbarPage(
 server <- function(input, output, session) {
   # ---- Tab 1 ---------------------------------------------------------------
   data_tab1 <- tibble(x = 1:30, y = exp((x-15)/5))
-  
+
   y_range <- range(data_tab1$y) * c(.7, 1.1)
-  
+
   draw_start <- 20
-  
+
   message_loc <- session$ns("drawr_message")
   drawn_data <- shiny::reactiveVal()
-  
+
   output$shinydrawr <- r2d3::renderD3({
     islinear <- ifelse(input$drawr_linear_axis, "true", "false")
     # Use redef'd drawr function
@@ -330,28 +331,28 @@ server <- function(input, output, session) {
           x_range = range(data_tab1$x), y_range = y_range,
           drawn_line_color = "skyblue", data_line_color = "blue")
   })
-  
+
   shiny::observeEvent(input$drawr_linear_axis, {
     drawn_data(NULL)
   })
-  
+
   shiny::observeEvent(input$drawr_message, {
     data_tab1 %>%
       dplyr::filter(x >= draw_start) %>%
       dplyr::mutate(drawn = input$drawr_message) %>%
       drawn_data()
   })
-  
+
   output$drawrmessage <- renderTable({
     drawn_data()
   })
-  
+
   # ---- Tab 2 ---------------------------------------------------------------
-  
-  
+
+
   data_tab2 <- reactive({
     input$lineup_submit
-    
+
     gen_exp_data <- function(coef, n = 30) {
       tibble(
         x = seq(-15, 15, length.out = n),
@@ -359,7 +360,7 @@ server <- function(input, output, session) {
         err = rnorm(n, 1, .25)
       )
     }
-    
+
     tibble(c1 = rnorm(20, 1, .05),
            c2 = c(1.3, rep(1, 19)),
            .id = 1:20,
@@ -372,17 +373,17 @@ server <- function(input, output, session) {
       mutate(yfix = exp((y - mean(y))/sd(y)) + err) %>%
       ungroup()
   })
-  
+
   observe({
     onclick("lineup_answer_btn", {
       toggle("lineup_answer")
     })
   })
-  
+
   answertext <- reactive({
     sprintf("The target is in panel %d", unique(filter(data_tab2(), .id == 1)$pos))
   })
-  
+
   # Hide the answer and clear the inputs if a new lineup is generated
   observeEvent({
     input$lineup_submit
@@ -391,14 +392,14 @@ server <- function(input, output, session) {
     updateTextAreaInput(session, "lineup_reason", value = character(0))
     updateSelectInput(session, "lineup_panel", selected = character(0))
   })
-  
-  
-  
+
+
+
   output$lineup_answer <- renderText({
     # message(sprintf("lineup_answer_btn value is %d", isolate(input$lineup_answer_btn)))
     answertext()
   })
-  
+
   output$lineup <- renderPlot({
     df <- data_tab2()
     lineup_plot <- ggplot(df, aes(x = x, y = yfix, color = group)) +
@@ -406,18 +407,18 @@ server <- function(input, output, session) {
       facet_wrap(~pos, ncol = 5) +
       scale_color_discrete(guide = F) +
       theme(axis.text = element_blank(), axis.title = element_blank())
-    
+
     if (!input$lineup_linear_axis)  lineup_plot <- lineup_plot + scale_y_log10()
-    
+
     lineup_plot
   })
-  
+
   # ---- Tab 3 ---------------------------------------------------------------
-  
+
   est_data <- reactive({
     filter(df, scenario == as.numeric(input$est_scenario))
   })
-  
+
   format_yaxis <- function(x) {
     x1 <- format(x, scientific = F, digits = 1, drop0trailing = T, trim = T)
     x2 <- format(x, digits = 1, scientific = T, drop0trailing = T, trim = T) %>%
@@ -428,73 +429,73 @@ server <- function(input, output, session) {
       gsub("^1 ... ", "", x = .)
     parse(text = ifelse(x >= 0.01 & x < 1000, x1, x2))
   }
-  
+
   output$est_q1 <- renderUI({
     tmp <- filter(qs, scenario == input$est_scenario, qnum == 1)
     numericInput("est_q1", label = tmp$q, min = tmp$lb, max = tmp$ub, step = tmp$delta, value = tmp$lb)
   })
-  
+
   output$est_q2 <- renderUI({
     tmp <- filter(qs, scenario == input$est_scenario, qnum == 2)
     numericInput("est_q2", label = tmp$q, min = tmp$lb, max = tmp$ub, step = tmp$delta, value = tmp$lb)
   })
-  
+
   output$est_plot <- renderPlot({
     tmp <- est_data()$data[[1]] %>%
       filter(dec_date >= 1980) %>%
       mutate(rank = as.character(rank))
-    
+
     est_axis <- est_extra(as.numeric(input$est_scenario), input$est_linear_axis)
-    
+
     p <- ggplot(data = tmp, aes(x = dec_date, y = value)) +
       theme(axis.title.x = element_blank()) +
       theme(axis.text.y = element_text(angle = 90, hjust = 0.5))
-    
+
     if (input$est_scenario < 3){
       p <- p + geom_point()
     } else {
       p <- p + geom_point(aes(color = rank, shape = rank))
     }
     p <- p + isolate(ylab(sprintf("%s (%s)", est_data()$type, est_data()$unit)))
-    
+
     est_axis$major_breaks
     if (input$est_linear_axis) {
       p <- p + scale_y_continuous(breaks = est_axis$major_breaks, minor_breaks = est_axis$minor_breaks, labels = format_yaxis)
     } else {
       p <- p + scale_y_log10(breaks = est_axis$major_breaks, minor_breaks = est_axis$minor_breaks, labels = format_yaxis)
     }
-    
+
     print(p)
   })
-  
+
   observe({
     onclick("est_ans_btn", {
       toggle("est_answer")
     })
   })
-  
+
   observe({
     input$est_scenario
     isolate({
       hide("est_answer")
     })
   })
-  
+
   output$est_helptext <- renderUI({
     est_axis <- est_extra(as.numeric(input$est_scenario), input$est_linear_axis)
     list(p(est_axis$explain_base), p(est_axis$explain_ext))
   })
-  
+
   output$est_answer <- renderUI({
     tmp <- filter(qs, scenario == input$est_scenario)
     list(
       p(sprintf("Q%d Computed (Exact) Answer: %.2f", 1, tmp$answer[1])),
       p(sprintf("Q%d Computed (Exact) Answer: %.2f", 2, tmp$answer[2])))
   })
-  
+
   # ---- Tab 4 ---------------------------------------------------------------
   output$testtext <- renderText(paste("Participant Browser fingerprint: ", input$fingerprint))
-  
+
 }
 
 # Run the application
