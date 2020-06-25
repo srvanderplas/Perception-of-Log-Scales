@@ -1,0 +1,46 @@
+---
+title: "Log Perception Design Factors"
+author: "Emily Robinson"
+output: html_document
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, fig.width = 8, fig.height = 4, out.width = "100%", dpi = 300, message = F)
+```
+
+***Work in progress...***
+
+### Log vs Linear Scale
+
++ @woloshin_new_2000 measured the perceptions of event probabilities, particularly low probabilities (i.e., <1%) by comparing four scales - logaraithm pct, linear words, linear numbers, and "1 in x" - in terms of reliability and validity. The authors found that the "1 in x" scale performs poorly and is very difficult for people to use. The magnifier scale and the linear number scale are similar in validity, reliability, and usability. However, only the magnifier scale makes it possible to elicit perceptions in the low-probability range (<1%).
++ @noauthor_log_nodate
+
+### Experiment Task
++ You Draw It
+    + @mosteller_eye_1981
++ Lineup
++ Estimation
+
+### Growth Rate
+
+### Functional Form
++ ***How closley the function relates to an exponential (how about polynomial or logistic curves?)***
++ @jones_generalized_1979
+
+### Order of Magnitude
++ ***What are the min/max of the y-axis?***
++ @siegler_numerical_2017 states that whole number magnitude representations progress from a compressive, approximately logarithmic distribution to an approximately linear one. Transitions occur earlier for smaller than for larger ranges of whole numbers, corresponding both to the complexity of the numbers and to the ages when children gain experience with them. In summary, estimation proceeds logarithmically initially and transitions to linear later in development, for several different numerical ranges.
+
+### Axis tick labels
++ ***Scientific notation? Standard notation? Transition at a given value?***
++ @friel_making_2001
+
+### Dotplots & Trendlines
++ @wagenaar_extrapolation_1978 found that in short, the more data points, the worse the extrapolations. It was determined that extrapolation of exponential functions improves when less data points are shown.The willingness to produce large numbers, is affected when many data points are presented.
++ @vanderplas_clusters_2017
+
+### Estimation Scenario
+
+### References
+
