@@ -1,0 +1,306 @@
+---
+title: "Simulation Exploration"
+author: "Emily Robinson"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T, fig.width = 8, fig.height = 4, out.width = "100%", dpi = 300, message = F)
+library(tidyverse)
+library(gridExtra)
+```
+
+*Needs modifications, very sensitive to parameters such as growth coefficient and error variance.*
+
+# Estimation
+
+## Manual simulation
+
+### Exponential
+
+```{r expManual, message=FALSE, warning=FALSE}
+generateDat_expManual <- function(n = 50, beta = 1){
+  
+  muErr = beta*100
+  sdErr = muErr/4
+  
+  xRaw <- seq(1,n,1)
+  xJitter <- runif(n, -0.1, 0.1)
+  x <- xRaw + xJitter
+
+  yRaw <- exp(beta*x)
+  yError <-  rnorm(n, muErr, sdErr)
+  y <- yRaw*yError
+  
+  return(cbind(x, yRaw, y) %>% as.data.frame())
+  
+}
+
+dat_expManual <- generateDat_expManual(n = 50, 
+                                 beta = 0.1)
+
+linearPlot_expManual <- dat_expManual %>%
+                      ggplot(aes(x = x, y = y)) +
+                      geom_point() +
+                      # geom_smooth(se = F, color = "black", method = loess) + 
+                      theme_bw() +
+                      ggtitle("Linear Exponental: manual")  
+
+logPlot_expManual    <- dat_expManual %>%
+                      ggplot(aes(x = x, y = y)) +
+                      geom_point() +
+                      # geom_smooth(se = F, color = "black", method = loess) +
+                      theme_bw() + 
+                      scale_y_log10() +
+                      ggtitle("Linear Quadratic: manual")
+
+
+grid.arrange(linearPlot_expManual, logPlot_expManual, ncol=2)
+```
+
+## `library(simglm)`
+
+### Quadratic
+
+```{r quadSimglm, message=FALSE, warning=FALSE}
+library(simglm)
+
+generateDat_quadSimglm <- function(n = 70, errVar = 25, xMin = 0, xMax = 50, regWeights = c(10, 0.1, 0.05)){
+sim_arguments <- list(
+  formula = y ~ 1 + x1,
+  error = list(variance = errVar),
+  fixed = list(x1 = list(var_type = 'ordinal', levels = xMin:xMax)),
+  sample_size = n
+)
+
+sim_arguments2 <- list(
+  formula = y ~ 1 + x1 + x2,
+  sample_size = n,
+  reg_weights = regWeights
+)
+
+return(simulate_fixed(data = NULL, sim_arguments) %>% 
+         mutate(x2 = x1*x1) %>%
+       simulate_error(sim_arguments) %>%
+      generate_response(sim_arguments2)
+      )
+}
+
+dat_quadSimglm <- generateDat_quadSimglm(n   = 50, 
+                                      errVar = 8, 
+                                      xMin   = 0, 
+                                      xMax   = 30, 
+                                      regWeights = c(1, 0.1, 0.1))
+
+linearPlot_quadSimglm <- dat_quadSimglm %>%
+                    ggplot(aes(x = x1, y = y)) +
+                    scale_x_continuous("x") +
+                    geom_point() +
+                    theme_bw() +
+                    ggtitle("Linear Quadratic: simglm")
+
+logPlot_quadSimglm <- dat_quadSimglm %>%
+                    ggplot(aes(x = x1, y = y)) +
+                    scale_x_continuous("x") +
+                    geom_point() +
+                    theme_bw() + 
+                    scale_y_log10() +
+                    ggtitle("Log Quadratic: simglm")
+
+grid.arrange(linearPlot_quadSimglm, logPlot_quadSimglm, ncol=2)
+```
+
+### Exponential
+
+Modify function to accomodate exponential as an outcome type.
+
+```{r addExp}
+transform_outcome2 <- function (outcome, type, ...) 
+{
+  if (type %in% c("logistic", "binary")) {
+    probability <- exp(outcome)/(1 + exp(outcome))
+    rbinom(length(outcome), size = 1, prob = probability)
+  } 
+  else {
+    if (type %in% c("exp", "exponential")) {
+      rexp(length(outcome), rate = 1/exp(outcome))
+    }
+    else {
+      if (type %in% c("count", "poisson")) {
+        rpois(length(outcome),  lambda = exp(outcome))
+      }
+      else {
+        purrr::map()
+      }
+    }
+  }
+}
+
+generate_response2 <- function (data, sim_args, keep_intermediate = TRUE, ...) {
+  outcome_name <- parse_formula(sim_args)[["outcome"]]
+  outcome_type <- sim_args[["outcome_type"]]
+  fixed_formula <- parse_formula(sim_args)[["fixed"]]
+  fixed_vars <- attr(terms(fixed_formula), "term.labels")
+  if (any(grepl("^factor\\(", fixed_vars))) {
+    fixed_vars <- gsub("factor\\(|\\)$", "",
+                       fixed_vars)
+  }
+  if (any(grepl("^ns\\(", fixed_vars))) {
+    fixed_vars <- gsub("ns\\(|\\,.+\\)$", "",
+                       fixed_vars)
+  }
+  if (any(grepl("^poly\\(", fixed_vars))) {
+    fixed_vars <- gsub("poly\\(|\\,.+\\)", "",
+                       fixed_vars)
+  }
+  if (any(grepl(":", fixed_vars))) {
+    fixed_vars <- gsub(":", "\\.", fixed_vars)
+  }
+  if (any(grepl("^ns|^poly", attr(terms(fixed_formula),
+                                  "term.labels")))) {
+    fixed_vars <- poly_ns_names(sim_args)
+  }
+  if (any(unlist(lapply(seq_along(sim_args[["fixed"]]),
+                        function(xx) sim_args[["fixed"]][[xx]]$var_type)) ==
+          "factor")) {
+    num_levels <- lapply(seq_along(sim_args[["fixed"]]),
+                         function(xx) sim_args[["fixed"]][[xx]][["levels"]])
+    num_levels <- purrr::modify_if(num_levels, is.character,
+                                   length)
+    if (any(unlist(lapply(seq_along(sim_args[["fixed"]]),
+                          function(xx) num_levels[[xx]] > 2 & sim_args[["fixed"]][[xx]][["var_type"]] ==
+                          "factor")))) {
+      fixed_vars <- factor_names(sim_args, fixed_vars)
+    }
+  }
+  Xmat <- dplyr::select(data, fixed_vars)
+  if (any(grepl("Intercept", names(data)))) {
+    Xmat <- cbind(data["X.Intercept."], Xmat)
+  }
+  fixed_outcome <- as.matrix(Xmat) %*% sim_args[["reg_weights"]]
+  if (length(parse_formula(sim_args)[["randomeffect"]]) !=
+      0) {
+    random_formula <- parse_formula(sim_args)[["randomeffect"]]
+    random_formula_parsed <- parse_randomeffect(random_formula)
+    random_effects_names <- names(sim_args[["randomeffect"]])
+    random_formula <- lapply(seq_along(random_formula_parsed[["random_effects"]]),
+                             function(xx) as.formula(random_formula_parsed[["random_effects"]][xx]))
+    Zmat <- lapply(random_formula, model.matrix, data = data) %>%
+      lapply(., data.frame) %>% dplyr::bind_cols()
+    rand_effects <- dplyr::select(data, random_effects_names)
+    random_effects <- rowSums(rand_effects * Zmat)
+  }
+  else {
+    random_effects <- NULL
+    random_effects <- 0
+  }
+  if (keep_intermediate) {
+    response_outcomes <- data.frame(fixed_outcome = fixed_outcome,
+                                    random_effects = random_effects)
+    data <- cbind(data, response_outcomes, row.names = NULL)
+  }
+  if (is.null(data[["error"]])) {
+    data["error"] <- 0
+  }
+  outcome <- as.numeric(unlist(fixed_outcome + random_effects +
+                                 data["error"]))
+  if (!is.null(sim_args[["outcome_type"]])) {
+    trans_outcome <- transform_outcome2(outcome, type = sim_args[["outcome_type"]])
+    data <- cbind(data, untransformed_outcome = outcome)
+    data[outcome_name] <- trans_outcome
+  }
+  else {
+    data[outcome_name] <- outcome
+  }
+  data
+}
+
+generateDat_expSimglm <- function(n = 70, errVar = 25, xMin = 0, xMax = 50, regWeights = c(10, 0.1)){
+sim_arguments <- list(
+  formula = y ~ 1 + x1,
+  error = list(variance = errVar),
+  fixed = list(x1 = list(var_type = 'ordinal', levels = xMin:xMax)),
+  sample_size = n,
+  reg_weights = regWeights,
+  outcome_type = "exp"
+)
+
+return(simulate_fixed(data = NULL, sim_arguments) %>% 
+       simulate_error(sim_arguments) %>%
+       generate_response2(sim_arguments)
+      )
+}
+```
+
+```{r expSimglm, message=FALSE, warning=FALSE}
+simDat_expSimglm <- generateDat_expSimglm(n  = 30, 
+                                          errVar = 0.125, 
+                                          xMin   = 0, 
+                                          xMax   = 30, 
+                                          regWeights = c(1, 0.25))
+
+linearPlot_expSimglm <- simDat_expSimglm %>%
+                    ggplot(aes(x = x1, y = y)) +
+                    scale_x_continuous("x") +
+                    geom_point() +
+                    theme_bw() +
+                    ggtitle("Linear Exponential: simglm")
+
+logPlot_expSimglm <- simDat_expSimglm %>%
+                    ggplot(aes(x = x1, y = y)) +
+                    scale_x_continuous("x") +
+                    geom_point() +
+                    theme_bw() + 
+                    scale_y_log10() +
+                    ggtitle("Log Exponential: simglm")
+
+grid.arrange(linearPlot_expSimglm, logPlot_expSimglm, ncol=2)
+```
+
+## "Stroup" Simulation
+
+### Exponential
+```{r expStroup, message=FALSE, warning=FALSE}
+generateDat_expStroup <- function(n = 50, sdErr = 0.25, coef = 0.5){
+  
+  xRaw <- seq(1,n,1)
+  xJitter <- runif(n, -0.1, 0.1)
+  x <- xRaw + xJitter
+
+  e_i <- rnorm(n, 0, sdErr)
+  eta <- x*coef + e_i
+  y   <- rexp(length(eta), rate = 1/exp(eta)) 
+  
+  return(cbind(x, y) %>% as.data.frame())
+  
+}
+
+dat_expStroup <- generateDat_expStroup(n     = 30, 
+                                       sdErr = 0.25,
+                                       coef  = 0.25)
+
+linearPlot_expStroup <- dat_expStroup %>%
+                      ggplot(aes(x = x, y = y)) +
+                      geom_point() +
+                      # geom_smooth(se = F, color = "black", method = loess) + 
+                      theme_bw() +
+                      ggtitle("Linear Exponential: Stroup")  
+
+logPlot_expStroup    <- dat_expStroup %>%
+                      ggplot(aes(x = x, y = y)) +
+                      geom_point() +
+                      # geom_smooth(se = F, color = "black", method = loess) +
+                      theme_bw() + 
+                      scale_y_log10() +
+                      ggtitle("Linear Exponential: Stroup")
+
+
+grid.arrange(linearPlot_expStroup, logPlot_expStroup, ncol=2)
+```
+
+
+
+
+
+
+
