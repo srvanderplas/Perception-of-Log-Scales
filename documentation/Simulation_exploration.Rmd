@@ -10,7 +10,7 @@ library(tidyverse)
 library(gridExtra)
 ```
 
-*Needs modifications, very sensitive to parameters such as growth coefficient and error variance.*
+*Needs modifications, very sensitive to parameters such as growth coefficient and error variance. See corresponding Shiny application to adjust parameters.*
 
 # Estimation
 
@@ -19,103 +19,53 @@ library(gridExtra)
 ### Exponential
 
 ```{r expManual, message=FALSE, warning=FALSE}
-generateDat_expManual <- function(n = 50, beta = 1){
-  
-  muErr = beta*100
-  sdErr = muErr/4
-  
-  xRaw <- seq(1,n,1)
-  xJitter <- runif(n, -0.1, 0.1)
-  x <- xRaw + xJitter
+generateDat_Manual <- 
+  function(n, coef, muErr, sdErr, xRange, errorType){
+    
+    x <- runif(n, xRange[1], xRange[2])
+    yRaw   <- exp(coef*x)
+    yError <-  rnorm(n, muErr, sdErr)
+    if(errorType %in% c("Additive")){
+      y      <- yRaw + yError
+    } else {
+      if(errorType %in% c("Multiplicative")){
+        y      <- yRaw*yError 
+      }
+    }
+    
+    return(cbind(x, y) %>% as.data.frame())
+  }
 
-  yRaw <- exp(beta*x)
-  yError <-  rnorm(n, muErr, sdErr)
-  y <- yRaw*yError
-  
-  return(cbind(x, yRaw, y) %>% as.data.frame())
-  
-}
+data_manual <- generateDat_Manual(n = 30, coef = 0.1, muErr = 1, sdErr = 0.25, xRange = c(0,30), errorType = "Additive")
+```
 
-dat_expManual <- generateDat_expManual(n = 50, 
-                                 beta = 0.1)
-
-linearPlot_expManual <- dat_expManual %>%
+```{r, echo = F, expManualPlots}
+linearPlot_Manual <- data_manual %>%
                       ggplot(aes(x = x, y = y)) +
                       geom_point() +
                       # geom_smooth(se = F, color = "black", method = loess) + 
                       theme_bw() +
-                      ggtitle("Linear Exponental: manual")  
+                      ggtitle("Linear Exponential: Manual")  
 
-logPlot_expManual    <- dat_expManual %>%
+logPlot_Manual    <- data_manual %>%
                       ggplot(aes(x = x, y = y)) +
                       geom_point() +
                       # geom_smooth(se = F, color = "black", method = loess) +
                       theme_bw() + 
                       scale_y_log10() +
-                      ggtitle("Linear Quadratic: manual")
+                      ggtitle("Log Exponential: Manual")
 
 
-grid.arrange(linearPlot_expManual, logPlot_expManual, ncol=2)
+grid.arrange(linearPlot_Manual, logPlot_Manual, ncol=2)
 ```
 
-## `library(simglm)`
-
-### Quadratic
-
-```{r quadSimglm, message=FALSE, warning=FALSE}
-library(simglm)
-
-generateDat_quadSimglm <- function(n = 70, errVar = 25, xMin = 0, xMax = 50, regWeights = c(10, 0.1, 0.05)){
-sim_arguments <- list(
-  formula = y ~ 1 + x1,
-  error = list(variance = errVar),
-  fixed = list(x1 = list(var_type = 'ordinal', levels = xMin:xMax)),
-  sample_size = n
-)
-
-sim_arguments2 <- list(
-  formula = y ~ 1 + x1 + x2,
-  sample_size = n,
-  reg_weights = regWeights
-)
-
-return(simulate_fixed(data = NULL, sim_arguments) %>% 
-         mutate(x2 = x1*x1) %>%
-       simulate_error(sim_arguments) %>%
-      generate_response(sim_arguments2)
-      )
-}
-
-dat_quadSimglm <- generateDat_quadSimglm(n   = 50, 
-                                      errVar = 8, 
-                                      xMin   = 0, 
-                                      xMax   = 30, 
-                                      regWeights = c(1, 0.1, 0.1))
-
-linearPlot_quadSimglm <- dat_quadSimglm %>%
-                    ggplot(aes(x = x1, y = y)) +
-                    scale_x_continuous("x") +
-                    geom_point() +
-                    theme_bw() +
-                    ggtitle("Linear Quadratic: simglm")
-
-logPlot_quadSimglm <- dat_quadSimglm %>%
-                    ggplot(aes(x = x1, y = y)) +
-                    scale_x_continuous("x") +
-                    geom_point() +
-                    theme_bw() + 
-                    scale_y_log10() +
-                    ggtitle("Log Quadratic: simglm")
-
-grid.arrange(linearPlot_quadSimglm, logPlot_quadSimglm, ncol=2)
-```
-
-### Exponential
+## library(simglm)
 
 Modify function to accomodate exponential as an outcome type.
 
-```{r addExp}
-transform_outcome2 <- function (outcome, type, ...) 
+```{r simglmModificaiton}
+transform_outcome2 <- 
+  function (outcome, type, ...) 
 {
   if (type %in% c("logistic", "binary")) {
     probability <- exp(outcome)/(1 + exp(outcome))
@@ -136,7 +86,8 @@ transform_outcome2 <- function (outcome, type, ...)
   }
 }
 
-generate_response2 <- function (data, sim_args, keep_intermediate = TRUE, ...) {
+generate_response2 <- 
+  function (data, sim_args, keep_intermediate = TRUE, ...) {
   outcome_name <- parse_formula(sim_args)[["outcome"]]
   outcome_type <- sim_args[["outcome_type"]]
   fixed_formula <- parse_formula(sim_args)[["fixed"]]
@@ -214,31 +165,88 @@ generate_response2 <- function (data, sim_args, keep_intermediate = TRUE, ...) {
   }
   data
 }
-
-generateDat_expSimglm <- function(n = 70, errVar = 25, xMin = 0, xMax = 50, regWeights = c(10, 0.1)){
-sim_arguments <- list(
-  formula = y ~ 1 + x1,
-  error = list(variance = errVar),
-  fixed = list(x1 = list(var_type = 'ordinal', levels = xMin:xMax)),
-  sample_size = n,
-  reg_weights = regWeights,
-  outcome_type = "exp"
-)
-
-return(simulate_fixed(data = NULL, sim_arguments) %>% 
-       simulate_error(sim_arguments) %>%
-       generate_response2(sim_arguments)
-      )
-}
 ```
 
-```{r expSimglm, message=FALSE, warning=FALSE}
-simDat_expSimglm <- generateDat_expSimglm(n  = 30, 
-                                          errVar = 0.125, 
-                                          xMin   = 0, 
-                                          xMax   = 30, 
-                                          regWeights = c(1, 0.25))
+```{r generateSimglm}
+library(simglm)
 
+generateDat_simglm <- 
+  function(n, varErr, xRange, regWeights, functionalForm){
+    
+    if(functionalForm %in% c("Quadratic")){
+      sim_arguments <- list(
+        formula = y ~ 1 + x1,
+        error = list(variance = varErr),
+        fixed = list(x1 = list(var_type = 'ordinal', levels = xRange[1]:xRange[2])),
+        sample_size = n
+      )
+      
+      sim_arguments2 <- list(
+        formula = y ~ 1 + x1 + x2,
+        sample_size = n,
+        reg_weights = regWeights
+      )
+      
+      return(simulate_fixed(data = NULL, sim_arguments) %>% 
+               mutate(x2 = x1*x1) %>%
+               simulate_error(sim_arguments) %>%
+               generate_response(sim_arguments2)
+      )
+      
+    } else {
+      if(functionalForm %in% "Exponential"){
+        sim_arguments <- list(
+          formula = y ~ 1 + x1,
+          error = list(variance = varErr),
+          fixed = list(x1 = list(var_type = 'ordinal', levels = xRange[1]:xRange[2])),
+          sample_size = n,
+          reg_weights = regWeights,
+          outcome_type = "exp"
+        )
+        
+        return(simulate_fixed(data = NULL, sim_arguments) %>% 
+                 simulate_error(sim_arguments) %>%
+                 generate_response2(sim_arguments)
+        )
+      }
+    }
+    
+  }
+```
+
+### Quadratic
+
+```{r quadSimglm, message=FALSE, warning=FALSE}
+dat_quadSimglm <- generateDat_simglm(functionalForm = "Quadratic", n = 30, regWeights = c(1, 0.1, 0.5), varErr = 50, xRange = c(0,30))
+```
+
+```{r quadSimglmPlots, echo = F, message=FALSE, warning=FALSE}
+linearPlot_quadSimglm <- dat_quadSimglm %>%
+                    ggplot(aes(x = x1, y = y)) +
+                    scale_x_continuous("x") +
+                    geom_point() +
+                    theme_bw() +
+                    ggtitle("Linear Quadratic: simglm")
+
+logPlot_quadSimglm <- dat_quadSimglm %>%
+                    ggplot(aes(x = x1, y = y)) +
+                    scale_x_continuous("x") +
+                    geom_point() +
+                    theme_bw() + 
+                    scale_y_log10() +
+                    ggtitle("Log Quadratic: simglm")
+
+grid.arrange(linearPlot_quadSimglm, logPlot_quadSimglm, ncol=2)
+```
+
+### Exponential
+
+```{r expSimglm, message=FALSE, warning=FALSE}
+simDat_expSimglm <- generateDat_simglm(functionalForm = "Exponential", n = 30, regWeights = c(1,0.5), varErr = 0.25, xRange = c(0,30))
+
+```
+
+```{r echo = F, expSimglmPlots}
 linearPlot_expSimglm <- simDat_expSimglm %>%
                     ggplot(aes(x = x1, y = y)) +
                     scale_x_continuous("x") +
@@ -261,24 +269,19 @@ grid.arrange(linearPlot_expSimglm, logPlot_expSimglm, ncol=2)
 
 ### Exponential
 ```{r expStroup, message=FALSE, warning=FALSE}
-generateDat_expStroup <- function(n = 50, sdErr = 0.25, coef = 0.5){
-  
-  xRaw <- seq(1,n,1)
-  xJitter <- runif(n, -0.1, 0.1)
-  x <- xRaw + xJitter
+generateDat_Stroup <- 
+  function(n, muErr, sdErr, coef, xRange){
+    x <- runif(n, xRange[1], xRange[2])
+    e_i <- rnorm(n, muErr, sdErr)
+    eta <- x*coef + e_i
+    y   <- rexp(length(eta), rate = 1/exp(eta)) 
+    return(cbind(x, y) %>% as.data.frame())
+  }
 
-  e_i <- rnorm(n, 0, sdErr)
-  eta <- x*coef + e_i
-  y   <- rexp(length(eta), rate = 1/exp(eta)) 
-  
-  return(cbind(x, y) %>% as.data.frame())
-  
-}
+dat_expStroup <- generateDat_Stroup(n = 30, coef = 0.5, muErr = 0, sdErr = 0.25, xRange = c(0,30))
+```
 
-dat_expStroup <- generateDat_expStroup(n     = 30, 
-                                       sdErr = 0.25,
-                                       coef  = 0.25)
-
+```{r expStroupPlots, echo = F}
 linearPlot_expStroup <- dat_expStroup %>%
                       ggplot(aes(x = x, y = y)) +
                       geom_point() +
