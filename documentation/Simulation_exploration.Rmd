@@ -10,7 +10,7 @@ library(tidyverse)
 library(gridExtra)
 ```
 
-*Needs modifications, very sensitive to parameters such as growth coefficient and error variance. See corresponding Shiny application to adjust parameters.*
+*Needs modifications, very sensitive to parameters such as growth coefficient and error variance. See corresponding Shiny application [here](https://emily-robinson.shinyapps.io/SimulationExplorationApp/) to adjust parameters.*
 
 # Estimation
 
