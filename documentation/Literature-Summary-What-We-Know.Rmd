@@ -139,3 +139,4 @@ filter(sets, series == "B", x < 9) %>%
 ### Things that don't matter
 - aspect ratio [@wagenaarMisperceptionExponentialGrowth1975]
 
+## References
