@@ -1,0 +1,36 @@
+---
+title: "Literature Review"
+author: "Susan Vanderplas"
+date: "7/2/2020"
+output: html_document
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+```
+
+## Papers
+
+- @wagenaarMisperceptionExponentialGrowth1975
+    - Numerical estimation is more accurate than graphical estimation for exponential curves
+    - Perceptual issue: ability to discriminate between values of $\beta$ in functions $y = \exp{\beta x}$
+    - Aspect ratio of the graph didn't significantly affect misperception
+    - Instruction on exponential growth *reduces* underestimation, but doesn't change issues with consistent underestimation of $\beta$ - correction factor is the same across all problems. That is, participants increased estimates of $y = \alpha \exp{\beta x}$ by increasing $\alpha$, not by changing $\beta$. Accuracy was still not as good using graphs as with numerical estimation
+    - No correlation of accuracy with mathematical credit hours found (Experiment 1)
+  
+  - Takeaway: Using a log scale should make it much easier to estimate $\beta$ - we estimate slopes relatively accurately [@mosteller_eye_1981], resolving much of the difficulty with exponential estimation
+  - Takeaway 2: Direction of error (underestimation) is the same regardless of the question type asked:
+      - Predict for (t+5)
+      - Predict for (t+1, t+2, ..., t+5)
+      - At what time t will y surpass (value)? (Inverse prediction)
+    That is, in the 3rd formulation, t is consistently over-estimated (corresponding to an under-estimation of y at time t)
+
+
+
+## Possible Factors
+### Things that matter
+
+### Things that don't matter
+- aspect ratio [@wagenaarMisperceptionExponentialGrowth1975]
+
