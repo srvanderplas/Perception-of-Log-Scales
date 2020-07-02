@@ -8,6 +8,7 @@ bibliography: references.bib
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = F)
+library(tidyverse)
 ```
 
 ## Papers
@@ -46,7 +47,7 @@ knitr::opts_chunk$set(echo = F)
   - Takeaway 2: Increasing # points helps with determination of linearity but doesn't affect determination of nonlinearity
   - Takeaway 3: Accuracy ranged from 75% to 50% (ish) at determination of the type of curve. Any prediction errors would be on top of that. 
   
-- @wagenaar_extrapolation_1978
+- @timmersInverseStatisticsMisperception1977a
     - Compared graphical and numerical estimation of decreasing exponential ($y = e^{-x}$) curves
     - Numerical estimation:
         - make a prediction for 1980
@@ -128,9 +129,11 @@ filter(sets, series == "B", x < 9) %>%
 - sample size
   - for linear trends, more points increase accuracy [@best2007perception; @lewandowsky_perception_1989]
   - for asymptotics and exponentials, more points doesn't change accuracy [@best2007perception] (when asking about the type of curve -- not numerical estimation)
-  - for exponentials, more points decreases accuracy [@wagenaar1979pond] (@wagenaar_extrapolation_1978 is cited in @best2007perception, but they don't appear to manipulate n in that study, so???)
+  - for exponentials, more points decreases accuracy [@wagenaar1979pond; @wagenaar_extrapolation_1978]
 
 - plot form [@best2007perception] - scatterplots and line graphs are more accurate (but not mutally distinguishable, e.g. adding the trend line didn't significantly change the results) -- when asking about the type of curve
+
+- How much of the curve shape is shown early on e.g. raw change in y is hypothesized as the explanation for why the negative curves are better estimated than the positive curves in @timmersInverseStatisticsMisperception1977a
 
 
 ### Things that don't matter
