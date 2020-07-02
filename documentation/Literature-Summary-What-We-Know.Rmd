@@ -26,10 +26,112 @@ knitr::opts_chunk$set(echo = F)
       - At what time t will y surpass (value)? (Inverse prediction)
     That is, in the 3rd formulation, t is consistently over-estimated (corresponding to an under-estimation of y at time t)
 
+- @best2007perception
+    - Compared many factors:
+        - exponential, asymptotic, and linear trends
+        - increasing or decreasing
+        - bar, suspended bar, scatter, and line plots
+        - number of points
+        - high, medium, low variability
+    - Asked to identify the type of curve (exponential, asymptotic, linear; increasing, decreasing)
+        - definition of exponential decreasing is ... not what a mathematician would use. $y = C + -e^x$ instead of $y = e^{-x}$. $y=e^{-x}$ is what they've defined as asymptotic decreasing.
+    - n=6 with ~2k trials per participant
+    - hypothesis is 2-stage estimation: first, identify the type of curve and direction, then use that information for prediction
+        - this experiment is examining whether discrimination between curve types is possible
+    - accuracy higher when nonlinear trends presented (e.g. it's hard to say something is linear, but easy to say that it isn't)
+    - accuracy higher with low variability -- variability was additive, e.g. constant variance around mean function
+    - it appears that participants examined curvature to make the determination of type
+    
+  - Takeaway: Use line/scatter plots
+  - Takeaway 2: Increasing # points helps with determination of linearity but doesn't affect determination of nonlinearity
+  - Takeaway 3: Accuracy ranged from 75% to 50% (ish) at determination of the type of curve. Any prediction errors would be on top of that. 
+  
+- @wagenaar_extrapolation_1978
+    - Compared graphical and numerical estimation of decreasing exponential ($y = e^{-x}$) curves
+    - Numerical estimation:
+        - make a prediction for 1980
+        - When will the process reach (y) (always targeted at 1980)
+    - Graphical task: presented with an increasing and decreasing exponential series, which of the two series will reach y = ... first?
+    
+    - I don't fully understand the methods in this paper, particularly the graphical scale interlocking and rearrangement. It seems a bit insane. 
+    - Plotting exponential growth inversely reduces misperception -- likely because the steepest part of the curve is shown early in the curve when participants are creating a heuristic for prediction. 
+    
+```{r, include = -1}
+combinations <- bind_rows(
+tibble(a = 1000, b = seq(-.1, -.7, by = -.1)), 
+tibble(a = 25000, b = seq(-.3, -.9, by = -.1)),
+tibble(a = 625000, b = seq(-0.5, -1.1, by = -.1))
+)
 
+data <- combinations %>%
+  mutate(id = 1:n(), 
+         data = purrr::map2(a, b, ~tibble(x = 0:4, y = .x * exp(.y * 0:4)))) %>%
+  unnest(data)
+
+## Numerical estimation
+ggplot(data, aes(x = x+1971, y = y)) + geom_line() + 
+  facet_wrap(~a + b, scales = "free", nrow = 3, labeller = label_both) +
+  scale_x_continuous(breaks = 1971:1976, labels = c("71", "72", "73", "74", "75", "76")) + 
+  theme(axis.text.y = element_blank()) + 
+  ggtitle("Timmers & Wagenaar 1978, numerical estimation")
+
+f1 <- function(b) function(x) exp(b * (x - 9))
+f2 <- function(b) function(x) exp(-b * x) - exp(9 * -b)
+f3 <- function(b) function(x) 1 - exp(-b*x) + exp(9 * -b)
+f4 <- function(b) function(x) 1 - exp(b * (x - 9))
+
+fs <- tibble(fun = list(f1, f2, f3, f4), series = c("A", "A", "B", "B"), line = c(1, 2, 1, 2)) %>%
+  crossing(b = seq(.1, .6, .1)) %>%
+  mutate(actual_fun = map2(fun, b, ~.x(.y))) %>%
+  select(-fun) %>%
+  pivot_wider(names_from = line, names_prefix = "line", values_from = actual_fun)
+
+sets <- crossing(select(fs, series1 = series, b1 = b, line1), select(fs, series2 = series, b2 = b, line2)) %>%
+  filter(series1 == series2) %>%
+  group_by(series1) %>%
+  mutate(id = 1:n()) %>%
+  select(-series2) %>%
+  rename(series = series1) %>%
+  group_by(id) %>%
+  nest(line1 = c(b1, line1), line2 = c(b2, line2)) %>%
+  mutate(across(matches("line"), ~map(., set_names, nm = c("b", "line")))) %>%
+  pivot_longer(line1:line2, names_to = "tmp", values_to = "data") %>%
+  unnest(c(data)) %>%
+  mutate(data = purrr::map(line, ~tibble(x = seq(0, 16.7, .1), y = .(x)))) %>%
+  unnest(data)
+
+sets_label <- select(sets, series, id, b, tmp) %>%
+  unique() %>%
+  pivot_wider(names_from = tmp, values_from = b) %>%
+  mutate(label = sprintf("b1 = %.1f, b2 = %.1f", line1, line2)) %>%
+  select(series, id, label)
+
+sets <- left_join(sets, sets_label, by = c("series", "id"))
+
+filter(sets, series == "A", x < 9) %>%
+  ggplot(aes(x = x, y = y, group = tmp)) + geom_line() + facet_wrap(~label) + 
+  coord_cartesian(ylim = c(0, 1), xlim = c(0, 16.7)) + 
+  scale_y_continuous(breaks = c(0, 1)) + 
+  ggtitle("Timmers & Wagenaar 1978, visual estimation, Set A")
+
+filter(sets, series == "B", x < 9) %>%
+  ggplot(aes(x = x, y = y, group = tmp)) + geom_line() + facet_wrap(~label) + 
+  coord_cartesian(ylim = c(0, 1), xlim = c(0, 16.7)) + 
+  scale_y_continuous(breaks = c(0, 1)) + 
+  ggtitle("Timmers & Wagenaar 1978, visual estimation, Set B")
+```
 
 ## Possible Factors
 ### Things that matter
+- variability [@best2007perception] - low variability = higher accuracy
+
+- sample size
+  - for linear trends, more points increase accuracy [@best2007perception; @lewandowsky_perception_1989]
+  - for asymptotics and exponentials, more points doesn't change accuracy [@best2007perception] (when asking about the type of curve -- not numerical estimation)
+  - for exponentials, more points decreases accuracy [@wagenaar1979pond] (@wagenaar_extrapolation_1978 is cited in @best2007perception, but they don't appear to manipulate n in that study, so???)
+
+- plot form [@best2007perception] - scatterplots and line graphs are more accurate (but not mutally distinguishable, e.g. adding the trend line didn't significantly change the results) -- when asking about the type of curve
+
 
 ### Things that don't matter
 - aspect ratio [@wagenaarMisperceptionExponentialGrowth1975]
