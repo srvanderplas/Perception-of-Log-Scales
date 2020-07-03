@@ -102,7 +102,7 @@ ui <- navbarPage(
       column(
         width = 10, offset = 1,
         h4("Introduction"),
-        p("This study is intended to assess how people perceive statistical graphs and charts, and how charts are used to make decisions. If you are 19 years of age or older, and have normal or corrected-to-normal vision, you may participate in this research."),
+        p("This study is intended to assess how people perceive statistical graphs and charts, and how charts are used to make decisions. If you are 18 years of age or older (19+ in Nebraska and Alabama, 21+ in Mississippi), and have normal or corrected-to-normal vision, you may participate in this research."),
         br(),
         h4("What is the reason for doing this research study?"),
         p("Statistical charts and graphs are everywhere – in news articles, advertisements, and on TV. We are interested in whether people read information from charts accurately, and whether certain types of charts are more useful when making data-informed decisions. Unfortunately, we know relatively little about how people read and perceive charts. This study is designed to address this gap in research by systematically investigating the use of charts in different tasks and contexts. In order to participate you must be 19 years of age or older and have normal or corrected-to-normal vision."),
@@ -263,7 +263,7 @@ ui <- navbarPage(
                                 "I think I am colorblind or color deficient, but have not been tested", 
                                 "I have a diagnosed color deficiency",
                                 "I don't know",
-                                "Decline to answer"), multiple = F),
+                                "Decline to answer"), selected = "I don't know", multiple = F),
         selectInput("dyslexia", label = "Do you have a visual or language processing disorder, such as dyslexia?",
                     choices = c("Yes",
                                 "Maybe, but I don't have an official diagnosis",
