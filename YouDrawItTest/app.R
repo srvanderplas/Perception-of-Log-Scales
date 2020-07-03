@@ -257,7 +257,17 @@ ui <- navbarPage(
                                 "completed graduate/professional degree"),
                     multiple = F),
         textInput("occupation", label = "What is your occupation?"),
-
+        selectInput("colorblind", label = "Do you have normal color vision?", 
+                    choices = c("Yes, I have normal color vision", 
+                                "I think my color vision is normal, but have not been tested", 
+                                "I think I am colorblind or color deficient, but have not been tested", 
+                                "I have a diagnosed color deficiency",
+                                "I don't know",
+                                "Decline to answer"), selectize = F, multiple = F),
+        selectInput("dyslexia", label = "Do you have a visual or language processing disorder, such as dyslexia?",
+                    choices = c("Yes, I have been officially diagnosed with dyslexia or another visual processing disorder",
+                                "I think I have some of the symptoms, but have not been officially diagnosed",
+                                "No, I don't have dyslexia or another visual processing disorder")),        
         inputIp("ipid"),
         inputUserid("fingerprint"),
         textOutput("testtext")
