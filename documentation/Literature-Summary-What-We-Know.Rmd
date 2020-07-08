@@ -27,26 +27,6 @@ library(tidyverse)
       - At what time t will y surpass (value)? (Inverse prediction)
     That is, in the 3rd formulation, t is consistently over-estimated (corresponding to an under-estimation of y at time t)
 
-- @best2007perception
-    - Compared many factors:
-        - exponential, asymptotic, and linear trends
-        - increasing or decreasing
-        - bar, suspended bar, scatter, and line plots
-        - number of points
-        - high, medium, low variability
-    - Asked to identify the type of curve (exponential, asymptotic, linear; increasing, decreasing)
-        - definition of exponential decreasing is ... not what a mathematician would use. $y = C + -e^x$ instead of $y = e^{-x}$. $y=e^{-x}$ is what they've defined as asymptotic decreasing.
-    - n=6 with ~2k trials per participant
-    - hypothesis is 2-stage estimation: first, identify the type of curve and direction, then use that information for prediction
-        - this experiment is examining whether discrimination between curve types is possible
-    - accuracy higher when nonlinear trends presented (e.g. it's hard to say something is linear, but easy to say that it isn't)
-    - accuracy higher with low variability -- variability was additive, e.g. constant variance around mean function
-    - it appears that participants examined curvature to make the determination of type
-    
-  - Takeaway: Use line/scatter plots
-  - Takeaway 2: Increasing # points helps with determination of linearity but doesn't affect determination of nonlinearity
-  - Takeaway 3: Accuracy ranged from 75% to 50% (ish) at determination of the type of curve. Any prediction errors would be on top of that. 
-  
 - @timmersInverseStatisticsMisperception1977a
     - Compared graphical and numerical estimation of decreasing exponential ($y = e^{-x}$) curves
     - Numerical estimation:
@@ -121,6 +101,58 @@ filter(sets, series == "B", x < 9) %>%
   scale_y_continuous(breaks = c(0, 1)) + 
   ggtitle("Timmers & Wagenaar 1978, visual estimation, Set B")
 ```
+
+- @goodwin1994heuristics
+    - Overview of what is known about forecasting of time series data
+    - Different task components - first, understand the process producing the data, then use simplifying assumptions to forecast (ignoring the larger process)
+    - "Anchoring and adjustment strategies"
+        - stationary TS: use long term mean of the series as anchor, last observation $F_{t+1} = \overline Y + \alpha(Y_t - \overline Y)$ [@lawrence1992exploring]
+        - TS with trend: heuristic similar to linear trend exponential smoothing, with two estimation parameters - uses two anchor/adjustment heuristics - one for trend, one for previous forecast. Much greater cognitive effort, and possibility of a trend toward underestimates when slope is positive and overestimates when the slope is negative. May also depend on trend salience and latest observation spacing. 
+        - TS with noise: noise disproportionately affects forecasts [@oconnorJudgementalForecastingTimes1993] as does the complexity of the underlying signal (seasonality, trend, autocorrelation)
+    - Optimum number of data points - studies with exponential curves [@wagenaar_extrapolation_1978] showed greater underestimation with more data points, but the design is problematic, because the "anchoring points" of the two compared series are different, leading to different slopes. (see the pink and blue lines in the image below vs. the underlying exponential curve)
+```{r}
+tibble(x = c(1:5), y = c(3, 7, 20, 55, 148), s2 = 1:5 %% 2) %>%
+  bind_rows(mutate(., s2 = 0)) %>% unique() %>%
+  mutate(series = paste("series", 1+s2)) %>%
+  ggplot(aes(x = x, y = y, color = series)) + 
+  geom_function(fun = exp, inherit.aes = F, color = "grey", alpha = .75) + 
+  geom_point(size = 3) + 
+  geom_line() + 
+  # facet_wrap(~series) + 
+  guides(color = F) + 
+  theme_bw() + 
+  xlim(c(1, 7))
+```
+    - Decomposing the extrapolation task makes predictions more accurate. e.g. first predicting based on the trend, then the seasonal component, then the random component, and adding the predictions together. This could be a result of e.g. sine illusion type effects (removing the mean makes variability estimation *much* easier) as well as just based on reduction in task complexity. 
+    - Contextual information is important, both because it increases motivation and because it provides some information about likely future values in the presence of seasonal fluctuations.
+    - List of biases that matter:
+        - anchoring biases
+        - optimism biases
+        - illusory correlation
+        - recency bias
+        - selective perception
+        - inconsistency in judgement
+
+
+- @best2007perception
+    - Compared many factors:
+        - exponential, asymptotic, and linear trends
+        - increasing or decreasing
+        - bar, suspended bar, scatter, and line plots
+        - number of points
+        - high, medium, low variability
+    - Asked to identify the type of curve (exponential, asymptotic, linear; increasing, decreasing)
+        - definition of exponential decreasing is ... not what a mathematician would use. $y = C + -e^x$ instead of $y = e^{-x}$. $y=e^{-x}$ is what they've defined as asymptotic decreasing.
+    - n=6 with ~2k trials per participant
+    - hypothesis is 2-stage estimation: first, identify the type of curve and direction, then use that information for prediction
+        - this experiment is examining whether discrimination between curve types is possible
+    - accuracy higher when nonlinear trends presented (e.g. it's hard to say something is linear, but easy to say that it isn't)
+    - accuracy higher with low variability -- variability was additive, e.g. constant variance around mean function
+    - it appears that participants examined curvature to make the determination of type
+    
+  - Takeaway: Use line/scatter plots
+  - Takeaway 2: Increasing # points helps with determination of linearity but doesn't affect determination of nonlinearity
+  - Takeaway 3: Accuracy ranged from 75% to 50% (ish) at determination of the type of curve. Any prediction errors would be on top of that. 
 
 ## Possible Factors
 ### Things that matter
