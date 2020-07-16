@@ -5,8 +5,9 @@ account: emily-robinson
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2526809
-bundleId: 3340700
+bundleId: 3401442
 url: https://emily-robinson.shinyapps.io/SimulationExplorationApp/
-when: 1593635134.50539
+when: 1594932300.12359
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: simulateData_function.R

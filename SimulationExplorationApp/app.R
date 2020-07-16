@@ -1,125 +1,88 @@
 library(shiny)
 library(shinyjs)
-library(tidyverse)
-library(gridExtra)
-library(simglm)
+require(tidyverse)
+require(gridExtra)
+require(scales)
 
-# Modify function to accomodate exponential as an outcome type.
-transform_outcome2 <- function (outcome, type, ...) 
-{
-    if (type %in% c("logistic", "binary")) {
-        probability <- exp(outcome)/(1 + exp(outcome))
-        rbinom(length(outcome), size = 1, prob = probability)
-    } 
-    else {
-        if (type %in% c("exp", "exponential")) {
-            rexp(length(outcome), rate = 1/exp(outcome))
-        }
-        else {
-            if (type %in% c("count", "poisson")) {
-                rpois(length(outcome),  lambda = exp(outcome))
-            }
-            else {
-                purrr::map()
+# Define functions ---------------------------------------------------------------------------------------
+
+# ExponentialSimulation
+simulate.exponential <- 
+    function(N, xRange = c(1,N), nReps, alpha, beta, theta, muErr, sdErr, errorType, ...){
+        
+        exp.data <- data.frame(x = rep(seq(xRange[1], xRange[2], length.out = N), nReps), y = NA)
+        
+        if(errorType %in% c("Mult", "mult", "Multiplicative", "multiplicative")){
+            exp.data$y <- alpha*exp(beta*exp.data$x + rnorm(N*nReps, muErr, sdErr)) + theta
+        } else { 
+            if(errorType %in% c("Add", "add", "Additive", "additive")){
+                exp.data$y <- alpha*exp(beta*exp.data$x) + theta + rnorm(N*nReps, muErr, sdErr)
             }
         }
+        
+        return(exp.data)
     }
-}
 
-generate_response2 <- function (data, sim_args, keep_intermediate = TRUE, ...) {
-    outcome_name <- parse_formula(sim_args)[["outcome"]]
-    outcome_type <- sim_args[["outcome_type"]]
-    fixed_formula <- parse_formula(sim_args)[["fixed"]]
-    fixed_vars <- attr(terms(fixed_formula), "term.labels")
-    if (any(grepl("^factor\\(", fixed_vars))) {
-        fixed_vars <- gsub("factor\\(|\\)$", "",
-                           fixed_vars)
+# Quadratic Simulation
+
+simulate.quadratic <- 
+    function(N, nReps, xRange = c(1,N), beta0, beta1, beta2, muErr, sdErr, ...){
+        
+        quad.data <- data.frame(x = rep(seq(xRange[1], xRange[2], length.out = N), nReps), y = NA)
+        quad.data$y <- beta0 + beta1*quad.data$x + beta2*quad.data$x^2 + rnorm(N*nReps, muErr, sdErr)
+        
+        return(quad.data)
     }
-    if (any(grepl("^ns\\(", fixed_vars))) {
-        fixed_vars <- gsub("ns\\(|\\,.+\\)$", "",
-                           fixed_vars)
-    }
-    if (any(grepl("^poly\\(", fixed_vars))) {
-        fixed_vars <- gsub("poly\\(|\\,.+\\)", "",
-                           fixed_vars)
-    }
-    if (any(grepl(":", fixed_vars))) {
-        fixed_vars <- gsub(":", "\\.", fixed_vars)
-    }
-    if (any(grepl("^ns|^poly", attr(terms(fixed_formula),
-                                    "term.labels")))) {
-        fixed_vars <- poly_ns_names(sim_args)
-    }
-    if (any(unlist(lapply(seq_along(sim_args[["fixed"]]),
-                          function(xx) sim_args[["fixed"]][[xx]]$var_type)) ==
-            "factor")) {
-        num_levels <- lapply(seq_along(sim_args[["fixed"]]),
-                             function(xx) sim_args[["fixed"]][[xx]][["levels"]])
-        num_levels <- purrr::modify_if(num_levels, is.character,
-                                       length)
-        if (any(unlist(lapply(seq_along(sim_args[["fixed"]]),
-                              function(xx) num_levels[[xx]] > 2 & sim_args[["fixed"]][[xx]][["var_type"]] ==
-                              "factor")))) {
-            fixed_vars <- factor_names(sim_args, fixed_vars)
+
+# Overall Simulation Function
+
+simulate.data <- 
+    function(functionalForm, ...){
+        if(functionalForm %in% c("Exponential")){
+            sim.data <- simulate.exponential(...)
         }
+        if(functionalForm %in% c("Quadratic")){
+            sim.data <- simulate.quadratic(...)
+        }
+        
+        return(sim.data)
     }
-    Xmat <- dplyr::select(data, fixed_vars)
-    if (any(grepl("Intercept", names(data)))) {
-        Xmat <- cbind(data["X.Intercept."], Xmat)
-    }
-    fixed_outcome <- as.matrix(Xmat) %*% sim_args[["reg_weights"]]
-    if (length(parse_formula(sim_args)[["randomeffect"]]) !=
-        0) {
-        random_formula <- parse_formula(sim_args)[["randomeffect"]]
-        random_formula_parsed <- parse_randomeffect(random_formula)
-        random_effects_names <- names(sim_args[["randomeffect"]])
-        random_formula <- lapply(seq_along(random_formula_parsed[["random_effects"]]),
-                                 function(xx) as.formula(random_formula_parsed[["random_effects"]][xx]))
-        Zmat <- lapply(random_formula, model.matrix, data = data) %>%
-            lapply(., data.frame) %>% dplyr::bind_cols()
-        rand_effects <- dplyr::select(data, random_effects_names)
-        random_effects <- rowSums(rand_effects * Zmat)
-    }
-    else {
-        random_effects <- NULL
-        random_effects <- 0
-    }
-    if (keep_intermediate) {
-        response_outcomes <- data.frame(fixed_outcome = fixed_outcome,
-                                        random_effects = random_effects)
-        data <- cbind(data, response_outcomes, row.names = NULL)
-    }
-    if (is.null(data[["error"]])) {
-        data["error"] <- 0
-    }
-    outcome <- as.numeric(unlist(fixed_outcome + random_effects +
-                                     data["error"]))
-    if (!is.null(sim_args[["outcome_type"]])) {
-        trans_outcome <- transform_outcome2(outcome, type = sim_args[["outcome_type"]])
-        data <- cbind(data, untransformed_outcome = outcome)
-        data[outcome_name] <- trans_outcome
-    }
-    else {
-        data[outcome_name] <- outcome
-    }
-    data
-}
 
-generateDat_expSimglm <- function(n = 70, errVar = 25, xMin = 0, xMax = 50, regWeights = c(10, 0.1)){
-    sim_arguments <- list(
-        formula = y ~ 1 + x1,
-        error = list(variance = errVar),
-        fixed = list(x1 = list(var_type = 'ordinal', levels = xMin:xMax)),
-        sample_size = n,
-        reg_weights = regWeights,
-        outcome_type = "exp"
-    )
-    
-    return(simulate_fixed(data = NULL, sim_arguments) %>% 
-               simulate_error(sim_arguments) %>%
-               generate_response2(sim_arguments)
-    )
-}
+# Evaluate Fit
+
+fit.models <- 
+    function(sim.data){
+        
+        #fit glm exponential model (BEWARE HERE)
+        glm.mod <- glm(y ~ x, data = sim.data[(sim.data$y > 0),], family = Gamma(link="log"))
+        
+        # fit nonlinear exponential model
+        theta.0 <- min(sim.data$y) * 0.5  
+        model.0 <- lm(log(y) ~ x, data=sim.data)  
+        alpha.0 <- exp(coef(model.0)[1])
+        beta.0 <- coef(model.0)[2]
+        start <- list(alpha = alpha.0, beta = beta.0, theta = theta.0)
+        exp.mod   <- model <- nls(y ~ alpha * exp(beta * x) + theta , data = sim.data, start = start)
+        
+        # fit quadratic model
+        quad.mod  <- lm(y ~ x + I(x^2), data = sim.data)
+        
+        # fit linear model
+        lin.mod   <- lm(y ~ x, data = sim.data)
+        
+        # Calculate lack of fit
+        if(nrow(sim.data)/length(unique(sim.data$x)) > 1){
+            lof.mod <- lm(y ~ as.factor(x), data = sim.data)
+            lof <- anova(lof.mod) %>% 
+                as.data.frame() %>%
+                filter(row.names(.) == "as.factor(x)")
+        } else {
+            lof.mod <- NULL
+            lof <- NULL
+        }
+        
+        return(list(sim.data = sim.data, glm.mod = glm.mod, exp.mod = exp.mod, quad.mod = quad.mod, lin.mod = lin.mod, lof.mod = lof.mod, lof = lof))
+    }
 
 # Define UI for application that draws a histogram
 ui <- navbarPage(
@@ -127,69 +90,48 @@ ui <- navbarPage(
     
     # ---- Tab 1 ---------------------------------------------------------------
     tabPanel(
-        title = "Manual Simulation",
+        title = "Algebraic Simulation",
         fluidRow(
-            column(
-                width = 3,
-                selectInput("functionalForm_tab1", "Function Form:", c("Exponential")),
-                selectInput("errorType_tab1", "Error Type:", c("Additive", "Multiplicative")),
-                sliderInput("xRange_tab1", "x-Axis Range", min = 0, max = 200, value = c(0, 30)),
-                sliderInput("n_tab1", "Sample Size (n):", min = 5, max = 200, value = 30),
-                numericInput("coef_tab1", "Growth Coefficient:", value = 0.1, min = 0, max = 5, step = 0.05),
-                numericInput("muErr_tab1", "Error Mean:", value = 0, min = -5, max = 20, step = 1),
-                numericInput("sdErr_tab1", "Error StdDev:", value = 0.25, min = 0, max = 10, step = 0.05)
+            column(width = 2,
+                wellPanel(id = "tPanel",style = "overflow-y:scroll; max-height: 600px",
+                    selectInput("functionalForm_tab1", "Functional Form:", c("Exponential", "Quadratic")),
+                    sliderInput("xRange_tab1", "x-Axis Range", min = 0, max = 200, value = c(0, 30)),
+                    sliderInput("n_tab1", "Sample Size (n):", min = 5, max = 200, value = 20),
+                    sliderInput("nReps_tab1", "Number of reps per x:", min = 1, max = 10, value = 5),
+                    numericInput("muErr_tab1", "Error Mean:", value = 0, min = 0, max = 10, step = 1),
+                    numericInput("sdErr_tab1", "Error SD:", value = 0.25, min = 0, max = 50, step = 0.05),
+            
+                    helpText("Exponential Regression Coefficients:"),
+                    numericInput("alpha_tab1", "\u03B1:", value = 1, min = 1, max = 10000, step = 1),
+                    numericInput("beta_tab1", "\u03B2:", value = 0.05, min = 0.05, max = 1, step = 0.01),
+                    numericInput("theta_tab1", "\u03B8:", value = 0.1, min = 0, max = 100, step = 0.05),
+                    selectInput("errorType_tab1", "Error Type:", c("Additive", "Multiplicative")),
+               
+                    helpText("Quadratic Regression Coefficients:"),
+                    numericInput("beta0_tab1", "\u03B2\u2080:", value = 0.1, min = 0, max = 5, step = 0.05),
+                    numericInput("beta1_tab1", "\u03B2\u2081:", value = 0, min = -5, max = 20, step = 1),
+                    numericInput("beta2_tab1", "\u03B2\u2082:", value = 0.25, min = 0, max = 10, step = 0.05)
+                )
             ),
             column(
-                width = 8,
-                plotOutput("Plot_Manual", height = "600px")
-            )
-        )
-    ),
-    
-    # ---- Tab 2 ---------------------------------------------------------------
-    
-    tabPanel(
-        title = "library(simglm) Simulation",
-        fluidRow(
-            column(
-                width = 3,
-                selectInput("functionalForm_tab2", "Function Form:", c("Exponential", "Quadratic")),
-                sliderInput("xRange_tab2", "x-Axis Range", min = 0, max = 200, value = c(0, 30)),
-                sliderInput("n_tab2", "Sample Size (n):", min = 5, max = 200, value = 30),
-                numericInput("varErr_tab2", "Error StdDev:", value = 0.25, min = 0, max = 1000, step = 0.05),
-                helpText("Enter Regression Weights"),
-                helpText("Exponential: (intercept, x)"),
-                helpText("Quadratic: (intercept, x, x^2)"),
-                selectizeInput("regWeights_tab2", "Enter a vector of coefficients", choices = NULL, multiple = TRUE, options = list(create = TRUE))
+                width = 7,
+                helpText("Exponential Model (additive): \u03B1exp(\u03B2x) + \u03B8 + error"),
+                helpText("Exponential Model (multiplicative): \u03B1exp(\u03B2x + error) + \u03B8"),
+                helpText("Quadratic Model: \u03B2\u2080 + \u03B2\u2081x + \u03B2\u2082x\u00B2 + error"),
+                plotOutput("plots_tab1", height = "500px")
+ 
             ),
-            column(
-                width = 8,
-                plotOutput("Plot_simglm", height = "600px")
-            )
-        )
-    )
-    ,
-    
-    # ---- Tab 3 ---------------------------------------------------------------
-    
-    tabPanel(
-        title = "'Stroup' Simulation",
-        fluidRow(
-            column(
-                width = 3,
-                selectInput("functionalForm_tab3", "Function Form:", c("Exponential")),
-                sliderInput("xRange_tab3", "x-Axis Range", min = 0, max = 200, value = c(0, 30)),
-                sliderInput("n_tab3", "Sample Size (n):", min = 5, max = 200, value = 30),
-                numericInput("coef_tab3", "Growth Coefficient:", value = 0.5, min = 0, max = 5, step = 0.05),
-                numericInput("muErr_tab3", "Error Mean:", value = 0, min = 0, max = 20, step = 0.05),
-                numericInput("sdErr_tab3", "Error StdDev:", value = 0.25, min = 0, max = 10, step = 0.05)
-            ),
-            column(
-                width = 8,
-                plotOutput("Plot_Stroup", height = "600px")
+            column(  
+                width = 2,
+                checkboxGroupInput("lin.fit_tab1", "Linear Scale Fitted Lines:", c("Exponential (glm)", "Exponential (nonlinear)", "Linear", "Quadratic")),
+                checkboxGroupInput("log.fit_tab1", "Log Scale  Fitted Lines:", c("Exponential (glm)", "Exponential (nonlinear)", "Linear", "Quadratic")),
+                helpText("Lack of Fit Test:"),
+                helpText("F test from lm(y ~ x + as.factor(x)):"),
+                tableOutput("lofTable_tab1")
             )
         )
     )
+    
     # ---- End UI --------------------------------------------------------------
 )
 
@@ -198,158 +140,96 @@ server <- function(input, output, session) {
     
     # ---- Tab 1 ---------------------------------------------------------------
     
-    generateDat_Manual <- 
-        function(n, coef, muErr, sdErr, xRange, errorType){
-            
-            x <- runif(n, xRange[1], xRange[2])
-            yRaw   <- exp(coef*x)
-            yError <-  rnorm(n, muErr, sdErr)
-            if(errorType %in% c("Additive")){
-                y      <- yRaw + yError
-            } else {
-                if(errorType %in% c("Multiplicative")){
-                    y      <- yRaw*yError 
-                }
-            }
-            
-            return(cbind(x, y) %>% as.data.frame())
-        }
     
-    data_tab1 <- reactive({
-        generateDat_Manual(n = input$n_tab1, coef = input$coef_tab1, muErr = input$muErr_tab1, sdErr = input$sdErr_tab1, xRange = input$xRange_tab1, errorType = input$errorType_tab1)
+    sim.data_tab1 <- reactive({
+        simulate.data(functionalForm = input$functionalForm_tab1, 
+                                  N = input$n_tab1, 
+                                  nReps = input$nReps_tab1,
+                                  xRange = input$xRange_tab1, 
+                                  
+                                  # Exponential Parameters
+                                  alpha = input$alpha_tab1,
+                                  beta = input$beta_tab1, 
+                                  theta = input$theta_tab1,
+                                  
+                                  # Quadratic Parameters
+                                  beta0 = input$beta0_tab1,
+                                  beta1 = input$beta1_tab1, 
+                                  beta2 = input$beta2_tab1,
+                                  
+                                  muErr = input$muErr_tab1, 
+                                  sdErr = input$sdErr_tab1,
+                                  errorType = input$errorType_tab1)
+    })
+    
+    
+    sim.fit_tab1 <- reactive({
+        fit.models(sim.data_tab1())
+    })
+    
+    output$plots_tab1 <- renderPlot({
+        
+        sim.data <- sim.data_tab1()
+        sim.fit  <- sim.fit_tab1()
+        
+        lin.fit <- input$lin.fit_tab1
+        
+        lin.plot <- sim.data %>%
+            ggplot(aes(x = x, y = y)) +
+            geom_point(shape = 1) +
+            scale_color_brewer(palette = "Paired") +
+            theme_bw() +
+            theme(legend.position="bottom") +
+            ggtitle("Linear")
+        if("Exponential (glm)" %in% lin.fit){
+            lin.plot <- lin.plot + geom_line(aes(y = predict(sim.fit$glm.mod, dispersion = 1), color = "Exponential \n (glm)"))
+        } 
+        if("Exponential (nonlinear)" %in% lin.fit){
+            lin.plot <- lin.plot + geom_line(aes(y = predict(sim.fit$exp.mod), color = "Exponential \n (nonlinear)"))
+        } 
+        if("Linear" %in% lin.fit){
+            lin.plot <- lin.plot + geom_line(aes(y = predict(sim.fit$lin.mod), color = "Linear"))
+        } 
+        if("Quadratic" %in% lin.fit){
+            lin.plot <- lin.plot + geom_line(aes(y = predict(sim.fit$quad.mod), color = "Quadratic"))
+        }
+        
+        log.fit <- input$log.fit_tab1
+        
+        log.plot <- sim.data %>%
+            ggplot(aes(x = x, y = y)) +
+            geom_point(shape = 1) +
+            scale_y_continuous(trans = "log10",
+                               breaks = trans_breaks("log10", function(x) 10^x),
+                               labels = trans_format("log10", math_format(10^.x))) +
+            scale_color_brewer(palette = "Paired") +
+            theme_bw() +
+            theme(legend.position="bottom") +
+            ggtitle("Log")
+        if("Exponential (glm)" %in% log.fit){
+            log.plot <- log.plot + geom_line(aes(y = predict(sim.fit$glm.mod, dispersion = 1), color = "Exponential \n (glm)"))
+        } 
+        if("Exponential (nonlinear)" %in% log.fit){
+            log.plot <- log.plot + geom_line(aes(y = predict(sim.fit$exp.mod), color = "Exponential \n (nonlinear)"))
+        } 
+        if("Linear" %in% log.fit){
+            log.plot <- log.plot + geom_line(aes(y = predict(sim.fit$lin.mod), color = "Linear"))
+        } 
+        if("Quadratic" %in% log.fit){
+            log.plot <- log.plot + geom_line(aes(y = predict(sim.fit$quad.mod), color = "Quadratic"))
+        }
+        
+        grid.arrange(lin.plot, log.plot, ncol=2)
         
     })
     
-    output$Plot_Manual <- renderPlot({
-        df <- data_tab1()
-        
-        linearPlot_Manual <- df %>%
-            ggplot(aes(x = x, y = y)) +
-            geom_point() +
-            # geom_smooth(se = F, color = "black", method = loess) + 
-            theme_bw() +
-            ggtitle(paste("Linear ", input$functionalForm_tab1, ": Manual", sep = ""))  
-        
-        logPlot_Manual    <- df %>%
-            ggplot(aes(x = x, y = y)) +
-            geom_point() +
-            # geom_smooth(se = F, color = "black", method = loess) +
-            theme_bw() + 
-            scale_y_log10() +
-            ggtitle(paste("Log ", input$functionalForm_tab1, ": Manual", sep = ""))
-        
-        grid.arrange(linearPlot_Manual, logPlot_Manual, ncol=2)
+    output$lofTable_tab1 <- renderTable({
+        sim.fit  <- sim.fit_tab1()
+        sim.fit$lof
     })
     
     # ---- Tab 2 ---------------------------------------------------------------
     
-    generateDat_simglm <- 
-        function(n, varErr, xRange, regWeights, functionalForm){
-            
-            if(functionalForm %in% c("Quadratic")){
-                sim_arguments <- list(
-                    formula = y ~ 1 + x1,
-                    error = list(variance = varErr),
-                    fixed = list(x1 = list(var_type = 'ordinal', levels = xRange[1]:xRange[2])),
-                    sample_size = n
-                )
-                
-                sim_arguments2 <- list(
-                    formula = y ~ 1 + x1 + x2,
-                    sample_size = n,
-                    reg_weights = regWeights
-                )
-                
-                return(simulate_fixed(data = NULL, sim_arguments) %>% 
-                           mutate(x2 = x1*x1) %>%
-                           simulate_error(sim_arguments) %>%
-                           generate_response(sim_arguments2)
-                )
-                
-            } else {
-                if(functionalForm %in% "Exponential"){
-                    sim_arguments <- list(
-                        formula = y ~ 1 + x1,
-                        error = list(variance = varErr),
-                        fixed = list(x1 = list(var_type = 'ordinal', levels = xRange[1]:xRange[2])),
-                        sample_size = n,
-                        reg_weights = regWeights,
-                        outcome_type = "exp"
-                    )
-                    
-                    return(simulate_fixed(data = NULL, sim_arguments) %>% 
-                               simulate_error(sim_arguments) %>%
-                               generate_response2(sim_arguments)
-                    )
-                }
-            }
-            
-        }
-    
-    data_tab2 <- reactive({
-        generateDat_simglm(functionalForm = input$functionalForm_tab2, n = input$n_tab2, regWeights = as.numeric(input$regWeights_tab2), varErr = input$varErr_tab2, xRange = input$xRange_tab2)
-        
-    })
-    
-    output$Plot_simglm <- renderPlot({
-        df <- data_tab2()
-        
-        linearPlot_simglm <- df %>%
-            ggplot(aes(x = x1, y = y)) +
-            geom_point() +
-            # geom_smooth(se = F, color = "black", method = loess) + 
-            theme_bw() +
-            ggtitle(paste("Linear ", input$functionalForm_tab2, ": simglm", sep = "")) +
-            scale_x_continuous("x")
-        
-        logPlot_simglm    <- df %>%
-            ggplot(aes(x = x1, y = y)) +
-            geom_point() +
-            # geom_smooth(se = F, color = "black", method = loess) +
-            theme_bw() + 
-            scale_y_log10() +
-            ggtitle(paste("Log ", input$functionalForm_tab2, ": simglm", sep = "")) +
-            scale_x_continuous("x")
-        
-        grid.arrange(linearPlot_simglm, logPlot_simglm, ncol=2)
-    })
-    
-    # ---- Tab 3 ---------------------------------------------------------------
-    
-    generateDat_Stroup <- 
-        function(n, muErr, sdErr, coef, xRange){
-            x <- runif(n, xRange[1], xRange[2])
-            e_i <- rnorm(n, muErr, sdErr)
-            eta <- x*coef + e_i
-            y   <- rexp(length(eta), rate = 1/exp(eta)) 
-            return(cbind(x, y) %>% as.data.frame())
-        }
-    
-    data_tab3 <- reactive({
-        generateDat_Stroup(n = input$n_tab3, coef = input$coef_tab3, sdErr = input$sdErr_tab3, muErr = input$muErr_tab3, xRange = input$xRange_tab3)
-        
-    })
-    
-    output$Plot_Stroup <- renderPlot({
-        df <- data_tab3()
-        
-        linearPlot_Stroup <- df %>%
-            ggplot(aes(x = x, y = y)) +
-            geom_point() +
-            # geom_smooth(se = F, color = "black", method = loess) + 
-            theme_bw() +
-            ggtitle(paste("Linear ", input$functionalForm_tab2, ": Stroup", sep = ""))
-        
-        logPlot_Stroup    <- df %>%
-            ggplot(aes(x = x, y = y)) +
-            geom_point() +
-            # geom_smooth(se = F, color = "black", method = loess) +
-            theme_bw() + 
-            scale_y_log10() +
-            ggtitle(paste("Log ", input$functionalForm_tab2, ": Stroup", sep = ""))
-        
-        grid.arrange(linearPlot_Stroup, logPlot_Stroup, ncol=2)
-    })
     
     # ---- End Server --------------------------------------------------------------
 }

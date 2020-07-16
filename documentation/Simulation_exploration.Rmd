@@ -272,8 +272,8 @@ grid.arrange(linearPlot_expSimglm, logPlot_expSimglm, ncol=2)
 generateDat_Stroup <- 
   function(n, muErr, sdErr, coef, xRange){
     x <- runif(n, xRange[1], xRange[2])
-    e_i <- rnorm(n, muErr, sdErr)
-    eta <- x*coef + e_i
+    # e_i <- rnorm(n, muErr, sdErr)
+    eta <- x*coef
     y   <- rexp(length(eta), rate = 1/exp(eta)) 
     return(cbind(x, y) %>% as.data.frame())
   }
