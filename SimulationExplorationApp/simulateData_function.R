@@ -142,3 +142,123 @@ if("Quadratic" %in% log.fit){
 }
 
 grid.arrange(lin.plot, log.plot, ncol=2)
+
+# Evaluate Fit ---------------------------------------------------------------------
+
+calcLOF <- 
+  function(sim.data){
+    
+    # Calculate lack of fit
+    if(nrow(sim.data)/length(unique(sim.data$x)) > 1){
+      lof.mod <- lm(y ~ as.factor(x), data = sim.data)
+      lof <- anova(lof.mod) %>% 
+        as.data.frame() %>%
+        filter(row.names(.) == "as.factor(x)")
+    } else {
+      lof.mod <- NULL
+      lof <- NULL
+    }
+    
+    return(list(lof = lof))
+  }
+
+# calcLOF(sim.data)
+
+evalFit <- function(samps, lofStat, simulateFunc, ...){
+  
+  eval.stats <- rep(NA, samps)
+  
+  for(i in 1:samps){
+    samp.data <- simulateFunc(...)
+    eval.stats[i] <- calcLOF(samp.data)$lof[lofStat] %>% as.numeric()
+  }
+  
+  return(cbind(lower = quantile(eval.stats, 0.05), mean = mean(eval.stats), upper = quantile(eval.stats, 0.95)))
+}
+
+evalFit(samps = 1000, 
+        lofStat = "F value", 
+        simulateFunc = simulate.exponential, 
+        N = 30, 
+        nReps = 5,
+        xRange = c(1,30), 
+        
+        # Exponential Parameters
+        alpha = 1,
+        beta = 0.1, 
+        theta = 0,
+        
+        # Quadratic Parameters
+        beta0 = 0,
+        beta1 = 0, 
+        beta2 = 0.1,
+        
+        muErr = 0, 
+        sdErr = 0.25,
+        errorType = "mult")
+
+
+# Run 1000 replications -------------------------------------------------------------------
+
+repEvalFit <- 
+  function(parmAdjust, parmRange, parmBy, ...){
+    
+    parm.seq <- seq(parmRange[1], parmRange[2], parmBy)
+    eval.data <- cbind(parm.seq, matrix(NA, nrow = length(parm.seq), ncol = 3))
+    colnames(eval.data) <- c(parmAdjust, "lower", "mean", "upper")
+    
+    for(j in 1:length(parm.seq)){
+      
+      if(parmAdjust %in% c("beta")){
+        eval.stats <- evalFit(beta = parm.seq[j], ...)
+      }
+      
+      if(parmAdjust %in% c("N")){
+        eval.stats <- evalFit(N = parm.seq[j], ...)
+      }
+      
+      if(parmAdjust %in% c("sdErr")){
+        eval.stats <- evalFit(sdErr = parm.seq[j], ...)
+      }
+      
+      eval.data[j,2] <- eval.stats[1]
+      eval.data[j,3] <- eval.stats[2]
+      eval.data[j,4] <- eval.stats[3]
+    }
+    
+    return(eval.data)
+  }
+
+
+eval.data <- repEvalFit(parmAdjust = "beta", 
+           parmRange = c(0.05, 0.5),
+           parmBy = 0.01,
+           samps = 20, 
+           lofStat = "F value", 
+           simulateFunc = simulate.exponential, 
+           N = 30, 
+           nReps = 5,
+           xRange = c(1,20), 
+           
+           # Exponential Parameters
+           alpha = 1,
+           # beta = 0.1
+           theta = 0,
+           
+           # Quadratic Parameters
+           beta0 = 0,
+           beta1 = 0, 
+           beta2 = 0.1,
+           
+           muErr = 0, 
+           sdErr = 0.25,
+           errorType = "mult")
+
+eval.data %>%
+  data.frame() %>%
+  ggplot(aes(x = beta, y = mean)) +
+  geom_errorbar(aes(ymin = lower, ymax = upper)) +
+  geom_point() +
+  theme_bw() 
+
+

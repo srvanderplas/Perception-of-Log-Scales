@@ -1,0 +1,12 @@
+name: SimulationExplorationApp
+title: SimulationExplorationApp
+username:
+account: emily-robinson
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2526809
+bundleId: 3340700
+url: https://emily-robinson.shinyapps.io/SimulationExplorationApp/
+when: 1593635134.50539
+asMultiple: FALSE
+asStatic: FALSE

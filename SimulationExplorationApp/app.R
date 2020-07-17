@@ -84,6 +84,67 @@ fit.models <-
         return(list(sim.data = sim.data, glm.mod = glm.mod, exp.mod = exp.mod, quad.mod = quad.mod, lin.mod = lin.mod, lof.mod = lof.mod, lof = lof))
     }
 
+# Evaluate LOF
+calcLOF <- 
+    function(sim.data){
+        
+        # Calculate lack of fit
+        if(nrow(sim.data)/length(unique(sim.data$x)) > 1){
+            lof.mod <- lm(y ~ as.factor(x), data = sim.data)
+            lof <- anova(lof.mod) %>% 
+                as.data.frame() %>%
+                filter(row.names(.) == "as.factor(x)")
+        } else {
+            lof.mod <- NULL
+            lof <- NULL
+        }
+        
+        return(list(lof = lof))
+    }
+
+# Repeat 1000 times
+evalFit <- function(samps, lofStat, simulateFunc, ...){
+    
+    eval.stats <- rep(NA, samps)
+    
+    for(i in 1:samps){
+        samp.data <- simulateFunc(...)
+        eval.stats[i] <- calcLOF(samp.data)$lof[lofStat] %>% as.numeric()
+    }
+    
+    return(cbind(lower = quantile(eval.stats, 0.05), mean = mean(eval.stats), upper = quantile(eval.stats, 0.95)))
+}
+
+# Run over a sequence of parameters
+repEvalFit <- 
+    function(parmAdjust, parmRange, parmBy, ...){
+        
+        parm.seq <- seq(parmRange[1], parmRange[2], parmBy)
+        eval.data <- cbind(parm.seq, matrix(NA, nrow = length(parm.seq), ncol = 3))
+        colnames(eval.data) <- c(parmAdjust, "lower", "mean", "upper")
+        
+        for(j in 1:length(parm.seq)){
+            
+            if(parmAdjust %in% c("beta")){
+                eval.stats <- evalFit(beta = parm.seq[j], ...)
+            }
+            
+            if(parmAdjust %in% c("N")){
+                eval.stats <- evalFit(N = parm.seq[j], ...)
+            }
+            
+            if(parmAdjust %in% c("sdErr")){
+                eval.stats <- evalFit(sdErr = parm.seq[j], ...)
+            }
+            
+            eval.data[j,2] <- eval.stats[1]
+            eval.data[j,3] <- eval.stats[2]
+            eval.data[j,4] <- eval.stats[3]
+        }
+        
+        return(eval.data)
+    }
+
 # Define UI for application that draws a histogram
 ui <- navbarPage(
     "Simulation Exploration",
@@ -130,8 +191,54 @@ ui <- navbarPage(
                 tableOutput("lofTable_tab1")
             )
         )
-    )
+    ),
     
+    # ---- Tab 2 ---------------------------------------------------------------
+    tabPanel(
+        title = "Evaluate Fit",
+        fluidRow(
+            column(width = 2,
+                   wellPanel(id = "tPanel",style = "overflow-y:scroll; max-height: 600px",
+                             helpText("Evaluation Parameters:"),
+                             selectInput("lofStat_tab2", "Lack of Fit Statistic:", c("F value")),
+                             selectInput("parmAdjust_tab2", "Parameter to Adjust:", c("beta", "sdErr", "N")),
+                             numericInput("parmMin_tab2", "Parameter Min:", value = 0.05, min = 0.01, max = 50, step = 0.01),
+                             numericInput("parmMax_tab2", "Parameter Max:", value = 0.5, min = 0.01, max = 50, step = 0.01),
+                             numericInput("parmBy_tab2", "Parameter Change:", value = 0.01, min = 0.01, max = 10, step = 0.01),
+                             sliderInput("samps_tab2", "Number of Samples:", min = 5, max = 20, value = 10),
+                             
+                             helpText("Simulation Parameters:"),
+                             selectInput("functionalForm_tab2", "Functional Form:", c("Exponential")),
+                             sliderInput("xRange_tab2", "x-Axis Range", min = 0, max = 200, value = c(0, 30)),
+                             sliderInput("n_tab2", "Sample Size (n):", min = 5, max = 200, value = 20),
+                             sliderInput("nReps_tab2", "Number of reps per x:", min = 1, max = 10, value = 5),
+                             numericInput("muErr_tab2", "Error Mean:", value = 0, min = 0, max = 10, step = 1),
+                             numericInput("sdErr_tab2", "Error SD:", value = 0.25, min = 0, max = 50, step = 0.05),
+                             
+                             helpText("Exponential Regression Coefficients:"),
+                             numericInput("alpha_tab2", "\u03B1:", value = 1, min = 1, max = 10000, step = 1),
+                             numericInput("beta_tab2", "\u03B2:", value = 0.05, min = 0.05, max = 1, step = 0.01),
+                             numericInput("theta_tab2", "\u03B8:", value = 0.1, min = 0, max = 100, step = 0.05),
+                             selectInput("errorType_tab2", "Error Type:", c("Multiplicative","Additive")),
+                             
+                             helpText("Quadratic Regression Coefficients:"),
+                             numericInput("beta0_tab2", "\u03B2\u2080:", value = 0.1, min = 0, max = 5, step = 0.05),
+                             numericInput("beta1_tab2", "\u03B2\u2081:", value = 0, min = -5, max = 20, step = 1),
+                             numericInput("beta2_tab2", "\u03B2\u2082:", value = 0.25, min = 0, max = 10, step = 0.05)
+                   )
+            ),
+            column(
+                width = 7,
+                helpText("Exponential Model (additive): \u03B1exp(\u03B2x) + \u03B8 + error"),
+                helpText("Exponential Model (multiplicative): \u03B1exp(\u03B2x + error) + \u03B8"),
+                helpText("Quadratic Model: \u03B2\u2080 + \u03B2\u2081x + \u03B2\u2082x\u00B2 + error"),
+                helpText("Lack of Fit Test:"),
+                helpText("F test from lm(y ~ x + as.factor(x)):"),
+                plotOutput("plots_tab2", height = "500px")
+                
+            )
+        )
+    )
     # ---- End UI --------------------------------------------------------------
 )
 
@@ -230,6 +337,107 @@ server <- function(input, output, session) {
     
     # ---- Tab 2 ---------------------------------------------------------------
     
+    
+    eval.data_tab2 <- reactive({
+        
+        if(input$parmAdjust_tab2 == "beta"){
+            eval.data <- repEvalFit(parmAdjust = input$parmAdjust_tab2, 
+                       parmRange = c(input$parmMin_tab2, input$parmMax_tab2),
+                       parmBy = input$parmBy_tab2,
+                       samps = input$samps_tab2, 
+                       lofStat = input$lofStat_tab2, 
+                       
+                       #Simulation Parameters
+                       simulateFunc = simulate.exponential, 
+                       N = input$n_tab2, 
+                       nReps = input$nReps_tab2,
+                       xRange = input$xRange_tab2, 
+                       
+                       # Exponential Parameters
+                       alpha = input$alpha_tab2,
+                       # beta = input$beta_tab2
+                       theta = input$theta_tab2,
+                       
+                       # Quadratic Parameters
+                       beta0 = input$beta0_tab2,
+                       beta1 = input$beta1_tab2, 
+                       beta2 = input$beta2_tab2,
+                       
+                       muErr = input$muErr_tab2, 
+                       sdErr = input$sdErr_tab2,
+                       errorType = input$errorType_tab2)   
+        }
+        
+        if(input$parmAdjust_tab2 == "sdErr"){
+            eval.data <- repEvalFit(parmAdjust = input$parmAdjust_tab2, 
+                       parmRange = c(input$parmMin_tab2, input$parmMax_tab2),
+                       parmBy = input$parmBy_tab2,
+                       samps = input$samps_tab2, 
+                       lofStat = input$lofStat_tab2, 
+                       
+                       #Simulation Parameters
+                       simulateFunc = simulate.exponential, 
+                       N = input$n_tab2, 
+                       nReps = input$nReps_tab2,
+                       xRange = input$xRange_tab2, 
+                       
+                       # Exponential Parameters
+                       alpha = input$alpha_tab2,
+                       beta = input$beta_tab2,
+                       theta = input$theta_tab2,
+                       
+                       # Quadratic Parameters
+                       beta0 = input$beta0_tab2,
+                       beta1 = input$beta1_tab2, 
+                       beta2 = input$beta2_tab2,
+                       
+                       muErr = input$muErr_tab2, 
+                       # sdErr = input$sdErr_tab2,
+                       errorType = input$errorType_tab2)   
+        }
+        
+        if(input$parmAdjust_tab2 == "N"){
+            eval.data <- repEvalFit(parmAdjust = input$parmAdjust_tab2, 
+                                    parmRange = c(input$parmMin_tab2, input$parmMax_tab2),
+                                    parmBy = input$parmBy_tab2,
+                                    samps = input$samps_tab2, 
+                                    lofStat = input$lofStat_tab2, 
+                                    
+                                    #Simulation Parameters
+                                    simulateFunc = simulate.exponential, 
+                                    # N = input$n_tab2, 
+                                    nReps = input$nReps_tab2,
+                                    xRange = input$xRange_tab2, 
+                                    
+                                    # Exponential Parameters
+                                    alpha = input$alpha_tab2,
+                                    beta = input$beta_tab2,
+                                    theta = input$theta_tab2,
+                                    
+                                    # Quadratic Parameters
+                                    beta0 = input$beta0_tab2,
+                                    beta1 = input$beta1_tab2, 
+                                    beta2 = input$beta2_tab2,
+                                    
+                                    muErr = input$muErr_tab2, 
+                                    sdErr = input$sdErr_tab2,
+                                    errorType = input$errorType_tab2)   
+        }
+        
+        eval.data
+        
+    })
+    
+    output$plots_tab2 <- renderPlot({
+        eval.data <- eval.data_tab2()
+        
+        eval.data %>%
+            data.frame() %>%
+            ggplot(aes_string(x = input$parmAdjust_tab2, y = "mean")) +
+            geom_errorbar(aes(ymin = lower, ymax = upper)) +
+            geom_point() +
+            theme_bw() 
+    })
     
     # ---- End Server --------------------------------------------------------------
 }
