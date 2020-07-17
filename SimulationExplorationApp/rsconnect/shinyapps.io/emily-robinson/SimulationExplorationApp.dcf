@@ -5,9 +5,9 @@ account: emily-robinson
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2526809
-bundleId: 3404495
+bundleId: 3405086
 url: https://emily-robinson.shinyapps.io/SimulationExplorationApp/
-when: 1595004067.72622
+when: 1595015082.90459
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: simulateData_function.R|SimulationTrials/shinysense.R|SimulationTrials/simExponential.R|SimulationTrials/simulateExp_trial.R|SimulationTrials/InitialAppTrial/app.R|SimulationTrials/InitialAppTrial/rsconnect/shinyapps.io/emily-robinson/SimulationExplorationApp.dcf

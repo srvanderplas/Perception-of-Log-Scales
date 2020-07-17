@@ -43,7 +43,7 @@ fit.models <-
   function(sim.data){
       
       #fit glm exponential model (BEWARE HERE)
-      glm.mod <- glm(y ~ x, data = sim.data[(sim.data$y > 0),], family = Gamma(link="log"))
+      glm.mod <- glm(y ~ x, data = sim.data, family = gaussian(link="log"))
     
       # fit nonlinear exponential model
       theta.0 <- min(sim.data$y) * 0.5  
@@ -61,7 +61,7 @@ fit.models <-
       
       # Calculate lack of fit
       if(nrow(sim.data)/length(unique(sim.data$x)) > 1){
-        lof.mod <- lm(y ~ as.factor(x), data = sim.data)
+        lof.mod <- lm(y ~ x + as.factor(x), data = sim.data)
         lof <- anova(lof.mod) %>% 
           as.data.frame() %>%
           filter(row.names(.) == "as.factor(x)")
@@ -105,7 +105,7 @@ lin.plot <- sim.fit$sim.data %>%
   theme_bw() +
   ggtitle("Linear")
 if("Exponential (glm)" %in% lin.fit){
-  lin.plot <- lin.plot + geom_line(aes(y = predict(sim.fit$glm.mod, dispersion = 1), color = "Exponential \n (glm)"))
+  lin.plot <- lin.plot + geom_line(aes(y = predict(sim.fit$glm.mod, type = "response"), color = "Exponential \n (glm)"))
 } 
 if("Exponential (nonlinear)" %in% lin.fit){
   lin.plot <- lin.plot + geom_line(aes(y = predict(sim.fit$exp.mod), color = "Exponential \n (nonlinear)"))
@@ -129,7 +129,7 @@ log.plot <- sim.fit$sim.data %>%
   theme_bw() +
   ggtitle("Log")
 if("Exponential (glm)" %in% log.fit){
-  log.plot <- log.plot + geom_line(aes(y = predict(sim.fit$glm.mod, dispersion = 1), color = "Exponential \n (glm)"))
+  log.plot <- log.plot + geom_line(aes(y = predict(sim.fit$glm.mod, type = "response"), color = "Exponential \n (glm)"))
 } 
 if("Exponential (nonlinear)" %in% log.fit){
   log.plot <- log.plot + geom_line(aes(y = predict(sim.fit$exp.mod), color = "Exponential \n (nonlinear)"))
