@@ -57,13 +57,13 @@ fit.models <-
         glm.mod <- glm(y ~ x, data = sim.data, family = gaussian(link="log"))
         
         # fit nonlinear exponential model
-        theta.0 <- min(sim.data$y) * 0.5  
-        model.0 <- lm(log(y) ~ x, data=sim.data)  
-        alpha.0 <- exp(coef(model.0)[1])
-        beta.0 <- coef(model.0)[2]
-        start <- list(alpha = alpha.0, beta = beta.0, theta = theta.0)
-        exp.mod   <- model <- nls(y ~ alpha * exp(beta * x) + theta , data = sim.data, start = start)
-        
+        # theta.0 <- min(sim.data$y) * 0.5  
+        # model.0 <- lm(log(y) ~ x, data=sim.data)  
+        # alpha.0 <- exp(coef(model.0)[1])
+        # beta.0 <- coef(model.0)[2]
+        # start <- list(alpha = alpha.0, beta = beta.0, theta = theta.0)
+        # exp.mod   <- model <- nls(y ~ alpha * exp(beta * x) + theta , data = sim.data, start = start)
+        # 
         # fit quadratic model
         quad.mod  <- lm(y ~ x + I(x^2), data = sim.data)
         
@@ -81,7 +81,8 @@ fit.models <-
             lof <- NULL
         }
         
-        return(list(sim.data = sim.data, glm.mod = glm.mod, exp.mod = exp.mod, quad.mod = quad.mod, lin.mod = lin.mod, lof.mod = lof.mod, lof = lof))
+        # return(list(sim.data = sim.data, glm.mod = glm.mod, exp.mod = exp.mod, quad.mod = quad.mod, lin.mod = lin.mod, lof.mod = lof.mod, lof = lof))
+        return(list(sim.data = sim.data, glm.mod = glm.mod, quad.mod = quad.mod, lin.mod = lin.mod, lof.mod = lof.mod, lof = lof))
     }
 
 # Evaluate LOF
@@ -163,9 +164,9 @@ ui <- navbarPage(
                     numericInput("sdErr_tab1", "Error SD:", value = 0.25, min = 0, max = 50, step = 0.05),
             
                     helpText("Exponential Regression Coefficients:"),
-                    numericInput("alpha_tab1", "\u03B1:", value = 1, min = 1, max = 10000, step = 1),
-                    numericInput("beta_tab1", "\u03B2:", value = 0.05, min = 0.05, max = 1, step = 0.01),
-                    numericInput("theta_tab1", "\u03B8:", value = 0.1, min = 0, max = 100, step = 0.05),
+                    numericInput("alpha_tab1", "\u03B1:", value = 1, min = 0, max = 10000, step = 1),
+                    numericInput("beta_tab1", "\u03B2:", value = 0.01, min = 0, max = 2, step = 0.01),
+                    numericInput("theta_tab1", "\u03B8:", value = 0, min = 0, max = 100, step = 0.05),
                     selectInput("errorType_tab1", "Error Type:", c("Additive", "Multiplicative")),
                
                     helpText("Quadratic Regression Coefficients:"),
@@ -184,8 +185,8 @@ ui <- navbarPage(
             ),
             column(  
                 width = 2,
-                checkboxGroupInput("lin.fit_tab1", "Linear Scale Fitted Lines:", c("Exponential (glm)", "Exponential (nonlinear)", "Linear", "Quadratic")),
-                checkboxGroupInput("log.fit_tab1", "Log Scale  Fitted Lines:", c("Exponential (glm)", "Exponential (nonlinear)", "Linear", "Quadratic")),
+                checkboxGroupInput("lin.fit_tab1", "Linear Scale Fitted Lines:", c("Exponential (glm)", "Linear", "Quadratic")),
+                checkboxGroupInput("log.fit_tab1", "Log Scale  Fitted Lines:", c("Exponential (glm)", "Linear", "Quadratic")),
                 helpText("Lack of Fit Test:"),
                 helpText("F test from lm(y ~ x + as.factor(x)):"),
                 tableOutput("lofTable_tab1")
@@ -210,15 +211,15 @@ ui <- navbarPage(
                              helpText("Simulation Parameters:"),
                              selectInput("functionalForm_tab2", "Functional Form:", c("Exponential")),
                              sliderInput("xRange_tab2", "x-Axis Range", min = 0, max = 200, value = c(0, 30)),
-                             sliderInput("n_tab2", "Sample Size (n):", min = 5, max = 200, value = 20),
+                             sliderInput("n_tab2", "Sample Size (n):", min = 1, max = 200, value = 20),
                              sliderInput("nReps_tab2", "Number of reps per x:", min = 1, max = 10, value = 5),
                              numericInput("muErr_tab2", "Error Mean:", value = 0, min = 0, max = 10, step = 1),
-                             numericInput("sdErr_tab2", "Error SD:", value = 0.25, min = 0, max = 50, step = 0.05),
+                             numericInput("sdErr_tab2", "Error SD:", value = 0.25, min = 0, max = 100, step = 0.05),
                              
                              helpText("Exponential Regression Coefficients:"),
                              numericInput("alpha_tab2", "\u03B1:", value = 1, min = 1, max = 10000, step = 1),
-                             numericInput("beta_tab2", "\u03B2:", value = 0.05, min = 0.05, max = 1, step = 0.01),
-                             numericInput("theta_tab2", "\u03B8:", value = 0.1, min = 0, max = 100, step = 0.05),
+                             numericInput("beta_tab2", "\u03B2:", value = 0.01, min = 0, max = 1, step = 0.01),
+                             numericInput("theta_tab2", "\u03B8:", value = 0, min = 0, max = 100, step = 0.05),
                              selectInput("errorType_tab2", "Error Type:", c("Multiplicative","Additive")),
                              
                              helpText("Quadratic Regression Coefficients:"),

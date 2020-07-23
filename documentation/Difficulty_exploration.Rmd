@@ -1,0 +1,158 @@
+---
+title: "Difficulty Exploration"
+author: "Emily Robinson"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T, fig.width = 8, fig.height = 4, out.width = "100%", dpi = 300, message = F)
+library(knitr)
+require(tidyverse)
+require(gridExtra)
+require(scales)
+library(purrr)
+
+# Exponential ---------------------------------------------------------------------------------------
+simulate.exponential <- 
+  function(N, xRange = c(1,N), nReps, alpha, beta, theta, muErr, sdErr, errorType, ...){
+  
+  exp.data <- data.frame(x = rep(seq(xRange[1], xRange[2], length.out = N), nReps), y = NA)
+  
+  if(errorType %in% c("Mult", "mult", "Multiplicative", "multiplicative")){
+     exp.data$y <- alpha*exp(beta*exp.data$x + rnorm(N*nReps, muErr, sdErr)) + theta
+  } else { 
+    if(errorType %in% c("Add", "add", "Additive", "additive")){
+      exp.data$y <- alpha*exp(beta*exp.data$x) + theta + rnorm(N*nReps, muErr, sdErr)
+    }
+  }
+
+  return(exp.data)
+}
+
+# Quadratic ------------------------------------------------------------------------
+
+simulate.quadratic <- 
+  function(N, nReps, xRange = c(1,N), beta0, beta1, beta2, muErr, sdErr, ...){
+    
+    quad.data <- data.frame(x = rep(seq(xRange[1], xRange[2], length.out = N), nReps), y = NA)
+    quad.data$y <- beta0 + beta1*quad.data$x + beta2*quad.data$x^2 + rnorm(N*nReps, muErr, sdErr)
+    
+    return(quad.data)
+  }
+
+# Overall Simulation Function ----------------------------------------------------------------
+
+simulate.data <- 
+  function(simulateFunction, ...){
+    sim.data <- simulateFunction(...)
+  }
+
+# Evaluate Fit ---------------------------------------------------------------------
+
+calcLOF <- 
+  function(sim.data){
+    if(nrow(sim.data)/length(unique(sim.data$x)) > 1){
+    lof.mod <- lm(y ~ as.factor(x), data = sim.data)
+    lof <- anova(lof.mod) %>% 
+      broom::tidy() %>%
+      filter(term == "as.factor(x)") %>%
+      select(statistic)
+    } else {
+      lof.mod <- NULL
+      lof <- NULL
+    }
+    return(lof)
+  }
+```
+
+*See https://emily-robinson.shinyapps.io/SimulationExplorationApp/ to look at other parameter combinations.*
+
+# Exponential: Multiplicative
+
+For $$y = \alpha(\beta x + \epsilon) + \theta$$ with $xRange = (0, 30), N = 20, \alpha = 1, \theta = 0,$ and $\epsilon ~N(0, sdErr)$ where $sdErr = 1%$ of $y$ range.
+
+```{r ExpMultParms, cache = T, echo = F}
+#Identify parameters
+parmCombos <- data.frame(beta = c(0.01, 0.05, 0.1),
+                         sdErr = c(0.005, 0.05, 0.19),
+                         Difficulty = c("Hard", "Medium", "Easy"))
+parmCombos %>% kable(format = "pandoc")
+```
+
+```{r ExpMultVisuals, cache = T, echo = F}
+#Look at visuals
+sim.data.all <- data.frame("x" = NA, "y" = NA, "Difficulty" = NA)
+for(k in 1:nrow(parmCombos)){
+  sim.data.new <- simulate.data(simulateFunction = simulate.exponential, 
+                                N = 20, 
+                                nReps = 1,
+                                xRange = c(1,30), 
+                                
+                                # Exponential Parameters
+                                alpha = 1,
+                                beta = parmCombos[k, "beta"], 
+                                theta = 0,
+                                
+                                # Quadratic Parameters
+                                beta0 = 0,
+                                beta1 = 0, 
+                                beta2 = 0.01,
+                                
+                                muErr = 0, 
+                                sdErr = parmCombos[k, "sdErr"],
+                                errorType = "mult")
+  sim.data.new$Difficulty <- parmCombos[k, "Difficulty"]
+  sim.data.all <- rbind(sim.data.all, sim.data.new)
+}
+
+sim.data.all[-1,] %>%
+  mutate(Difficulty = factor(Difficulty, levels = c("Easy", "Medium", "Hard"))) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(shape = 1) +
+  theme_bw() +
+  facet_wrap(~ Difficulty, scale = "free_y")
+```
+
+```{r ExpMultLOF, cache = T, echo = F}
+#Run lack of fit
+lofStats <- data.frame("LOF" = NA, "Difficulty" = NA)
+for(k in 1:nrow(parmCombos)){
+  sim.data_0.1 <- replicate(n = 1000,
+                            simulate.data(simulateFunction = simulate.exponential, 
+                                          N = 20, 
+                                          nReps = 5,
+                                          xRange = c(1,30), 
+                                          
+                                          # Exponential Parameters
+                                          alpha = 1,
+                                          beta = parmCombos[k, "beta"], 
+                                          theta = 0,
+                                          
+                                          # Quadratic Parameters
+                                          beta0 = 0,
+                                          beta1 = 0, 
+                                          beta2 = 0.01,
+                                          
+                                          muErr = 0, 
+                                          sdErr = parmCombos[k, "sdErr"],
+                                          errorType = "mult"), 
+                            simplify = FALSE)
+  lofStats.new <- map(sim.data_0.1, calcLOF) %>% unlist() %>% as.matrix() %>% as.data.frame()
+  colnames(lofStats.new) <- c("LOF")
+  lofStats.new$Difficulty <- parmCombos[k, "Difficulty"]
+  lofStats <- rbind(lofStats, lofStats.new)
+}
+
+lofStats[-1,] %>%
+  mutate(Difficulty = factor(Difficulty, levels = c("Easy", "Medium", "Hard"))) %>%
+  ggplot(aes(x = LOF, fill = Difficulty, color = Difficulty)) +
+  geom_density(alpha = 0.7) +
+  scale_fill_brewer(palette = "Paired") + 
+  scale_color_brewer(palette = "Paired") + 
+  theme_bw() +
+  ggtitle("Lack of Fit by Difficulty Level \n Exponential with Multiplicative Error")
+```
+
+
