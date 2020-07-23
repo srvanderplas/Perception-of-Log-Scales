@@ -71,9 +71,20 @@ calcLOF <-
 
 # Exponential: Multiplicative
 
-For $$y = \alpha(\beta x + \epsilon) + \theta$$ with $xRange = (0, 30), N = 20, \alpha = 1, \theta = 0,$ and $\epsilon ~N(0, sdErr)$ where $sdErr = 1%$ of $y$ range.
+For $$y = \alpha(\beta x + \epsilon) + \theta$$ 
+with 
 
-```{r ExpMultParms, cache = T, echo = F}
+\begin{align*}
+xRange &= (0, 30)\\
+N &= 20\\
+\alpha &= 1\\
+\theta &= 0\\
+\epsilon &\sim N(0, \text{sdErr})
+\end{align*}
+
+where $\text{sdErr} = 1\%$ of $y$ range.
+
+```{r ExpMultParms, cache = F, echo = F}
 #Identify parameters
 parmCombos <- data.frame(beta = c(0.01, 0.05, 0.1),
                          sdErr = c(0.005, 0.05, 0.19),
@@ -81,7 +92,7 @@ parmCombos <- data.frame(beta = c(0.01, 0.05, 0.1),
 parmCombos %>% kable(format = "pandoc")
 ```
 
-```{r ExpMultVisuals, cache = T, echo = F}
+```{r ExpMultVisuals, cache = F, echo = F}
 #Look at visuals
 sim.data.all <- data.frame("x" = NA, "y" = NA, "Difficulty" = NA)
 for(k in 1:nrow(parmCombos)){
@@ -115,7 +126,7 @@ sim.data.all[-1,] %>%
   facet_wrap(~ Difficulty, scale = "free_y")
 ```
 
-```{r ExpMultLOF, cache = T, echo = F}
+```{r ExpMultLOF, cache = F, echo = F}
 #Run lack of fit
 lofStats <- data.frame("LOF" = NA, "Difficulty" = NA)
 for(k in 1:nrow(parmCombos)){
