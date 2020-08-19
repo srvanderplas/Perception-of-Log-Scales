@@ -86,7 +86,7 @@ N &= 20\\
 \epsilon &\sim N(0, \sigma)
 \end{align*}
 
-*See calculation pdf for* $\alpha$ *calculations.*
+*See [alpha-calculation.pdf](https://github.com/srvanderplas/Perception-of-Log-Scales/blob/master/documentation/alpha-calculation.pdf) for* $\alpha$ *calculations.*
 
 ```{r ExpMultParms, cache = F, echo = F}
 #Identify parameters
