@@ -8,16 +8,18 @@ require(scales)
 
 # ExponentialSimulation
 simulate.exponential <- 
-    function(N, xRange = c(1,N), nReps, beta, maxMag, muErr = 0, sdErr, errorType, ...){
+    function(N, xRange = c(1,N), nReps, beta, muErr = 0, sdErr, errorType, ...){
         
         exp.data <- data.frame(x = rep(seq(xRange[1], xRange[2], length.out = N), nReps), y = NA)
         
-        alpha <- maxMag/(exp(beta*xRange[2]))
         theta <- 0
         
         if(errorType %in% c("Mult", "mult", "Multiplicative", "multiplicative")){
+            # alpha <- sqrt(1/(exp(2*sdErr^2)-exp(sdErr^2)))
+            alpha <- 1/(exp((sdErr^2)/2))
             exp.data$y <- alpha*exp(beta*exp.data$x + rnorm(N*nReps, muErr, sdErr)) + theta
         } else { 
+            alpha <- 1
             if(errorType %in% c("Add", "add", "Additive", "additive")){
                 exp.data$y <- alpha*exp(beta*exp.data$x) + theta + rnorm(N*nReps, muErr, sdErr)
             }
@@ -110,10 +112,10 @@ ui <- navbarPage(
                 wellPanel(id = "tPanel",style = "overflow-y:scroll; max-height: 600px",
                     selectInput("functionalForm_tab1", "Functional Form:", c("Exponential")),
                     sliderInput("xRange_tab1", "x-Axis Range", min = 0, max = 200, value = c(0, 30)),
-                    numericInput("maxMag_tab1", "Magnitude", value = 100, min = 0, max = 100000, step = 10),
+                    # numericInput("maxMag_tab1", "Magnitude", value = 100, min = 0, max = 100000, step = 10),
                     sliderInput("n_tab1", "Sample Size (n):", min = 5, max = 200, value = 20),
                     sliderInput("nReps_tab1", "Number of reps per x:", min = 1, max = 10, value = 1),
-                    # numericInput("muErr_tab1", "Error Mean:", value = 0, min = 0, max = 10, step = 1),
+                    numericInput("muErr_tab1", "Error Mean:", value = 0, min = 0, max = 10, step = 1),
                     numericInput("sdErr_tab1", "Error SD:", value = 0.05, min = 0, max = 50, step = 0.05),
                     selectInput("errorType_tab1", "Error Type:", c("Multiplicative", "Additive")),
             
@@ -158,8 +160,7 @@ server <- function(input, output, session) {
         simulate.data(functionalForm = input$functionalForm_tab1, 
                                   N = input$n_tab1, 
                                   nReps = input$nReps_tab1,
-                                  xRange = input$xRange_tab1, 
-                                  maxMag = input$maxMag_tab1,
+                                  xRange = input$xRange_tab1,
                                   
                                   # Exponential Parameters
                                   beta = input$beta_tab1, 
@@ -169,7 +170,7 @@ server <- function(input, output, session) {
                                   # beta1 = input$beta1_tab1, 
                                   # beta2 = input$beta2_tab1,
                                   
-                                  # muErr = input$muErr_tab1, 
+                                  muErr = input$muErr_tab1,
                                   sdErr = input$sdErr_tab1,
                                   errorType = input$errorType_tab1)
     })

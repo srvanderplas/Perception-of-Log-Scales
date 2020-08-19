@@ -1,104 +1,20 @@
----
-title: "Difficulty Exploration"
-author: "Emily Robinson"
-output:
-  html_document: default
-  pdf_document: default
----
+source("simulateData_function2.R")
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = T, out.width = "100%", dpi = 300, message = F)
-library(knitr)
-require(tidyverse)
-require(gridExtra)
-require(scales)
-library(purrr)
+betaVal = 0.27
+lowVarVal = sqrt(betaVal^2*0.5)
+lowVarVal
+highVarVal = sqrt(betaVal^2*1.5)
+highVarVal
 
-# Exponential ---------------------------------------------------------------------------------------
-simulate.exponential <- 
-  function(N, xRange = c(1,N), nReps, beta, muErr, sdErr, errorType, ...){
-    
-    exp.data <- data.frame(x = rep(seq(xRange[1], xRange[2], length.out = N), nReps), y = NA)
-    
-    theta <- 0
-    
-    if(errorType %in% c("Mult", "mult", "Multiplicative", "multiplicative")){
-      # alpha <- sqrt(1/(exp(2*sdErr^2)-exp(sdErr^2)))
-      alpha <- 1/(exp((sdErr^2)/2))
-      exp.data$y <- alpha*exp(beta*exp.data$x + rnorm(N*nReps, muErr, sdErr)) + theta
-    } else { 
-      alpha <- 1
-      if(errorType %in% c("Add", "add", "Additive", "additive")){
-        exp.data$y <- alpha*exp(beta*exp.data$x) + theta + rnorm(N*nReps, muErr, sdErr)
-      }
-    }
-    
-    return(exp.data)
-  }
-
-# Quadratic ------------------------------------------------------------------------
-
-simulate.quadratic <- 
-  function(N, nReps, xRange = c(1,N), beta0, beta1, beta2, muErr, sdErr, ...){
-    
-    quad.data <- data.frame(x = rep(seq(xRange[1], xRange[2], length.out = N), nReps), y = NA)
-    quad.data$y <- beta0 + beta1*quad.data$x + beta2*quad.data$x^2 + rnorm(N*nReps, muErr, sdErr)
-    
-    return(quad.data)
-  }
-
-# Overall Simulation Function ----------------------------------------------------------------
-
-simulate.data <- 
-  function(simulateFunction, ...){
-    sim.data <- simulateFunction(...)
-  }
-
-# Evaluate Fit ---------------------------------------------------------------------
-
-calcLOF <- 
-  function(sim.data){
-    if(nrow(sim.data)/length(unique(sim.data$x)) > 1){
-    lof.mod <- lm(y ~ as.factor(x), data = sim.data)
-    lof <- anova(lof.mod) %>% 
-      broom::tidy() %>%
-      filter(term == "as.factor(x)") %>%
-      select(statistic)
-    } else {
-      lof.mod <- NULL
-      lof <- NULL
-    }
-    return(lof)
-  }
-```
-
-*See https://emily-robinson.shinyapps.io/SimulationExplorationApp_v2/ to look at other parameter combinations.*
-
-# Exponential: Multiplicative
-
-For $$y = \alpha e^{(\beta x + \epsilon)}$$ 
-with $\epsilon \sim N(0,\sigma)$
-
-\begin{align*}
-xRange &= (0, 20)\\
-N &= 20\\
-\alpha & = \frac{1}{e^{\frac{\sigma^2}{2}}}\\
-\epsilon &\sim N(0, \sigma)
-\end{align*}
-
-*See calculation pdf for* $\alpha$ *calculations.*
-
-```{r ExpMultParms, cache = F, echo = F}
 #Identify parameters
-parmCombos <- data.frame(Curvature = c("Hard", "Hard", "Medium", "Medium", "Easy", "Easy"),
-                         Variability = c("Low", "High", "Low", "High", "Low", "High"),
-                         beta  = c(0.07, 0.07, 0.15, 0.15, 0.22, 0.22),
-                         sdErr = c(0.05, 0.085, 0.12, 0.21, 0.19, 0.33)
+parmCombos <- data.frame(beta  = c(0.07, 0.07, 0.15, 0.15, 0.22, 0.22),
+                         sdErr = c(0.05, 0.085, 0.12, 0.21, 0.19, 0.33),
+                         Curvature = c("Hard", "Hard", "Medium", "Medium", "Easy", "Easy"),
+                         Variability = c("Low", "High", "Low", "High", "Low", "High")
                          )
-parmCombos %>% kable(format = "pandoc")
-```
 
-```{r ExpMultVisuals, cache = F, echo = F, fig.width = 6, fig.height = 6}
+
+#Look at visuals
 sim.data.all <- data.frame("x" = NA, "y" = NA, "Curvature" = NA, "Variability" = NA)
 for(k in 1:nrow(parmCombos)){
   sim.data.new <- simulate.data(simulateFunction = simulate.exponential, 
@@ -131,9 +47,8 @@ sim.data.all[-1,] %>%
   geom_point(shape = 1) +
   theme_bw() +
   facet_grid(Curvature ~ Variability, scale = "free_y")
-```
 
-```{r ExpMultLOF, cache = F, echo = F, fig.width = 8, fig.height = 4}
+#Run lack of fit
 lofStats <- data.frame("LOF" = NA, "Curvature" = NA, "Variability" = NA)
 for(k in 1:nrow(parmCombos)){
   sim.data_0.1 <- replicate(n = 1000,
@@ -186,6 +101,3 @@ lofStats[-1,] %>%
   theme_bw() +
   facet_grid(~Variability) + 
   ggtitle("Lack of Fit by Difficulty Level \n Exponential with Multiplicative Error")
-```
-
-
