@@ -1,0 +1,13 @@
+name: SimulationExplorationApp_v2
+title: SimulationExplorationApp_v2
+username:
+account: emily-robinson
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2628087
+bundleId: 3530983
+url: https://emily-robinson.shinyapps.io/SimulationExplorationApp_v2/
+when: 1597776778.81891
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: ~$lculations.docx|~WRL0003.tmp|Calculations.docx|simulateData_function2.R
