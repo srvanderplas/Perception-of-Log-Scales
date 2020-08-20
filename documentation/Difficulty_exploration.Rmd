@@ -79,11 +79,12 @@ calcLOF <-
 For $$y = \alpha e^{(\beta x + \epsilon)}$$ 
 with $\epsilon \sim N(0,\sigma)$
 
+where
+
 \begin{align*}
 xRange &= (0, 20)\\
 N &= 20\\
-\alpha & = \frac{1}{e^{\frac{\sigma^2}{2}}}\\
-\epsilon &\sim N(0, \sigma)
+\alpha & = \frac{1}{e^{\sigma^2/2}}\\
 \end{align*}
 
 *See [alpha-calculation.pdf](https://github.com/srvanderplas/Perception-of-Log-Scales/blob/master/documentation/alpha-calculation.pdf) for* $\alpha$ *calculations.*
@@ -92,8 +93,8 @@ N &= 20\\
 #Identify parameters
 parmCombos <- data.frame(Curvature = c("Hard", "Hard", "Medium", "Medium", "Easy", "Easy"),
                          Variability = c("Low", "High", "Low", "High", "Low", "High"),
-                         beta  = c(0.07, 0.07, 0.15, 0.15, 0.22, 0.22),
-                         sdErr = c(0.05, 0.085, 0.12, 0.21, 0.19, 0.33)
+                         beta  = c(0.07, 0.07, 0.15, 0.15, 0.3, 0.3),
+                         sdErr = c(0.05, 0.07, 0.12, 0.18, 0.3, 0.5)
                          )
 parmCombos %>% kable(format = "pandoc")
 ```
@@ -103,7 +104,7 @@ sim.data.all <- data.frame("x" = NA, "y" = NA, "Curvature" = NA, "Variability" =
 for(k in 1:nrow(parmCombos)){
   sim.data.new <- simulate.data(simulateFunction = simulate.exponential, 
                                 N = 20, 
-                                nReps = 1,
+                                nReps = 5,
                                 xRange = c(1,20), 
                                 
                                 # Exponential Parameters
@@ -139,7 +140,7 @@ for(k in 1:nrow(parmCombos)){
   sim.data_0.1 <- replicate(n = 1000,
                             simulate.data(simulateFunction = simulate.exponential, 
                                           N = 20, 
-                                          nReps = 5,
+                                          nReps = 20,
                                           xRange = c(1,20), 
                                           
                                           # Exponential Parameters
@@ -172,7 +173,7 @@ lofStats[-1,] %>%
   scale_fill_brewer(palette = "Paired") + 
   scale_color_brewer(palette = "Paired") + 
   theme_bw() +
-  facet_grid(~Curvature) + 
+  facet_wrap(~Curvature, scale = "free") + 
   ggtitle("Lack of Fit by Difficulty Level \n Exponential with Multiplicative Error")
 
 # Compare Curvature within Varability
@@ -184,7 +185,7 @@ lofStats[-1,] %>%
   scale_fill_brewer(palette = "Paired") + 
   scale_color_brewer(palette = "Paired") + 
   theme_bw() +
-  facet_grid(~Variability) + 
+  facet_wrap(~Variability, scale = "free") + 
   ggtitle("Lack of Fit by Difficulty Level \n Exponential with Multiplicative Error")
 ```
 

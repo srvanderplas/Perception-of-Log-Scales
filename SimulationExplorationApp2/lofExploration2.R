@@ -7,11 +7,11 @@ highVarVal = sqrt(betaVal^2*1.5)
 highVarVal
 
 #Identify parameters
-parmCombos <- data.frame(beta  = c(0.07, 0.07, 0.15, 0.15, 0.22, 0.22),
-                         sdErr = c(0.05, 0.085, 0.12, 0.21, 0.19, 0.33),
+parmCombos <- data.frame(beta  = c(0.07, 0.07, 0.15, 0.15, 0.3, 0.3),
+                         sdErr = c(0.05, 0.07, 0.12, 0.18, 0.3, 0.5),
                          Curvature = c("Hard", "Hard", "Medium", "Medium", "Easy", "Easy"),
                          Variability = c("Low", "High", "Low", "High", "Low", "High")
-                         )
+)
 
 
 #Look at visuals
@@ -19,7 +19,7 @@ sim.data.all <- data.frame("x" = NA, "y" = NA, "Curvature" = NA, "Variability" =
 for(k in 1:nrow(parmCombos)){
   sim.data.new <- simulate.data(simulateFunction = simulate.exponential, 
                                 N = 20, 
-                                nReps = 1,
+                                nReps = 5,
                                 xRange = c(1,20), 
                                 
                                 # Exponential Parameters
@@ -54,7 +54,7 @@ for(k in 1:nrow(parmCombos)){
   sim.data_0.1 <- replicate(n = 1000,
                             simulate.data(simulateFunction = simulate.exponential, 
                                           N = 20, 
-                                          nReps = 5,
+                                          nReps = 20,
                                           xRange = c(1,20), 
                                           
                                           # Exponential Parameters
@@ -87,7 +87,7 @@ lofStats[-1,] %>%
   scale_fill_brewer(palette = "Paired") + 
   scale_color_brewer(palette = "Paired") + 
   theme_bw() +
-  facet_grid(~Curvature) + 
+  facet_wrap(~Curvature, scale = "free") + 
   ggtitle("Lack of Fit by Difficulty Level \n Exponential with Multiplicative Error")
 
 # Compare Curvature within Varability
@@ -99,5 +99,5 @@ lofStats[-1,] %>%
   scale_fill_brewer(palette = "Paired") + 
   scale_color_brewer(palette = "Paired") + 
   theme_bw() +
-  facet_grid(~Variability) + 
+  facet_wrap(~Variability, scale = "free") + 
   ggtitle("Lack of Fit by Difficulty Level \n Exponential with Multiplicative Error")
