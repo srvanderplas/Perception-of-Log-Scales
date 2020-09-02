@@ -1,0 +1,427 @@
+---
+title: "Simulation Options"
+author: "Emily Robinson"
+date: "9/1/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, message = FALSE, warning = FALSE)
+library(ggplot2)
+library(scales)
+library(tidyverse)
+```
+
+# Does not include theta
+
+### Heuristic Simulation
+
+$y = \alpha e^{\beta x}$
+
+```{r heuristicSimulation_noTheta, message=FALSE, warning=FALSE}
+expSim <- function(xMid, xRange = c(1,20), yRange = c(1,10)){
+  
+  lineData   <- tibble(xLine = seq(xRange[1],xRange[2],0.1),
+                       yLine = ((yRange[1]-yRange[2])/(xRange[2]-xRange[1]))*(xLine-xRange[1])+yRange[2])
+  pointsData <- tibble(xPoint = c(xRange[1], xMid, xRange[2]),
+                       yPoint = c(yRange[1], lineData$yLine[lineData$xLine == xMid], yRange[2]))
+  
+  
+  lm.fit <- lm(log(yPoint) ~ xPoint, data = pointsData)
+  alpha.0  <- exp(coef(lm.fit)[1]) %>% as.numeric()
+  beta.0   <- coef(lm.fit)[2] %>% as.numeric()
+  start <- list(alpha = alpha.0, beta = beta.0)
+  nonlinear.fit   <- nls(yPoint ~ alpha * exp(beta * xPoint), data = pointsData, start = start)
+  alpha <- coef(nonlinear.fit)[1] %>% as.numeric()
+  beta <- coef(nonlinear.fit)[2] %>% as.numeric()
+  
+  expData <- tibble(x = seq(xRange[1],xRange[2],0.1),
+                    y = alpha*exp(beta*x))
+  return(list(expData = expData, lineData = lineData, pointsData = pointsData))
+}
+
+expData <- tibble(xMid = c(12, 13.5, 15)) %>%
+  mutate(data = map(xMid, expSim)) %>%
+  unnest(data) %>%
+  unnest(data) %>%
+  mutate(xMid = factor(xMid))
+
+expData %>%
+  ggplot(aes(x = x, y = y, group = xMid, color = xMid)) + 
+  geom_line() +
+  geom_line(aes(x = xLine, y = yLine), color = "gray") +
+  geom_point(aes(x = xPoint, y = yPoint), color = "black") +
+  theme_bw() +
+  scale_color_brewer(palette = "Paired")
+
+expData %>%
+  ggplot(aes(x = x, y = y, group = xMid, color = xMid)) + 
+  geom_line() +
+  geom_point(aes(x = xPoint, y = yPoint), color = "black") +
+  geom_line(aes(x = xLine, y = yLine), color = "gray") +
+  theme_bw() +
+  scale_color_brewer(palette = "Paired") +
+  scale_y_continuous(trans = "log10",
+                     breaks = trans_breaks("log10", function(x) 10^x),
+                     labels = trans_format("log10", math_format(10^.x)))
+
+```
+
+$y = \alpha e^{\beta x + \epsilon}$
+
+```{r heuristicSimulation_noTheta_error, message=FALSE, warning=FALSE}
+expSim <- function(xMid, sigma, N = 20, xRange = c(1,20), yRange = c(1,100)){
+  
+  lineData   <- tibble(xLine = seq(xRange[1],xRange[2],0.1),
+                       yLine = ((yRange[1]-yRange[2])/(xRange[2]-xRange[1]))*(xLine-xRange[1])+yRange[2])
+  pointsData <- tibble(xPoint = c(xRange[1], xMid, xRange[2]),
+                       yPoint = c(yRange[1], lineData$yLine[lineData$xLine == xMid], yRange[2]))
+  
+  
+  lm.fit <- lm(log(yPoint) ~ xPoint, data = pointsData)
+  alpha.0  <- exp(coef(lm.fit)[1]) %>% as.numeric()
+  beta.0   <- coef(lm.fit)[2] %>% as.numeric()
+  start <- list(alpha = alpha.0, beta = beta.0)
+  nonlinear.fit   <- nls(yPoint ~ alpha * exp(beta * xPoint), data = pointsData, start = start)
+  alpha <- (coef(nonlinear.fit)[1] %>% as.numeric())/(exp((sigma^2)/2))
+  beta <- coef(nonlinear.fit)[2] %>% as.numeric()
+  
+  expData <- tibble(x = seq(xRange[1],xRange[2], length.out = N),
+                    y = alpha*exp(beta*x + rnorm(N,0,sigma)))
+  return(list(expData = expData, lineData = lineData, pointsData = pointsData))
+}
+
+expData <- tibble(xMid = c(12, 13.5, 15),
+                  sigma = c(0.1, 0.15, 0.3)) %>%
+  mutate(data = map2(xMid, sigma, expSim)) %>%
+  unnest(data) %>%
+  unnest(data) %>%
+  mutate(xMid = factor(xMid))
+
+expData %>%
+  ggplot(aes(x = x, y = y, group = xMid, color = xMid)) + 
+  geom_point() +
+  geom_line(aes(x = xLine, y = yLine), color = "gray") +
+  geom_point(aes(x = xPoint, y = yPoint), color = "gray") +
+  theme_bw() +
+  scale_color_brewer(palette = "Paired")
+
+expData %>%
+  ggplot(aes(x = x, y = y, group = xMid, color = xMid)) + 
+  geom_point() +
+  geom_point(aes(x = xPoint, y = yPoint), color = "gray") +
+  geom_line(aes(x = xLine, y = yLine), color = "gray") +
+  theme_bw() +
+  scale_color_brewer(palette = "Paired") +
+  scale_y_continuous(trans = "log10",
+                     breaks = trans_breaks("log10", function(x) 10^x),
+                     labels = trans_format("log10", math_format(10^.x)))
+```
+
+### Original Simulation
+
+$y = \alpha e^{\beta x}$ with $\alpha = \frac{yMax}{e^{\beta xMax}}$
+
+```{r originalSim_max, message=FALSE, warning=FALSE}
+expSim <- function(beta, xRange = c(1,20), yRange = c(1,10)){
+  alpha   <- (yRange[2]/exp(beta*xRange[2]))
+  expData <- tibble(x = seq(xRange[1],xRange[2],1),
+                    y = alpha*exp(beta*x))
+  return(expData)
+}
+
+expData <- tibble(beta = c(0.07, 0.15, 0.3)) %>%
+           mutate(data = map(beta, expSim)) %>%
+           unnest(data) %>%
+           mutate(beta = factor(beta))
+
+expData %>%
+  ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
+  geom_line() +
+  theme_bw() +
+  scale_color_brewer(palette = "Paired")
+
+expData %>%
+  ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
+  geom_line() +
+  theme_bw() +
+  scale_color_brewer(palette = "Paired") +
+  scale_y_continuous(trans = "log10",
+                     breaks = trans_breaks("log10", function(x) 10^x),
+                     labels = trans_format("log10", math_format(10^.x)))
+```
+
+
+$y = \alpha e^{\beta x + \epsilon}$ with $\alpha = \frac{yMax}{e^{\beta xMax+\sigma^2/2}}$
+
+```{r originalSim_max_error, message=FALSE, warning=FALSE}
+expSim <- function(beta, sigma, N = 30, xRange = c(1,20), yRange = c(1,100)){
+  alpha <- (yRange[2]/exp(beta*xRange[2]))/(exp((sigma^2)/2))
+  expData <- tibble(x = seq(xRange[1],xRange[2], length.out = N),
+                    y = alpha*exp(beta*x + rnorm(N,0,sigma)))
+  return(expData)
+}
+
+expData <- tibble(beta = c(0.3, 0.3, 0.15, 0.15, 0.07, 0.07),
+                  sigma = c(0.3, 0.4, 0.12, 0.17, 0.05, 0.07)) %>%
+  mutate(data = map2(beta, sigma, expSim)) %>%
+  unnest(data) %>%
+  mutate(beta = factor(beta))
+
+expData %>%
+  ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
+  geom_point() +
+  theme_bw() +
+  scale_color_brewer(palette = "Paired")
+
+expData %>%
+  ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
+  geom_point() +
+  theme_bw() +
+  scale_color_brewer(palette = "Paired") +
+  scale_y_continuous(trans = "log10",
+                     breaks = trans_breaks("log10", function(x) 10^x),
+                     labels = trans_format("log10", math_format(10^.x)))
+```
+
+# Includes theta
+
+### Heuristic Simulation
+
+$y = \alpha e^{\beta x} + \theta$
+
+```{r heuristicSimulation_yesTheta, message=FALSE, warning=FALSE}
+expSim <- function(xMid, xRange = c(0,20), yRange = c(1,100)){
+  
+  lineData   <- tibble(xLine = seq(xRange[1],xRange[2],0.1),
+                       yLine = ((yRange[1]-yRange[2])/(xRange[2]-xRange[1]))*(xLine-xRange[1])+yRange[2])
+  pointsData <- tibble(xPoint = c(xRange[1], (xMid-0.1), (xMid+0.1), xRange[2]),
+                       yPoint = c(yRange[1], lineData$yLine[lineData$xLine == xMid], lineData$yLine[lineData$xLine == xMid], yRange[2]))
+  
+  
+  lm.fit <- lm(log(yPoint) ~ xPoint, data = pointsData)
+  alpha.0  <- exp(coef(lm.fit)[1]) %>% as.numeric()
+  beta.0   <- coef(lm.fit)[2] %>% as.numeric()
+  theta.0 <- min(pointsData$yPoint) * 0.5  
+  start <- list(alpha = alpha.0, beta = beta.0, theta = theta.0)
+  nonlinear.fit   <- nls(yPoint ~ alpha * exp(beta * xPoint) + theta , data = pointsData, start = start)
+  alpha <- coef(nonlinear.fit)[1] %>% as.numeric()
+  beta <- coef(nonlinear.fit)[2] %>% as.numeric()
+  theta <- coef(nonlinear.fit)[3] %>% as.numeric()
+
+  expData <- tibble(x = seq(xRange[1],xRange[2],0.1),
+                    y = alpha*exp(beta*x) + theta)
+  return(list(expData = expData, lineData = lineData, pointsData = pointsData))
+}
+
+expData <- tibble(xMid = c(11, 13, 15)) %>%
+  mutate(data = map(xMid, expSim)) %>%
+  unnest(data) %>%
+  unnest(data) %>%
+  mutate(xMid = factor(xMid))
+
+expData %>%
+  ggplot(aes(x = x, y = y, group = xMid, color = xMid)) + 
+  geom_line() +
+  geom_point(aes(x = xPoint, y = yPoint), color = "black") +
+  geom_line(aes(x = xLine, y = yLine), color = "gray") +
+  theme_bw() +
+  scale_color_brewer(palette = "Paired")
+
+expData %>%
+  ggplot(aes(x = x, y = y, group = xMid, color = xMid)) + 
+  geom_line() +
+  geom_point(aes(x = xPoint, y = yPoint), color = "black") +
+  geom_line(aes(x = xLine, y = yLine), color = "gray") +
+  theme_bw() +
+  scale_color_brewer(palette = "Paired") +
+  scale_y_continuous(trans = "log10",
+                     breaks = trans_breaks("log10", function(x) 10^x),
+                     labels = trans_format("log10", math_format(10^.x)))
+
+```
+
+$y = \alpha e^{\beta x + \epsilon} + \theta$
+
+```{r heuristicSimulation_yesTheta_error, message=FALSE, warning=FALSE}
+expSim <- function(xMid, sigma, N = 20, xRange = c(0,20), yRange = c(1,100)){
+  
+  lineData   <- tibble(xLine = seq(xRange[1],xRange[2],0.1),
+                       yLine = ((yRange[1]-yRange[2])/(xRange[2]-xRange[1]))*(xLine-xRange[1])+yRange[2])
+  pointsData <- tibble(xPoint = c(xRange[1], (xMid-0.1), (xMid+0.1), xRange[2]),
+                       yPoint = c(yRange[1], lineData$yLine[lineData$xLine == xMid], lineData$yLine[lineData$xLine == xMid], yRange[2]))
+  
+  
+  lm.fit <- lm(log(yPoint) ~ xPoint, data = pointsData)
+  alpha.0  <- exp(coef(lm.fit)[1]) %>% as.numeric()
+  beta.0   <- coef(lm.fit)[2] %>% as.numeric()
+  theta.0 <- min(pointsData$yPoint) * 0.5  
+  start <- list(alpha = alpha.0, beta = beta.0, theta = theta.0)
+  nonlinear.fit   <- nls(yPoint ~ alpha * exp(beta * xPoint) + theta , data = pointsData, start = start)
+  alpha <- (coef(nonlinear.fit)[1] %>% as.numeric())/(exp((sigma^2)/2))
+  beta <- coef(nonlinear.fit)[2] %>% as.numeric()
+  theta <- coef(nonlinear.fit)[3] %>% as.numeric()
+
+  expData <- tibble(x = seq(xRange[1],xRange[2], length.out = N),
+                    y = alpha*exp(beta*x + rnorm(N,0,sigma)) + theta)
+  return(list(expData = expData, lineData = lineData, pointsData = pointsData))
+}
+
+expData <- tibble(xMid = c(12, 13.5, 15),
+                  sigma = c(0.1, 0.15, 0.3)) %>%
+  mutate(data = map2(xMid, sigma, expSim)) %>%
+  unnest(data) %>%
+  unnest(data) %>%
+  mutate(xMid = factor(xMid))
+
+expData %>%
+  ggplot(aes(x = x, y = y, group = xMid, color = xMid)) + 
+  geom_point() +
+  geom_point(aes(x = xPoint, y = yPoint), color = "gray") +
+  geom_line(aes(x = xLine, y = yLine), color = "gray") +
+  theme_bw() +
+  scale_color_brewer(palette = "Paired")
+
+expData %>%
+  ggplot(aes(x = x, y = y, group = xMid, color = xMid)) + 
+  geom_point() +
+  geom_point(aes(x = xPoint, y = yPoint), color = "gray") +
+  geom_line(aes(x = xLine, y = yLine), color = "gray") +
+  theme_bw() +
+  scale_color_brewer(palette = "Paired") +
+  scale_y_continuous(trans = "log10",
+                     breaks = trans_breaks("log10", function(x) 10^x),
+                     labels = trans_format("log10", math_format(10^.x)))
+```
+
+### Original Simulation
+
+$y = \alpha e^{\beta x} + \theta$ with $\theta = \frac{yMax - yMin\times e^{\beta (xMax - xMin)}}{1 - e^{\beta xMax}}$ and $\alpha=\frac{yMin - \theta}{e^{\beta xMin}}$
+
+```{r originalSim_min-max}
+expSim <- function(beta, xRange = c(0,20), yRange = c(1,100)){
+  theta <- (yRange[2]-yRange[1]*(exp(beta*(xRange[2]-xRange[1]))))/(1-exp(beta*xRange[2]))
+  alpha <- (yRange[1]-theta)/(exp(beta*xRange[1]))
+  expData <- tibble(x = seq(xRange[1],xRange[2],1),
+                    y = alpha*exp(beta*x)+theta)
+  return(expData)
+}
+
+expData <- tibble(beta = c(0.07, 0.15, 0.3)) %>%
+  mutate(data = map(beta, expSim)) %>%
+  unnest(data) %>%
+  mutate(beta = factor(beta))
+
+expData %>%
+  ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
+  geom_line() +
+  theme_bw() +
+  scale_color_brewer(palette = "Paired")
+
+expData %>%
+  ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
+  geom_line() +
+  theme_bw() +
+  scale_color_brewer(palette = "Paired") +
+  scale_y_continuous(trans = "log10",
+                     breaks = trans_breaks("log10", function(x) 10^x),
+                     labels = trans_format("log10", math_format(10^.x)))
+```
+
+$y = \alpha e^{\beta x + \epsilon} + \theta$ with $\theta = \frac{yMax - yMin\times e^{\beta (xMax - xMin)}}{1 - e^{\beta xMax}}$ and $\alpha=\frac{yMin - \theta}{e^{\beta xMin+\sigma^2/2}}$
+
+```{r originalSim_min-max_error}
+expSim <- function(beta, sigma, N = 30, xRange = c(0,20), yRange = c(1,100)){
+  theta <- (yRange[2]-yRange[1]*(exp(beta*(xRange[2]-xRange[1]))))/(1-exp(beta*xRange[2]+sigma^2/2))
+  alpha <- (yRange[1]-theta)/(exp(beta*xRange[1]+sigma^2/2))
+  expData <- tibble(x = seq(xRange[1],xRange[2], length.out = N),
+                    y = alpha*exp(beta*x + rnorm(N,0,sigma)) + theta)
+  return(expData)
+}
+
+expData <- tibble(difficulty = c("Easy-Low", "Easy-High", "Medium-Low", "Medium-High", "Hard-Low", "Hard-High"),
+                  beta = c(0.3, 0.3, 0.15, 0.15, 0.07, 0.07),
+                  sigma = c(0.3, 0.4, 0.12, 0.17,0.05, 0.07)) %>%
+  mutate(data = map2(beta, sigma, expSim)) %>%
+  unnest(data) %>%
+  mutate(difficulty = factor(difficulty, levels = c("Easy-Low", "Medium-Low", "Hard-Low",
+                                                    "Easy-High", "Medium-High", "Hard-High")),
+         beta  = factor(beta),
+         sigma = factor(sigma))
+
+expData %>%
+  ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
+  geom_point() +
+  theme_bw() +
+  facet_wrap(~difficulty, ncol = 3) +
+  scale_color_brewer(palette = "Paired")
+
+expData %>%
+  ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
+  geom_point() +
+  theme_bw() +
+  scale_color_brewer(palette = "Paired") +
+  facet_wrap(~difficulty, ncol = 3) +
+  scale_y_continuous(trans = "log10",
+                     breaks = trans_breaks("log10", function(x) 10^x),
+                     labels = trans_format("log10", math_format(10^.x)))
+```
+
+# Adjust x-axis
+
+```{r xAxisAdjust}
+expSim <- function(beta, xRange = c(0,200), yRange = c(1,10)){
+    expData <- tibble(x = seq(xRange[1],xRange[2],0.1),
+                      y = exp(beta*x))
+    return(expData)
+}
+
+expData <- tibble(beta = c(0.07, 0.15, 0.3)) %>%
+  mutate(data = map(beta, expSim)) %>%
+  unnest(data) %>%
+  mutate(beta = factor(beta))
+
+expData %>%
+  filter(y <= 10) %>%
+  ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
+  geom_line() +
+  theme_bw() +
+  facet_grid(~beta) +
+  # facet_grid(~beta, scales = "free") +
+  scale_color_brewer(palette = "Paired")
+
+expData %>%
+  filter(y <= 10) %>%
+  ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
+  geom_line() +
+  theme_bw() +
+  # facet_grid(~beta) +
+  facet_grid(~beta, scales = "free") +
+  scale_color_brewer(palette = "Paired")
+
+expData %>%
+  filter(y <= 10) %>%
+  ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
+  geom_line() +
+  theme_bw() +
+  facet_grid(~beta) +
+  # facet_grid(~beta, scales = "free") +
+  scale_color_brewer(palette = "Paired") +
+  scale_y_continuous(trans = "log10",
+                     breaks = trans_breaks("log10", function(x) 10^x),
+                     labels = trans_format("log10", math_format(10^.x)))
+
+expData %>%
+  filter(y <= 10) %>%
+  ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
+  geom_line() +
+  theme_bw() +
+  # facet_grid(~beta) +
+  facet_grid(~beta, scales = "free") +
+  scale_color_brewer(palette = "Paired") +
+  scale_y_continuous(trans = "log10",
+                     breaks = trans_breaks("log10", function(x) 10^x),
+                     labels = trans_format("log10", math_format(10^.x)))
+```
+
+
