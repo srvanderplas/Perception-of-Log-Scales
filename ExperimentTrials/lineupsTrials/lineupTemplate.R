@@ -60,6 +60,13 @@ colnames(pictureDetails) <- c("pic.id", "trt.num", "data.name", "linearPic.name"
 # so e.g. label it with the factor levels rather than an ID number. 
 # This safeguards against the key being lost, and makes it much easier to sift through
 # the files looking for a specific example, too. 
+
+# Also, take it from me. Set your seed, and set it in a way that will prevent you from
+# changing a parameter and getting different seed results down the line
+# in this case, maybe get a vector of 36 seeds, and set the seed before each dataset is generated
+# So that if you change the number of points in the plot, you're only changing 
+# that plot and not every plot afterwards.
+# (lessons learned from the feature hierarchy study)
 for(i in 1:36){
 
 trt <- trtData[i, "trt.num"] %>% as.numeric()
