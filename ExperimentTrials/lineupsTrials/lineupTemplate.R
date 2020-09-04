@@ -102,7 +102,7 @@ save(logLineup, file = paste("plots/logLineup_", i, ".png", sep = ""))
 pictureDetails[i, "pic.id"]  <- i
 pictureDetails[i, "trt.num"] <- trt 
 pictureDetails[i, "data.name"] <- paste("data/linupData_", i, ".Rdata", sep = "")
-pictureDetails[i, "linearPic.name"] <- paste("../plots/linearLineup_", i, ".png", sep = "")
+pictureDetails[i, "linearPic.name"] <- paste("plots/linearLineup_", i, ".png", sep = "")
 pictureDetails[i, "logPic.name"] <- paste("plots/logLineup_", i, ".png", sep = "")
 pictureDetails[i, "target.pos"] <- pos
 }
