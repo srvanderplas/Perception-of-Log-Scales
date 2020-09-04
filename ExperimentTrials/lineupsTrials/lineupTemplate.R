@@ -84,7 +84,7 @@ linearLineup <- ggplot(lineupData, aes(x=x, y=y)) +
         axis.text.y  = element_blank(),
         axis.text.x  = element_blank(),
        )
-save(linearLineup, file = paste("plots/linearLineup_", i, ".png", sep = ""))
+ggsave(linearLineup, file = paste("plots/linearLineup_", i, ".png", sep = ""))
 
 logLineup <- ggplot(lineupData, aes(x=x, y=y)) + 
   facet_wrap(~.sample, ncol=5) +
@@ -97,7 +97,7 @@ logLineup <- ggplot(lineupData, aes(x=x, y=y)) +
         axis.text.y  = element_blank(),
         axis.text.x  = element_blank(),
   )
-save(logLineup, file = paste("plots/logLineup_", i, ".png", sep = ""))
+ggsave(logLineup, file = paste("plots/logLineup_", i, ".png", sep = ""))
 
 pictureDetails[i, "pic.id"]  <- i
 pictureDetails[i, "trt.num"] <- trt 
