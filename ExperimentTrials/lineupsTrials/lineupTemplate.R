@@ -7,7 +7,7 @@ library(readr)
 # Emily, can you use a relative path for these things? or better yet, the here package?
 # here::here("ExperimentTrials/lineupsTrials") will get you to the same place, but it'll work on multiple machines. :)
 # You can delete these lines once you've read them, but I wanted to explain the change :)
-here::here("ExperimentTrials/lineupsTrials")
+setwd(here::here("ExperimentTrials/lineupsTrials"))
 
 # Only works for x starting at 0
 expSim <- function(beta, sigma, N = 30, xRange = c(0,20), yRange = c(1,100)){
