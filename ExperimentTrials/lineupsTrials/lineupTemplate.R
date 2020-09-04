@@ -3,7 +3,11 @@ library(tidyverse)
 library(nullabor)
 library(readr)
 
-setwd("~/GitHub/Perception-of-Log-Scales/ExperimentTrials/lineupsTrials")
+# setwd("~/GitHub/Perception-of-Log-Scales/ExperimentTrials/lineupsTrials") 
+# Emily, can you use a relative path for these things? or better yet, the here package?
+# here::here("ExperimentTrials/lineupsTrials") will get you to the same place, but it'll work on multiple machines. :)
+# You can delete these lines once you've read them, but I wanted to explain the change :)
+here::here("ExperimentTrials/lineupsTrials")
 
 # Only works for x starting at 0
 expSim <- function(beta, sigma, N = 30, xRange = c(0,20), yRange = c(1,100)){
@@ -50,6 +54,12 @@ trtData <- factorialData %>%
 
 pictureDetails <- matrix(NA, nrow = 36, ncol = 6) %>% as.data.frame()
 colnames(pictureDetails) <- c("pic.id", "trt.num", "data.name", "linearPic.name", "logPic.name", "target.pos")
+
+# The map function is your friend here - construct the data frame first, then pmap() through it with a function.
+# Also, in general, it will be helpful for you to make the file name something meaningful, 
+# so e.g. label it with the factor levels rather than an ID number. 
+# This safeguards against the key being lost, and makes it much easier to sift through
+# the files looking for a specific example, too. 
 for(i in 1:36){
 
 trt <- trtData[i, "trt.num"] %>% as.numeric()
