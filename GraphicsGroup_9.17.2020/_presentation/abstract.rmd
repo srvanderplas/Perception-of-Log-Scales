@@ -1,0 +1,81 @@
+---
+title: "Perception of exponential data displayed on a log scale"
+author: "Emily Robinson, Susan VanderPlas, & Reka Howard"
+date: "9/17/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE, fig.width=8, fit.height = 4, fig.align='center', warning=F, message=F}
+knitr::opts_chunk$set(echo = F)
+library(purrr)
+library(tidyverse)
+library(gridExtra)
+library(nullabor)
+library(scales)
+```
+
+### Abstract
+
+Log scales are often used to display expoential data due to their ability to show vastly differing magnitudes within one graph. However, there is little known about how we perceive the data displayed on a log scale verses a linear scale. We are developing a graphical experiment involving three tasks - lineups, you draw it, and estimation - in order to gain a better understanding of how using log scales to display exponential data might be affecting our decision making. As fellow graphic group members, we would like to use you as our 'Guinea pigs' as we work through the development stages of the experimentation applet. 
+
+### Image
+
+```{r lineupExample, fig.width=8, fit.height = 3, message=FALSE, warning=FALSE}
+expSim <- function(xMid, sigma, N = 20, xRange = c(0,20), yRange = c(10,10000)){
+  
+  lineData   <- tibble(xLine = seq(xRange[1],xRange[2],0.1),
+                       yLine = ((yRange[1]-yRange[2])/(xRange[2]-xRange[1]))*(xLine-xRange[1])+yRange[2])
+  pointsData <- tibble(xPoint = c(xRange[1], (xMid-0.1), (xMid+0.1), xRange[2]),
+                       yPoint = c(yRange[1], lineData$yLine[lineData$xLine == xMid], lineData$yLine[lineData$xLine == xMid], yRange[2]))
+  
+  
+  lm.fit <- lm(log(yPoint) ~ xPoint, data = pointsData)
+  alpha.0  <- exp(coef(lm.fit)[1]) %>% as.numeric()
+  beta.0   <- coef(lm.fit)[2] %>% as.numeric()
+  theta.0 <- min(pointsData$yPoint) * 0.5  
+  start <- list(alpha = alpha.0, beta = beta.0, theta = theta.0)
+  nonlinear.fit   <- nls(yPoint ~ alpha * exp(beta * xPoint) + theta , data = pointsData, start = start)
+  alpha <- (coef(nonlinear.fit)[1] %>% as.numeric())/(exp((sigma^2)/2))
+  beta <- coef(nonlinear.fit)[2] %>% as.numeric()
+  theta <- coef(nonlinear.fit)[3] %>% as.numeric()
+  
+  expData <- tibble(x = seq(xRange[1],xRange[2], length.out = N),
+                    y = alpha*exp(beta*x + rnorm(N,0,sigma)) + theta)
+  return(expData)
+}
+
+expData <- expSim(xMid = 14.5, sigma = 0.25, N = 20)
+
+linearPlot <- ggplot(expData, aes(x=x, y=y)) + 
+  geom_point(alpha = 0.7) + 
+  theme(aspect.ratio = 1) +
+  scale_y_continuous("", limits = c(0, max(10000, max(expData$y + 100))), breaks = seq(0,11000, 2000)) +
+  theme_bw() +
+  scale_x_continuous("")
+  # theme(axis.title.y = element_blank(),
+  #       axis.title.x = element_blank(),
+  #       axis.text.y  = element_blank(),
+  #       axis.text.x  = element_blank(),
+  # )
+
+logPlot <- ggplot(expData, aes(x=x, y=y)) + 
+  geom_point(alpha = 0.7) + 
+  theme(aspect.ratio=1) +
+  theme_bw() +
+  scale_y_continuous("",
+                     trans = "log10",
+                     breaks = trans_breaks("log10", function(x) 10^x),
+                     labels = trans_format("log10", math_format(10^.x))) +
+  scale_x_continuous("")
+  # theme(axis.title.y = element_blank(),
+  #       axis.title.x = element_blank(),
+  #       axis.text.y  = element_blank(),
+  #       axis.text.x  = element_blank(),
+  # )
+
+grid.arrange(linearPlot, logPlot, ncol = 2)
+```
+
+
