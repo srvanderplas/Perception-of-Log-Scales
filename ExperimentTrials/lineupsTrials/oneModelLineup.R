@@ -3,7 +3,7 @@ library(tidyverse)
 library(nullabor)
 library(readr)
 
-n = 20
+n = 40
 
 beta.target = 0.07
 beta.null = 0.25
