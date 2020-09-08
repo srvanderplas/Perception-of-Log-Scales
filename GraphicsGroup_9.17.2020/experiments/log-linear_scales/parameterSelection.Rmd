@@ -1,0 +1,164 @@
+---
+title: "Parameter Selection"
+author: "Emily Robinson"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T, out.width = "100%", dpi = 300, message = F)
+library(knitr)
+require(tidyverse)
+require(gridExtra)
+require(scales)
+library(purrr)
+
+expSim <- function(xMid, sigma, N = 20, nReps, xRange = c(0,20), yRange = c(10,100)){
+  
+  lineData   <- tibble(xLine = seq(xRange[1],xRange[2],0.1),
+                       yLine = ((yRange[1]-yRange[2])/(xRange[2]-xRange[1]))*(xLine-xRange[1])+yRange[2])
+  pointsData <- tibble(xPoint = c(xRange[1], (xMid-0.1), (xMid+0.1), xRange[2]),
+                       yPoint = c(yRange[1], lineData$yLine[lineData$xLine == xMid], lineData$yLine[lineData$xLine == xMid], yRange[2]))
+  
+  
+  lm.fit <- lm(log(yPoint) ~ xPoint, data = pointsData)
+  alpha.0  <- exp(coef(lm.fit)[1]) %>% as.numeric()
+  beta.0   <- coef(lm.fit)[2] %>% as.numeric()
+  theta.0 <- min(pointsData$yPoint) * 0.5  
+  start <- list(alpha = alpha.0, beta = beta.0, theta = theta.0)
+  nonlinear.fit   <- nls(yPoint ~ alpha * exp(beta * xPoint) + theta , data = pointsData, start = start)
+  alpha <- (coef(nonlinear.fit)[1] %>% as.numeric())/(exp((sigma^2)/2))
+  beta <- coef(nonlinear.fit)[2] %>% as.numeric()
+  theta <- coef(nonlinear.fit)[3] %>% as.numeric()
+  
+  expData <- tibble(x = rep(seq(xRange[1],xRange[2], length.out = N), nReps),
+                    y = alpha*exp(beta*x + rnorm(N*nReps,0,sigma)) + theta)
+  return(expData)
+}
+
+# Evaluate Fit ---------------------------------------------------------------------
+
+calcLOF <- 
+  function(sim.data){
+    if(nrow(sim.data)/length(unique(sim.data$x)) > 1){
+    lof.mod <- lm(y ~ as.factor(x), data = sim.data)
+    lof <- anova(lof.mod) %>% 
+      broom::tidy() %>%
+      filter(term == "as.factor(x)") %>%
+      select(statistic)
+    } else {
+      lof.mod <- NULL
+      lof <- NULL
+    }
+    return(lof)
+  }
+```
+
+
+# Exponential with a multiplicative error
+
+Data is simulated heuristically with the following model: 
+
+$$y = \alpha e^{(\beta x + \epsilon)} + \theta$$ 
+with $\epsilon \sim N(0,\sigma)$
+
+where
+
+\begin{align*}
+xRange &= (0, 20)\\
+N &= 20
+\end{align*}
+
+
+```{r ExpMultParms, cache = F, echo = F}
+#Identify parameters
+parmCombos <- data.frame(Curvature = c("Hard", "Hard", "Medium", "Medium", "Easy", "Easy"),
+                         Variability = c("Low", "High", "Low", "High", "Low", "High"),
+                         # beta  = c(0.07, 0.07, 0.15, 0.15, 0.3, 0.3),
+                         xMid  = c(11.8,  11.8,   13,   13,   14.5,  14.5),
+                         sigma = c(0.07, 0.09, 0.14, 0.18, 0.25, 0.33)
+                         )
+# parmCombos %>% kable(format = "pandoc")
+```
+
+```{r ExpMultVisuals5, cache = F, echo = F, fig.width = 6, fig.height = 6}
+simData5 <- parmCombos %>%
+                  mutate(data = pmap(list(xMid,sigma,nReps = 5),expSim)) %>%
+                  unnest(data)
+
+simData5 %>%
+  mutate(Curvature = factor(Curvature, levels = c("Easy", "Medium", "Hard"))) %>%
+  mutate(Variability = factor(Variability, levels = c("Low", "High"))) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(shape = 1) +
+  theme_bw() +
+  facet_grid(Curvature ~ Variability)
+
+simData5 %>%
+  mutate(Curvature = factor(Curvature, levels = c("Easy", "Medium", "Hard"))) %>%
+  mutate(Variability = factor(Variability, levels = c("Low", "High"))) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(shape = 1) +
+  theme_bw() +
+  facet_grid(Curvature ~ Variability) +
+  scale_y_continuous(trans = "log10")
+```
+
+```{r ExpMultVisuals1, cache = F, echo = F, fig.width = 6, fig.height = 6}
+simData1 <- parmCombos %>%
+                  mutate(data = pmap(list(xMid,sigma,nReps = 1),expSim)) %>%
+                  unnest(data)
+
+simData1 %>%
+  mutate(Curvature = factor(Curvature, levels = c("Easy", "Medium", "Hard"))) %>%
+  mutate(Variability = factor(Variability, levels = c("Low", "High"))) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(shape = 1) +
+  theme_bw() +
+  facet_grid(Curvature ~ Variability)
+
+simData1 %>%
+  mutate(Curvature = factor(Curvature, levels = c("Easy", "Medium", "Hard"))) %>%
+  mutate(Variability = factor(Variability, levels = c("Low", "High"))) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(shape = 1) +
+  theme_bw() +
+  facet_grid(Curvature ~ Variability) +
+  scale_y_continuous(trans = "log10")
+```
+
+```{r ExpMultLOF, cache = F, echo = F, fig.width = 8, fig.height = 4}
+
+lofData <- parmCombos %>%
+                  expand_grid(replicate = seq(1,1000,1)) %>%
+                  mutate(data = pmap(list(xMid,sigma,nReps = 10),expSim)) %>%
+                  mutate(lof = map(data, calcLOF)) %>%
+                  unnest(lof)
+
+# Compare Varability within Curvature
+lofData %>%
+  mutate(Curvature = factor(Curvature, levels = c("Easy", "Medium", "Hard"))) %>%
+  mutate(Variability = factor(Variability, levels = c("Low", "High"))) %>%
+  ggplot(aes(x = statistic, fill = Variability, color = Variability)) +
+  geom_density(alpha = 0.7) +
+  scale_fill_brewer(palette = "Paired") + 
+  scale_color_brewer(palette = "Paired") + 
+  theme_bw() +
+  facet_wrap(~Curvature, scale = "free") + 
+  ggtitle("Lack of Fit by Difficulty Level \n Exponential with Multiplicative Error")
+
+# Compare Curvature within Varability
+lofData %>%
+  mutate(Curvature = factor(Curvature, levels = c("Easy", "Medium", "Hard"))) %>%
+  mutate(Variability = factor(Variability, levels = c("Low", "High"))) %>%
+  ggplot(aes(x = statistic, fill = Curvature, color = Curvature)) +
+  geom_density(alpha = 0.7) +
+  scale_fill_brewer(palette = "Paired") + 
+  scale_color_brewer(palette = "Paired") + 
+  theme_bw() +
+  facet_wrap(~Variability, scale = "free") + 
+  ggtitle("Lack of Fit by Difficulty Level \n Exponential with Multiplicative Error")
+```
+
+
