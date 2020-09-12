@@ -5,74 +5,55 @@ library(lubridate)
 library(dplyr)
 library(RSQLite)
 
+experiment_name <- "emily-log-1"
+plots_folder <- "plots" # subfolders for data, pdf, png, svg. picture_details.csv in this folder
+trials_folder <- "trials" # subfolders for svg. picture_details_trial.csv in this folder
+
+
+con <- dbConnect(SQLite(), dbname = "exp_data.db")
+experiment <- dbReadTable(con, "experiment_details")
+if (nrow(experiment) > 1) {
+    experiment <- experiment[nrow(experiment),]
+    warning("Multiple rows in the experiment_details table. Only the last row will be used.")
+}
+dbDisconnect(con)
+
+source("code/randomization.R")
+
 shinyServer(function(input, output, session) {
 
     # reactive values to control the trials
     values <- reactiveValues(
-        question = "", experiment = "", pics = NULL,
-        submitted = FALSE, choice = NULL, reasons = NULL,
-        starttime = NULL, trialsreq = 0, trialsleft = 0,
-        lpp = 0, lppleft = 0, pic_id = 0, choice = NULL,
+        experiment = experiment$experiment,
+        question = experiment$question,
+        pics = NULL,
+        submitted = FALSE, choice = NULL,
+        reasons = strsplit(experiment$reasons, ",")[[1]],
+        starttime = NULL,
+        trialsreq = experiment$trials_req,
+        trialsleft = experiment$trials_req,
+        lpp = experiment$lpp,
+        lppleft = experiment$lpp,
+        pic_id = 0, choice = NULL,
         correct = NULL, result = "")
+#
+#     # This outputs the experiment results CSV file
+#     output$downloadDB <- downloadHandler(
+#         filename = function() { paste0(experiment$experiment, "_results.csv") },
+#         content = function(conn) {
+#             con <- dbConnect(SQLite(), dbname = "exp_data.db")
+#             feedback <- dbReadTable(con, "feedback")
+#
+#             this_feedback <- feedback %>%
+#                 filter(description == experiment$experiment)
+#
+#             write.csv(this_feedback, conn, row.names = FALSE)
+#         }
+#     )
 
-    # This set of values is used to populate the UI for experiment details
-    experiment_choices <- reactive({
-        con <- dbConnect(SQLite(), dbname = "data/turk.db")
+    output$debug <- renderText({experiment$question})
 
-        experiments <- dbReadTable(con, "experiment_details")
-
-        dbDisconnect(con)
-
-        return(sort(experiments$experiment, decreasing = TRUE))
-    })
-
-    # Actually updating the UI with experiment details
-    observe({
-        updateSelectizeInput(session, "expname", choices = experiment_choices())
-    })
-
-    # This outputs the experiment results CSV file
-    output$downloadDB <- downloadHandler(
-        filename = function() { paste0(values$experiment, "_results.csv") },
-        content = function(conn) {
-            con <- dbConnect(SQLite(), dbname = "data/turk.db")
-            feedback <- dbReadTable(con, "feedback")
-
-            this_feedback <- feedback %>%
-                filter(description == values$experiment)
-
-            write.csv(this_feedback, conn, row.names = FALSE)
-        }
-    )
-
-    output$debug <- renderText({return(values$question)})
-
-
-    observeEvent(input$confirmexp, {
-        # If the experiment name is selected, connect to the db and get the details,
-        # then set the appropriate values used in the UI
-        if (nchar(input$expname) > 0) {
-            con <- dbConnect(SQLite(), dbname = "data/turk.db")
-
-            experiments <- dbReadTable(con, "experiment_details")
-            myexp <- experiments[experiments$experiment == input$expname,]
-
-            values$experiment <- myexp[1,"experiment"]
-            values$question <- myexp[1,"question"]
-            values$reasons <- strsplit(myexp[1,"reasons"], ",")[[1]]
-            values$lpp <- myexp[1,"lpp"]
-            values$lppleft <- myexp[1,"lpp"]
-            values$trialsreq <- myexp[1,"trials_req"]
-            values$trialsleft <- myexp[1,"trials_req"]
-
-            dbDisconnect(con)
-
-            #enable("downloadDB")
-
-            updateCheckboxInput(session, "expchosen", value = TRUE)
-            source(file.path("experiments", input$expname, "randomization.R"))
-        }
-    })
+    #enable("downloadDB")
 
     # Show other text input box if other is selected
     observe({
@@ -97,11 +78,10 @@ shinyServer(function(input, output, session) {
     output$welcome_header <- renderText("Welcome to a Survey on Graphical Inference")
 
     # ---- Introduction --------------------------------------------------------
-    # Welcome text and instructions *** IRB Stuff goes here ***
+    # Welcome text and instructions
     output$welcome_text <- renderUI({
-        return(HTML("This web site is designed to conduct a survey on graphical inference which will help us understand human perception of graphics for use in communicating statistics.<br/><br/>
-
-               The following examples illustrate the types of questions you may encounter during this experiment."))
+        HTML("This web site is designed to conduct a survey on graphical inference which will help us understand human perception of graphics for use in communicating statistics.<br/><br/>
+               The following examples illustrate the types of questions you may encounter during this experiment.")
     })
 
     # ---- Example -------------------------------------------------------------
@@ -112,7 +92,8 @@ shinyServer(function(input, output, session) {
     output$example1_plot <- renderImage({
         if (is.null(values$experiment)) return(NULL)
 
-        list(src = file.path("experiments", values$experiment, "examples", "example1.png"),
+        list(src = file.path("examples", "example1.png"),
+             width = "100%",
              contentType = 'image/png')
     }, deleteFile = FALSE)
 
@@ -131,7 +112,8 @@ shinyServer(function(input, output, session) {
     output$example2_plot <- renderImage({
         if (is.null(values$experiment)) return(NULL)
 
-        list(src = file.path("experiments", values$experiment, "examples", "example2.png"),
+        list(src = file.path("examples", "example2.png"),
+             width = "100%",
              contentType = 'image/png')
     }, deleteFile = FALSE)
 
@@ -151,7 +133,7 @@ shinyServer(function(input, output, session) {
     # add demographic information to the database
     observeEvent(input$submitdemo, {
         if (!is.null(input$turk) && nchar(input$turk) > 0) {
-            con <- dbConnect(SQLite(), dbname = "data/turk.db")
+            con <- dbConnect(SQLite(), dbname = "exp_data.db")
 
             age <- ifelse(is.null(input$age), "", input$age)
             gender <- ifelse(is.null(input$gender), "", input$gender)
@@ -228,7 +210,7 @@ shinyServer(function(input, output, session) {
                                    description = values$experiment)
 
                 # Write results to database
-                con <- dbConnect(SQLite(), dbname = "data/turk.db")
+                con <- dbConnect(SQLite(), dbname = "exp_data.db")
 
                 dbWriteTable(con, "feedback", test, append = TRUE, row.names = FALSE)
                 dbDisconnect(con)
@@ -286,7 +268,7 @@ shinyServer(function(input, output, session) {
 
             plotpath <- ifelse(values$trialsleft > 0, "trials", "plots")
 
-            con <- dbConnect(SQLite(), dbname = "data/turk.db")
+            con <- dbConnect(SQLite(), dbname = "exp_data.db")
 
             # I suspect this logic could be improved with dbplyr...
             if (trial == 0 && is.null(values$pics)) {
@@ -335,7 +317,7 @@ shinyServer(function(input, output, session) {
             updateCheckboxGroupInput(session, "reasoning", selected = NA)
 
             # Include the picture
-            HTML(readLines(file.path("experiments", values$experiment, plotpath, nextplot$pic_name)))
+            HTML(readLines(file.path(plotpath, "svg", nextplot$pic_name)))
         })
     })
 })

@@ -2,23 +2,17 @@ library(shiny)
 library(shinyjs)
 library(shinythemes)
 
+
 fluidPage(theme = shinytheme("cerulean"),
 
     useShinyjs(),
 
     sidebarLayout(
         sidebarPanel(width = 3,
-            # This panel shows if the experiment hasn't been chosen yet
-            conditionalPanel(
-                condition = "!input.expchosen",
-                selectizeInput("expname", "Experiment", choices = NULL),
-                actionButton("confirmexp", "Confirm Choice")
-            ),
             # This panel shows if the experiment was chosen and informed consent hasn't been given
             conditionalPanel(
-                condition = "input.expchosen && !input.welcome",
+                condition = "!input.welcome",
                 h4("Welcome"),
-
                 helpText(
                     "In this survey a series of similar looking charts will be presented.",
                     "We would like you to respond to the following questions."),
@@ -30,11 +24,13 @@ fluidPage(theme = shinytheme("cerulean"),
                     "(age category, education and gender)"),
                 helpText(
                     "Your response is voluntary and any information we collect from you will be kept confidential.",
-                    "By  clicking on the button below you agree that the data we collect may be used in research study."),
+                    "Please read the informed consent document (click the button below) before you decide whether to participate."),
+
+                a("Show Informed Consent Document", href = "informed_consent.html", target = "_blank"),
 
                 checkboxInput(
                     "consent",
-                    HTML(paste0("I have read the ", a("informed consent", href = "http://104.236.245.153:8080/mahbub/turk16/consent.html", target = "_blank"), " and agree."))),
+                    HTML(paste0("I have read the informed consent document and agree."))),
 
                 actionButton("beginexp", "Begin Experiment", class = "btn btn-info")
             ),
@@ -42,7 +38,7 @@ fluidPage(theme = shinytheme("cerulean"),
             conditionalPanel(
                 condition = "input.welcome && !input.ready",
                 h4("Demographic Information"),
-                textInput("turk", "Turk ID"),
+                textInput("turk", "nickname"),
                 selectizeInput("age", "Age Range",
                                choices = c("", "Under 19", "19-25", "26-30",
                                            "31-35", "36-40", "41-45", "46-50",
@@ -66,10 +62,6 @@ fluidPage(theme = shinytheme("cerulean"),
             ),
 
             # These panels are to determine what stage the experiment is at
-            conditionalPanel(condition = "input.response_no == null",
-                             checkboxInput("expchosen", "Experiment Chosen", value = FALSE)
-            ),
-
             conditionalPanel(condition = "input.response_no == null",
                              checkboxInput("welcome", "Welcome", value = FALSE)
             ),
@@ -112,17 +104,12 @@ fluidPage(theme = shinytheme("cerulean"),
 
         mainPanel(width = 9,
             #h4(textOutput("debug")),
-            # Some description of the experiment (should probably change based on exp_setup.R)
-            conditionalPanel(condition = "!input.expchosen",
-                    h4("Description of Experiments"),
-                    helpText("Graphics-Group Experiment - 09.17.2020: Initial pilot study.")
-            ),
-            conditionalPanel(condition = "input.expchosen && !input.welcome",
+            conditionalPanel(condition = "!input.welcome",
                 h4(textOutput("welcome_header")),
                 uiOutput("welcome_text"),
 
                 h4(textOutput("example1_q")),
-                imageOutput("example1_plot"),
+                imageOutput("example1_plot", height = "auto"),
 
                 br(),
                 br(),
@@ -130,19 +117,12 @@ fluidPage(theme = shinytheme("cerulean"),
                 uiOutput("example1_a"),
 
                 h4(textOutput("example2_q")),
-                imageOutput("example2_plot"),
+                imageOutput("example2_plot", height = "auto"),
 
                 br(),
                 br(),
 
-                uiOutput("example2_a"),
-
-                hr(),
-
-                textInput("password", ""),
-                conditionalPanel(condition = paste0("input.password == '", readLines("password.txt"), "'"),
-                                 downloadButton("downloadDB", "Download DB")
-                )
+                uiOutput("example2_a")
             ),
             conditionalPanel(condition = "input.welcome && !input.ready",
                 h4(textOutput("demo_text"))
