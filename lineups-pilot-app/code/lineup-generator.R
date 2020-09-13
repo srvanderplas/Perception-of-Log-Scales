@@ -96,7 +96,11 @@ simulatedData <- expand_grid(target = seq(1,6,1),
 
 source("save_lineups.R")
 picture_details <- matrix(NA, nrow = nrow(trtData), ncol = 9) %>% as.data.frame()
-colnames(picture_details) <- c("sample_size", "param_value", "p_value", "obs_plot_location", "linear", "log", "experiment", "difficulty", "data_name")
+
+colnames(picture_details) <- c("sample_size", "param_value", "p_value",
+                               "obs_plot_location", "linear", "log",
+                               "experiment", "difficulty", "data_name")
+
 for(i in 1:nrow(trtData)){
   setID        <- trtData[i, "set"] %>% as.numeric()
   paramID      <- trtData[i, "param_value"] %>% as.character()
@@ -162,5 +166,5 @@ picture_details <- picture_details %>%
                              difficulty = ifelse(test_param == "linear", (100 + difficulty), (200 + difficulty))) %>%
                       select("pic_id", "sample_size", "test_param",	"param_value", "p_value",	"obs_plot_location", "pic_name", "experiment", "difficulty", "data_name")
 
-write.csv(picture_details, file = "details/picture-details.csv", row.names = F)
+write.csv(picture_details, file = here::here("lineups-pilot-app", "plots", "picture-details.csv"), row.names = F)
 
