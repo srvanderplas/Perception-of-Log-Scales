@@ -317,7 +317,7 @@ shinyServer(function(input, output, session) {
             updateCheckboxGroupInput(session, "reasoning", selected = NA)
 
             # Include the picture
-            HTML(readLines(file.path(plotpath, "svg", nextplot$pic_name)))
+            HTML(readLines(file.path(plotpath, "svg", basename(nextplot$pic_name))))
         })
     })
 })
