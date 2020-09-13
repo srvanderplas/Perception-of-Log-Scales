@@ -50,12 +50,12 @@ save_lineup <- function(plot, filename, path = "plots", script = "action.js", ..
 
   # Include script with each SVG
   # This may cause problems with shiny (not sure)
-  jsfile <- paste(readLines(script), collapse = "\n")
-  grid.script(jsfile, type = "text/javascript")
+  # jsfile <- paste(readLines(script), collapse = "\n")
+  # grid.script(jsfile, type = "text/javascript")
 
   # Include link to the script
   # (but file paths have to be correct for this to work with Shiny)
-  # grid.script(filename = script, type = "text/javascript")
+  grid.script(filename = script, type = "text/javascript")
   grid.export(name = filepaths[3],
               uniqueNames = FALSE,
               exportJS = "inline",
