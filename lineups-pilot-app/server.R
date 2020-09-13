@@ -303,7 +303,7 @@ shinyServer(function(input, output, session) {
 
             # Update reactive values
             values$pic_id <- nextplot$pic_id
-            values$correct <- strsplit(nextplot$obs_plot_location, ",")[[1]]
+            values$correct <- strsplit(as.character(nextplot$obs_plot_location), ",")[[1]]
 
             # Reset UI selections
             values$submitted <- FALSE
