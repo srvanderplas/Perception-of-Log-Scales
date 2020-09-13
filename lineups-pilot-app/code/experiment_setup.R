@@ -52,7 +52,8 @@ picture_details <- readr::read_csv(here("lineups-pilot-app", "plots", "picture-d
 
 picture_details_trial <- readr::read_csv(here("lineups-pilot-app", "trials", "picture-details-trial.csv"))
 
-pic_details <- rbind(mutate(picture_details, trial = 0), mutate(picture_details_trial, trial = 1))
+pic_details <- rbind(mutate(picture_details, trial = 0), mutate(picture_details_trial, trial = 1)) %>%
+  mutate(experiment = experiment_details$experiment)
 
 
 # ---- Create database ---------------------------------------------------------

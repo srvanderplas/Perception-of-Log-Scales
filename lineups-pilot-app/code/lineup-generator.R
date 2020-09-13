@@ -149,7 +149,7 @@ picture_details[i, "p_value"]           <- 1
 picture_details[i, "obs_plot_location"] <- pos
 picture_details[i, "linear"]            <- paste("plots/svgs/", linearID, ".svg", sep = "")
 picture_details[i, "log"]               <- paste("plots/svgs/", logID, ".svg", sep = "")
-picture_details[i, "experiment"]        <- "log-linear_lineups"
+picture_details[i, "experiment"]        <- "emily-log-1"
 picture_details[i, "difficulty"]        <- difficultyID
 picture_details[i, "data_name"]         <- dataID
 }
