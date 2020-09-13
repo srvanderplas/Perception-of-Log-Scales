@@ -14,7 +14,7 @@ require(gridExtra)
 require(scales)
 library(purrr)
 
-expSim <- function(xMid, sigma, N = 20, nReps, xRange = c(0,20), yRange = c(10,100)){
+expSim <- function(xMid, sigma, N = 20, nReps = 1, xRange = c(0,20), yRange = c(10,100)){
   
   lineData   <- tibble(xLine = seq(xRange[1],xRange[2],0.1),
                        yLine = ((yRange[1]-yRange[2])/(xRange[2]-xRange[1]))*(xLine-xRange[1])+yRange[2])

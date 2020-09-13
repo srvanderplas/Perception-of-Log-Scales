@@ -1,14 +1,13 @@
 library(RSQLite)
 library(DBI)
-
 library(here)
 
 # ---- Set up experiment details -----------------------------------------------
 experiment_id <- "emily-log-1"
 question <- "Which plot is the most different?"
 reasons <- "Extreme value,Different range,Different start point,Different slope,Outlier(s),Other"
-lineups_per_person <- 10 # lineups per person
-trials_req <- 2
+lineups_per_person <- 12 # lineups per person
+trials_req <- 0
 
 
 experiment_details <- tibble::tibble(
