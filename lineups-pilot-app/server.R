@@ -221,13 +221,13 @@ shinyServer(function(input, output, session) {
 
                 # Generate completion code
                 if (values$lppleft == 0) {
-                    rand1 <- sample(letters, 3, replace = TRUE)
-                    rand2 <- sample(LETTERS, 3, replace = TRUE)
-                    rand3 <- sample(1:9, 3, replace = TRUE)
+                    # rand1 <- sample(letters, 3, replace = TRUE)
+                    # rand2 <- sample(LETTERS, 3, replace = TRUE)
+                    # rand3 <- sample(1:9, 3, replace = TRUE)
+                    #
+                    # code <- paste(sample(c(rand1, rand2, rand3)), collapse = "")
 
-                    code <- paste(sample(c(rand1, rand2, rand3)), collapse = "")
-
-                    values$question <- paste("All done! Congratulations! Your code is", code)
+                    values$question <- "All done! Congratulations!"
                     #values$question <- paste("All done! Congratulations! Please click the URL to complete the study:")
                     updateCheckboxInput(session, "done", value = TRUE)
                 }
