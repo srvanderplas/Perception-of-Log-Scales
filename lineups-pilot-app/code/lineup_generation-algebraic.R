@@ -13,7 +13,6 @@ expSim <- function(beta, sigma, nReps = 1, N = 20, xRange = c(0,20), yRange = c(
   vals <- seq(xRange[1], xRange[2], length.out = N*3/4)
   xvals <- sample(vals, (N-2), replace = T)
   xvals <- jitter(c(xRange[1],xvals,xRange[2]))
-  # xvals <- seq(xRange[1], xRange[2], length.out = N)
   
   expData <- tibble(x = rep(xvals, nReps),
                     y = alpha*exp(beta*x + rnorm(N*nReps,0,sigma)) + theta)
@@ -27,7 +26,6 @@ expSim <- function(beta, sigma, nReps = 1, N = 20, xRange = c(0,20), yRange = c(
 # vals <- seq(xRange[1], xRange[2], length.out = N*3/4)
 # xvals <- sample(vals, (N-2), replace = T)
 # xvals <- jitter(c(xRange[1],xvals,xRange[2]))
-#   # xvals <- seq(xRange[1], xRange[2], length.out = N)
 #   
 #   expData <- tibble(x = rep(xvals, nReps),
 #                     y = alpha*exp(beta*x + rnorm(N*nReps,0,sigma)))
@@ -147,3 +145,6 @@ picture_details <- picture_details %>%
 
 write.csv(picture_details, file = here::here("lineups-pilot-app", "plots", "picture-details.csv"), row.names = F)
 
+simulation_details <- tibble(simulation_method = "algebraic",
+                             model = "alpha*exp^[beta*x+epsilon]+theta")
+write.table(simulation_details, file = here::here("lineups-pilot-app", "plots", "simulation-details.txt"), row.names = F)
