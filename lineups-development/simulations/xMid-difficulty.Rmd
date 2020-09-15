@@ -6,39 +6,71 @@ output:
   pdf_document: default
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = T, out.width = "100%", dpi = 300, message = F)
+```{r setup, include = F, echo = T, message = F, warning = F}
+knitr::opts_chunk$set(echo = T, out.width = "100%", dpi = 300, message = F, warning = F)
 library(knitr)
 require(tidyverse)
 require(gridExtra)
 require(scales)
 library(purrr)
+```
 
+# Exponential with a multiplicative error
+
+Data is simulated heuristically with the following model: 
+
+$$y_i = \tilde\alpha e^{(\hat\beta x_i + \epsilon_i)} + \hat\theta$$ 
+with $\epsilon \sim N(0,\sigma^2)$ and $\tilde\alpha = \frac{\hat\alpha}{e^{\sigma^2/2}}$
+
+where $\hat\alpha, \hat\beta,$ and $\hat\theta$ were estimated using `nls().` The domain was set to be $x\in (0,20)$ with $N = 20.$
+
+```{r functions}
+# Simulate Exponential Data
 expSim <- function(xMid, sigma, N = 20, nReps = 1, xRange = c(0,20), yRange = c(10,100)){
+
+  # This creates the line y = -x (scaled to fit the x and y ranges)
+  # |*            0
+  # |  *
+  # |    *
+  # |      *
+  # |        1
+  # |          2
+  # |0___________3
+  #
+  # where 1, 2, 3 represent different points used to determine the line curvature
   
   lineData   <- tibble(xLine = seq(xRange[1],xRange[2],0.1),
-                       yLine = ((yRange[1]-yRange[2])/(xRange[2]-xRange[1]))*(xLine-xRange[1])+yRange[2])
+                       yLine = -(abs(diff(yRange))/abs(diff(xRange)))*(xLine-xRange[1])+yRange[2])
   pointsData <- tibble(xPoint = c(xRange[1], (xMid-0.1), (xMid+0.1), xRange[2]),
                        yPoint = c(yRange[1], lineData$yLine[lineData$xLine == xMid], lineData$yLine[lineData$xLine == xMid], yRange[2]))
-  
-  
+
+  # Connecting the 0 points in the illustration above with the 3rd point that
+  # determines curvature gives us a set of 3 points to use to fit an exponential
+  # line to the data.
+
+  # We fit a linear regression to the log-transformed data to get starting values
   lm.fit <- lm(log(yPoint) ~ xPoint, data = pointsData)
+
   alpha.0  <- exp(coef(lm.fit)[1]) %>% as.numeric()
   beta.0   <- coef(lm.fit)[2] %>% as.numeric()
-  theta.0 <- min(pointsData$yPoint) * 0.5  
+  theta.0 <- min(pointsData$yPoint) * 0.5  # Why 0.5?
+
+  # and then use NLS to fit a better line to the data
   start <- list(alpha = alpha.0, beta = beta.0, theta = theta.0)
-  nonlinear.fit   <- nls(yPoint ~ alpha * exp(beta * xPoint) + theta , data = pointsData, start = start)
+  nonlinear.fit   <- nls(yPoint ~ alpha * exp(beta * xPoint) + theta ,
+                         data = pointsData, start = start)
+
   alpha <- (coef(nonlinear.fit)[1] %>% as.numeric())/(exp((sigma^2)/2))
   beta <- coef(nonlinear.fit)[2] %>% as.numeric()
   theta <- coef(nonlinear.fit)[3] %>% as.numeric()
-  
+
+  # Then the coefficients are used to generate y values which are reasonable
   expData <- tibble(x = rep(seq(xRange[1],xRange[2], length.out = N), nReps),
                     y = alpha*exp(beta*x + rnorm(N*nReps,0,sigma)) + theta)
   return(expData)
 }
 
-# Evaluate Fit ---------------------------------------------------------------------
-
+# Evaluate Fit
 calcLOF <- 
   function(sim.data){
     if(nrow(sim.data)/length(unique(sim.data$x)) > 1){
@@ -55,23 +87,7 @@ calcLOF <-
   }
 ```
 
-
-# Exponential with a multiplicative error
-
-Data is simulated heuristically with the following model: 
-
-$$y = \alpha e^{(\beta x + \epsilon)} + \theta$$ 
-with $\epsilon \sim N(0,\sigma)$
-
-where
-
-\begin{align*}
-xRange &= (0, 20)\\
-N &= 20
-\end{align*}
-
-
-```{r ExpMultParms, cache = F, echo = F}
+```{r ExpMultParms, cache = F}
 #Identify parameters
 parmCombos <- data.frame(Curvature = c("Hard", "Hard", "Medium", "Medium", "Easy", "Easy"),
                          Variability = c("Low", "High", "Low", "High", "Low", "High"),
@@ -82,7 +98,7 @@ parmCombos <- data.frame(Curvature = c("Hard", "Hard", "Medium", "Medium", "Easy
 parmCombos %>% kable(format = "pandoc")
 ```
 
-```{r ExpMultVisuals5, cache = F, echo = F, fig.width = 8, fig.height = 5}
+```{r ExpMultVisuals5, cache = F, fig.width = 8, fig.height = 5}
 simData5 <- parmCombos %>%
                   mutate(data = pmap(list(xMid,sigma,nReps = 5),expSim)) %>%
                   unnest(data)
@@ -93,7 +109,8 @@ simData5 %>%
   ggplot(aes(x = x, y = y)) +
   geom_point(shape = 1) +
   theme_bw() +
-  facet_grid(Variability~Curvature)
+  facet_grid(Variability~Curvature) +
+  ggtitle("Linear Scale")
 
 simData5 %>%
   mutate(Curvature = factor(Curvature, levels = c("Easy", "Medium", "Hard"))) %>%
@@ -102,10 +119,11 @@ simData5 %>%
   geom_point(shape = 1) +
   theme_bw() +
   facet_grid(Variability~Curvature) +
-  scale_y_continuous(trans = "log10")
+  scale_y_continuous(trans = "log10") +
+  ggtitle("Log Scale")
 ```
 
-```{r ExpMultVisuals1, cache = F, echo = F, fig.width = 8, fig.height = 5}
+```{r ExpMultVisuals1, cache = F, echo = T, fig.width = 8, fig.height = 5}
 simData1 <- parmCombos %>%
                   mutate(data = pmap(list(xMid,sigma,nReps = 1),expSim)) %>%
                   unnest(data)
@@ -116,7 +134,8 @@ simData1 %>%
   ggplot(aes(x = x, y = y)) +
   geom_point(shape = 1) +
   theme_bw() +
-  facet_grid(Variability~Curvature)
+  facet_grid(Variability~Curvature) +
+  ggtitle("Linear Scale")
 
 simData1 %>%
   mutate(Curvature = factor(Curvature, levels = c("Easy", "Medium", "Hard"))) %>%
@@ -125,10 +144,11 @@ simData1 %>%
   geom_point(shape = 1) +
   theme_bw() +
   facet_grid(Variability~Curvature) +
-  scale_y_continuous(trans = "log10")
+  scale_y_continuous(trans = "log10") +
+  ggtitle("Log Scale")
 ```
 
-```{r ExpMultLOF, cache = F, echo = F, fig.width = 8, fig.height = 4}
+```{r ExpMultLOF, cache = F, echo = T, fig.width = 8, fig.height = 4}
 
 lofData <- parmCombos %>%
                   expand_grid(replicate = seq(1,1000,1)) %>%
@@ -146,7 +166,7 @@ lofData %>%
   scale_color_brewer(palette = "Paired") + 
   theme_bw() +
   facet_wrap(~Curvature, scale = "free") + 
-  ggtitle("Lack of Fit by Difficulty Level \n Exponential with Multiplicative Error")
+  ggtitle("Lack of Fit within Curvature Levels \n Exponential with Multiplicative Error")
 
 # Compare Curvature within Varability
 lofData %>%
@@ -158,7 +178,7 @@ lofData %>%
   scale_color_brewer(palette = "Paired") + 
   theme_bw() +
   facet_wrap(~Variability, scale = "free") + 
-  ggtitle("Lack of Fit by Difficulty Level \n Exponential with Multiplicative Error")
+  ggtitle("Lack of Fit within Variability Levels \n Exponential with Multiplicative Error")
 ```
 
 
