@@ -6,6 +6,13 @@ library(dplyr)
 library(RSQLite)
 
 experiment_name <- "emily-log-1"
+
+# add resource paths so Shiny can see them
+addResourcePath("plots", "plots")
+addResourcePath("trials", "trials")
+addResourcePath("examples", "examples")
+
+# define folders
 plots_folder <- "plots" # subfolders for data, pdf, png, svg. picture_details.csv in this folder
 trials_folder <- "trials" # subfolders for svg. picture_details_trial.csv in this folder
 
@@ -19,6 +26,7 @@ if (nrow(experiment) > 1) {
 dbDisconnect(con)
 
 source("code/randomization.R")
+
 
 shinyServer(function(input, output, session) {
 
@@ -36,24 +44,8 @@ shinyServer(function(input, output, session) {
         lppleft = experiment$lpp,
         pic_id = 0, choice = NULL,
         correct = NULL, result = "")
-#
-#     # This outputs the experiment results CSV file
-#     output$downloadDB <- downloadHandler(
-#         filename = function() { paste0(experiment$experiment, "_results.csv") },
-#         content = function(conn) {
-#             con <- dbConnect(SQLite(), dbname = "exp_data.db")
-#             feedback <- dbReadTable(con, "feedback")
-#
-#             this_feedback <- feedback %>%
-#                 filter(description == experiment$experiment)
-#
-#             write.csv(this_feedback, conn, row.names = FALSE)
-#         }
-#     )
 
     output$debug <- renderText({experiment$question})
-
-    #enable("downloadDB")
 
     # Show other text input box if other is selected
     observe({
@@ -93,7 +85,6 @@ shinyServer(function(input, output, session) {
         if (is.null(values$experiment)) return(NULL)
 
         list(src = file.path("examples", "example1.png"),
-             width = "100%",
              contentType = 'image/png')
     }, deleteFile = FALSE)
 
@@ -113,7 +104,6 @@ shinyServer(function(input, output, session) {
         if (is.null(values$experiment)) return(NULL)
 
         list(src = file.path("examples", "example2.png"),
-             width = "100%",
              contentType = 'image/png')
     }, deleteFile = FALSE)
 
@@ -132,14 +122,14 @@ shinyServer(function(input, output, session) {
 
     # add demographic information to the database
     observeEvent(input$submitdemo, {
-        if (!is.null(input$turk) && nchar(input$turk) > 0) {
+        if (!is.null(input$nickname) && nchar(input$nickname) > 0) {
             con <- dbConnect(SQLite(), dbname = "exp_data.db")
 
             age <- ifelse(is.null(input$age), "", input$age)
             gender <- ifelse(is.null(input$gender), "", input$gender)
             academic_study <- ifelse(is.null(input$education), "", input$education)
 
-            demoinfo <- data.frame(nick_name = input$turk,
+            demoinfo <- data.frame(nick_name = input$nickname,
                                    age = age,
                                    gender = gender,
                                    academic_study = academic_study,
@@ -171,7 +161,7 @@ shinyServer(function(input, output, session) {
 
     # Enable submit button if the experiment progresses to ___ stage
     observe({
-        if (input$response_no == "") {
+        if (is.null(input$response_no) || input$response_no == "") {
             enable("submit")
         }
     })
@@ -201,7 +191,7 @@ shinyServer(function(input, output, session) {
                 # This applies to the lineups, not to the trials
                 values$result <- "Submitted!"
 
-                test <- data.frame(ip_address = "", nick_name = input$turk,
+                test <- data.frame(ip_address = input$ipid, nick_name = input$nickname,
                                    start_time = values$starttime, end_time = now(),
                                    pic_id = values$pic_id,
                                    response_no = values$choice,
@@ -211,7 +201,6 @@ shinyServer(function(input, output, session) {
 
                 # Write results to database
                 con <- dbConnect(SQLite(), dbname = "exp_data.db")
-
                 dbWriteTable(con, "feedback", test, append = TRUE, row.names = FALSE)
                 dbDisconnect(con)
 
@@ -245,7 +234,7 @@ shinyServer(function(input, output, session) {
             values$submitted <- TRUE
         } else {
             # Don't let them move ahead without doing the trial
-            showNotification("Fill in all of the boxes.")
+            showNotification("Please fill in all of the boxes.")
         }
     })
 
@@ -316,8 +305,16 @@ shinyServer(function(input, output, session) {
             updateTextInput(session, "other", value = "")
             updateCheckboxGroupInput(session, "reasoning", selected = NA)
 
+            if (is.null(nextplot$pic_name)) return(NULL)
             # Include the picture
-            HTML(readLines(file.path(plotpath, "svg", basename(nextplot$pic_name))))
-        })
-    })
-})
+            # HTML(readLines(file.path(plotpath, "svg", basename(nextplot$pic_name))))
+            div(
+                class = "full-lineup-container",
+                img(src = file.path(plotpath, "png",
+                                    stringr::str_replace(basename(nextplot$pic_name), "\\.svg$", ".png")),
+                    style = "max-width:100%; max-height = 100%")
+            )
+
+            }) # end WithProgress
+    }) # end renderUI
+}) # End app definition

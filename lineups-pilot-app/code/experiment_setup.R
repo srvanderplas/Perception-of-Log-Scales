@@ -93,3 +93,14 @@ tibble(
   mutate(y = rep(c(.5, 1, 1, 1, 1), each = 50) * x + y) %>%
   ggplot(aes(x = x, y = y)) + geom_point() + facet_wrap(~i, nrow = 1) + theme_bw() + theme(axis.text = element_blank(), axis.title = element_blank(), axis.ticks = element_blank())
 ggsave(here("lineups-pilot-app/examples/example2.png"), width = 15, height = 3, dpi = 300)
+
+
+
+# Pull data out of the database...
+
+# con <- dbConnect(RSQLite::SQLite(), here("lineups-pilot-app", "exp_data.db"))
+# exp_details_db <- dbReadTable(con, "experiment_details", experiment_details)
+# feedback_db <- dbReadTable(con, "feedback", feedback)
+# pic_details_db <- dbReadTable(con, "picture_details", pic_details)
+#
+# dbDisconnect(con)
