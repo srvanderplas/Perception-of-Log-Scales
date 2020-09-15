@@ -20,6 +20,20 @@ expSim <- function(beta, sigma, nReps = 1, N = 20, xRange = c(0,20), yRange = c(
   return(expData)
 }
 
+# ALGEBRAIC SIMULATION (- theta)
+# expSim <- function(beta, sigma, nReps = 1, N = 20, xRange = c(0,20), yRange = c(1,100)){
+#   alpha   <- (yRange[2]/exp(beta*xRange[2]))
+#   
+#   vals <- seq(xRange[1], xRange[2], length.out = N*3/4)
+#   xvals <- sample(vals, N, replace = T)
+#   xvals <- jitter(xvals)
+#   # xvals <- seq(xRange[1], xRange[2], length.out = N)
+#   
+#   expData <- tibble(x = rep(xvals, nReps),
+#                     y = alpha*exp(beta*x + rnorm(N*nReps,0,sigma)))
+#   return(expData)
+# }
+
 parmData <- tibble(diff.num    = seq(1,6,1),
                    curvature   = c("E", "E", "M", "M", "H", "H"),
                    variability = c("Lv", "Hv", "Lv", "Hv", "Lv", "Hv"),
@@ -94,7 +108,7 @@ for(i in 1:nrow(trtData)){
                         axis.text.y  = element_blank(),
                         axis.text.x  = element_blank(),
                        )
-
+  linearPlot
   save_lineup(linearPlot, file = linearID, path = here::here("lineups-pilot-app", "plots"), width = 15, height = 12.5, dpi = 300)
 
   logPlot <- ggplot(lineupData, aes(x=x, y=y)) +
@@ -108,7 +122,7 @@ for(i in 1:nrow(trtData)){
           axis.text.x  = element_blank(),
     ) +
     scale_y_continuous(trans = "log10")
-
+  logPlot
   save_lineup(logPlot, file = logID, path = here::here("lineups-pilot-app", "plots"), width = 15, height = 12.5, dpi = 300 )
 
 picture_details[i, "sample_size"]       <- 20
