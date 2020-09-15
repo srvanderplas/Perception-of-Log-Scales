@@ -4,15 +4,17 @@ author: "Emily Robinson, Susan Vanderplaus & Reka Howard"
 date: "September 17, 2020"
 output:
   xaringan::moon_reader:
-    seal: false
+    seal: true
     includes:
       after_body:
         "js-addins.html"
     mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
-    css: ["default", "rladies-fonts", "css/modal.css", "css/this-presentation.css"]
+    # css: ["default", "rladies-fonts", "css/modal.css", "css/this-presentation.css"]
+    css: ["default", "rladies", "rladies-fonts", "css/modal.css"]
     lib_dir: libs
     nature:
       countIncrementalSlides: true
+  bibliography: references.bib
 ---
 ```{r, include = F, eval = T}
 knitr::opts_chunk$set(echo = F, dpi = 300, message = F, warning = F, cache = T)
@@ -72,14 +74,183 @@ img_modal <- function(src, alt = "", id = clean_file_name(src), other = "") {
 write("", file = "js-addins.html")
 ```
 
-class:inverse,middle,center
-# Perception of exponential data displayed <br/> on a log scale
-## Emily Robinson, Susan Vanderplas, & Reka Howard <br/> September 17, 2020
+class:primary
+## Test Experimental Task
+.pull-left[
+- **Goal:** Test out an experiment designed to assess perceptual and cognitive biases in graphical displays of exponentially increasing data.
+
+- Vist **INSERT LINK HERE** and follow the instructions for the experimental task.
+    - Please time yourself.
+].pull-right[
+<img src="images/ka_4_hamster_wheel_dribbble.gif" width="100%" />
+<font size="2">
+.small[
+Source: https://dribbble.com/shots/5588147-Hamster-Wheel
+]
+</font>
+]
 
 ---
 class:primary
-## Title of Slide
+## Lineup Experimental Task Feedback `r emo::ji("thumbsup")` `r emo::ji("thumbsdown")`
+
+- What worked well? What didn't work well?
+
+- Can you guess what perceptions we were aiming to test?
+
+- How certain did you feel in selecting the panel that differed?
+
+- Any suggestions for adjustments?
+
+.center[
+```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
+i1 <- img_modal(src = "images/linear-lineup-example_4.png", alt = " ", other=list(width="45%"))
+i2 <- img_modal(src = "images/log-lineup-example_4.png", alt = " ", other=list(width="45%"))
+
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i2, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:9],
+  str_split(i2, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+]
+
+---
+class:primary
+## Motivation
+- Log scales are often used to display data over several orders of magnitude within one graph.
+
+- During the COVID pandemic, we've seen both the benefits and the pitfalls of using log scales to display data. 
+
+- Began questioning how log verses linear scales are percieved in terms of comparing exponentially increasing data and making predictions & estimations.
+
+- Despite log scales regularly being used, we learned there is limited research conducted in the form of an experiment to quantify the effects of displaying exponentially increasing data on a log scale.
+
+
+---
+class:primary
+## Future Experimental Tasks
+ 
+1. Lineup `r emo::ji("chart increasing")` `r emo::ji("chart increasing")` `r emo::ji("chart increasing")`
+
+    - Test an individuals ability to perceptually differentiate exponentially increasing data with differing rates of change on both the linear and log scale.
+
+2. You Draw It `r emo::ji("pencil2")`
+
+    - Based off NYT "You Draw It" [**EXAMPLE**](https://www.nytimes.com/interactive/2015/05/28/upshot/you-draw-it-how-family-income-affects-childrens-college-chances.html?searchResultPosition=3) 
+    
+    - Tests an individuals ability to make predictions for exponentially increasing data.
+
+3. Estimation `r emo::ji("straight_ruler")`
+
+    - Tests an individuals ability to estimate values on an exponentially increasing graph and extending their estimates for scaled values of x.
+    
+<br>
+
+.center[
+See sample experimental task applet [**HERE**](https://srvanderplas.shinyapps.io/youdrawittest/)!
+]
+
+---
+class:primary
+## Data Generation Models
+
+.pull-left[
+**Two Parameter Exponential**
+$$y=\alpha e^{\beta x}$$
+
+```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
+i1 <- img_modal(src = "images/algebraic-simulation-no-theta.png", alt = " ", other=list(width="100%"))
+
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+
+- Different starting values
+- Same ending value
+- Linear lines on log scale
+].pull-right[
+**Three Parameter Exponential**
+$$y=\alpha e^{\beta x} + \theta$$
+
+```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
+i1 <- img_modal(src = "images/algebraic-simulation-yes-theta.png", alt = " ", other=list(width="100%"))
+
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+
+- Same starting and ending value
+- Curvature happens on log scale
+]
+
+Normally distributed errors are then added to the selected model:
+1. Multiplicative
+2. Additive
+
+---
+class:primary
+## Heuristic Simulation Approach 
+1. Set 3 points (Min, Max, Midpoint)
+2. Select starting values
+  - Obtain linear model coefficients for $\log(y_i) = a+bx_i$
+	- $\alpha_0 = e^a$
+	- $\beta_0 = b$
+	- $\theta_0 = \frac{\min(y)}{2}$
+3. Using `nls()`, fit selected model to the points and obtain parameter estimates.
+$$y_i = \hat\alpha e^{\hat\beta x_i} \text{ or } y_i = \hat\alpha e^{\hat\beta x_i} + \hat\theta$$
+4. Using the parameter estimates, assume $\epsilon_i \sim N(0, \sigma^2)$ and set $\tilde \alpha = \frac{\hat\alpha}{e^{\sigma^2/2}}$. Simulate data based on $y_i = \tilde\alpha e^{\hat\beta x_i + \epsilon_i}+\hat\theta.$
+
+.center[
+```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
+i1 <- img_modal(src = "images/heuristic-simulation-yes-theta.png", alt = " ", other=list(width="50%"))
+
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+]
+
+---
+class:primary
+## Parameter Selection
+
+The **Lack of Fit** test statistic calculated by the deviation of the data from a linear regression line was used to determine the curvature and variability combination values.
+
+**Curvature**
+- Controled by the `Midpoint` in the heuristic simulation and in turn affects $\hat\beta.$
+
+- Easy / Medium / Hard
+
+**Variability**
+- Controled by the standard deviation, $\sigma$, of the errors.
+
+- Low / High
+
+<br>
+
+See the [**Parameter Selection**](https://srvanderplas.github.io/Perception-of-Log-Scales/lineups-development/simulations/xMid-difficulty.html) document for density plots of the lack of fit statistic at different parameter value combinations.
+
+---
+class:primary
+## Previous Literature
 
 ---
 class:primary
 ## References
+
+```{r, load_refs, echo=FALSE}
+library(RefManageR)
+bib <- ReadBib("references.bib", check = FALSE)
+ui <- "- "
+```
+
+```{r, print_refs, results='asis', echo=FALSE, warning=FALSE, message=FALSE}
+writeLines(ui)
+print(bib[key = "woloshin_new_2000"], 
+  .opts = list(check.entries = FALSE, 
+               style = "html", 
+               bib.style = "authoryear"))
+```

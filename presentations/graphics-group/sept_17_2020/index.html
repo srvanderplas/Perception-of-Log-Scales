@@ -6,28 +6,216 @@
     <meta name="author" content="Emily Robinson, Susan Vanderplaus &amp; Reka Howard" />
     <meta name="date" content="2020-09-17" />
     <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/rladies.css" rel="stylesheet" />
     <link href="libs/remark-css/rladies-fonts.css" rel="stylesheet" />
     <link rel="stylesheet" href="css\modal.css" type="text/css" />
-    <link rel="stylesheet" href="css\this-presentation.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Perception of exponential data displayed on a log scale
+### Emily Robinson, Susan Vanderplaus &amp; Reka Howard
+### September 17, 2020
+
+---
 
 
 
 
 
-class:inverse,middle,center
-# Perception of exponential data displayed &lt;br/&gt; on a log scale
-## Emily Robinson, Susan Vanderplas, &amp; Reka Howard &lt;br/&gt; September 17, 2020
+class:primary
+## Test Experimental Task
+.pull-left[
+- **Goal:** Test out an experiment designed to assess perceptual and cognitive biases in graphical displays of exponentially increasing data.
+
+- Vist **INSERT LINK HERE** and follow the instructions for the experimental task.
+    - Please time yourself.
+].pull-right[
+&lt;img src="images/ka_4_hamster_wheel_dribbble.gif" width="100%" /&gt;
+&lt;font size="2"&gt;
+.small[
+Source: https://dribbble.com/shots/5588147-Hamster-Wheel
+]
+&lt;/font&gt;
+]
 
 ---
 class:primary
-## Title of Slide
+## Lineup Experimental Task Feedback 👍 👎
+
+- What worked well? What didn't work well?
+
+- Can you guess what perceptions we were aiming to test?
+
+- How certain did you feel in selecting the panel that differed?
+
+- Any suggestions for adjustments?
+
+.center[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imglinearlineupexample_4' src='images/linear-lineup-example_4.png' alt=' ' width='45%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgloglineupexample_4' src='images/log-lineup-example_4.png' alt=' ' width='45%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modallinearlineupexample_4' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodallinearlineupexample_4'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionlinearlineupexample_4' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalloglineupexample_4' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalloglineupexample_4'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionloglineupexample_4' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]
+
+---
+class:primary
+## Motivation
+- Log scales are often used to display data over several orders of magnitude within one graph.
+
+- During the COVID pandemic, we've seen both the benefits and the pitfalls of using log scales to display data. 
+
+- Began questioning how log verses linear scales are percieved in terms of comparing exponentially increasing data and making predictions &amp; estimations.
+
+- Despite log scales regularly being used, we learned there is limited research conducted in the form of an experiment to quantify the effects of displaying exponentially increasing data on a log scale.
+
+
+---
+class:primary
+## Future Experimental Tasks
+ 
+1. Lineup 📈 📈 📈
+
+    - Test an individuals ability to perceptually differentiate exponentially increasing data with differing rates of change on both the linear and log scale.
+
+2. You Draw It ✏️
+
+    - Based off NYT "You Draw It" [**EXAMPLE**](https://www.nytimes.com/interactive/2015/05/28/upshot/you-draw-it-how-family-income-affects-childrens-college-chances.html?searchResultPosition=3) 
+    
+    - Tests an individuals ability to make predictions for exponentially increasing data.
+
+3. Estimation 📏
+
+    - Tests an individuals ability to estimate values on an exponentially increasing graph and extending their estimates for scaled values of x.
+    
+&lt;br&gt;
+
+.center[
+See sample experimental task applet [**HERE**](https://srvanderplas.shinyapps.io/youdrawittest/)!
+]
+
+---
+class:primary
+## Data Generation Models
+
+.pull-left[
+**Two Parameter Exponential**
+`$$y=\alpha e^{\beta x}$$`
+
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgalgebraicsimulationnotheta' src='images/algebraic-simulation-no-theta.png' alt=' ' width='100%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalalgebraicsimulationnotheta' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalalgebraicsimulationnotheta'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionalgebraicsimulationnotheta' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+- Different starting values
+- Same ending value
+- Linear lines on log scale
+].pull-right[
+**Three Parameter Exponential**
+`$$y=\alpha e^{\beta x} + \theta$$`
+
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgalgebraicsimulationyestheta' src='images/algebraic-simulation-yes-theta.png' alt=' ' width='100%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalalgebraicsimulationyestheta' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalalgebraicsimulationyestheta'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionalgebraicsimulationyestheta' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+- Same starting and ending value
+- Curvature happens on log scale
+]
+
+Normally distributed errors are then added to the selected model:
+1. Multiplicative
+2. Additive
+
+---
+class:primary
+## Heuristic Simulation Approach 
+1. Set 3 points (Min, Max, Midpoint)
+2. Select starting values
+  - Obtain linear model coefficients for `\(\log(y_i) = a+bx_i\)`
+	- `\(\alpha_0 = e^a\)`
+	- `\(\beta_0 = b\)`
+	- `\(\theta_0 = \frac{\min(y)}{2}\)`
+3. Using `nls()`, fit selected model to the points and obtain parameter estimates.
+`$$y_i = \hat\alpha e^{\hat\beta x_i} \text{ or } y_i = \hat\alpha e^{\hat\beta x_i} + \hat\theta$$`
+4. Using the parameter estimates, assume `\(\epsilon_i \sim N(0, \sigma^2)\)` and set `\(\tilde \alpha = \frac{\hat\alpha}{e^{\sigma^2/2}}\)`. Simulate data based on `\(y_i = \tilde\alpha e^{\hat\beta x_i + \epsilon_i}+\hat\theta.\)`
+
+.center[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgheuristicsimulationyestheta' src='images/heuristic-simulation-yes-theta.png' alt=' ' width='50%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalheuristicsimulationyestheta' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalheuristicsimulationyestheta'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionheuristicsimulationyestheta' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]
+
+---
+class:primary
+## Parameter Selection
+
+The **Lack of Fit** test statistic calculated by the deviation of the data from a linear regression line was used to determine the curvature and variability combination values.
+
+**Curvature**
+- Controled by the `Midpoint` in the heuristic simulation and in turn affects `\(\hat\beta.\)`
+
+- Easy / Medium / Hard
+
+**Variability**
+- Controled by the standard deviation, `\(\sigma\)`, of the errors.
+
+- Low / High
+
+&lt;br&gt;
+
+See the [**Parameter Selection**](https://srvanderplas.github.io/Perception-of-Log-Scales/lineups-development/simulations/xMid-difficulty.html) document for density plots of the lack of fit statistic at different parameter value combinations.
+
+---
+class:primary
+## Previous Literature
 
 ---
 class:primary
 ## References
+
+
+
+- 
+&lt;p&gt;&lt;cite&gt;Woloshin, S, L. M. Schwartz, S. Byram, et al.
+(2000).
+&amp;ldquo;A New Scale for Assessing Perceptions of Chance: A Validation Study&amp;rdquo;.
+En.
+In: &lt;em&gt;Medical Decision Making&lt;/em&gt; 20.3, pp. 298&amp;ndash;307.
+ISSN: 0272-989X, 1552-681X.
+DOI: &lt;a href="https://doi.org/10.1177/0272989X0002000306"&gt;10.1177/0272989X0002000306&lt;/a&gt;.
+URL: &lt;a href="http://journals.sagepub.com/doi/10.1177/0272989X0002000306"&gt;http://journals.sagepub.com/doi/10.1177/0272989X0002000306&lt;/a&gt; (visited on May. 19, 2020).&lt;/cite&gt;&lt;/p&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
@@ -100,6 +288,91 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   }
 })();</script>
 
+<script>
+        /* Get the modal*/
+          var modallinearlineupexample_4 = document.getElementById('modallinearlineupexample_4');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imglinearlineupexample_4 = document.getElementById('imglinearlineupexample_4');
+          var modalImglinearlineupexample_4 = document.getElementById('imgmodallinearlineupexample_4');
+          var captionTextlinearlineupexample_4 = document.getElementById('captionlinearlineupexample_4');
+          imglinearlineupexample_4.onclick = function(){
+            modallinearlineupexample_4.style.display = 'block';
+            modalImglinearlineupexample_4.src = this.src;
+            captionTextlinearlineupexample_4.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImglinearlineupexample_4.onclick = function() {
+            modallinearlineupexample_4.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalloglineupexample_4 = document.getElementById('modalloglineupexample_4');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgloglineupexample_4 = document.getElementById('imgloglineupexample_4');
+          var modalImgloglineupexample_4 = document.getElementById('imgmodalloglineupexample_4');
+          var captionTextloglineupexample_4 = document.getElementById('captionloglineupexample_4');
+          imgloglineupexample_4.onclick = function(){
+            modalloglineupexample_4.style.display = 'block';
+            modalImgloglineupexample_4.src = this.src;
+            captionTextloglineupexample_4.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgloglineupexample_4.onclick = function() {
+            modalloglineupexample_4.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalalgebraicsimulationnotheta = document.getElementById('modalalgebraicsimulationnotheta');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgalgebraicsimulationnotheta = document.getElementById('imgalgebraicsimulationnotheta');
+          var modalImgalgebraicsimulationnotheta = document.getElementById('imgmodalalgebraicsimulationnotheta');
+          var captionTextalgebraicsimulationnotheta = document.getElementById('captionalgebraicsimulationnotheta');
+          imgalgebraicsimulationnotheta.onclick = function(){
+            modalalgebraicsimulationnotheta.style.display = 'block';
+            modalImgalgebraicsimulationnotheta.src = this.src;
+            captionTextalgebraicsimulationnotheta.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgalgebraicsimulationnotheta.onclick = function() {
+            modalalgebraicsimulationnotheta.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalalgebraicsimulationyestheta = document.getElementById('modalalgebraicsimulationyestheta');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgalgebraicsimulationyestheta = document.getElementById('imgalgebraicsimulationyestheta');
+          var modalImgalgebraicsimulationyestheta = document.getElementById('imgmodalalgebraicsimulationyestheta');
+          var captionTextalgebraicsimulationyestheta = document.getElementById('captionalgebraicsimulationyestheta');
+          imgalgebraicsimulationyestheta.onclick = function(){
+            modalalgebraicsimulationyestheta.style.display = 'block';
+            modalImgalgebraicsimulationyestheta.src = this.src;
+            captionTextalgebraicsimulationyestheta.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgalgebraicsimulationyestheta.onclick = function() {
+            modalalgebraicsimulationyestheta.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalheuristicsimulationyestheta = document.getElementById('modalheuristicsimulationyestheta');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgheuristicsimulationyestheta = document.getElementById('imgheuristicsimulationyestheta');
+          var modalImgheuristicsimulationyestheta = document.getElementById('imgmodalheuristicsimulationyestheta');
+          var captionTextheuristicsimulationyestheta = document.getElementById('captionheuristicsimulationyestheta');
+          imgheuristicsimulationyestheta.onclick = function(){
+            modalheuristicsimulationyestheta.style.display = 'block';
+            modalImgheuristicsimulationyestheta.src = this.src;
+            captionTextheuristicsimulationyestheta.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgheuristicsimulationyestheta.onclick = function() {
+            modalheuristicsimulationyestheta.style.display = 'none';
+          }
+</script>
 
 <script>
 slideshow._releaseMath = function(el) {
