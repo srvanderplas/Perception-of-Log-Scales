@@ -22,7 +22,7 @@
 library(grid)
 library(gridSVG)
 
-save_lineup <- function(plot, filename, path = "plots", script = "action.js", ...) {
+save_lineup <- function(plot, filename, path = "plots", script = "www/js/action.js", ...) {
   ext <- c("png", "pdf", "svg")
   filenames <- paste0(filename, ".", ext)
 
@@ -36,17 +36,17 @@ save_lineup <- function(plot, filename, path = "plots", script = "action.js", ..
   ggsave(filename = filepaths[2], plot = plot, device = ext[2], ...)
 
   print(plot)
-  grobs <- grid::grid.ls(grid::grid.force())
-
-  toggle <- "toggle"
-
-  idx <- grep("panel-", grobs$name)
-  for (i in idx) {
-    grid.garnish(grobs$name[i],
-                 onmouseover = paste("frame('",grobs$name[i + 2], ".1')", sep = ""),
-                 onmouseout = paste("deframe('",grobs$name[i + 2], ".1')", sep = ""),
-                 onmousedown = paste(sprintf("%shigh(evt, '", toggle),grobs$name[i + 2], ".1')", sep = ""))
-  }
+  # grobs <- grid::grid.ls(grid::grid.force())
+#
+#   toggle <- "toggle"
+#
+#   idx <- grep("panel-", grobs$name)
+#   for (i in idx) {
+#     grid.garnish(grobs$name[i],
+#                  onmouseover = paste("frame('",grobs$name[i + 2], ".1')", sep = ""),
+#                  onmouseout = paste("deframe('",grobs$name[i + 2], ".1')", sep = ""),
+#                  onmousedown = paste(sprintf("%shigh(evt, '", toggle),grobs$name[i + 2], ".1')", sep = ""))
+#   }
 
   # Include script with each SVG
   # This may cause problems with shiny (not sure)
@@ -55,7 +55,7 @@ save_lineup <- function(plot, filename, path = "plots", script = "action.js", ..
 
   # Include link to the script
   # (but file paths have to be correct for this to work with Shiny)
-  grid.script(filename = script, type = "text/javascript")
+  # grid.script(filename = script, type = "text/javascript")
   grid.export(name = filepaths[3],
               uniqueNames = FALSE,
               exportJS = "inline",
