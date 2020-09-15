@@ -4,65 +4,28 @@ library(readr)
 library(digest)
 library(purrr)
 
+# ALGEBRAIC SIMULATION (+ theta)
 # Only works for x starting at 0
-# expSim <- function(beta, sigma, N = 30, xRange = c(0,20), yRange = c(1,100)){
-#   theta <- (yRange[2]-yRange[1]*(exp(beta*(xRange[2]-xRange[1]))))/(1-exp(beta*xRange[2]+sigma^2/2))
-#   alpha <- (yRange[1]-theta)/(exp(beta*xRange[1]+sigma^2/2))
-#   expData <- tibble(x = seq(xRange[1],xRange[2], length.out = N),
-#                     y = alpha*exp(beta*x + rnorm(N,0,sigma)) + theta)
-#   return(expData)
-# }
-
-
-expSim <- function(xMid, sigma, N = 20, xRange = c(0,20), yRange = c(1,100)){
-
-  # This creates the line y = -x (scaled to fit the x and y ranges)
-  # |*            0
-  # |  *
-  # |    *
-  # |      *
-  # |        1
-  # |          2
-  # |0___________3
-  #
-  # where 1, 2, 3 represent different points used to determine the line curvature
+expSim <- function(beta, sigma, nReps = 1, N = 20, xRange = c(0,20), yRange = c(1,100)){
+  theta <- (yRange[2]-yRange[1]*(exp(beta*(xRange[2]-xRange[1]))))/(1-exp(beta*xRange[2]+sigma^2/2))
+  alpha <- (yRange[1]-theta)/(exp(beta*xRange[1]+sigma^2/2))
   
-  lineData   <- tibble(xLine = seq(xRange[1],xRange[2],0.1),
-                       yLine = -(abs(diff(yRange))/abs(diff(xRange)))*(xLine-xRange[1])+yRange[2])
-  pointsData <- tibble(xPoint = c(xRange[1], (xMid-0.1), (xMid+0.1), xRange[2]),
-                       yPoint = c(yRange[1], lineData$yLine[lineData$xLine == xMid], lineData$yLine[lineData$xLine == xMid], yRange[2]))
-
-  # Connecting the 0 points in the illustration above with the 3rd point that
-  # determines curvature gives us a set of 3 points to use to fit an exponential
-  # line to the data.
-
-  # We fit a linear regression to the log-transformed data to get starting values
-  lm.fit <- lm(log(yPoint) ~ xPoint, data = pointsData)
-
-  alpha.0  <- exp(coef(lm.fit)[1]) %>% as.numeric()
-  beta.0   <- coef(lm.fit)[2] %>% as.numeric()
-  theta.0 <- min(pointsData$yPoint) * 0.5  # Why 0.5?
-
-  # and then use NLS to fit a better line to the data
-  start <- list(alpha = alpha.0, beta = beta.0, theta = theta.0)
-  nonlinear.fit   <- nls(yPoint ~ alpha * exp(beta * xPoint) + theta ,
-                         data = pointsData, start = start)
-
-  alpha <- (coef(nonlinear.fit)[1] %>% as.numeric())/(exp((sigma^2)/2))
-  beta <- coef(nonlinear.fit)[2] %>% as.numeric()
-  theta <- coef(nonlinear.fit)[3] %>% as.numeric()
-
-  # Then the coefficients are used to generate y values which are reasonable
-  expData <- tibble(x = seq(xRange[1],xRange[2], length.out = N),
-                    y = alpha*exp(beta*x + rnorm(N,0,sigma)) + theta)
+  vals <- seq(xRange[1], xRange[2], length.out = N*3/4)
+  xvals <- sample(vals, N, replace = T)
+  xvals <- jitter(xvals)
+  # xvals <- seq(xRange[1], xRange[2], length.out = N)
+  
+  expData <- tibble(x = rep(xvals, nReps),
+                    y = alpha*exp(beta*x + rnorm(N*nReps,0,sigma)) + theta)
   return(expData)
 }
 
 parmData <- tibble(diff.num    = seq(1,6,1),
                    curvature   = c("E", "E", "M", "M", "H", "H"),
                    variability = c("Lv", "Hv", "Lv", "Hv", "Lv", "Hv"),
-                   xMid        = c(14.5, 14.5,  13,   13,   11.8,   11.8),
-                   sigma       = c(0.25, 0.33, 0.14, 0.18, 0.07, 0.09),)
+                   beta        = c(0.3, 0.3, 0.15, 0.15, 0.07,  0.07),
+                   sigma       = c(0.22, 0.3, 0.14, 0.18, 0.07, 0.09)
+                   )
 
 trtData <- expand_grid(target = seq(1,6,1),
                        null   = seq(1,6,1)) %>%
@@ -79,6 +42,7 @@ trtData <- expand_grid(target = seq(1,6,1),
 panelData <- tibble("panel" = c("target", rep("null",19)),
                     ".n" = seq(0,19,1))
 
+set.seed(56156)
 simulatedData <- expand_grid(target = seq(1,6,1),
                              null = seq(1,6,1)) %>%
                   as_tibble() %>%
@@ -89,12 +53,12 @@ simulatedData <- expand_grid(target = seq(1,6,1),
                   left_join(parmData, by = "diff.num") %>%
                   full_join(panelData, by = "panel") %>%
                   right_join(trtData, by = "difficulty") %>%
-                  select(set, panel, .n, xMid, sigma, param_value, data_name) %>%
+                  select(set, panel, .n, beta, sigma, param_value, data_name) %>%
                   arrange(param_value, set, .n) %>%
-                  mutate(data = pmap(list(xMid,sigma),expSim)) %>%
+                  mutate(data = pmap(list(beta,sigma),expSim)) %>%
                   unnest(data)
 
-source("code/save_lineups.R")
+source(here::here("lineups-pilot-app", "code", "save_lineups.R"))
 picture_details <- matrix(NA, nrow = nrow(trtData), ncol = 9) %>% as.data.frame()
 
 colnames(picture_details) <- c("sample_size", "param_value", "p_value",
@@ -117,8 +81,8 @@ for(i in 1:nrow(trtData)){
                                  filter(panel == "null", set == setID, param_value == paramID) %>%
                                  select("x", "y", ".n"),
                        pos = pos)
-
-  write.csv(lineupData, file = paste("plots/data/", dataID, ".csv", sep = ""), row.names = F)
+  
+  write.csv(lineupData, file = here::here("lineups-pilot-app", "plots", "data", paste(dataID, ".csv", sep = "")), row.names = F)
 
   linearPlot <- ggplot(lineupData, aes(x=x, y=y)) +
                   facet_wrap(~.sample, ncol=5) +
@@ -131,7 +95,7 @@ for(i in 1:nrow(trtData)){
                         axis.text.x  = element_blank(),
                        )
 
-  save_lineup(linearPlot, file = linearID, path = "plots")
+  save_lineup(linearPlot, file = linearID, path = here::here("lineups-pilot-app", "plots"), width = 15, height = 12.5, dpi = 300)
 
   logPlot <- ggplot(lineupData, aes(x=x, y=y)) +
     facet_wrap(~.sample, ncol=5) +
@@ -145,7 +109,7 @@ for(i in 1:nrow(trtData)){
     ) +
     scale_y_continuous(trans = "log10")
 
-  save_lineup(logPlot, file = logID, path = "plots")
+  save_lineup(logPlot, file = logID, path = here::here("lineups-pilot-app", "plots"), width = 15, height = 12.5, dpi = 300 )
 
 picture_details[i, "sample_size"]       <- 20
 picture_details[i, "param_value"]       <- paramID
@@ -168,5 +132,4 @@ picture_details <- picture_details %>%
                              "obs_plot_location", "pic_name", "experiment", "difficulty", "data_name")
 
 write.csv(picture_details, file = here::here("lineups-pilot-app", "plots", "picture-details.csv"), row.names = F)
-# write.csv(picture_details, file = "plots/picture-details.csv", row.names = F)
 
