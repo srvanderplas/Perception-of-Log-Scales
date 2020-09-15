@@ -1,6 +1,8 @@
 library(RSQLite)
 library(DBI)
 library(here)
+library(ggplot2)
+library(tidyverse)
 
 # ---- Set up experiment details -----------------------------------------------
 experiment_id <- "emily-log-1"
@@ -71,6 +73,7 @@ dbDisconnect(con)
 # ---- Create examples ---------------------------------------------------------
 # Examples to match the first 2 reasons in the list of possible reasons
 
+set.seed(34020759)
 # Extreme value
 tibble(
   i = 1:5,
@@ -104,3 +107,10 @@ ggsave(here("lineups-pilot-app/examples/example2.png"), width = 15, height = 3, 
 # pic_details_db <- dbReadTable(con, "picture_details", pic_details)
 #
 # dbDisconnect(con)
+
+# If running on linux, change the permissions so that the
+# app doesn't crash
+if (str_detect(tmp$platform, "linux")) {
+  system(paste0("chmod 777 ", here::here("lineups-pilot-app", "exp_data.db")))
+  system(paste0("chmod 777 ", here::here("lineups-pilot-app")))
+}
