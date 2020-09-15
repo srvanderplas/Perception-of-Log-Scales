@@ -36,24 +36,8 @@ shinyServer(function(input, output, session) {
         lppleft = experiment$lpp,
         pic_id = 0, choice = NULL,
         correct = NULL, result = "")
-#
-#     # This outputs the experiment results CSV file
-#     output$downloadDB <- downloadHandler(
-#         filename = function() { paste0(experiment$experiment, "_results.csv") },
-#         content = function(conn) {
-#             con <- dbConnect(SQLite(), dbname = "exp_data.db")
-#             feedback <- dbReadTable(con, "feedback")
-#
-#             this_feedback <- feedback %>%
-#                 filter(description == experiment$experiment)
-#
-#             write.csv(this_feedback, conn, row.names = FALSE)
-#         }
-#     )
 
     output$debug <- renderText({experiment$question})
-
-    #enable("downloadDB")
 
     # Show other text input box if other is selected
     observe({
