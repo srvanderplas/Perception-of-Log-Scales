@@ -1,15 +1,16 @@
 ---
-title: "Simulation Options"
+title: "Simulation Options (Exponential Multiplicative)"
 author: "Emily Robinson"
 date: "9/1/2020"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = F, message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(echo = F, message = FALSE, warning = FALSE, fig.width = 9, fig.height = 6)
 library(ggplot2)
 library(scales)
 library(tidyverse)
+library(gridExtra)
 ```
 
 # Does not include theta
@@ -19,7 +20,7 @@ library(tidyverse)
 $y = \alpha e^{\beta x}$
 
 ```{r heuristicSimulation_noTheta, message=FALSE, warning=FALSE}
-expSim <- function(xMid, xRange = c(1,20), yRange = c(1,10)){
+expSim <- function(xMid, xRange = c(1,20), yRange = c(1,100)){
   
   lineData   <- tibble(xLine = seq(xRange[1],xRange[2],0.1),
                        yLine = ((yRange[1]-yRange[2])/(xRange[2]-xRange[1]))*(xLine-xRange[1])+yRange[2])
@@ -40,13 +41,13 @@ expSim <- function(xMid, xRange = c(1,20), yRange = c(1,10)){
   return(list(expData = expData, lineData = lineData, pointsData = pointsData))
 }
 
-expData <- tibble(xMid = c(12, 13.5, 15)) %>%
+expData <- tibble(xMid = c(11, 13, 15)) %>%
   mutate(data = map(xMid, expSim)) %>%
   unnest(data) %>%
   unnest(data) %>%
   mutate(xMid = factor(xMid))
 
-expData %>%
+linearPlot1 <- expData %>%
   ggplot(aes(x = x, y = y, group = xMid, color = xMid)) + 
   geom_line() +
   geom_line(aes(x = xLine, y = yLine), color = "gray") +
@@ -54,7 +55,7 @@ expData %>%
   theme_bw() +
   scale_color_brewer(palette = "Paired")
 
-expData %>%
+logPlot1 <- expData %>%
   ggplot(aes(x = x, y = y, group = xMid, color = xMid)) + 
   geom_line() +
   geom_point(aes(x = xPoint, y = yPoint), color = "black") +
@@ -67,7 +68,7 @@ expData %>%
 
 ```
 
-$y = \alpha e^{\beta x + \epsilon}$
+$y = \alpha e^{\beta x + \epsilon}$ with $\alpha = \frac{\hat\alpha}{e^{\sigma^2/2}}$
 
 ```{r heuristicSimulation_noTheta_error, message=FALSE, warning=FALSE}
 expSim <- function(xMid, sigma, N = 20, xRange = c(1,20), yRange = c(1,100)){
@@ -91,14 +92,14 @@ expSim <- function(xMid, sigma, N = 20, xRange = c(1,20), yRange = c(1,100)){
   return(list(expData = expData, lineData = lineData, pointsData = pointsData))
 }
 
-expData <- tibble(xMid = c(12, 13.5, 15),
-                  sigma = c(0.1, 0.15, 0.3)) %>%
+expData <- tibble(xMid = c(11, 13, 15),
+                  sigma = c(0.07, 0.14, 0.25)) %>%
   mutate(data = map2(xMid, sigma, expSim)) %>%
   unnest(data) %>%
   unnest(data) %>%
   mutate(xMid = factor(xMid))
 
-expData %>%
+linearPlot1_error <- expData %>%
   ggplot(aes(x = x, y = y, group = xMid, color = xMid)) + 
   geom_point() +
   geom_line(aes(x = xLine, y = yLine), color = "gray") +
@@ -106,7 +107,7 @@ expData %>%
   theme_bw() +
   scale_color_brewer(palette = "Paired")
 
-expData %>%
+logPlot1_error <- expData %>%
   ggplot(aes(x = x, y = y, group = xMid, color = xMid)) + 
   geom_point() +
   geom_point(aes(x = xPoint, y = yPoint), color = "gray") +
@@ -118,12 +119,16 @@ expData %>%
                      labels = trans_format("log10", math_format(10^.x)))
 ```
 
-### Original Simulation
+```{r plot1}
+grid.arrange(linearPlot1, logPlot1, linearPlot1_error, logPlot1_error, ncol = 2)
+```
+
+### Algebraic Simulation
 
 $y = \alpha e^{\beta x}$ with $\alpha = \frac{yMax}{e^{\beta xMax}}$
 
 ```{r originalSim_max, message=FALSE, warning=FALSE}
-expSim <- function(beta, xRange = c(1,20), yRange = c(1,10)){
+expSim <- function(beta, xRange = c(1,20), yRange = c(1,100)){
   alpha   <- (yRange[2]/exp(beta*xRange[2]))
   expData <- tibble(x = seq(xRange[1],xRange[2],1),
                     y = alpha*exp(beta*x))
@@ -135,13 +140,13 @@ expData <- tibble(beta = c(0.07, 0.15, 0.3)) %>%
            unnest(data) %>%
            mutate(beta = factor(beta))
 
-expData %>%
+linearPlot2 <- expData %>%
   ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
   geom_line() +
   theme_bw() +
   scale_color_brewer(palette = "Paired")
 
-expData %>%
+logPlot2 <- expData %>%
   ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
   geom_line() +
   theme_bw() +
@@ -162,19 +167,19 @@ expSim <- function(beta, sigma, N = 30, xRange = c(1,20), yRange = c(1,100)){
   return(expData)
 }
 
-expData <- tibble(beta = c(0.3, 0.3, 0.15, 0.15, 0.07, 0.07),
-                  sigma = c(0.3, 0.4, 0.12, 0.17, 0.05, 0.07)) %>%
+expData <- tibble(beta = c(0.3, 0.15, 0.07),
+                  sigma = c(0.3, 0.12, 0.05)) %>%
   mutate(data = map2(beta, sigma, expSim)) %>%
   unnest(data) %>%
   mutate(beta = factor(beta))
 
-expData %>%
+linearPlot2_error <- expData %>%
   ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
   geom_point() +
   theme_bw() +
   scale_color_brewer(palette = "Paired")
 
-expData %>%
+logPlot2_error <- expData %>%
   ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
   geom_point() +
   theme_bw() +
@@ -182,6 +187,10 @@ expData %>%
   scale_y_continuous(trans = "log10",
                      breaks = trans_breaks("log10", function(x) 10^x),
                      labels = trans_format("log10", math_format(10^.x)))
+```
+
+```{r plot2}
+grid.arrange(linearPlot2, logPlot2, linearPlot2_error, logPlot2_error, ncol = 2)
 ```
 
 # Includes theta
@@ -214,13 +223,13 @@ expSim <- function(xMid, xRange = c(0,20), yRange = c(1,100)){
   return(list(expData = expData, lineData = lineData, pointsData = pointsData))
 }
 
-expData <- tibble(xMid = c(11, 13, 15)) %>%
+expData <- tibble(xMid = c(11.8, 13, 14.5)) %>%
   mutate(data = map(xMid, expSim)) %>%
   unnest(data) %>%
   unnest(data) %>%
   mutate(xMid = factor(xMid))
 
-expData %>%
+linearPlot3 <- expData %>%
   ggplot(aes(x = x, y = y, group = xMid, color = xMid)) + 
   geom_line() +
   geom_point(aes(x = xPoint, y = yPoint), color = "black") +
@@ -228,7 +237,7 @@ expData %>%
   theme_bw() +
   scale_color_brewer(palette = "Paired")
 
-expData %>%
+logPlot3 <- expData %>%
   ggplot(aes(x = x, y = y, group = xMid, color = xMid)) + 
   geom_line() +
   geom_point(aes(x = xPoint, y = yPoint), color = "black") +
@@ -241,7 +250,7 @@ expData %>%
 
 ```
 
-$y = \alpha e^{\beta x + \epsilon} + \theta$
+$y = \alpha e^{\beta x + \epsilon} + \theta$ with $\alpha = \frac{\hat\alpha}{e^{\sigma^2/2}}$
 
 ```{r heuristicSimulation_yesTheta_error, message=FALSE, warning=FALSE}
 expSim <- function(xMid, sigma, N = 20, xRange = c(0,20), yRange = c(1,100)){
@@ -267,14 +276,14 @@ expSim <- function(xMid, sigma, N = 20, xRange = c(0,20), yRange = c(1,100)){
   return(list(expData = expData, lineData = lineData, pointsData = pointsData))
 }
 
-expData <- tibble(xMid = c(12, 13.5, 15),
-                  sigma = c(0.1, 0.15, 0.3)) %>%
+expData <- tibble(xMid = c(11.8, 13, 14.5),
+                  sigma = c(0.07, 0.14, 0.25)) %>%
   mutate(data = map2(xMid, sigma, expSim)) %>%
   unnest(data) %>%
   unnest(data) %>%
   mutate(xMid = factor(xMid))
 
-expData %>%
+linearPlot3_error <- expData %>%
   ggplot(aes(x = x, y = y, group = xMid, color = xMid)) + 
   geom_point() +
   geom_point(aes(x = xPoint, y = yPoint), color = "gray") +
@@ -282,7 +291,7 @@ expData %>%
   theme_bw() +
   scale_color_brewer(palette = "Paired")
 
-expData %>%
+logPlot3_error <- expData %>%
   ggplot(aes(x = x, y = y, group = xMid, color = xMid)) + 
   geom_point() +
   geom_point(aes(x = xPoint, y = yPoint), color = "gray") +
@@ -294,7 +303,11 @@ expData %>%
                      labels = trans_format("log10", math_format(10^.x)))
 ```
 
-### Original Simulation
+```{r plot3}
+grid.arrange(linearPlot3, logPlot3, linearPlot3_error, logPlot3_error, ncol = 2)
+```
+
+### Algebraic Simulation
 
 $y = \alpha e^{\beta x} + \theta$ with $\theta = \frac{yMax - yMin\times e^{\beta (xMax - xMin)}}{1 - e^{\beta xMax}}$ and $\alpha=\frac{yMin - \theta}{e^{\beta xMin}}$
 
@@ -312,13 +325,13 @@ expData <- tibble(beta = c(0.07, 0.15, 0.3)) %>%
   unnest(data) %>%
   mutate(beta = factor(beta))
 
-expData %>%
+linearPlot4 <- expData %>%
   ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
   geom_line() +
   theme_bw() +
   scale_color_brewer(palette = "Paired")
 
-expData %>%
+logPlot4 <- expData %>%
   ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
   geom_line() +
   theme_bw() +
@@ -339,89 +352,89 @@ expSim <- function(beta, sigma, N = 30, xRange = c(0,20), yRange = c(1,100)){
   return(expData)
 }
 
-expData <- tibble(difficulty = c("Easy-Low", "Easy-High", "Medium-Low", "Medium-High", "Hard-Low", "Hard-High"),
-                  beta = c(0.3, 0.3, 0.15, 0.15, 0.07, 0.07),
-                  sigma = c(0.3, 0.4, 0.12, 0.17,0.05, 0.07)) %>%
+expData <- tibble(difficulty = c("Easy", "Medium", "Hard"),
+                  beta = c(0.3, 0.15, 0.07),
+                  sigma = c(0.3, 0.12, 0.05)) %>%
   mutate(data = map2(beta, sigma, expSim)) %>%
   unnest(data) %>%
-  mutate(difficulty = factor(difficulty, levels = c("Easy-Low", "Medium-Low", "Hard-Low",
-                                                    "Easy-High", "Medium-High", "Hard-High")),
-         beta  = factor(beta),
+  mutate(beta  = factor(beta),
          sigma = factor(sigma))
 
-expData %>%
+linearPlot4_error <- expData %>%
   ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
   geom_point() +
   theme_bw() +
-  facet_wrap(~difficulty, ncol = 3) +
   scale_color_brewer(palette = "Paired")
 
-expData %>%
+logPlot4_error <- expData %>%
   ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
   geom_point() +
   theme_bw() +
   scale_color_brewer(palette = "Paired") +
-  facet_wrap(~difficulty, ncol = 3) +
   scale_y_continuous(trans = "log10",
                      breaks = trans_breaks("log10", function(x) 10^x),
                      labels = trans_format("log10", math_format(10^.x)))
 ```
 
-# Adjust x-axis
-
-```{r xAxisAdjust}
-expSim <- function(beta, xRange = c(0,200), yRange = c(1,10)){
-    expData <- tibble(x = seq(xRange[1],xRange[2],0.1),
-                      y = exp(beta*x))
-    return(expData)
-}
-
-expData <- tibble(beta = c(0.07, 0.15, 0.3)) %>%
-  mutate(data = map(beta, expSim)) %>%
-  unnest(data) %>%
-  mutate(beta = factor(beta))
-
-expData %>%
-  filter(y <= 10) %>%
-  ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
-  geom_line() +
-  theme_bw() +
-  facet_grid(~beta) +
-  # facet_grid(~beta, scales = "free") +
-  scale_color_brewer(palette = "Paired")
-
-expData %>%
-  filter(y <= 10) %>%
-  ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
-  geom_line() +
-  theme_bw() +
-  # facet_grid(~beta) +
-  facet_grid(~beta, scales = "free") +
-  scale_color_brewer(palette = "Paired")
-
-expData %>%
-  filter(y <= 10) %>%
-  ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
-  geom_line() +
-  theme_bw() +
-  facet_grid(~beta) +
-  # facet_grid(~beta, scales = "free") +
-  scale_color_brewer(palette = "Paired") +
-  scale_y_continuous(trans = "log10",
-                     breaks = trans_breaks("log10", function(x) 10^x),
-                     labels = trans_format("log10", math_format(10^.x)))
-
-expData %>%
-  filter(y <= 10) %>%
-  ggplot(aes(x = x, y = y, group = beta, color = beta)) + 
-  geom_line() +
-  theme_bw() +
-  # facet_grid(~beta) +
-  facet_grid(~beta, scales = "free") +
-  scale_color_brewer(palette = "Paired") +
-  scale_y_continuous(trans = "log10",
-                     breaks = trans_breaks("log10", function(x) 10^x),
-                     labels = trans_format("log10", math_format(10^.x)))
+```{r plot4}
+grid.arrange(linearPlot4, logPlot4, linearPlot4_error, logPlot4_error, ncol = 2)
 ```
+
+<!-- # Adjust x-axis -->
+
+<!-- ```{r xAxisAdjust} -->
+<!-- expSim <- function(beta, xRange = c(0,200), yRange = c(1,10)){ -->
+<!--     expData <- tibble(x = seq(xRange[1],xRange[2],0.1), -->
+<!--                       y = exp(beta*x)) -->
+<!--     return(expData) -->
+<!-- } -->
+
+<!-- expData <- tibble(beta = c(0.07, 0.15, 0.3)) %>% -->
+<!--   mutate(data = map(beta, expSim)) %>% -->
+<!--   unnest(data) %>% -->
+<!--   mutate(beta = factor(beta)) -->
+
+<!-- expData %>% -->
+<!--   filter(y <= 10) %>% -->
+<!--   ggplot(aes(x = x, y = y, group = beta, color = beta)) +  -->
+<!--   geom_line() + -->
+<!--   theme_bw() + -->
+<!--   facet_grid(~beta) + -->
+<!--   # facet_grid(~beta, scales = "free") + -->
+<!--   scale_color_brewer(palette = "Paired") -->
+
+<!-- expData %>% -->
+<!--   filter(y <= 10) %>% -->
+<!--   ggplot(aes(x = x, y = y, group = beta, color = beta)) +  -->
+<!--   geom_line() + -->
+<!--   theme_bw() + -->
+<!--   # facet_grid(~beta) + -->
+<!--   facet_grid(~beta, scales = "free") + -->
+<!--   scale_color_brewer(palette = "Paired") -->
+
+<!-- expData %>% -->
+<!--   filter(y <= 10) %>% -->
+<!--   ggplot(aes(x = x, y = y, group = beta, color = beta)) +  -->
+<!--   geom_line() + -->
+<!--   theme_bw() + -->
+<!--   facet_grid(~beta) + -->
+<!--   # facet_grid(~beta, scales = "free") + -->
+<!--   scale_color_brewer(palette = "Paired") + -->
+<!--   scale_y_continuous(trans = "log10", -->
+<!--                      breaks = trans_breaks("log10", function(x) 10^x), -->
+<!--                      labels = trans_format("log10", math_format(10^.x))) -->
+
+<!-- expData %>% -->
+<!--   filter(y <= 10) %>% -->
+<!--   ggplot(aes(x = x, y = y, group = beta, color = beta)) +  -->
+<!--   geom_line() + -->
+<!--   theme_bw() + -->
+<!--   # facet_grid(~beta) + -->
+<!--   facet_grid(~beta, scales = "free") + -->
+<!--   scale_color_brewer(palette = "Paired") + -->
+<!--   scale_y_continuous(trans = "log10", -->
+<!--                      breaks = trans_breaks("log10", function(x) 10^x), -->
+<!--                      labels = trans_format("log10", math_format(10^.x))) -->
+<!-- ``` -->
 
 

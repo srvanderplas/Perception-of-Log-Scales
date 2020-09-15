@@ -79,10 +79,10 @@ parmCombos <- data.frame(Curvature = c("Hard", "Hard", "Medium", "Medium", "Easy
                          xMid  = c(11.8,  11.8,   13,   13,   14.5,  14.5),
                          sigma = c(0.07, 0.09, 0.14, 0.18, 0.25, 0.33)
                          )
-# parmCombos %>% kable(format = "pandoc")
+parmCombos %>% kable(format = "pandoc")
 ```
 
-```{r ExpMultVisuals5, cache = F, echo = F, fig.width = 6, fig.height = 6}
+```{r ExpMultVisuals5, cache = F, echo = F, fig.width = 8, fig.height = 5}
 simData5 <- parmCombos %>%
                   mutate(data = pmap(list(xMid,sigma,nReps = 5),expSim)) %>%
                   unnest(data)
@@ -93,7 +93,7 @@ simData5 %>%
   ggplot(aes(x = x, y = y)) +
   geom_point(shape = 1) +
   theme_bw() +
-  facet_grid(Curvature ~ Variability)
+  facet_grid(Variability~Curvature)
 
 simData5 %>%
   mutate(Curvature = factor(Curvature, levels = c("Easy", "Medium", "Hard"))) %>%
@@ -101,11 +101,11 @@ simData5 %>%
   ggplot(aes(x = x, y = y)) +
   geom_point(shape = 1) +
   theme_bw() +
-  facet_grid(Curvature ~ Variability) +
+  facet_grid(Variability~Curvature) +
   scale_y_continuous(trans = "log10")
 ```
 
-```{r ExpMultVisuals1, cache = F, echo = F, fig.width = 6, fig.height = 6}
+```{r ExpMultVisuals1, cache = F, echo = F, fig.width = 8, fig.height = 5}
 simData1 <- parmCombos %>%
                   mutate(data = pmap(list(xMid,sigma,nReps = 1),expSim)) %>%
                   unnest(data)
@@ -116,7 +116,7 @@ simData1 %>%
   ggplot(aes(x = x, y = y)) +
   geom_point(shape = 1) +
   theme_bw() +
-  facet_grid(Curvature ~ Variability)
+  facet_grid(Variability~Curvature)
 
 simData1 %>%
   mutate(Curvature = factor(Curvature, levels = c("Easy", "Medium", "Hard"))) %>%
@@ -124,7 +124,7 @@ simData1 %>%
   ggplot(aes(x = x, y = y)) +
   geom_point(shape = 1) +
   theme_bw() +
-  facet_grid(Curvature ~ Variability) +
+  facet_grid(Variability~Curvature) +
   scale_y_continuous(trans = "log10")
 ```
 

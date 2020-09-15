@@ -3,16 +3,16 @@ library(tidyverse)
 library(nullabor)
 library(readr)
 
-n = 40
+n = 20
 
 beta.target = 0.07
 beta.null = 0.25
 
-xMid.target = 12
-xMid.null = 14
+xMid.target = 14.5
+xMid.null = 11.8
 
-sigma.target = 0.05
-sigma.null = 0.2
+sigma.target = 0.33
+sigma.null = 0.09
 
 # -----------------------------------------------------------------------------------------------------
 # ORIGINAL --------------------------------------------------------------------------------------------
@@ -100,7 +100,7 @@ expSim <- function(xMid, sigma, N = n, xRange = c(1,20), yRange = c(1,100)){
 true <- expSim(xMid = xMid.target, sigma = sigma.target)
 
 all.sim <- data.frame(x=NULL, y=NULL, .n=NULL)
-for (i in 1:19) {
+for (i in 1:19){
   simDat <- expSim(xMid = xMid.null, sigma = sigma.null)
   sim <- cbind(simDat, .n=i)
   all.sim <- rbind(all.sim, sim)
