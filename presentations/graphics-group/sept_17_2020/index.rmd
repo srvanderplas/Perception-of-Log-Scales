@@ -1,5 +1,6 @@
 ---
 title: "Perception of exponential data displayed on a log scale"
+subtitle: "Iowa State Graphics Group" 
 author: "Emily Robinson, Susan Vanderplaus & Reka Howard"
 date: "September 17, 2020"
 output:
@@ -78,16 +79,25 @@ class:primary
 .pull-left[
 - **Goal:** Test out an experiment designed to assess perceptual and cognitive biases in graphical displays of exponentially increasing data.
 
-- Vist the [**REDDIT LINK**](https://old.reddit.com/r/datavis_testing/comments/itd4hs/visual_inference_graphics_group_20200917/?) and follow the instructions for the experimental task.
+- Vist this [**REDDIT LINK**](https://old.reddit.com/r/datavis_testing/comments/itd4hs/visual_inference_graphics_group_20200917/?) and follow the instructions for the experimental task.
 
 ].pull-right[
 <img src="images/ka_4_hamster_wheel_dribbble.gif" width="100%" />
-<font size="2">
+]
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<font size="3">
 .small[
 Source: https://dribbble.com/shots/5588147-Hamster-Wheel
 ]
 </font>
-]
 
 ???
 - Send link in chat.
