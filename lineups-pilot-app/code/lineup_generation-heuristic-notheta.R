@@ -82,7 +82,7 @@ trtData <- expand_grid(target = seq(1,6,1),
   mutate(rorschach = ifelse(target == null, 1, 0),
          param_value = paste("target-", curvature.target, "-", variability.target, "_null-", curvature.null, "-", variability.null, "_r", rorschach, sep = "")) %>%
   filter(curvature.target == curvature.null | (curvature.target != curvature.null & variability.target == variability.null), rorschach == 0) %>%
-  expand_grid(set = seq(1,3,1)) %>%
+  expand_grid(set = seq(1,2,1)) %>%
   mutate(data_name = paste("set", set, "-", param_value, sep = ""))
 
 panelData <- tibble("panel" = c("target", rep("null",19)),
@@ -141,7 +141,7 @@ for(i in 1:nrow(trtData)){
           axis.text.x  = element_blank(),
     )
   
-  save_lineup(linearPlot, file = linearID, path = here::here("lineups-pilot-app", "plots"), width = 15, height = 12.5, dpi = 300)
+  save_lineup(linearPlot, file = linearID, path = here::here("lineups-pilot-app", "plots"), width = 15, height = 12.5, dpi = 500)
   
   logPlot <- ggplot(lineupData, aes(x=x, y=y)) +
     facet_wrap(~.sample, ncol=5) +
@@ -155,7 +155,7 @@ for(i in 1:nrow(trtData)){
     ) +
     scale_y_continuous(trans = "log10")
   logPlot
-  save_lineup(logPlot, file = logID, path = here::here("lineups-pilot-app", "plots"), width = 15, height = 12.5, dpi = 300 )
+  save_lineup(logPlot, file = logID, path = here::here("lineups-pilot-app", "plots"), width = 15, height = 12.5, dpi = 500 )
   
   picture_details[i, "sample_size"]       <- 20
   picture_details[i, "param_value"]       <- paramID
