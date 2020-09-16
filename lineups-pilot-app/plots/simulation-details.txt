@@ -1,2 +1,2 @@
 "simulation_method" "model"
-"heuristic" "alpha*exp^[beta*x+epsilon]"
+"algebraic" "alpha*exp^[beta*x+epsilon]+theta"

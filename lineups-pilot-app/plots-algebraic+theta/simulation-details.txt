@@ -1,2 +1,0 @@
-"simulation_method" "model"
-"algebraic" "alpha*exp^[beta*x+epsilon]+theta"
