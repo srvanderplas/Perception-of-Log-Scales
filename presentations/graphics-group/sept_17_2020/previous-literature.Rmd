@@ -19,6 +19,35 @@ knitr::opts_chunk$set(echo = F, fig.width = 8, fig.height = 4, out.width = "100%
 
     - reveal both universal and culture-dependent facets of the sense of number. After a minimal instruction period, even members of a remote culture with reduced vocabulary and education readily understand that number can be mapped onto a spatial scale. The exact form of this mapping switches dramatically from logarithmic to linear, however, depending on the ages at which people are tested, the education they have received, and the format in which numbers are presented.
 
+- @menge_logarithmic_2018
+
+    - Logarithms convert multiplicative relationships to additive ones, providing an elegant way to span many orders of magnitude, to show elasticities and other proportional changes, and to linearize power laws.
+
+    - They also have practical purposes, easing the computation of small numbers such as likelihoods and transforming data to fit statistical assumptions.
+
+    - Questions:
+        - How often do ecologists encounter log-scaled data?
+        - How well do ecologists understand log-scaled data?
+
+    - When presenting log-scaled data, it is possible to use either untransformed values (for example, values of 1, 10 and 100 are equally spaced along the axis) or log-transformed values (for example, 0, 1, and 2).
+
+    - The main part of our survey presented respondents with graphs that were randomly displayed on linear–linear scales (Fig. 2a,d and g), log–log scales with untransformed values (Fig. 2b,e and h), or log–log scales with log-transformed values (Fig. 2c,f and i).
+
+    - Two relationships were shown on each graph, with distance from the edge of a habitat on the horizontal axis and population size.
+
+        - whether each population was increasing or decreasing with distance
+        - how steeply the rabbit population changed with distance compared to the chipmunk population.!!!!
+            - Misconception: ‘hand-hold fallacy’
+                - Climbing something steep is harder than climbing something gradual, but climbing something smooth (such as a window) is harder than climbing something with hand-holds (such as a ladder), regardless of slope.
+        - population level at the edge of the habitat.
+            - Misconception: ‘Zeno’s zero fallacy’
+                - Zeno’s famous paradox states that a distance can never be reduced to zero because it must be halved infinitely many times and it is impossible to perform an infinite number of tasks.
+        - the manner in which a population changes.
+            - 3 Misconceptions: ‘watch out for curves fallacies’
+                - all lines in log–log space are also lines in linear–linear space
+                - all lines in log–log space curve upwards in linear–linear space
+                - curves in log–log space have similar curvature in linear–linear space
+
 ### You Draw It
 - @mosteller_eye_1981 
 
