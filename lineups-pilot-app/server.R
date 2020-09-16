@@ -4,6 +4,8 @@ library(ggplot2)
 library(lubridate)
 library(dplyr)
 library(RSQLite)
+library(here)
+library(tidyverse)
 
 experiment_name <- "emily-log-1"
 

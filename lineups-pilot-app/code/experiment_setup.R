@@ -1,6 +1,7 @@
 library(RSQLite)
 library(DBI)
 library(here)
+library(tidyverse)
 library(lubridate)
 
 # ---- Set up experiment details -----------------------------------------------
@@ -105,3 +106,11 @@ ggsave(here("lineups-pilot-app/examples/example2.png"), width = 15, height = 3, 
 # pic_details_db <- dbReadTable(con, "picture_details", pic_details)
 #
 # dbDisconnect(con)
+
+
+# If running on linux, change the permissions so that the
+# app doesn't crash
+if (str_detect(sessionInfo()$platform, "linux")) {
+  system(paste0("chmod 777 ", here::here("lineups-pilot-app", "exp_data.db")))
+  system(paste0("chmod 777 ", here::here("lineups-pilot-app")))
+}
