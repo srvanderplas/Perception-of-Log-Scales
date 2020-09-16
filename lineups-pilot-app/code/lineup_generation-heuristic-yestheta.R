@@ -177,6 +177,7 @@ picture_details <- picture_details %>%
   mutate(pic_id = seq(1, nrow(trtData)*2),
          difficulty = ifelse(test_param == "linear", (100 + difficulty), (200 + difficulty))) %>%
   select("pic_id", "sample_size", "test_param",	"param_value", "p_value",	
-         "obs_plot_location", "pic_name", "experiment", "difficulty", "data_name")
+         "obs_plot_location", "pic_name", "experiment", "difficulty", "data_name",
+         "set")
 
 write.csv(picture_details, file = here::here("lineups-pilot-app", "plots", "picture-details.csv"), row.names = F)

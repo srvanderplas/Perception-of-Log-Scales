@@ -35,8 +35,8 @@ expSim <- function(beta, sigma, nReps = 1, N = 20, xRange = c(0,20), yRange = c(
 parmData <- tibble(diff.num    = seq(1,6,1),
                    curvature   = c("E", "E", "M", "M", "H", "H"),
                    variability = c("Lv", "Hv", "Lv", "Hv", "Lv", "Hv"),
-                   beta        = c(0.3, 0.3, 0.15, 0.15, 0.07,  0.07),
-                   sigma       = c(0.22, 0.3, 0.14, 0.18, 0.07, 0.09)
+                   beta  = c(0.07, 0.07, 0.15, 0.15, 0.33, 0.33),
+                   sigma = c(0.05, 0.09, 0.12, 0.2, 0.25, 0.35)
                    )
 
 trtData <- expand_grid(target = seq(1,6,1),
@@ -107,7 +107,7 @@ for(i in 1:nrow(trtData)){
                         axis.text.x  = element_blank(),
                        )
   linearPlot
-  save_lineup(linearPlot, file = linearID, path = here::here("lineups-pilot-app", "plots"), width = 10, height = 7, dpi = 600)
+  save_lineup(linearPlot, file = linearID, path = here::here("lineups-pilot-app", "plots"), width = 15, height = 12.5, dpi = 300)
 
   logPlot <- ggplot(lineupData, aes(x=x, y=y)) +
     facet_wrap(~.sample, ncol=5) +
@@ -121,7 +121,7 @@ for(i in 1:nrow(trtData)){
     ) +
     scale_y_continuous(trans = "log10")
   logPlot
-  save_lineup(logPlot, file = logID, path = here::here("lineups-pilot-app", "plots"), width = 10, height = 7, dpi = 600 )
+  save_lineup(logPlot, file = logID, path = here::here("lineups-pilot-app", "plots"), width = 15, height = 12.5, dpi = 300)
 
 picture_details[i, "sample_size"]       <- 20
 picture_details[i, "param_value"]       <- paramID

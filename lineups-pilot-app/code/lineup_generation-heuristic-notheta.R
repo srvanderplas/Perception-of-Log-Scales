@@ -44,10 +44,6 @@ coefEst <- function(xMid, xRange = c(0,20), yRange = c(1,100)){
   return(coefficients)
 }
 
-coefData <- tibble(xMid = c(11.8, 13, 14.5)) %>%
-                mutate(coefficients = pmap(list(xMid),coefEst)) %>%
-                unnest(coefficients)
-
 expSim <- function(alphahat, betahat, sigma, nReps = 1, N = 20, xRange = c(0,20), yRange = c(1,100)){
   
   alpha = alphahat/(exp(sigma^2/2))
@@ -62,11 +58,17 @@ expSim <- function(alphahat, betahat, sigma, nReps = 1, N = 20, xRange = c(0,20)
   return(expData)
 }
 
+# Calculate coefficient estimates
+coefData <- tibble(xMid = c(9, 13, 15.8)) %>%
+  mutate(coefficients = pmap(list(xMid),coefEst)) %>%
+  unnest(coefficients)
+
+# Identify parameters
 parmData <- tibble(diff.num    = seq(1,6,1),
                    curvature   = c("E", "E", "M", "M", "H", "H"),
                    variability = c("Lv", "Hv", "Lv", "Hv", "Lv", "Hv"),
-                   xMid        = c(14.5, 14.5, 13, 13, 11.8,  11.8),
-                   sigma       = c(0.22, 0.3, 0.14, 0.18, 0.07, 0.09)
+                   xMid        = c(15.8, 15.8, 13, 13, 9,  9),
+                   sigma       = c(0.25, 0.37, 0.12, 0.2, 0.06, 0.1)
                    ) %>%
             left_join(coefData, by = "xMid")
 parmData
