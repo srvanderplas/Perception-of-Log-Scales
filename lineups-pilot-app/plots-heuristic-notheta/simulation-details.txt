@@ -1,2 +1,0 @@
-"simulation_method" "model"
-"heuristic" "alpha*exp^[beta*x+epsilon]"
