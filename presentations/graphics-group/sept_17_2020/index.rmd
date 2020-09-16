@@ -170,7 +170,6 @@ class:primary
 - Making Sense of Graphs: Critical Factors Influencing Comprehension and Instructional Implications (Friel, Curcio, and Bright 2001)
 
     - argue that researchers must consider the effect of the graph's visual characteristics (i.e., syntax) and the **graph's context** (i.semantics) on one's comprehension.
-
     
 <br>
 
