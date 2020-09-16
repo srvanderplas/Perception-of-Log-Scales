@@ -1,5 +1,5 @@
 ---
-title: "Parameter Selection"
+title: "Parameter Selection - Heuristic (no theta)"
 author: "Emily Robinson"
 output:
   html_document: default
@@ -19,10 +19,10 @@ library(purrr)
 
 Data is simulated heuristically with the following model: 
 
-$$y_i = \tilde\alpha e^{(\hat\beta x_i + \epsilon_i)} + \hat\theta$$ 
+$$y_i = \tilde\alpha e^{(\hat\beta x_i + \epsilon_i)}$$ 
 with $\epsilon \sim N(0,\sigma^2)$ and $\tilde\alpha = \frac{\hat\alpha}{e^{\sigma^2/2}}$
 
-where $\hat\alpha, \hat\beta,$ and $\hat\theta$ were estimated using `nls().` The domain was set to be $x\in (0,20)$ with $N = 20.$
+where $\hat\alpha,$ and $\hat\beta$ were estimated using `nls().` With $x\in (0,20), y \in (1,100)$ and $N = 20.$
 
 ```{r functions}
 # Obtain alphahat, betahat, and thetahat for different midpoints.
