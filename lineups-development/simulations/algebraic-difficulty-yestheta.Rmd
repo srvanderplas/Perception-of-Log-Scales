@@ -26,7 +26,11 @@ where $\theta = \frac{yMax - yMin\times e^{\beta (xMax - xMin)}}{1 - e^{\beta xM
 expSim <- function(beta, sigma, nReps = 1, N = 20, xRange = c(0,20), yRange = c(1,100)){
   theta <- (yRange[2]-yRange[1]*(exp(beta*(xRange[2]-xRange[1]))))/(1-exp(beta*xRange[2]+sigma^2/2))
   alpha <- (yRange[1]-theta)/(exp(beta*xRange[1]+sigma^2/2))
-  xvals <- seq(xRange[1], xRange[2], length.out = N)
+  
+  vals <- seq(xRange[1], xRange[2], length.out = N*3/4)
+  xvals <- sample(vals, (N-2), replace = T)
+  xvals <- jitter(c(xRange[1],xvals,xRange[2]))
+  
   expData <- tibble(x = rep(xvals, nReps),
                     y = alpha*exp(beta*x + rnorm(N*nReps,0,sigma)) + theta)
   return(expData)
@@ -48,8 +52,8 @@ calcLOF <-
 #Identify parameters
 parmCombos <- data.frame(Curvature = c("Hard", "Hard", "Medium", "Medium", "Easy", "Easy"),
                          Variability = c("Low", "High", "Low", "High", "Low", "High"),
-                         beta  = c(0.07, 0.07, 0.15, 0.15, 0.3, 0.3),
-                         sigma = c(0.07, 0.09, 0.14, 0.18, 0.22, 0.3)
+                         beta  = c(0.07, 0.07, 0.15, 0.15, 0.33, 0.33),
+                         sigma = c(0.05, 0.09, 0.12, 0.2, 0.25, 0.35)
                          )
 parmCombos %>% kable(format = "pandoc")
 ```
