@@ -1,6 +1,7 @@
 library(RSQLite)
 library(DBI)
 library(here)
+library(tidyverse)
 library(lubridate)
 
 # ---- Set up experiment details -----------------------------------------------
@@ -80,8 +81,12 @@ tibble(
 ) %>%
   tidyr::unnest(c(x, y)) %>%
   mutate(y = x + y + c(rep(0, 3*50 + 5), 10, rep(0, 50 + 44))) %>%
-  ggplot(aes(x = x, y = y)) + geom_point() + facet_wrap(~i, nrow = 1) + theme_bw() + theme(axis.text = element_blank(), axis.title = element_blank(), axis.ticks = element_blank())
-ggsave(here("lineups-pilot-app/examples/example1.png"), width = 15, height = 3, dpi = 300)
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = .75) +
+  facet_wrap(~i, nrow = 1) +
+  theme_bw(base_size = 14) +
+  theme(axis.text = element_blank(), axis.title = element_blank(), axis.ticks = element_blank())
+ggsave(here("lineups-pilot-app/examples/example1.png"), width = 10, height = 2, dpi = 600)
 
 
 # different starting point
@@ -92,8 +97,12 @@ tibble(
 ) %>%
   tidyr::unnest(c(x, y)) %>%
   mutate(y = rep(c(.5, 1, 1, 1, 1), each = 50) * x + y) %>%
-  ggplot(aes(x = x, y = y)) + geom_point() + facet_wrap(~i, nrow = 1) + theme_bw() + theme(axis.text = element_blank(), axis.title = element_blank(), axis.ticks = element_blank())
-ggsave(here("lineups-pilot-app/examples/example2.png"), width = 15, height = 3, dpi = 300)
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = .75) +
+  facet_wrap(~i, nrow = 1) +
+  theme_bw(base_size = 14) +
+  theme(axis.text = element_blank(), axis.title = element_blank(), axis.ticks = element_blank())
+ggsave(here("lineups-pilot-app/examples/example2.png"), width = 10, height = 2, dpi = 600)
 
 
 
@@ -105,3 +114,11 @@ ggsave(here("lineups-pilot-app/examples/example2.png"), width = 15, height = 3, 
 # pic_details_db <- dbReadTable(con, "picture_details", pic_details)
 #
 # dbDisconnect(con)
+
+
+# If running on linux, change the permissions so that the
+# app doesn't crash
+if (str_detect(sessionInfo()$platform, "linux")) {
+  system(paste0("chmod 777 ", here::here("lineups-pilot-app", "exp_data.db")))
+  system(paste0("chmod 777 ", here::here("lineups-pilot-app")))
+}
