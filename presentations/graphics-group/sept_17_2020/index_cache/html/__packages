@@ -14,3 +14,12 @@ nullabor
 scales
 knitr
 RefManageR
+digest
+gridSVG
+RSQLite
+DBI
+here
+lubridate
+shiny
+shinyjs
+shinythemes

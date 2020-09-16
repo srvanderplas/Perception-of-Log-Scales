@@ -125,6 +125,18 @@ class:primary
 
 - Despite log scales regularly being used, we learned there is limited research conducted in the form of an experiment to quantify the effects of displaying exponentially increasing data on a log scale.
 
+???
+
+- @dehaeneLogLinearDistinct2008
+
+    - in American children, logarithmic mapping does not disappear all at once, but vanishes first for small numbers and much later for larger numbers from 1 to 1000 (up to fourth or sixth grade in some children).
+    
+- Logarithmic vs. Linear Visualizations of COVID-19 Cases Do Not Affect Citizens’ Support for Confinement (Sevi et al. 2020)
+
+    -  In the COVID-19 pandemic, the tool most commonly used to convey statistical information about the spread of the virus has been time-series graphs about the cumulative number of cases.
+    - Plotting the COVID-19 progression on a linear scale highlights an exponential “explosion” in the number of cases, whereas plotting the number of cases on a logarithmic scale produces a line with a modest-looking slope. 
+    - Measure the causal effect of different visualization design choices on Canadians’ views about the crisis. 
+    - Found that no matter how the information is presented, Canadians are united in supporting drastic confinement measures and in accepting that these measures will not be removed soon.
 
 ---
 class:primary
@@ -133,17 +145,13 @@ class:primary
 1. Lineup `r emo::ji("chart increasing")` `r emo::ji("chart increasing")` `r emo::ji("chart increasing")`
 
     - Test an individuals ability to perceptually differentiate exponentially increasing data with differing rates of change on both the linear and log scale.
-
 --
-
 2. You Draw It `r emo::ji("pencil2")`
 
     - Based off NYT "You Draw It" [**EXAMPLE**](https://www.nytimes.com/interactive/2015/05/28/upshot/you-draw-it-how-family-income-affects-childrens-college-chances.html?searchResultPosition=3) 
     
     - Tests an individuals ability to make predictions for exponentially increasing data.
-
 --
-
 3. Estimation `r emo::ji("straight_ruler")`
 
     - Tests an individuals ability to estimate values on an exponentially increasing graph and extending their estimates for scaled values of x.
@@ -154,6 +162,21 @@ class:primary
 .center[
 See sample experimental task applet [**HERE**](https://srvanderplas.shinyapps.io/youdrawittest/)!
 ]
+
+???
+
+-
+
+
+- **Eye Fitting Straight Lines**, Mosteller et al. (1981)
+
+    - explore properties of lines fitted by eye
+    - students tended to fit the slope of the first principal component or major axis (the line that minimizes the sum of squares of perpendicular rather than vertical distances)
+    - students who gave steep slopes for one data set also tended to give steep slopes on the others.
+
+- Making Sense of Graphs: Critical Factors Influencing Comprehension and Instructional Implications (Friel, Curcio, and Bright 2001)
+
+    - argue that researchers must consider the effect of the graph's visual characteristics (i.e., syntax) and the **graph's context** (i.semantics) on one's comprehension.
 
 ---
 class:primary
@@ -233,23 +256,39 @@ The **Lack of Fit** test statistic calculated by the deviation of the data from 
 
 - Low / High
 
-- Lower variability increases accuracy (Best, Smith, and Stubbs 2007).
-
 <br>
 
 See [**parameter selection**](https://srvanderplas.github.io/Perception-of-Log-Scales/lineups-development/simulations/heuristic-difficulty-notheta.html) documentation for density plots of the lack of fit statistic at different parameter value combinations.
 
+???
+
+- Perception of Linear and Nonlinear Trends: Using Slope and Curvature Information to Make Trend Discriminations (Best, Smith, and Stubbs 2007)
+
+    - Asked to identify the type of curve (exponential, asymptotic, linear; increasing, decreasing)
+
+    - hypothesis is 2-stage estimation: (1) identify the type of curve and direction, (2) use that information for prediction
+
+    - this experiment is examining whether discrimination between curve types is possible
+    - Results:
+        - **accuracy higher when nonlinear trends presented** (e.g. it’s hard to say something is linear, but easy to say that it isn’t)
+        - **accuracy higher with low variability** – variability was additive, e.g. constant variance around mean function it appears that participants examined curvature to make the determination of type
+
 ---
 class:primary
-## Previous Literature
+# Experimental Design & Sampling Method
+- 18 total parameter value combinations of interest
 
-- Numerical estimation is more accurate than graphical estimation for exponential curves
+- 2 scales (log/linear)
 
-- Perceptual issue: ability to discriminate between values of $\beta$ in $y = e^{\beta x}$ functions.
+- Each individual recieves 12 lineups:
 
-- Underestimation of exponential growth is common. [@wagenaar_misperception_1975]
-
-- Using a log scale should make it much easier to estimate $\beta$. We estimate slopes relatively accurately. (Mosteller et al. 1981)
+    - Randomly assigned 6 parameter value combinations
+    
+    - Independently assigned each parameter value combination a set on the linear and on the log scale.
+    
+---
+class:primary
+# Previous Literature
 
 ---
 class:primary
@@ -259,11 +298,11 @@ library(RefManageR)
 bib <- ReadBib("references.bib", check = FALSE)
 ui <- "- "
 ```
-<font size="2">
+<font size="3">
 .small[
 ```{r, print_refs, results='asis', echo=FALSE, warning=FALSE, message=FALSE}
 writeLines(ui)
-print(bib[key = c("best_perception_2007", "wagenaar_misperception_1975", "armstrong_heuristics_1996")], 
+print(bib[key = c("best_perception_2007", "wagenaar_misperception_1975", "menge_logarithmic_2018", "sevi_logarithmic_2020", "@friel_making_2001")], 
   .opts = list(check.entries = FALSE, 
                style = "html", 
                bib.style = "authoryear"))

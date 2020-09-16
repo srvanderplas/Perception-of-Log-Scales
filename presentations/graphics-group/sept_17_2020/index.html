@@ -84,6 +84,18 @@ class:primary
 
 - Despite log scales regularly being used, we learned there is limited research conducted in the form of an experiment to quantify the effects of displaying exponentially increasing data on a log scale.
 
+???
+
+- @dehaeneLogLinearDistinct2008
+
+    - in American children, logarithmic mapping does not disappear all at once, but vanishes first for small numbers and much later for larger numbers from 1 to 1000 (up to fourth or sixth grade in some children).
+    
+- Logarithmic vs. Linear Visualizations of COVID-19 Cases Do Not Affect Citizens’ Support for Confinement (Sevi et al. 2020)
+
+    -  In the COVID-19 pandemic, the tool most commonly used to convey statistical information about the spread of the virus has been time-series graphs about the cumulative number of cases.
+    - Plotting the COVID-19 progression on a linear scale highlights an exponential “explosion” in the number of cases, whereas plotting the number of cases on a logarithmic scale produces a line with a modest-looking slope. 
+    - Measure the causal effect of different visualization design choices on Canadians’ views about the crisis. 
+    - Found that no matter how the information is presented, Canadians are united in supporting drastic confinement measures and in accepting that these measures will not be removed soon.
 
 ---
 class:primary
@@ -92,17 +104,13 @@ class:primary
 1. Lineup 📈 📈 📈
 
     - Test an individuals ability to perceptually differentiate exponentially increasing data with differing rates of change on both the linear and log scale.
-
 --
-
 2. You Draw It ✏️
 
     - Based off NYT "You Draw It" [**EXAMPLE**](https://www.nytimes.com/interactive/2015/05/28/upshot/you-draw-it-how-family-income-affects-childrens-college-chances.html?searchResultPosition=3) 
     
     - Tests an individuals ability to make predictions for exponentially increasing data.
-
 --
-
 3. Estimation 📏
 
     - Tests an individuals ability to estimate values on an exponentially increasing graph and extending their estimates for scaled values of x.
@@ -113,6 +121,21 @@ class:primary
 .center[
 See sample experimental task applet [**HERE**](https://srvanderplas.shinyapps.io/youdrawittest/)!
 ]
+
+???
+
+-
+
+
+- **Eye Fitting Straight Lines**, Mosteller et al. (1981)
+
+    - explore properties of lines fitted by eye
+    - students tended to fit the slope of the first principal component or major axis (the line that minimizes the sum of squares of perpendicular rather than vertical distances)
+    - students who gave steep slopes for one data set also tended to give steep slopes on the others.
+
+- Making Sense of Graphs: Critical Factors Influencing Comprehension and Instructional Implications (Friel, Curcio, and Bright 2001)
+
+    - argue that researchers must consider the effect of the graph's visual characteristics (i.e., syntax) and the **graph's context** (i.semantics) on one's comprehension.
 
 ---
 class:primary
@@ -198,40 +221,47 @@ The **Lack of Fit** test statistic calculated by the deviation of the data from 
 
 - Low / High
 
-- Lower variability increases accuracy (Best, Smith, and Stubbs 2007).
-
 &lt;br&gt;
 
 See [**parameter selection**](https://srvanderplas.github.io/Perception-of-Log-Scales/lineups-development/simulations/heuristic-difficulty-notheta.html) documentation for density plots of the lack of fit statistic at different parameter value combinations.
 
+???
+
+- Perception of Linear and Nonlinear Trends: Using Slope and Curvature Information to Make Trend Discriminations (Best, Smith, and Stubbs 2007)
+
+    - Asked to identify the type of curve (exponential, asymptotic, linear; increasing, decreasing)
+
+    - hypothesis is 2-stage estimation: (1) identify the type of curve and direction, (2) use that information for prediction
+
+    - this experiment is examining whether discrimination between curve types is possible
+    - Results:
+        - **accuracy higher when nonlinear trends presented** (e.g. it’s hard to say something is linear, but easy to say that it isn’t)
+        - **accuracy higher with low variability** – variability was additive, e.g. constant variance around mean function it appears that participants examined curvature to make the determination of type
+
 ---
 class:primary
-## Previous Literature
+# Experimental Design &amp; Sampling Method
+- 18 total parameter value combinations of interest
 
-- Numerical estimation is more accurate than graphical estimation for exponential curves
+- 2 scales (log/linear)
 
-- Perceptual issue: ability to discriminate between values of `\(\beta\)` in `\(y = e^{\beta x}\)` functions.
+- Each individual recieves 12 lineups:
 
-- Underestimation of exponential growth is common. [@wagenaar_misperception_1975]
-
-- Using a log scale should make it much easier to estimate `\(\beta\)`. We estimate slopes relatively accurately. (Mosteller et al. 1981)
+    - Randomly assigned 6 parameter value combinations
+    
+    - Independently assigned each parameter value combination a set on the linear and on the log scale.
+    
+---
+class:primary
+# Previous Literature
 
 ---
 class:primary
 ## References
 
-&lt;font size="2"&gt;
+&lt;font size="3"&gt;
 .small[
 - 
-&lt;p&gt;&lt;cite&gt;Armstrong, J. S.
-(1996).
-&amp;ldquo;Heuristics, biases and improvement strategies in judgmental time series: P. Goodwin and G. Wright, 1994, Omega, 22, 553Ã¢â‚¬â€œ568&amp;rdquo;.
-En.
-In: &lt;em&gt;International Journal of Forecasting&lt;/em&gt; 12.2, pp. 319&amp;ndash;321.
-ISSN: 0169-2070.
-DOI: &lt;a href="https://doi.org/10.1016/0169-2070(95)00655-9"&gt;10.1016/0169-2070(95)00655-9&lt;/a&gt;.
-URL: &lt;a href="http://www.sciencedirect.com/science/article/pii/0169207095006559"&gt;http://www.sciencedirect.com/science/article/pii/0169207095006559&lt;/a&gt; (visited on Jul. 07, 2020).&lt;/cite&gt;&lt;/p&gt;
-
 &lt;p&gt;&lt;cite&gt;Best, L. A, L. D. Smith, and D. A. Stubbs
 (2007).
 &amp;ldquo;Perception of Linear and Nonlinear Trends: Using Slope and Curvature Information to Make Trend Discriminations&amp;rdquo;.
@@ -239,6 +269,24 @@ In: &lt;em&gt;Perceptual and Motor Skills&lt;/em&gt; 104.3. Publisher: SAGE Publ
 ISSN: 0031-5125.
 DOI: &lt;a href="https://doi.org/10.2466/pms.104.3.707-721"&gt;10.2466/pms.104.3.707-721&lt;/a&gt;.
 URL: &lt;a href="https://doi.org/10.2466/pms.104.3.707-721"&gt;https://doi.org/10.2466/pms.104.3.707-721&lt;/a&gt; (visited on Jul. 06, 2020).&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;cite&gt;Menge, D. N. L, A. C. MacPherson, T. A. Bytnerowicz, et al.
+(2018).
+&amp;ldquo;Logarithmic scales in ecological data presentation may cause misinterpretation&amp;rdquo;.
+En.
+In: &lt;em&gt;Nature Ecology &amp;amp; Evolution&lt;/em&gt; 2.9, pp. 1393&amp;ndash;1402.
+ISSN: 2397-334X.
+DOI: &lt;a href="https://doi.org/10.1038/s41559-018-0610-7"&gt;10.1038/s41559-018-0610-7&lt;/a&gt;.
+URL: &lt;a href="http://www.nature.com/articles/s41559-018-0610-7"&gt;http://www.nature.com/articles/s41559-018-0610-7&lt;/a&gt; (visited on Aug. 18, 2020).&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;cite&gt;Sevi, S., M. M. AviÃƒÂ±a, G. PÃƒÂ©loquin-Skulski, et al.
+(2020).
+&lt;em&gt;Logarithmic vs. Linear Visualizations of COVID-19 Cases Do Not Affect CitizensÃ¢â‚¬â„¢ Support for Confinement&lt;/em&gt;.
+En.
+preprint.
+SocArXiv.
+DOI: &lt;a href="https://doi.org/10.31235/osf.io/h6z4f"&gt;10.31235/osf.io/h6z4f&lt;/a&gt;.
+URL: &lt;a href="https://osf.io/h6z4f"&gt;https://osf.io/h6z4f&lt;/a&gt; (visited on May. 19, 2020).&lt;/cite&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;cite&gt;Wagenaar, W. A. and S. D. Sagaria
 (1975).
