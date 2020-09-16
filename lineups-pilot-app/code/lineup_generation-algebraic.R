@@ -48,7 +48,7 @@ trtData <- expand_grid(target = seq(1,6,1),
            mutate(rorschach = ifelse(target == null, 1, 0),
                   param_value = paste("target-", curvature.target, "-", variability.target, "_null-", curvature.null, "-", variability.null, "_r", rorschach, sep = "")) %>%
            filter(curvature.target == curvature.null | (curvature.target != curvature.null & variability.target == variability.null), rorschach == 0) %>%
-           expand_grid(set = seq(1,3,1)) %>%
+           expand_grid(set = seq(1,2,1)) %>%
            mutate(data_name = paste("set", set, "-", param_value, sep = ""))
 
 panelData <- tibble("panel" = c("target", rep("null",19)),

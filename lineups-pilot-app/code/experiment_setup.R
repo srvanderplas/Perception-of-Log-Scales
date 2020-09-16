@@ -1,6 +1,7 @@
 library(RSQLite)
 library(DBI)
 library(here)
+library(lubridate)
 
 # ---- Set up experiment details -----------------------------------------------
 experiment_id <- "emily-log-1"
