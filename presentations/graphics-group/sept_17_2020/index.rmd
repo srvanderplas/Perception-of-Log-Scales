@@ -3,7 +3,6 @@ title: "Perception of exponential data displayed on a log scale"
 author: "Emily Robinson, Susan Vanderplaus & Reka Howard"
 date: "September 17, 2020"
 output:
-  bibliography: references.bib
   xaringan::moon_reader:
     seal: true
     includes:
@@ -79,7 +78,7 @@ class:primary
 .pull-left[
 - **Goal:** Test out an experiment designed to assess perceptual and cognitive biases in graphical displays of exponentially increasing data.
 
-- Vist **INSERT LINK HERE** and follow the instructions for the experimental task.
+- Vist the [**REDDIT LINK**](https://old.reddit.com/r/datavis_testing/comments/itd4hs/visual_inference_graphics_group_20200917/?) and follow the instructions for the experimental task.
     - Please time yourself.
 ].pull-right[
 <img src="images/ka_4_hamster_wheel_dribbble.gif" width="100%" />
@@ -238,7 +237,7 @@ The **Lack of Fit** test statistic calculated by the deviation of the data from 
 
 <br>
 
-See [**parameter selection**](https://srvanderplas.github.io/Perception-of-Log-Scales/lineups-development/simulations/xMid-difficulty.html) documentation for density plots of the lack of fit statistic at different parameter value combinations.
+See [**parameter selection**](https://srvanderplas.github.io/Perception-of-Log-Scales/lineups-development/simulations/heuristic-difficulty-notheta.html) documentation for density plots of the lack of fit statistic at different parameter value combinations.
 
 ---
 class:primary
