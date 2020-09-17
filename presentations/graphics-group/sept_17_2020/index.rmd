@@ -321,14 +321,6 @@ class:primary
     -For example, Target-E-Lv_Null-M-Lv is different from Target-M-Lv_Null-E-Lv.
     
 - Is it harder to pick out a target with more curvature than the null than it is to pick out a target with less curvatuer than the null? or vise versa?
-    
----
-class:primary
-# Previous Literature
-
-- **FILL THIS OUT...**
-
-- See [**Previous Literature**](https://srvanderplas.github.io/Perception-of-Log-Scales/presentations/graphics-group/sept_17_2020/previous-literature.html)
 
 ---
 class:primary
@@ -341,7 +333,6 @@ ui <- "- "
 <font size="3">
 .small[
 ```{r, print_refs, results='asis', echo=FALSE, warning=FALSE, message=FALSE}
-writeLines(ui)
 print(bib[key = c("best_perception_2007", "wagenaar_misperception_1975", "menge_logarithmic_2018", "sevi_logarithmic_2020", "@friel_making_2001")], 
   .opts = list(check.entries = FALSE, 
                style = "html", 
