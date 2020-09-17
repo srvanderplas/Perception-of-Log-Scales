@@ -27,10 +27,10 @@ if (nrow(experiment) > 1) {
 }
 dbDisconnect(con)
 
-source("code/randomization.R")
-
 
 shinyServer(function(input, output, session) {
+# This needs to be run every connection, not just once.
+    source("code/randomization.R")
 
     # reactive values to control the trials
     values <- reactiveValues(
