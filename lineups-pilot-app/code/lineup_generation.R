@@ -88,7 +88,7 @@ trtData <- expand_grid(target = seq(1,6,1),
   mutate(rorschach = ifelse(target == null, 1, 0),
          param_value = paste("target-", curvature.target, "-", variability.target, "_null-", curvature.null, "-", variability.null, "_r", rorschach, sep = "")) %>%
   filter(curvature.target == curvature.null | (curvature.target != curvature.null & variability.target == variability.null), rorschach == 0) %>%
-  expand_grid(set = seq(1,3,1)) %>%
+  expand_grid(set = seq(1,2,1)) %>%
   mutate(data_name = paste("set", set, "-", param_value, sep = ""))
 
 panelData <- tibble("panel" = c("target", rep("null",19)),
@@ -163,7 +163,7 @@ for(i in 1:nrow(trtData)){
   logPlot
   save_lineup(logPlot, file = logID, path = here::here("lineups-pilot-app", "plots"), width = 10, height = 8.3, dpi = 600)
 
-  picture_details[i, "sample_size"]       <- 20
+  picture_details[i, "sample_size"]       <- 50
   picture_details[i, "param_value"]       <- paramID
   picture_details[i, "p_value"]           <- 1
   picture_details[i, "obs_plot_location"] <- pos
@@ -181,12 +181,11 @@ picture_details <- picture_details %>%
   mutate(pic_id = seq(1, nrow(trtData)*2),
          difficulty = ifelse(test_param == "linear", (100 + difficulty), (200 + difficulty))) %>%
   select("pic_id", "sample_size", "test_param",	"param_value", "p_value",
-         "obs_plot_location", "pic_name", "experiment", "difficulty", "data_name",
-         "set")
+         "obs_plot_location", "pic_name", "experiment", "difficulty", "data_name")
 
 write.csv(picture_details, file = here::here("lineups-pilot-app", "plots", "picture-details.csv"), row.names = F)
 
 
 simulation_details <- tibble(simulation_method = "heuristic",
-                             model = "theta + alpha*exp^[beta*x+epsilon]")
+                             model = "alpha*exp^[beta*x+epsilon] + theta")
 write.table(simulation_details, file = here::here("lineups-pilot-app", "plots", "simulation-details.txt"), row.names = F)
