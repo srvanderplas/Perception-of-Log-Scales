@@ -3,7 +3,7 @@
   <head>
     <title>Perception of exponential data displayed on a log scale</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Emily Robinson, Susan Vanderplaus &amp; Reka Howard" />
+    <meta name="author" content="Emily Robinson, Susan VanderPlas &amp; Reka Howard" />
     <meta name="date" content="2020-09-17" />
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/remark-css/rladies.css" rel="stylesheet" />
@@ -16,7 +16,7 @@ class: center, middle, inverse, title-slide
 
 # Perception of exponential data displayed on a log scale
 ## Iowa State Graphics Group
-### Emily Robinson, Susan Vanderplaus &amp; Reka Howard
+### Emily Robinson, Susan VanderPlas &amp; Reka Howard
 ### September 17, 2020
 
 ---
@@ -30,7 +30,7 @@ class:primary
 .pull-left[
 - **Goal:** Test out an experiment designed to assess perceptual and cognitive biases in graphical displays of exponentially increasing data.
 
-- Vist this [**REDDIT LINK**](https://old.reddit.com/r/datavis_testing/comments/itd4hs/visual_inference_graphics_group_20200917/?) and follow the instructions for the experimental task.
+- Vist **https://bit.ly/2E7bU9l** and follow the Reddit link to complete the experimental task.
 
 ].pull-right[
 &lt;img src="images/ka_4_hamster_wheel_dribbble.gif" width="100%" /&gt;
@@ -44,7 +44,7 @@ class:primary
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;
-&lt;font size="3"&gt;
+&lt;font size="2"&gt;
 .small[
 Source: https://dribbble.com/shots/5588147-Hamster-Wheel
 ]
@@ -60,30 +60,30 @@ class:primary
 
 - What worked well? What didn't work well?
 
-- Can you guess what perceptions we were aiming to test?
+- What features were you using to differentiate plots?
 
-- How certain did you feel in selecting the panel that differed?
+- What do you think the null hypothesis was?
 
 - Any suggestions for adjustments?
 
 .center[
 &lt;!-- Trigger the Modal --&gt;
-&lt;img id='imglinearlineupexample_4' src='images/linear-lineup-example_4.png' alt=' ' width='45%'&gt;
+&lt;img id='imglinearlineupexample' src='images/linear-lineup-example.png' alt=' ' width='45%'&gt;
 &lt;!-- Trigger the Modal --&gt;
-&lt;img id='imgloglineupexample_4' src='images/log-lineup-example_4.png' alt=' ' width='45%'&gt;
+&lt;img id='imgloglineupexample' src='images/log-lineup-example.png' alt=' ' width='45%'&gt;
 &lt;!-- The Modal --&gt;
-&lt;div id='modallinearlineupexample_4' class='modal'&gt;
+&lt;div id='modallinearlineupexample' class='modal'&gt;
   &lt;!-- Modal Content (The Image) --&gt;
-  &lt;img class='modal-content' id='imgmodallinearlineupexample_4'&gt;
+  &lt;img class='modal-content' id='imgmodallinearlineupexample'&gt;
   &lt;!-- Modal Caption (Image Text) --&gt;
-  &lt;div id='captionlinearlineupexample_4' class='modal-caption'&gt;&lt;/div&gt;
+  &lt;div id='captionlinearlineupexample' class='modal-caption'&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;!-- The Modal --&gt;
-&lt;div id='modalloglineupexample_4' class='modal'&gt;
+&lt;div id='modalloglineupexample' class='modal'&gt;
   &lt;!-- Modal Content (The Image) --&gt;
-  &lt;img class='modal-content' id='imgmodalloglineupexample_4'&gt;
+  &lt;img class='modal-content' id='imgmodalloglineupexample'&gt;
   &lt;!-- Modal Caption (Image Text) --&gt;
-  &lt;div id='captionloglineupexample_4' class='modal-caption'&gt;&lt;/div&gt;
+  &lt;div id='captionloglineupexample' class='modal-caption'&gt;&lt;/div&gt;
 &lt;/div&gt;
 ]
 
@@ -91,16 +91,18 @@ class:primary
 class:primary
 ## Motivation
 
-**TOO MANY WORDS ON THIS SLIDE...**
-
 - Log scales are often used to display data over several orders of magnitude within one graph.
 
 - During the COVID pandemic, we've seen both the benefits and the pitfalls of using log scales to display data. 
 
-- Began questioning how log verses linear scales are percieved in terms of comparing exponentially increasing data and making predictions &amp; estimations.
-
-- Despite log scales regularly being used, we learned there is limited research conducted in the form of an experiment to quantify the effects of displaying exponentially increasing data on a log scale.
-
+.center[
+&lt;img src="images/covid-log-linear.png" width="95%" /&gt;
+]
+&lt;font size="2"&gt;
+.small[
+Source: http://srvanderplas.github.io/Presentations/2020-DSSV/index_files/figure-html/unnamed-chunk-7-1.png
+]
+&lt;/font&gt;
 
 ???
 
@@ -124,10 +126,10 @@ class:primary
     - Test an individuals ability to perceptually differentiate exponentially increasing data with differing rates of change on both the linear and log scale.
 --
 2. You Draw It ✏️
-
-    - Based off NYT "You Draw It" [**EXAMPLE**](https://www.nytimes.com/interactive/2015/05/28/upshot/you-draw-it-how-family-income-affects-childrens-college-chances.html?searchResultPosition=3) 
     
     - Tests an individuals ability to make predictions for exponentially increasing data.
+    
+    - Based off NYT "You Draw It" [**EXAMPLE**](https://www.nytimes.com/interactive/2015/05/28/upshot/you-draw-it-how-family-income-affects-childrens-college-chances.html?searchResultPosition=3) 
 
 ???
 
@@ -140,7 +142,7 @@ class:primary
 --
 3. Estimation 📏
 
-    - Tests an individuals ability to estimate values on an exponentially increasing graph and extending their estimates for scaled values of x.
+    - Tests an individuals ability to translate a graph of exponentially increasing data into real value quantities.
 
 ???
 
@@ -152,7 +154,7 @@ class:primary
 
 --
 .center[
-See sample experimental task applet [**HERE**](https://srvanderplas.shinyapps.io/youdrawittest/)!
+See sample experimental task applet at **https://srvanderplas.shinyapps.io/youdrawittest/**
 ]
 ???
 - Show shiny applet form IRB submission.
@@ -166,13 +168,13 @@ class:primary
 `$$y=\alpha e^{\beta x}$$`
 
 &lt;!-- Trigger the Modal --&gt;
-&lt;img id='imgalgebraicsimulationnotheta' src='images/algebraic-simulation-no-theta.png' alt=' ' width='100%'&gt;
+&lt;img id='imgtwocoefmodel' src='images/two-coef-model.png' alt=' ' width='100%'&gt;
 &lt;!-- The Modal --&gt;
-&lt;div id='modalalgebraicsimulationnotheta' class='modal'&gt;
+&lt;div id='modaltwocoefmodel' class='modal'&gt;
   &lt;!-- Modal Content (The Image) --&gt;
-  &lt;img class='modal-content' id='imgmodalalgebraicsimulationnotheta'&gt;
+  &lt;img class='modal-content' id='imgmodaltwocoefmodel'&gt;
   &lt;!-- Modal Caption (Image Text) --&gt;
-  &lt;div id='captionalgebraicsimulationnotheta' class='modal-caption'&gt;&lt;/div&gt;
+  &lt;div id='captiontwocoefmodel' class='modal-caption'&gt;&lt;/div&gt;
 &lt;/div&gt;
 
 - Different starting values
@@ -183,13 +185,13 @@ class:primary
 `$$y=\alpha e^{\beta x} + \theta$$`
 
 &lt;!-- Trigger the Modal --&gt;
-&lt;img id='imgalgebraicsimulationyestheta' src='images/algebraic-simulation-yes-theta.png' alt=' ' width='100%'&gt;
+&lt;img id='imgthreecoefmodel' src='images/three-coef-model.png' alt=' ' width='100%'&gt;
 &lt;!-- The Modal --&gt;
-&lt;div id='modalalgebraicsimulationyestheta' class='modal'&gt;
+&lt;div id='modalthreecoefmodel' class='modal'&gt;
   &lt;!-- Modal Content (The Image) --&gt;
-  &lt;img class='modal-content' id='imgmodalalgebraicsimulationyestheta'&gt;
+  &lt;img class='modal-content' id='imgmodalthreecoefmodel'&gt;
   &lt;!-- Modal Caption (Image Text) --&gt;
-  &lt;div id='captionalgebraicsimulationyestheta' class='modal-caption'&gt;&lt;/div&gt;
+  &lt;div id='captionthreecoefmodel' class='modal-caption'&gt;&lt;/div&gt;
 &lt;/div&gt;
 
 - Same starting and ending value
@@ -203,6 +205,7 @@ Normally distributed errors are then added to the selected model:
 ---
 class:primary
 ## Heuristic Simulation Approach
+
 1. Set 3 points (Min, Max, Midpoint)
 2. Select starting values
   - Obtain linear model coefficients for `\(\log(y_i) = a+bx_i\)`
@@ -214,16 +217,16 @@ class:primary
 4. Using the parameter estimates, assume `\(\epsilon_i \sim N(0, \sigma^2)\)` and set `\(\tilde \alpha = \frac{\hat\alpha}{e^{\sigma^2/2}}\)`. Simulate data based on `\(y_i = \tilde\alpha e^{\hat\beta x_i + \epsilon_i}+\hat\theta.\)`
 .center[
 &lt;!-- Trigger the Modal --&gt;
-&lt;img id='imgheuristicsimulationyestheta' src='images/heuristic-simulation-yes-theta.png' alt=' ' width='45%'&gt;
+&lt;img id='imgheuristicsimulation' src='images/heuristic-simulation.png' alt=' ' width='50%'&gt;
 &lt;!-- The Modal --&gt;
-&lt;div id='modalheuristicsimulationyestheta' class='modal'&gt;
+&lt;div id='modalheuristicsimulation' class='modal'&gt;
   &lt;!-- Modal Content (The Image) --&gt;
-  &lt;img class='modal-content' id='imgmodalheuristicsimulationyestheta'&gt;
+  &lt;img class='modal-content' id='imgmodalheuristicsimulation'&gt;
   &lt;!-- Modal Caption (Image Text) --&gt;
-  &lt;div id='captionheuristicsimulationyestheta' class='modal-caption'&gt;&lt;/div&gt;
+  &lt;div id='captionheuristicsimulation' class='modal-caption'&gt;&lt;/div&gt;
 &lt;/div&gt;
 ]
-See [**simulation**](https://srvanderplas.github.io/Perception-of-Log-Scales/lineups-development/simulations/model-options.html) documentation for comparisons.
+
 
 ???
 - Show simulation documentation. Connect it to the different starting values, curvature on log scale, etc.
@@ -234,19 +237,36 @@ class:primary
 
 The **Lack of Fit** test statistic calculated by the deviation of the data from a linear regression line was used to determine the curvature and variability combination values.
 
+.pull-left[
 **Curvature**
 - Controled by the `Midpoint` in the heuristic simulation and in turn affects `\(\hat\beta.\)`
-
 - Easy / Medium / Hard
 
 **Variability**
 - Controled by the standard deviation, `\(\sigma\)`, of the errors.
-
 - Low / High
 
-&lt;br&gt;
+].pull-right[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imglofcurvature' src='images/lof-curvature.png' alt=' ' width='100%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modallofcurvature' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodallofcurvature'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionlofcurvature' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
 
-See [**parameter selection**](https://srvanderplas.github.io/Perception-of-Log-Scales/lineups-development/simulations/heuristic-difficulty-notheta.html) documentation for density plots of the lack of fit statistic at different parameter value combinations.
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imglofvariability' src='images/lof-variability.png' alt=' ' width='100%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modallofvariability' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodallofvariability'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionlofvariability' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]
 
 ???
 
@@ -260,32 +280,102 @@ See [**parameter selection**](https://srvanderplas.github.io/Perception-of-Log-S
     - Results:
         - **accuracy higher when nonlinear trends presented** (e.g. it’s hard to say something is linear, but easy to say that it isn’t)
         - **accuracy higher with low variability** – variability was additive, e.g. constant variance around mean function it appears that participants examined curvature to make the determination of type
-
+        
 ---
 class:primary
-# Experimental Design &amp; Sampling Method
+## Parameter Selection
 
-**TOO MANY WORDS ON THIS SLIDE...**
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Curvature &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Variability &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; xMid &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; sigma &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; alphahat &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; betahat &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; thetahat &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Easy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Low &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.25 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.912 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.230 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9.101 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Easy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; High &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.37 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.912 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.230 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9.101 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Medium &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Low &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.12 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.865 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.132 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.143 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Medium &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; High &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.20 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.865 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.132 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.143 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Hard &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Low &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.06 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 26.210 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.074 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -16.204 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Hard &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; High &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 26.210 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.074 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -16.204 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 
+&lt;br&gt;
 
-- 18 total parameter value combinations of interest
-
-    - Target / Null panel combinations
-
-- 2 scales (log/linear)
-
-- Each individual recieves 12 lineups:
-
-    - Randomly assigned 6 parameter value combinations
-    
-    - Independently assigned each parameter value combination a set on the linear and on the log scale.
-    
-???
-- parameter values come from: E/M/Hi Curvature, Lv/Hv Variability, and Target/Null plots. We compare within variability and within curvature for each combination of target/null. 
-
-    -For example, Target-E-Lv_Null-M-Lv is different from Target-M-Lv_Null-E-Lv.
-    
-- Is it harder to pick out a target with more curvature than the null than it is to pick out a target with less curvatuer than the null? or vise versa?
+&lt;table&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Domain &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Range &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 100 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; N &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 
 ---
 class:primary
@@ -403,87 +493,121 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
 
 <script>
         /* Get the modal*/
-          var modallinearlineupexample_4 = document.getElementById('modallinearlineupexample_4');
+          var modallinearlineupexample = document.getElementById('modallinearlineupexample');
         /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imglinearlineupexample_4 = document.getElementById('imglinearlineupexample_4');
-          var modalImglinearlineupexample_4 = document.getElementById('imgmodallinearlineupexample_4');
-          var captionTextlinearlineupexample_4 = document.getElementById('captionlinearlineupexample_4');
-          imglinearlineupexample_4.onclick = function(){
-            modallinearlineupexample_4.style.display = 'block';
-            modalImglinearlineupexample_4.src = this.src;
-            captionTextlinearlineupexample_4.innerHTML = this.alt;
+          var imglinearlineupexample = document.getElementById('imglinearlineupexample');
+          var modalImglinearlineupexample = document.getElementById('imgmodallinearlineupexample');
+          var captionTextlinearlineupexample = document.getElementById('captionlinearlineupexample');
+          imglinearlineupexample.onclick = function(){
+            modallinearlineupexample.style.display = 'block';
+            modalImglinearlineupexample.src = this.src;
+            captionTextlinearlineupexample.innerHTML = this.alt;
           }
           /* When the user clicks on the modalImg, close it*/
-          modalImglinearlineupexample_4.onclick = function() {
-            modallinearlineupexample_4.style.display = 'none';
+          modalImglinearlineupexample.onclick = function() {
+            modallinearlineupexample.style.display = 'none';
           }
 </script>
 <script>
         /* Get the modal*/
-          var modalloglineupexample_4 = document.getElementById('modalloglineupexample_4');
+          var modalloglineupexample = document.getElementById('modalloglineupexample');
         /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgloglineupexample_4 = document.getElementById('imgloglineupexample_4');
-          var modalImgloglineupexample_4 = document.getElementById('imgmodalloglineupexample_4');
-          var captionTextloglineupexample_4 = document.getElementById('captionloglineupexample_4');
-          imgloglineupexample_4.onclick = function(){
-            modalloglineupexample_4.style.display = 'block';
-            modalImgloglineupexample_4.src = this.src;
-            captionTextloglineupexample_4.innerHTML = this.alt;
+          var imgloglineupexample = document.getElementById('imgloglineupexample');
+          var modalImgloglineupexample = document.getElementById('imgmodalloglineupexample');
+          var captionTextloglineupexample = document.getElementById('captionloglineupexample');
+          imgloglineupexample.onclick = function(){
+            modalloglineupexample.style.display = 'block';
+            modalImgloglineupexample.src = this.src;
+            captionTextloglineupexample.innerHTML = this.alt;
           }
           /* When the user clicks on the modalImg, close it*/
-          modalImgloglineupexample_4.onclick = function() {
-            modalloglineupexample_4.style.display = 'none';
+          modalImgloglineupexample.onclick = function() {
+            modalloglineupexample.style.display = 'none';
           }
 </script>
 <script>
         /* Get the modal*/
-          var modalalgebraicsimulationnotheta = document.getElementById('modalalgebraicsimulationnotheta');
+          var modaltwocoefmodel = document.getElementById('modaltwocoefmodel');
         /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgalgebraicsimulationnotheta = document.getElementById('imgalgebraicsimulationnotheta');
-          var modalImgalgebraicsimulationnotheta = document.getElementById('imgmodalalgebraicsimulationnotheta');
-          var captionTextalgebraicsimulationnotheta = document.getElementById('captionalgebraicsimulationnotheta');
-          imgalgebraicsimulationnotheta.onclick = function(){
-            modalalgebraicsimulationnotheta.style.display = 'block';
-            modalImgalgebraicsimulationnotheta.src = this.src;
-            captionTextalgebraicsimulationnotheta.innerHTML = this.alt;
+          var imgtwocoefmodel = document.getElementById('imgtwocoefmodel');
+          var modalImgtwocoefmodel = document.getElementById('imgmodaltwocoefmodel');
+          var captionTexttwocoefmodel = document.getElementById('captiontwocoefmodel');
+          imgtwocoefmodel.onclick = function(){
+            modaltwocoefmodel.style.display = 'block';
+            modalImgtwocoefmodel.src = this.src;
+            captionTexttwocoefmodel.innerHTML = this.alt;
           }
           /* When the user clicks on the modalImg, close it*/
-          modalImgalgebraicsimulationnotheta.onclick = function() {
-            modalalgebraicsimulationnotheta.style.display = 'none';
+          modalImgtwocoefmodel.onclick = function() {
+            modaltwocoefmodel.style.display = 'none';
           }
 </script>
 <script>
         /* Get the modal*/
-          var modalalgebraicsimulationyestheta = document.getElementById('modalalgebraicsimulationyestheta');
+          var modalthreecoefmodel = document.getElementById('modalthreecoefmodel');
         /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgalgebraicsimulationyestheta = document.getElementById('imgalgebraicsimulationyestheta');
-          var modalImgalgebraicsimulationyestheta = document.getElementById('imgmodalalgebraicsimulationyestheta');
-          var captionTextalgebraicsimulationyestheta = document.getElementById('captionalgebraicsimulationyestheta');
-          imgalgebraicsimulationyestheta.onclick = function(){
-            modalalgebraicsimulationyestheta.style.display = 'block';
-            modalImgalgebraicsimulationyestheta.src = this.src;
-            captionTextalgebraicsimulationyestheta.innerHTML = this.alt;
+          var imgthreecoefmodel = document.getElementById('imgthreecoefmodel');
+          var modalImgthreecoefmodel = document.getElementById('imgmodalthreecoefmodel');
+          var captionTextthreecoefmodel = document.getElementById('captionthreecoefmodel');
+          imgthreecoefmodel.onclick = function(){
+            modalthreecoefmodel.style.display = 'block';
+            modalImgthreecoefmodel.src = this.src;
+            captionTextthreecoefmodel.innerHTML = this.alt;
           }
           /* When the user clicks on the modalImg, close it*/
-          modalImgalgebraicsimulationyestheta.onclick = function() {
-            modalalgebraicsimulationyestheta.style.display = 'none';
+          modalImgthreecoefmodel.onclick = function() {
+            modalthreecoefmodel.style.display = 'none';
           }
 </script>
 <script>
         /* Get the modal*/
-          var modalheuristicsimulationyestheta = document.getElementById('modalheuristicsimulationyestheta');
+          var modalheuristicsimulation = document.getElementById('modalheuristicsimulation');
         /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgheuristicsimulationyestheta = document.getElementById('imgheuristicsimulationyestheta');
-          var modalImgheuristicsimulationyestheta = document.getElementById('imgmodalheuristicsimulationyestheta');
-          var captionTextheuristicsimulationyestheta = document.getElementById('captionheuristicsimulationyestheta');
-          imgheuristicsimulationyestheta.onclick = function(){
-            modalheuristicsimulationyestheta.style.display = 'block';
-            modalImgheuristicsimulationyestheta.src = this.src;
-            captionTextheuristicsimulationyestheta.innerHTML = this.alt;
+          var imgheuristicsimulation = document.getElementById('imgheuristicsimulation');
+          var modalImgheuristicsimulation = document.getElementById('imgmodalheuristicsimulation');
+          var captionTextheuristicsimulation = document.getElementById('captionheuristicsimulation');
+          imgheuristicsimulation.onclick = function(){
+            modalheuristicsimulation.style.display = 'block';
+            modalImgheuristicsimulation.src = this.src;
+            captionTextheuristicsimulation.innerHTML = this.alt;
           }
           /* When the user clicks on the modalImg, close it*/
-          modalImgheuristicsimulationyestheta.onclick = function() {
-            modalheuristicsimulationyestheta.style.display = 'none';
+          modalImgheuristicsimulation.onclick = function() {
+            modalheuristicsimulation.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modallofcurvature = document.getElementById('modallofcurvature');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imglofcurvature = document.getElementById('imglofcurvature');
+          var modalImglofcurvature = document.getElementById('imgmodallofcurvature');
+          var captionTextlofcurvature = document.getElementById('captionlofcurvature');
+          imglofcurvature.onclick = function(){
+            modallofcurvature.style.display = 'block';
+            modalImglofcurvature.src = this.src;
+            captionTextlofcurvature.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImglofcurvature.onclick = function() {
+            modallofcurvature.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modallofvariability = document.getElementById('modallofvariability');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imglofvariability = document.getElementById('imglofvariability');
+          var modalImglofvariability = document.getElementById('imgmodallofvariability');
+          var captionTextlofvariability = document.getElementById('captionlofvariability');
+          imglofvariability.onclick = function(){
+            modallofvariability.style.display = 'block';
+            modalImglofvariability.src = this.src;
+            captionTextlofvariability.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImglofvariability.onclick = function() {
+            modallofvariability.style.display = 'none';
           }
 </script>
 

@@ -1,7 +1,7 @@
 ---
 title: "Perception of exponential data displayed on a log scale"
 subtitle: "Iowa State Graphics Group" 
-author: "Emily Robinson, Susan Vanderplaus & Reka Howard"
+author: "Emily Robinson, Susan VanderPlas & Reka Howard"
 date: "September 17, 2020"
 output:
   xaringan::moon_reader:
@@ -25,6 +25,7 @@ library(tidyverse)
 library(gridExtra)
 library(nullabor)
 library(scales)
+library(knitr)
 ```
 
 ```{r, include = F, eval = T, cache = F}
@@ -79,7 +80,7 @@ class:primary
 .pull-left[
 - **Goal:** Test out an experiment designed to assess perceptual and cognitive biases in graphical displays of exponentially increasing data.
 
-- Vist this [**REDDIT LINK**](https://old.reddit.com/r/datavis_testing/comments/itd4hs/visual_inference_graphics_group_20200917/?) and follow the instructions for the experimental task.
+- Vist **https://bit.ly/2E7bU9l** and follow the Reddit link to complete the experimental task.
 
 ].pull-right[
 <img src="images/ka_4_hamster_wheel_dribbble.gif" width="100%" />
@@ -93,7 +94,7 @@ class:primary
 <br>
 <br>
 <br>
-<font size="3">
+<font size="2">
 .small[
 Source: https://dribbble.com/shots/5588147-Hamster-Wheel
 ]
@@ -109,16 +110,16 @@ class:primary
 
 - What worked well? What didn't work well?
 
-- Can you guess what perceptions we were aiming to test?
+- What features were you using to differentiate plots?
 
-- How certain did you feel in selecting the panel that differed?
+- What do you think the null hypothesis was?
 
 - Any suggestions for adjustments?
 
 .center[
 ```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
-i1 <- img_modal(src = "images/linear-lineup-example_4.png", alt = " ", other=list(width="45%"))
-i2 <- img_modal(src = "images/log-lineup-example_4.png", alt = " ", other=list(width="45%"))
+i1 <- img_modal(src = "images/linear-lineup-example.png", alt = " ", other=list(width="45%"))
+i2 <- img_modal(src = "images/log-lineup-example.png", alt = " ", other=list(width="45%"))
 
 c(str_split(i1, "\\n", simplify = T)[1:2],
   str_split(i2, "\\n", simplify = T)[1:2],
@@ -132,16 +133,18 @@ c(str_split(i1, "\\n", simplify = T)[1:2],
 class:primary
 ## Motivation
 
-**TOO MANY WORDS ON THIS SLIDE...**
-
 - Log scales are often used to display data over several orders of magnitude within one graph.
 
 - During the COVID pandemic, we've seen both the benefits and the pitfalls of using log scales to display data. 
 
-- Began questioning how log verses linear scales are percieved in terms of comparing exponentially increasing data and making predictions & estimations.
-
-- Despite log scales regularly being used, we learned there is limited research conducted in the form of an experiment to quantify the effects of displaying exponentially increasing data on a log scale.
-
+.center[
+<img src="images/covid-log-linear.png" width="95%" />
+]
+<font size="2">
+.small[
+Source: http://srvanderplas.github.io/Presentations/2020-DSSV/index_files/figure-html/unnamed-chunk-7-1.png
+]
+</font>
 
 ???
 
@@ -165,10 +168,10 @@ class:primary
     - Test an individuals ability to perceptually differentiate exponentially increasing data with differing rates of change on both the linear and log scale.
 --
 2. You Draw It `r emo::ji("pencil2")`
-
-    - Based off NYT "You Draw It" [**EXAMPLE**](https://www.nytimes.com/interactive/2015/05/28/upshot/you-draw-it-how-family-income-affects-childrens-college-chances.html?searchResultPosition=3) 
     
     - Tests an individuals ability to make predictions for exponentially increasing data.
+    
+    - Based off NYT "You Draw It" [**EXAMPLE**](https://www.nytimes.com/interactive/2015/05/28/upshot/you-draw-it-how-family-income-affects-childrens-college-chances.html?searchResultPosition=3) 
 
 ???
 
@@ -181,7 +184,7 @@ class:primary
 --
 3. Estimation `r emo::ji("straight_ruler")`
 
-    - Tests an individuals ability to estimate values on an exponentially increasing graph and extending their estimates for scaled values of x.
+    - Tests an individuals ability to translate a graph of exponentially increasing data into real value quantities.
 
 ???
 
@@ -193,7 +196,7 @@ class:primary
 
 --
 .center[
-See sample experimental task applet [**HERE**](https://srvanderplas.shinyapps.io/youdrawittest/)!
+See sample experimental task applet at **https://srvanderplas.shinyapps.io/youdrawittest/**
 ]
 ???
 - Show shiny applet form IRB submission.
@@ -207,7 +210,7 @@ class:primary
 $$y=\alpha e^{\beta x}$$
 
 ```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
-i1 <- img_modal(src = "images/algebraic-simulation-no-theta.png", alt = " ", other=list(width="100%"))
+i1 <- img_modal(src = "images/two-coef-model.png", alt = " ", other=list(width="100%"))
 
 c(str_split(i1, "\\n", simplify = T)[1:2],
   str_split(i1, "\\n", simplify = T)[3:9]
@@ -222,7 +225,7 @@ c(str_split(i1, "\\n", simplify = T)[1:2],
 $$y=\alpha e^{\beta x} + \theta$$
 
 ```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
-i1 <- img_modal(src = "images/algebraic-simulation-yes-theta.png", alt = " ", other=list(width="100%"))
+i1 <- img_modal(src = "images/three-coef-model.png", alt = " ", other=list(width="100%"))
 
 c(str_split(i1, "\\n", simplify = T)[1:2],
   str_split(i1, "\\n", simplify = T)[3:9]
@@ -240,6 +243,7 @@ Normally distributed errors are then added to the selected model:
 ---
 class:primary
 ## Heuristic Simulation Approach
+
 1. Set 3 points (Min, Max, Midpoint)
 2. Select starting values
   - Obtain linear model coefficients for $\log(y_i) = a+bx_i$
@@ -251,14 +255,14 @@ $$y_i = \hat\alpha e^{\hat\beta x_i} \text{ or } y_i = \hat\alpha e^{\hat\beta x
 4. Using the parameter estimates, assume $\epsilon_i \sim N(0, \sigma^2)$ and set $\tilde \alpha = \frac{\hat\alpha}{e^{\sigma^2/2}}$. Simulate data based on $y_i = \tilde\alpha e^{\hat\beta x_i + \epsilon_i}+\hat\theta.$
 .center[
 ```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
-i1 <- img_modal(src = "images/heuristic-simulation-yes-theta.png", alt = " ", other=list(width="45%"))
+i1 <- img_modal(src = "images/heuristic-simulation.png", alt = " ", other=list(width="50%"))
 
 c(str_split(i1, "\\n", simplify = T)[1:2],
   str_split(i1, "\\n", simplify = T)[3:9]
   ) %>% paste(collapse = "\n") %>% cat()
 ```
 ]
-See [**simulation**](https://srvanderplas.github.io/Perception-of-Log-Scales/lineups-development/simulations/model-options.html) documentation for comparisons.
+
 
 ???
 - Show simulation documentation. Connect it to the different starting values, curvature on log scale, etc.
@@ -269,19 +273,32 @@ class:primary
 
 The **Lack of Fit** test statistic calculated by the deviation of the data from a linear regression line was used to determine the curvature and variability combination values.
 
+.pull-left[
 **Curvature**
 - Controled by the `Midpoint` in the heuristic simulation and in turn affects $\hat\beta.$
-
 - Easy / Medium / Hard
 
 **Variability**
 - Controled by the standard deviation, $\sigma$, of the errors.
-
 - Low / High
 
-<br>
+].pull-right[
+```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
+i1 <- img_modal(src = "images/lof-curvature.png", alt = " ", other=list(width="100%"))
 
-See [**parameter selection**](https://srvanderplas.github.io/Perception-of-Log-Scales/lineups-development/simulations/heuristic-difficulty-notheta.html) documentation for density plots of the lack of fit statistic at different parameter value combinations.
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+
+```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
+i2 <- img_modal(src = "images/lof-variability.png", alt = " ", other=list(width="100%"))
+
+c(str_split(i2, "\\n", simplify = T)[1:2],
+  str_split(i2, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+]
 
 ???
 
@@ -295,32 +312,79 @@ See [**parameter selection**](https://srvanderplas.github.io/Perception-of-Log-S
     - Results:
         - **accuracy higher when nonlinear trends presented** (e.g. it’s hard to say something is linear, but easy to say that it isn’t)
         - **accuracy higher with low variability** – variability was additive, e.g. constant variance around mean function it appears that participants examined curvature to make the determination of type
-
+        
 ---
 class:primary
-# Experimental Design & Sampling Method
+## Parameter Selection
 
-**TOO MANY WORDS ON THIS SLIDE...**
+```{r, parameterselection, eval=T, echo = F}
+coefEst <- function(xMid, xRange = c(0,20), yRange = yRange_vals){
+  
+  # This creates the line y = -x (scaled to fit the x and y ranges)
+  # |*            0
+  # |  *
+  # |    *
+  # |      *
+  # |        1
+  # |          2
+  # |0___________3
+  #
+  # where 1, 2, 3 represent different points used to determine the line curvature
+  
+  lineData   <- tibble(xLine = seq(xRange[1],xRange[2],0.1),
+                       yLine = -(abs(diff(yRange))/abs(diff(xRange)))*(xLine-xRange[1])+yRange[2])
+  pointsData <- tibble(xPoint = c(xRange[1], (xMid-0.1), (xMid+0.1), xRange[2]),
+                       yPoint = c(yRange[1], lineData$yLine[lineData$xLine == xMid], lineData$yLine[lineData$xLine == xMid], yRange[2]))
+  
+  # Connecting the 0 points in the illustration above with the 3rd point that
+  # determines curvature gives us a set of 3 points to use to fit an exponential
+  # line to the data.
+  
+  # We fit a linear regression to the log-transformed data to get starting values
+  lm.fit <- lm(log(yPoint) ~ xPoint, data = pointsData)
+  
+  alpha.0  <- exp(coef(lm.fit)[1]) %>% as.numeric()
+  beta.0   <- coef(lm.fit)[2] %>% as.numeric()
+  theta.0 <- min(pointsData$yPoint) * 0.5  # Why 0.5?
+  
+  # and then use NLS to fit a better line to the data
+  start <- list(alpha = alpha.0, beta = beta.0, theta = theta.0)
+  nonlinear.fit   <- nls(yPoint ~ alpha * exp(beta * xPoint) + theta ,
+                         data = pointsData, start = start)
+  
+  coefficients <- tibble(alphahat = (coef(nonlinear.fit)[1] %>% as.numeric()),
+                         betahat  = coef(nonlinear.fit)[2] %>% as.numeric(),
+                         thetahat = coef(nonlinear.fit)[3] %>% as.numeric())
+  
+  return(coefficients)
+}
 
+xMid_vals = c(14.5, 13, 11.8)
+yRange_vals = c(10,100)
 
-- 18 total parameter value combinations of interest
+coefData <- tibble(xMid = xMid_vals) %>%
+  mutate(coefficients = pmap(list(xMid),coefEst)) %>%
+  unnest(coefficients)
 
-    - Target / Null panel combinations
+#Identify parameters
+parmData <- tibble(Curvature   = c("Easy", "Easy", "Medium", "Medium", "Hard", "Hard"),
+                   Variability = c("Low", "High", "Low", "High", "Low", "High"),
+                   xMid        = c(rep(xMid_vals[1],2), rep(xMid_vals[2],2), rep(xMid_vals[3],2)),
+                   sigma       = c(0.25, 0.37, 0.12, 0.2, 0.06, 0.1)
+) %>%
+  left_join(coefData, by = "xMid")
 
-- 2 scales (log/linear)
+knitr::kable(parmData, 'html', digits = 3)
+```
 
-- Each individual recieves 12 lineups:
+<br>
 
-    - Randomly assigned 6 parameter value combinations
-    
-    - Independently assigned each parameter value combination a set on the linear and on the log scale.
-    
-???
-- parameter values come from: E/M/Hi Curvature, Lv/Hv Variability, and Target/Null plots. We compare within variability and within curvature for each combination of target/null. 
-
-    -For example, Target-E-Lv_Null-M-Lv is different from Target-M-Lv_Null-E-Lv.
-    
-- Is it harder to pick out a target with more curvature than the null than it is to pick out a target with less curvatuer than the null? or vise versa?
+```{r parameterselection2, eval=T, echo = F}
+options(knitr.kable.NA = '')
+knitr::kable(rbind(Domain = c(0,20),
+             Range = c(10,100),
+             N = c(50, NA)), "html")
+```
 
 ---
 class:primary

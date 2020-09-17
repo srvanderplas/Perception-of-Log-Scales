@@ -9,7 +9,7 @@ library(purrr)
 
 
 # Obtain alphahat, betahat, and thetahat for different midpoints.
-coefEst <- function(xMid, xRange = c(0,20), yRange = c(1,100)){
+coefEst <- function(xMid, xRange = c(0,20), yRange = c(10,100)){
 
   # This creates the line y = -x (scaled to fit the x and y ranges)
   # |*            0
@@ -50,11 +50,7 @@ coefEst <- function(xMid, xRange = c(0,20), yRange = c(1,100)){
   return(coefficients)
 }
 
-coefData <- tibble(xMid = c(11.8, 13, 14.5)) %>%
-  mutate(coefficients = pmap(list(xMid),coefEst)) %>%
-  unnest(coefficients)
-
-expSim <- function(alphahat, betahat, thetahat, sigma, nReps = 1, N = 50, xRange = c(0,20), yRange = c(1,100)){
+expSim <- function(alphahat, betahat, thetahat, sigma, nReps = 1, N = 50, xRange = c(0,20), yRange = c(10,100)){
 
   alpha = alphahat/(exp(sigma^2/2))
   beta  = betahat
@@ -69,6 +65,10 @@ expSim <- function(alphahat, betahat, thetahat, sigma, nReps = 1, N = 50, xRange
                     y = alpha*exp(beta*x + rnorm(N*nReps,0,sigma)) + theta)
   return(expData)
 }
+
+coefData <- tibble(xMid = c(11.8, 13, 14.5)) %>%
+  mutate(coefficients = pmap(list(xMid),coefEst)) %>%
+  unnest(coefficients)
 
 parmData <- tibble(diff.num    = seq(1,6,1),
                    curvature   = c("E", "E", "M", "M", "H", "H"),
@@ -160,7 +160,7 @@ for(i in 1:nrow(trtData)){
           axis.text.x  = element_blank(),
     ) +
     scale_y_continuous(trans = "log10")
-  logPlot
+ 
   save_lineup(logPlot, file = logID, path = here::here("lineups-pilot-app", "plots"), width = 10, height = 8.3, dpi = 600)
 
   picture_details[i, "sample_size"]       <- 50
