@@ -6,7 +6,7 @@ library(purrr)
 
 # Obtain alphahat, betahat, and thetahat for different midpoints.
 coefEst <- function(xMid, xRange = c(0,20), yRange = c(1,100)){
-  
+
   # This creates the line y = -x (scaled to fit the x and y ranges)
   # |*            0
   # |  *
@@ -17,28 +17,28 @@ coefEst <- function(xMid, xRange = c(0,20), yRange = c(1,100)){
   # |0___________3
   #
   # where 1, 2, 3 represent different points used to determine the line curvature
-  
+
   lineData   <- tibble(xLine = seq(xRange[1],xRange[2],0.1),
                        yLine = -(abs(diff(yRange))/abs(diff(xRange)))*(xLine-xRange[1])+yRange[2])
   pointsData <- tibble(xPoint = c(xRange[1], (xMid-0.1), (xMid+0.1), xRange[2]),
                        yPoint = c(yRange[1], lineData$yLine[lineData$xLine == xMid], lineData$yLine[lineData$xLine == xMid], yRange[2]))
-  
+
   # Connecting the 0 points in the illustration above with the 3rd point that
   # determines curvature gives us a set of 3 points to use to fit an exponential
   # line to the data.
-  
+
   # We fit a linear regression to the log-transformed data to get starting values
   lm.fit <- lm(log(yPoint) ~ xPoint, data = pointsData)
-  
+
   alpha.0  <- exp(coef(lm.fit)[1]) %>% as.numeric()
   beta.0   <- coef(lm.fit)[2] %>% as.numeric()
   theta.0 <- min(pointsData$yPoint) * 0.5  # Why 0.5?
-  
+
   # and then use NLS to fit a better line to the data
   start <- list(alpha = alpha.0, beta = beta.0, theta = theta.0)
   nonlinear.fit   <- nls(yPoint ~ alpha * exp(beta * xPoint) + theta ,
                          data = pointsData, start = start)
-  
+
   coefficients <- tibble(alphahat = (coef(nonlinear.fit)[1] %>% as.numeric()),
                          betahat  = coef(nonlinear.fit)[2] %>% as.numeric(),
                          thetahat = coef(nonlinear.fit)[3] %>% as.numeric())
@@ -50,17 +50,17 @@ coefData <- tibble(xMid = c(11.8, 13, 14.5)) %>%
                 mutate(coefficients = pmap(list(xMid),coefEst)) %>%
                 unnest(coefficients)
 
-expSim <- function(alphahat, betahat, thetahat, sigma, nReps = 1, N = 20, xRange = c(0,20), yRange = c(1,100)){
-  
+expSim <- function(alphahat, betahat, thetahat, sigma, nReps = 1, N = 50, xRange = c(0,20), yRange = c(1,100)){
+
   alpha = alphahat/(exp(sigma^2/2))
   beta  = betahat
   theta = thetahat
-  
+
   vals <- seq(xRange[1], xRange[2], length.out = N*3/4)
   xvals <- sample(vals, N, replace = T)
   xvals <- jitter(xvals)
   # xvals <- seq(xRange[1], xRange[2], length.out = N)
-  
+
   expData <- tibble(x = rep(xvals, nReps),
                     y = alpha*exp(beta*x + rnorm(N*nReps,0,sigma)) + theta)
   return(expData)
@@ -121,7 +121,7 @@ for(i in 1:nrow(trtData)){
   logID        <- digest(paste(trtData[i, "data_name"] %>% as.character(), "-log_", Sys.time(), sep = ""), "md5", serialize = F)
   difficultyID <- trtData[i, "difficulty"] %>% as.numeric()
   pos          <- sample(1:20, 1)
-  
+
   lineupData <- lineup(true = simulatedData %>%
                          filter(panel == "target", set == setID, param_value == paramID) %>%
                          select("x", "y"),
@@ -129,27 +129,27 @@ for(i in 1:nrow(trtData)){
                          filter(panel == "null", set == setID, param_value == paramID) %>%
                          select("x", "y", ".n"),
                        pos = pos)
-  
+
   write.csv(lineupData, file = here::here("lineups-pilot-app", "plots", "data", paste(dataID, ".csv", sep = "")), row.names = F)
-  
+
   linearPlot <- ggplot(lineupData, aes(x=x, y=y)) +
     facet_wrap(~.sample, ncol=5) +
-    geom_point() +
+    geom_point(size = .75) +
     theme(aspect.ratio = 1) +
-    theme_bw() +
+    theme_bw(base_size = 14) +
     theme(axis.title.y = element_blank(),
           axis.title.x = element_blank(),
           axis.text.y  = element_blank(),
           axis.text.x  = element_blank(),
     )
-  
-  save_lineup(linearPlot, file = linearID, path = here::here("lineups-pilot-app", "plots"), width = 15, height = 12.5, dpi = 300)
-  
+
+  save_lineup(linearPlot, file = linearID, path = here::here("lineups-pilot-app", "plots"), width = 10, height = 8.3, dpi = 600)
+
   logPlot <- ggplot(lineupData, aes(x=x, y=y)) +
     facet_wrap(~.sample, ncol=5) +
-    geom_point() +
+    geom_point(size = .75) +
     theme(aspect.ratio = 1) +
-    theme_bw() +
+    theme_bw(base_size = 14) +
     theme(axis.title.y = element_blank(),
           axis.title.x = element_blank(),
           axis.text.y  = element_blank(),
@@ -157,8 +157,8 @@ for(i in 1:nrow(trtData)){
     ) +
     scale_y_continuous(trans = "log10")
   logPlot
-  save_lineup(logPlot, file = logID, path = here::here("lineups-pilot-app", "plots"), width = 15, height = 12.5, dpi = 300 )
-  
+  save_lineup(logPlot, file = logID, path = here::here("lineups-pilot-app", "plots"), width = 10, height = 8.3, dpi = 600)
+
   picture_details[i, "sample_size"]       <- 20
   picture_details[i, "param_value"]       <- paramID
   picture_details[i, "p_value"]           <- 1
@@ -176,7 +176,7 @@ picture_details <- picture_details %>%
                values_to = "pic_name") %>%
   mutate(pic_id = seq(1, nrow(trtData)*2),
          difficulty = ifelse(test_param == "linear", (100 + difficulty), (200 + difficulty))) %>%
-  select("pic_id", "sample_size", "test_param",	"param_value", "p_value",	
+  select("pic_id", "sample_size", "test_param",	"param_value", "p_value",
          "obs_plot_location", "pic_name", "experiment", "difficulty", "data_name",
          "set")
 
