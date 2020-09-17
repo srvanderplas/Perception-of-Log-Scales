@@ -1,4 +1,5 @@
 
+# Needs to be an even number
 plots_per_participant = 18
 
 picture_details_randomization <- readr::read_csv(here("lineups-pilot-app", "plots", "picture-details.csv"))
