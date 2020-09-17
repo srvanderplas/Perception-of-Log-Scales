@@ -118,3 +118,37 @@
             modallofvariability.style.display = 'none';
           }
 </script>
+<script>
+        /* Get the modal*/
+          var modallinearsimplot = document.getElementById('modallinearsimplot');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imglinearsimplot = document.getElementById('imglinearsimplot');
+          var modalImglinearsimplot = document.getElementById('imgmodallinearsimplot');
+          var captionTextlinearsimplot = document.getElementById('captionlinearsimplot');
+          imglinearsimplot.onclick = function(){
+            modallinearsimplot.style.display = 'block';
+            modalImglinearsimplot.src = this.src;
+            captionTextlinearsimplot.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImglinearsimplot.onclick = function() {
+            modallinearsimplot.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modallogsimplot = document.getElementById('modallogsimplot');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imglogsimplot = document.getElementById('imglogsimplot');
+          var modalImglogsimplot = document.getElementById('imgmodallogsimplot');
+          var captionTextlogsimplot = document.getElementById('captionlogsimplot');
+          imglogsimplot.onclick = function(){
+            modallogsimplot.style.display = 'block';
+            modalImglogsimplot.src = this.src;
+            captionTextlogsimplot.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImglogsimplot.onclick = function() {
+            modallogsimplot.style.display = 'none';
+          }
+</script>

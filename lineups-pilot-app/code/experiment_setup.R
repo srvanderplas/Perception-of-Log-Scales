@@ -8,7 +8,7 @@ library(lubridate)
 experiment_id <- "emily-log-1"
 question <- "Which plot is the most different?"
 reasons <- "Extreme value,Different range,Different start point,Different slope,Outlier(s),Other"
-lineups_per_person <- 12 # lineups per person
+lineups_per_person <- 18 # lineups per person
 trials_req <- 0
 
 

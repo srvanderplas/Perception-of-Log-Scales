@@ -7,9 +7,14 @@ library(purrr)
 ##### GENERATES LINEUPS USING THE HEURISTIC SIMULATION APPROACH WITH THETA #####
 # see lineups-development/lineup-templates for other simulation methods
 
+xMid_vals  <- c(14.5, 13, 11.5)
+sigma_vals <- c(0.25, 0.37, 0.12, 0.18, 0.05, 0.07)
+
+yRange_vals = c(10,100)
+
 
 # Obtain alphahat, betahat, and thetahat for different midpoints.
-coefEst <- function(xMid, xRange = c(0,20), yRange = c(10,100)){
+coefEst <- function(xMid, xRange = c(0,20), yRange = yRange_vals){
 
   # This creates the line y = -x (scaled to fit the x and y ranges)
   # |*            0
@@ -50,7 +55,7 @@ coefEst <- function(xMid, xRange = c(0,20), yRange = c(10,100)){
   return(coefficients)
 }
 
-expSim <- function(alphahat, betahat, thetahat, sigma, nReps = 1, N = 50, xRange = c(0,20), yRange = c(10,100)){
+expSim <- function(alphahat, betahat, thetahat, sigma, nReps = 1, N = 50, xRange = c(0,20), yRange = yRange_vals){
 
   alpha = alphahat/(exp(sigma^2/2))
   beta  = betahat
@@ -59,25 +64,22 @@ expSim <- function(alphahat, betahat, thetahat, sigma, nReps = 1, N = 50, xRange
   vals <- seq(xRange[1], xRange[2], length.out = N*3/4)
   xvals <- sample(vals, N, replace = T)
   xvals <- jitter(xvals)
-  # xvals <- seq(xRange[1], xRange[2], length.out = N)
 
   expData <- tibble(x = rep(xvals, nReps),
                     y = alpha*exp(beta*x + rnorm(N*nReps,0,sigma)) + theta)
   return(expData)
 }
 
-coefData <- tibble(xMid = c(11.8, 13, 14.5)) %>%
+coefData <- tibble(xMid = xMid_vals) %>%
   mutate(coefficients = pmap(list(xMid),coefEst)) %>%
   unnest(coefficients)
 
 parmData <- tibble(diff.num    = seq(1,6,1),
                    curvature   = c("E", "E", "M", "M", "H", "H"),
                    variability = c("Lv", "Hv", "Lv", "Hv", "Lv", "Hv"),
-                   xMid        = c(14.5, 14.5, 13, 13, 11.8,  11.8),
-                   sigma       = c(0.22, 0.3, 0.14, 0.18, 0.07, 0.09)
-) %>%
-  left_join(coefData, by = "xMid")
-parmData
+                   xMid        = c(rep(xMid_vals[1],2), rep(xMid_vals[2],2), rep(xMid_vals[3],2)),
+                   sigma       = sigma_vals) %>%
+            left_join(coefData, by = "xMid")
 
 trtData <- expand_grid(target = seq(1,6,1),
                        null   = seq(1,6,1)) %>%
@@ -187,5 +189,8 @@ write.csv(picture_details, file = here::here("lineups-pilot-app", "plots", "pict
 
 
 simulation_details <- tibble(simulation_method = "heuristic",
-                             model = "alpha*exp^[beta*x+epsilon] + theta")
+                             model = "alpha*exp^[beta*x+epsilon] + theta",
+                             xRange = "0-20",
+                             yRange = "10-100",
+                             N = "50")
 write.table(simulation_details, file = here::here("lineups-pilot-app", "plots", "simulation-details.txt"), row.names = F)

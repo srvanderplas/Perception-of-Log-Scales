@@ -4,7 +4,13 @@ library(gridExtra)
 library(scales)
 
 seed_num = 68505
-xMid_vals = c(14.5, 13, 11.8)
+
+# xMid_vals   <- c(14.5, 13, 11.8)
+# sigma_valus <- c(0.25, 0.37, 0.12, 0.2, 0.06, 0.1)
+
+xMid_vals  <- c(14.5, 13, 11.5)
+sigma_vals <- c(0.25, 0.37, 0.12, 0.18, 0.05, 0.07)
+
 yRange_vals = c(10,100)
 
 # ----------------------------------------------------------------------------------
@@ -69,7 +75,7 @@ expSim <- function(alphahat, betahat, thetahat, sigma, nReps = 1, N = 50, xRange
   return(expData)
 }
 
-coefData <- tibble(xMid = c(xMid_vals[3], xMid_vals[1])) %>%
+coefData <- tibble(xMid = c(xMid_vals[1], xMid_vals[2], xMid_vals[3])) %>%
   mutate(coefficients = pmap(list(xMid),coefEst)) %>%
   unnest(coefficients)
 
@@ -80,8 +86,8 @@ set.seed(seed_num)
 simData <- tibble(panel       = c("target", "null"),
                    curvature   = c("E", "H"),
                    variability = c("Lv","Lv"),
-                   xMid        = c(14.5, 11.8),
-                   sigma       = c(0.22, 0.07)) %>%
+                   xMid        = c(xMid_vals[1], xMid_vals[2]),
+                   sigma       = c(sigma_vals[1], sigma_vals[3])) %>%
             left_join(coefData, by = "xMid") %>% 
             full_join(panelData, by = "panel") %>%
             mutate(data = pmap(list(alphahat, betahat, thetahat,sigma),expSim)) %>%
@@ -108,6 +114,8 @@ linearPlot <- ggplot(lineupData, aes(x=x, y=y)) +
         axis.text.x  = element_blank(),
   )
 
+linearPlot
+
 ggsave(plot = linearPlot, filename = "linear-lineup-example.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 8.3, dpi = 600)
 
 logPlot <- ggplot(lineupData, aes(x=x, y=y)) +
@@ -121,6 +129,7 @@ logPlot <- ggplot(lineupData, aes(x=x, y=y)) +
         axis.text.x  = element_blank(),
   ) +
   scale_y_continuous(trans = "log10")
+logPlot
 
 ggsave(plot = logPlot, filename = "log-lineup-example.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 8.3, dpi = 600)
 
@@ -348,12 +357,10 @@ coefData <- tibble(xMid = xMid_vals) %>%
 parmData <- tibble(Curvature   = c("Easy", "Easy", "Medium", "Medium", "Hard", "Hard"),
                    Variability = c("Low", "High", "Low", "High", "Low", "High"),
                    xMid        = c(rep(xMid_vals[1],2), rep(xMid_vals[2],2), rep(xMid_vals[3],2)),
-                   sigma       = c(0.25, 0.37, 0.12, 0.2, 0.06, 0.1)
-) %>%
+                   sigma       = sigma_vals) %>%
   left_join(coefData, by = "xMid")
-parmData
 
-set.seed(seed.num)
+set.seed(seed_num)
 lofData <- parmData %>%
   expand_grid(replicate = seq(1,1000,1)) %>%
   mutate(data = pmap(list(alphahat,betahat,thetahat, sigma,nReps = 10),expSim)) %>%
@@ -373,6 +380,7 @@ lofPlot_variability <- lofData %>%
   theme_bw(base_size = 14) +
   theme(legend.position = "bottom",
         aspect.ratio = 1)
+lofPlot_variability
 ggsave(plot = lofPlot_variability, filename = "lof-variability.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 5, dpi = 600)
 
 # Compare Curvature within Varability
@@ -388,4 +396,54 @@ lofPlot_curvature <- lofData %>%
   theme_bw(base_size = 14) +
   theme(legend.position = "bottom",
         aspect.ratio = 1)
+lofPlot_curvature
 ggsave(plot = lofPlot_curvature, filename = "lof-curvature.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 5, dpi = 600)
+
+# ----------------------------------------------------------------------------------
+# Generate Data --------------------------------------------------------------------
+# ----------------------------------------------------------------------------------
+
+coefData <- tibble(xMid = xMid_vals) %>%
+  mutate(coefficients = pmap(list(xMid),coefEst)) %>%
+  unnest(coefficients)
+
+simData <- tibble(Curvature   = c("Easy", "Easy", "Medium", "Medium", "Hard", "Hard"),
+                   Variability = c("Low", "High", "Low", "High", "Low", "High"),
+                   xMid        = c(rep(xMid_vals[1],2), rep(xMid_vals[2],2), rep(xMid_vals[3],2)),
+                   sigma       = sigma_vals) %>%
+            left_join(coefData, by = "xMid") %>%
+            mutate(data = pmap(list(alphahat,betahat,thetahat, sigma,nReps = 1),expSim)) %>%
+            unnest(data)
+
+simPlot_linear <- simData %>%
+  mutate(Curvature = factor(Curvature, levels = c("Easy", "Medium", "Hard"))) %>%
+  mutate(Variability = factor(Variability, levels = c("Low", "High"))) %>%
+  ggplot(aes(x = x, y = y, group = Curvature, color = Curvature)) +
+  geom_point() +
+  facet_grid(~Variability) +
+  scale_color_brewer(palette = "Paired") +
+  theme_bw(base_size = 14) +
+  theme(legend.position = "bottom",
+        aspect.ratio = 1) +
+  ggtitle("Linear Scale") +
+  labs(x = "", y = "")
+simPlot_linear
+
+simPlot_log <- simData %>%
+  mutate(Curvature = factor(Curvature, levels = c("Easy", "Medium", "Hard"))) %>%
+  mutate(Variability = factor(Variability, levels = c("Low", "High"))) %>%
+  ggplot(aes(x = x, y = y, group = Curvature, color = Curvature)) +
+  geom_point() +
+  facet_grid(~Variability) +
+  scale_y_continuous(trans = "log10",
+                     breaks = trans_breaks("log10", function(x) 10^x),
+                     labels = trans_format("log10", math_format(10^.x))) +
+  ggtitle("Log Scale") +
+  scale_color_brewer(palette = "Paired") +
+  theme_bw(base_size = 14) +
+  theme(legend.position = "bottom",
+        aspect.ratio = 1) +
+  labs(x = "", y = "")
+simPlot_log
+
+ggsave(plot = simPlot_log, filename = "log-sim-plot.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 5, dpi = 600)

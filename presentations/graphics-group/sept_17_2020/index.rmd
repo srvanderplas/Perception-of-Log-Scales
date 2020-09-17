@@ -269,7 +269,7 @@ c(str_split(i1, "\\n", simplify = T)[1:2],
 
 ---
 class:primary
-## Parameter Selection
+## The 'Goldilocks Zone'
 
 The **Lack of Fit** test statistic calculated by the deviation of the data from a linear regression line was used to determine the curvature and variability combination values.
 
@@ -315,9 +315,35 @@ c(str_split(i2, "\\n", simplify = T)[1:2],
         
 ---
 class:primary
-## Parameter Selection
+## The 'Goldilocks Zone'
+
+.center[
+```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
+i2 <- img_modal(src = "images/linear-sim-plot.png", alt = " ", other=list(width="70%"))
+
+c(str_split(i2, "\\n", simplify = T)[1:2],
+  str_split(i2, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+
+```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
+i2 <- img_modal(src = "images/log-sim-plot.png", alt = " ", other=list(width="70%"))
+
+c(str_split(i2, "\\n", simplify = T)[1:2],
+  str_split(i2, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+]
+---
+class:primary
+## Parameter Values
 
 ```{r, parameterselection, eval=T, echo = F}
+xMid_vals  <- c(14.5, 13, 11.5)
+sigma_vals <- c(0.25, 0.37, 0.12, 0.18, 0.05, 0.07)
+
+yRange_vals = c(10,100)
+
 coefEst <- function(xMid, xRange = c(0,20), yRange = yRange_vals){
   
   # This creates the line y = -x (scaled to fit the x and y ranges)
@@ -359,8 +385,6 @@ coefEst <- function(xMid, xRange = c(0,20), yRange = yRange_vals){
   return(coefficients)
 }
 
-xMid_vals = c(14.5, 13, 11.8)
-yRange_vals = c(10,100)
 
 coefData <- tibble(xMid = xMid_vals) %>%
   mutate(coefficients = pmap(list(xMid),coefEst)) %>%
@@ -370,8 +394,7 @@ coefData <- tibble(xMid = xMid_vals) %>%
 parmData <- tibble(Curvature   = c("Easy", "Easy", "Medium", "Medium", "Hard", "Hard"),
                    Variability = c("Low", "High", "Low", "High", "Low", "High"),
                    xMid        = c(rep(xMid_vals[1],2), rep(xMid_vals[2],2), rep(xMid_vals[3],2)),
-                   sigma       = c(0.25, 0.37, 0.12, 0.2, 0.06, 0.1)
-) %>%
+                   sigma       = sigma_vals) %>%
   left_join(coefData, by = "xMid")
 
 knitr::kable(parmData, 'html', digits = 3)

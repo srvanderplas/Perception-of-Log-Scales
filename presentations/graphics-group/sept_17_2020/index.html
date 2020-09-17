@@ -233,7 +233,7 @@ class:primary
 
 ---
 class:primary
-## Parameter Selection
+## The 'Goldilocks Zone'
 
 The **Lack of Fit** test statistic calculated by the deviation of the data from a linear regression line was used to determine the curvature and variability combination values.
 
@@ -283,7 +283,32 @@ The **Lack of Fit** test statistic calculated by the deviation of the data from 
         
 ---
 class:primary
-## Parameter Selection
+## The 'Goldilocks Zone'
+
+.center[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imglinearsimplot' src='images/linear-sim-plot.png' alt=' ' width='70%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modallinearsimplot' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodallinearsimplot'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionlinearsimplot' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imglogsimplot' src='images/log-sim-plot.png' alt=' ' width='70%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modallogsimplot' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodallogsimplot'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionlogsimplot' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]
+---
+class:primary
+## Parameter Values
 
 &lt;table&gt;
  &lt;thead&gt;
@@ -329,7 +354,7 @@ class:primary
    &lt;td style="text-align:left;"&gt; Medium &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; High &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 13.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.20 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.18 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 6.865 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.132 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3.143 &lt;/td&gt;
@@ -337,20 +362,20 @@ class:primary
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Hard &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; Low &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 11.8 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.06 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 26.210 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.074 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -16.204 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.05 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 37.265 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.061 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -27.259 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Hard &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; High &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 11.8 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.10 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 26.210 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.074 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -16.204 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.07 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 37.265 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.061 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -27.259 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -608,6 +633,40 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
           /* When the user clicks on the modalImg, close it*/
           modalImglofvariability.onclick = function() {
             modallofvariability.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modallinearsimplot = document.getElementById('modallinearsimplot');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imglinearsimplot = document.getElementById('imglinearsimplot');
+          var modalImglinearsimplot = document.getElementById('imgmodallinearsimplot');
+          var captionTextlinearsimplot = document.getElementById('captionlinearsimplot');
+          imglinearsimplot.onclick = function(){
+            modallinearsimplot.style.display = 'block';
+            modalImglinearsimplot.src = this.src;
+            captionTextlinearsimplot.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImglinearsimplot.onclick = function() {
+            modallinearsimplot.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modallogsimplot = document.getElementById('modallogsimplot');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imglogsimplot = document.getElementById('imglogsimplot');
+          var modalImglogsimplot = document.getElementById('imgmodallogsimplot');
+          var captionTextlogsimplot = document.getElementById('captionlogsimplot');
+          imglogsimplot.onclick = function(){
+            modallogsimplot.style.display = 'block';
+            modalImglogsimplot.src = this.src;
+            captionTextlogsimplot.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImglogsimplot.onclick = function() {
+            modallogsimplot.style.display = 'none';
           }
 </script>
 
