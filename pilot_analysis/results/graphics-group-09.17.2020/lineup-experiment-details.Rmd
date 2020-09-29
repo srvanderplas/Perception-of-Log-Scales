@@ -1,0 +1,152 @@
+---
+title: "Lineup Experimentation Design"
+author: "Emily Robinson"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+library(knitr)
+library(tidyverse)
+library(readr)
+```
+
+### Line-up Task
+
+```{r line-up-examples, message=FALSE, warning=FALSE, fig.width = 12, fig.height = 6, fig.align = "center", echo = F}
+library(cowplot)
+p1 <- ggdraw() + draw_image("linear-lineup-example.png", scale = 1) + theme_void()
+p2 <- ggdraw() + draw_image("log-lineup-example.png", scale = 1) + theme_void()
+
+plot_grid(p1, p2)
+```
+
+### Treatment Design
+
+2 test_params x (18 test param_value levels + 6 rorschach param_values levels)
+
+1. Test_param (2 levels)
+    - Log Scale
+    - Linear Scale
+    
+2. Param_value (18 test levels + 6 rorschach levels) This is made up of a combination of curvature (Hard / Medium / Easy), variability (Low / High), and panel (Target / Null)
+
+    - Within low / high variability (2 variabilities x 6 combinations of the 3 curvature difficulties = 12 test treatments)
+        - Hard Target / Easy Null
+        - Hard Target / Medium Null
+        - Medium Target / Easy Null
+        - Medium Target / Medium Null
+        - Easy Target / Medium Null
+        - Easy Target / Hard Null
+        
+    - Within hard / medium / easy curvature (3 curvatures x 2 combinations of the 2 varaibilities = 6 test treatments)
+        - Low Target / High Null
+        - High Target / Low Null
+        
+    - For the rorschach treatments (6 levels of curvature x variability where the target and null are the same param_value)
+        - Hard Low
+        - Hard High
+        - Medium Low
+        - Medium High
+        - Easy Low
+        - Easy High
+
+    - param_value labels are given by: target-*Curvature*-*Variability*_null-*Curvature*-*Variability*_*rorschach*
+        - Example: target-E-Lv_null-H-Lv_r0 indicates the target panel gets the easy curvature and low variability parameters while the null panels gets the hard curvature and low variability parameters and this is not a rorschach plot (r0).
+        - Example: target-E-Lv_null-E-Lv_r1 indicates the lineup is a rorschach (r1) with easy curvature and low varaibility parameters for both the target and null panels. 
+    
+
+- 2 reps (datasets) were created for each param_value (total of 2 x (18 + 6) = 48 datasets)
+- Each dataset was used in a linear scale lineup and a log scale lineup (total of 2 x 48 = 96 lineups)
+
+### Experiment Design
+
+Incomplete Block Design with a Split Plot
+
+- Each individual recieved a total of 20 plots (18 test plots and 2 rorschach plots)
+- Of the 18 test plots
+    
+    - 9 of the 18 test param_values were randomly selected for each individual (i.e. IBD with block size of 9, 18 treatment levels, and "unlimmited" blocks)
+    - Each of the 9 selected param_values x test_param (log/linear) were then randomly assigned a dataset rep. (i.e. each of the 9 param values was given on both the linear/log scale but the dataset (rep) may have differed between the linear/log scale).
+    
+- Similarly, of the 2 rorschach plots
+
+    - 1 of the 6 rorschach param_values was randomly selected for each individual and each test_param (log/linear scale) was randomly assigned a dataset (rep).
+    
+Therefore,
+
+- Individual = block
+- Param_value = whole plot factor
+- Test_param = split plot factor
+- Rep (*currently ignoring this, but would this be a row-column blocking type of design?*)
+
+### Preliminary Analysis
+
+For the $i^{th}$ param_value on the $j^{th}$ scale answered by the $k^{th}$ participant, $y_{ijk} = 1$ if the participant is correct and $y_{ijk} = 0$ if the participant is not correct.
+
+Then $y_{ijk} | b_k wp_j ~ Bin(1,p_{ijk})$ where $\eta_{ijk} = \ln\left(\frac{p_{ijk}}{1-p_{ijk}}\right) = \eta + \tau_i + \delta_j + \tau\delta_{ij} + b_k + wp_{ik}$ with $\tau_i$ denoting the effect of the parameter value and $\delta_j$ denoting the effect of the test parameter. 
+
+<br> 
+
+*Assuming n participants per t param_values & not accounting for dataset (rep)*
+
+| Source of Variation                       | DF                    |
+|-------------------------------------------|-----------------------|
+| participant - *Block Variance*            | n-1                   |
+| param_value                               | t-1                   |
+| participant x param_value - *WP Variance* | (n-1)(t-1)            |
+| test_param                                | (2-1) = 1             |
+| param_value x test_param                  | (t-1)(2-1) = (t-1) |
+| test_param x participant (param_value) - *overdispersion?*    | (2-1)(n-1)(t)     |
+
+### Preliminary Results
+
+### Raw Values
+
+```{r raw-plot, fig.width = 9, fig.height = 9, echo = F}
+raw_data <- read.csv('../../data/graphics-group-09.17.2020.csv')
+raw_data %>%
+  ggplot(aes(x = test_param, y = correct, color = test_param)) +
+  geom_jitter(width = 0.15, height = 0.15, alpha = 0.9) +
+  facet_wrap(~param_value) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_color_brewer(palette = "Paired")
+```
+
+#### Parameter Value Summary
+
+```{r param_value-summary, fig.width = 9, fig.height = 6, message = F, warning = F}
+raw_data %>% 
+  group_by(param_value, test_param) %>%
+  summarise(plots_correct = sum(correct),
+            participant_count = n()) %>%
+  mutate(prop_correct = plots_correct/participant_count) %>%
+  filter(participant_count > 3) %>%
+ggplot(aes(x = test_param, y = prop_correct, fill = test_param)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~param_value, ncol = 5) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_fill_brewer(palette = "Paired") +
+  scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25))
+```
+
+#### Participant Summary
+
+```{r participant-summary, fig.height=6, fig.width=9, message=FALSE, warning=FALSE}
+raw_data %>% 
+  group_by(nick_name, test_param) %>%
+  filter(rorschach == 0) %>%
+  summarise(plots_correct = sum(correct),
+            plot_count = n()) %>%
+  mutate(prop_correct = plots_correct/plot_count) %>%
+  filter(plot_count > 6) %>%
+ggplot(aes(x = test_param, y = prop_correct, fill = test_param)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~nick_name, ncol = 4) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_fill_brewer(palette = "Paired") +
+  scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25))
+```
