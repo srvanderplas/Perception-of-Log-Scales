@@ -1,0 +1,833 @@
+---
+title: "Perception of exponential data displayed on a log scale"
+subtitle: "Ph.D. Seminar: University of Nebraska - Lincoln" 
+author: "Emily Robinson, Dr. Susan VanderPlas & Dr. Reka Howard"
+date: "October 8, 2020"
+output:
+  xaringan::moon_reader:
+    seal: true
+    includes:
+      after_body:
+        "js-addins.html"
+    mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    # css: ["default", "rladies-fonts", "css/modal.css", "css/this-presentation.css"]
+    css: ["default", "rladies", "rladies-fonts", "css/modal.css"]
+    lib_dir: libs
+    nature:
+      countIncrementalSlides: true
+---
+```{r, include = F, eval = T}
+knitr::opts_chunk$set(echo = F, dpi = 300, message = F, warning = F, cache = T)
+options(htmltools.dir.version = FALSE)
+library(emo)
+library(purrr)
+library(tidyverse)
+library(gridExtra)
+library(nullabor)
+library(scales)
+library(knitr)
+```
+
+```{r, include = F, eval = T, cache = F}
+clean_file_name <- function(x) {
+  basename(x) %>% str_remove("\\..*?$") %>% str_remove_all("[^[A-z0-9_]]")
+}
+img_modal <- function(src, alt = "", id = clean_file_name(src), other = "") {
+  
+  other_arg <- paste0("'", as.character(other), "'") %>%
+    paste(names(other), ., sep = "=") %>%
+    paste(collapse = " ")
+  
+  js <- glue::glue("<script>
+        /* Get the modal*/
+          var modal{id} = document.getElementById('modal{id}');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img{id} = document.getElementById('img{id}');
+          var modalImg{id} = document.getElementById('imgmodal{id}');
+          var captionText{id} = document.getElementById('caption{id}');
+          img{id}.onclick = function(){{
+            modal{id}.style.display = 'block';
+            modalImg{id}.src = this.src;
+            captionText{id}.innerHTML = this.alt;
+          }}
+          /* When the user clicks on the modalImg, close it*/
+          modalImg{id}.onclick = function() {{
+            modal{id}.style.display = 'none';
+          }}
+</script>")
+  
+  html <- glue::glue(
+     " <!-- Trigger the Modal -->
+<img id='img{id}' src='{src}' alt='{alt}' {other_arg}>
+<!-- The Modal -->
+<div id='modal{id}' class='modal'>
+  <!-- Modal Content (The Image) -->
+  <img class='modal-content' id='imgmodal{id}'>
+  <!-- Modal Caption (Image Text) -->
+  <div id='caption{id}' class='modal-caption'></div>
+</div>
+"
+  )
+  write(js, file = "js-addins.html", append = T)
+  return(html)
+}
+# Clean the file out at the start of the compilation
+write("", file = "js-addins.html")
+```
+
+class:inverse
+## Outline
+
+1. Introduction to Visual Inference
+
+2. Test Experimental Task *(Participation)*
+
+3. Experimental Task Feedback
+
+4. Motivation
+
+5. Future Experimental Tasks
+
+6. Data Generation & Simulation
+
+7. Parameter Selection & Experimental Design
+
+8. Preliminary Results
+
+---
+class:inverse
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+.center[
+## Introduction to Visual Inference
+]
+
+---
+class:primary
+## Introduction to Visual Inference
+When doing exploratory data anlysis, how do we know if what we see is actually there?
+
+```{r, echo = F, fig.width = 6, fig.height = 9/2, out.width = "80%", fig.align='center'}
+data(banknote, package = "mclust")
+ggplot(banknote) + 
+  geom_jitter(aes(x = Left, y = Right, color = Status)) + 
+  coord_fixed() + 
+  theme_bw() +
+  theme(axis.text = element_blank())
+```
+
+<font size="3">
+.small[
+Material Source: https://srvanderplas.netlify.app/talk/2019-09-05-the-power-of-visual-inference/
+]
+</font>
+---
+class:primary
+## Introduction to Visual Inference
+Embed the true plot in a lineup of randomly permuted datasets.
+
+```{r, echo = F, fig.width = 8, fig.height = 6, out.width = "80%", fig.align='center'}
+library(nullabor)
+lineup(null_permute("Status"), banknote, pos = 8) %>%
+ggplot() + 
+  geom_jitter(aes(x = Left, y = Right, color = Status), shape = 1) + 
+  facet_wrap(~.sample) + 
+  coord_fixed() + 
+  theme_bw() +
+  theme(axis.text = element_blank())
+```
+
+<font size="3">
+.small[
+Material Source: https://srvanderplas.netlify.app/talk/2019-09-05-the-power-of-visual-inference/
+]
+</font>
+
+???
+An assembly of several null plots with a target (or data) plot is called a lineup, named after the law-enforcement procedure to line up a suspect among a set of innocents to check if a victim can identify the suspect as the perpetrator of the crime.
+---
+class:primary
+## Introduction to Visual Inference
+
+.center[
+<img src="images/Testing_Visual_Discovery.png" width="90%" />
+]
+<font size="3">
+.small[
+Image Source: 
+
+Buja, A., Cook, D., Hofmann, H., Lawrence, M., Lee, E. K., Swayne, D. F., & Wickham, H. (2009). Statistical inference for exploratory data analysis and model diagnostics. Philosophical Transactions of the Royal Society A: Mathematical, Physical and Engineering Sciences, 367(1906), 4361-4383.
+]
+</font>
+
+???
+The fundamental premise of visual inference is that charts are visual statistics: summaries of data sets generated by mathematical functions.
+
+
+---
+class:primary
+## Introduction to Visual Inference
+
+- Visual test statistic: A function of a sample that produces a plot
+
+- $T(y)$ maps the actual data to the plot
+
+- $T(y_0)$ maps a sample from the null distribution into the same plot form
+
+A **lineup** usually consists of $m-1$ null plots $T(y_0)$ and one data plot (target) $T(y)$
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<font size="3">
+.small[
+Material Source: https://srvanderplas.netlify.app/talk/2019-09-05-the-power-of-visual-inference/
+]
+<font>
+---
+class:primary
+## Why Visual Inference?
+
+- Visual tests are more comprehensive.
+
+- Individuals are asked to select one or more plots from the lineup which are “different," 
+
+    - but, the specific type of difference is left unspecified. 
+    
+- A visual test might evaluate several simultaneous characteristics of a plot
+
+    - Equivalent numerical assessment may involve multiple tests using different test statistics.
+
+---
+class:inverse
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+.center[
+# Types of Lineups
+]
+???
+
+Let's talk about types of lineups. Throughout this talk, I'm going to use lineups with animals when we're discussing concepts (and because who doesn't like puppies?).
+
+---
+
+class:primary
+## Types of Lineups
+.right-column[
+.center[
+<img src="images/puli-null_0.jpg" width="90%" />
+<font size="2">
+.small[
+Image Source: http://srvanderplas.github.io/Presentations/JSM2019/#p1
+]
+</font>
+]
+]
+
+--
+
+.left-column[
+<br>
+<br>
+<br>
+**Null Lineups (aka Rorschach Lineups)**
+
+Consists entirely of null plots
+
+]
+
+???
+
+Which panel is different?
+
+The Rorschach lineup is named after the ink-blot test (Exner & Erdberg 2003) historically used in psychoanalysis; as in the inkblot test, the Rorschach lineup provides ambiguous visual signals which are open to interpretation.
+
+In a null lineup, all of the plots are drawn from the same null distribution: in this case, we have a lineup consisting of 20 komondor pictures. The dogs aren't all the same, and we'd expect that one or two panels might be selected more frequently even though all of the panels are from the same distribution, because we're very good at picking out differences between sets of things. Our brains were optimized to separate "predator" from "nature scene", and we apply that same discriminative ability to less threatening stimuli. Notice that many of the plots in this lineup weren't mentioned at all - that's because even though the pictures are all from the same "distribution", they have different features, and some of those features are more salient than others.
+
+---
+class:primary
+## Types of Lineups
+
+.right-column[
+.center[
+<img src="images/dog-cat_7.jpg" width="90%" />
+<font size="2">
+.small[
+Image Source: http://srvanderplas.github.io/Presentations/JSM2019/#p1
+]
+</font>
+]
+]
+
+--
+
+.left-column[
+<br>
+<br>
+<br>
+**Standard Lineup**
+
+One Target Plot
+
+]
+
+---
+class:primary
+## Types of Lineups
+.right-column[
+.center[
+<img src="images/dog-fox-cat.jpg" width="90%" />
+<font size="2">
+.small[
+Image Source: http://srvanderplas.github.io/Presentations/JSM2019/#p1
+]
+</font>
+]
+]
+
+--
+
+.left-column[
+<br>
+<br>
+<br>
+**Two-Target Lineup**
+
+Head-to-head comparisons of two models
+
+Null plots from a third and/or mixture distribution.
+
+]
+--
+
+???
+
+Which panel is different?
+
+In a two-target lineup, the goal is to determine which target is more visually salient. Here, we have dogs for the null plots, and a fox and a cat for the two different "models". The cat is quite a bit more salient than the fox.
+
+In each of these types of lineups, we've seen that not all panels are equally likely to be selected, even when there are only null panels. Introduction of target panels produces even more inequality in panel selection, and the more complex the lineup design, the more opportunities there are to form alternate hypotheses than the ones actually being tested by the experimenter.
+
+When we analyze statistical lineups, we usually assume that all panels are equally likely to be selected, but we know that that's not how things go in reality. I'm going to talk today about a framework that allows us to relax the assumption that all panels are equally likely to be selected.
+
+---
+class:primary
+## Analyzing Lineup Data
+
+- In most visual inference experiments, each lineup is evaluated by multiple individual.
+
+- **Simplistic base idea:** The target plot is selected more often than you would expect.
+    
+    - Results are aggregated to generate a visual p-value using a Binomial model. (Majumder, Hofmann, and Cook, 2013).
+
+- **Complication:** Dependencies in the design of most visual inference experiments resulting from repeated evaluations of the same lineup.
+
+    - Visual p-values are calculated using a Dirichlet-multinomial distribution to model the probabilities of selecting each panel and the observed participant selections.
+
+---
+class:inverse
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+.center[
+## Test Experimental Task (~10 Minutes)
+]
+
+---
+class:primary
+## Test Experimental Task
+.pull-left[
+- **Goal:** Test out an experiment designed to assess perceptual and cognitive biases in graphical displays of exponentially increasing data.
+
+- Vist **https://bit.ly/2E7bU9l** and follow the Reddit link to complete the experimental task.
+
+].pull-right[
+<img src="images/ka_4_hamster_wheel_dribbble.gif" width="100%" />
+]
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<font size="2">
+.small[
+Source: https://dribbble.com/shots/5588147-Hamster-Wheel
+]
+</font>
+
+???
+- Send link in chat.
+- Please time yourself.
+
+---
+class:primary
+## Lineup Experimental Task Feedback `r emo::ji("thumbsup")` `r emo::ji("thumbsdown")`
+
+- What worked well? What didn't work well?
+
+- What features were you using to differentiate plots?
+
+- What do you think the null hypothesis was?
+
+- Any suggestions for adjustments?
+
+.center[
+```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
+i1 <- img_modal(src = "images/linear-lineup-example.png", alt = " ", other=list(width="45%"))
+i2 <- img_modal(src = "images/log-lineup-example.png", alt = " ", other=list(width="45%"))
+
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i2, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:9],
+  str_split(i2, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+]
+
+---
+class:inverse
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+.center[
+## Motivation & Experiment Goals
+]
+
+---
+class:primary
+## Motivation
+
+- Log scales are often used to display data over several orders of magnitude within one graph.
+
+- During the COVID pandemic, we've seen both the benefits and the pitfalls of using log scales to display data. 
+
+.center[
+<img src="images/covid-log-linear.png" width="95%" />
+]
+<font size="2">
+.small[
+Image Source: http://srvanderplas.github.io/Presentations/2020-DSSV/index_files/figure-html/unnamed-chunk-7-1.png
+]
+</font>
+
+???
+
+- @dehaeneLogLinearDistinct2008
+
+    - in American children, logarithmic mapping does not disappear all at once, but vanishes first for small numbers and much later for larger numbers from 1 to 1000 (up to fourth or sixth grade in some children).
+    
+- Logarithmic vs. Linear Visualizations of COVID-19 Cases Do Not Affect Citizens’ Support for Confinement (Sevi et al. 2020)
+
+    -  In the COVID-19 pandemic, the tool most commonly used to convey statistical information about the spread of the virus has been time-series graphs about the cumulative number of cases.
+    - Plotting the COVID-19 progression on a linear scale highlights an exponential “explosion” in the number of cases, whereas plotting the number of cases on a logarithmic scale produces a line with a modest-looking slope. 
+    - Measure the causal effect of different visualization design choices on Canadians’ views about the crisis. 
+    - Found that no matter how the information is presented, Canadians are united in supporting drastic confinement measures and in accepting that these measures will not be removed soon.
+
+---
+class:primary
+## Future Experimental Tasks
+
+**Big Idea:** Are there benefits to displaying exponentially increasing data on a log scale rather than a linear scale?
+
+--
+1. Lineup `r emo::ji("chart increasing")` `r emo::ji("chart increasing")` `r emo::ji("chart increasing")`
+
+    - Test an individuals ability to perceptually differentiate exponentially increasing data with differing rates of change on both the linear and log scale.
+--
+2. You Draw It `r emo::ji("pencil2")`
+    
+    - Tests an individuals ability to make predictions for exponentially increasing data.
+    
+    - Based off NYT "You Draw It" [**EXAMPLE**](https://www.nytimes.com/interactive/2017/01/15/us/politics/you-draw-obama-legacy.html?searchResultPosition=8) 
+
+???
+
+- **Eye Fitting Straight Lines**, Mosteller et al. (1981)
+
+    - explore properties of lines fitted by eye
+    - students tended to fit the slope of the first principal component or major axis (the line that minimizes the sum of squares of perpendicular rather than vertical distances)
+    - students who gave steep slopes for one data set also tended to give steep slopes on the others.
+
+--
+3. Estimation `r emo::ji("straight_ruler")`
+
+    - Tests an individuals ability to translate a graph of exponentially increasing data into real value quantities.
+
+???
+
+- Making Sense of Graphs: Critical Factors Influencing Comprehension and Instructional Implications (Friel, Curcio, and Bright 2001)
+
+    - argue that researchers must consider the effect of the graph's visual characteristics (i.e., syntax) and the **graph's context** (i.semantics) on one's comprehension.
+    
+<br>
+
+--
+.center[
+See sample experimental task applet at **https://bit.ly/2E8Zqht**
+]
+???
+- Show shiny applet form IRB submission.
+
+---
+class:inverse
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+.center[
+## Model Generation & Simulation
+]
+
+---
+class:primary
+## Data Generation Models
+
+.pull-left[
+**Two Parameter Exponential**
+$$y=\alpha e^{\beta x}$$
+
+```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
+i1 <- img_modal(src = "images/two-coef-model.png", alt = " ", other=list(width="100%"))
+
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+
+- Different starting values
+- Same ending value
+- Linear lines on log scale
+].pull-right[
+**Three Parameter Exponential**
+$$y=\alpha e^{\beta x} + \theta$$
+
+```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
+i1 <- img_modal(src = "images/three-coef-model.png", alt = " ", other=list(width="100%"))
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+
+- Same starting and ending value
+- Curvature happens on log scale
+]
+
+Normally distributed errors are then added to the selected model:
+1. Multiplicative
+2. Additive
+
+---
+class:primary
+## Heuristic Simulation Approach
+
+1. Set 3 points (Min, Max, Midpoint)
+2. Select starting values
+  - Obtain linear model coefficients for $\log(y_i) = a+bx_i$
+	- $\alpha_0 = e^a$
+	- $\beta_0 = b$
+	- $\theta_0 = \frac{\min(y)}{2}$
+3. Using `nls()`, fit selected model to the points and obtain parameter estimates.
+$$y_i = \hat\alpha e^{\hat\beta x_i} \text{ or } y_i = \hat\alpha e^{\hat\beta x_i} + \hat\theta$$
+4. Using the parameter estimates, assume $\epsilon_i \sim N(0, \sigma^2)$ and set $\tilde \alpha = \frac{\hat\alpha}{e^{\sigma^2/2}}$. Simulate data based on $y_i = \tilde\alpha e^{\hat\beta x_i + \epsilon_i}+\hat\theta.$
+.center[
+```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
+i1 <- img_modal(src = "images/heuristic-simulation.png", alt = " ", other=list(width="50%"))
+
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+]
+
+
+???
+- Show simulation documentation. Connect it to the different starting values, curvature on log scale, etc.
+
+---
+class:inverse
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+.center[
+## Parameter Selection & Study Design
+]
+
+---
+class:primary
+## The 'Goldilocks Zone'
+
+The **Lack of Fit** test statistic calculated by the deviation of the data from a linear regression line was used to determine the curvature and variability combination values.
+
+.pull-left[
+**Curvature**
+- Controled by the `Midpoint` in the heuristic simulation and in turn affects $\hat\beta.$
+- Easy / Medium / Hard
+
+**Variability**
+- Controled by the standard deviation, $\sigma$, of the errors.
+- Low / High
+
+].pull-right[
+```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
+i1 <- img_modal(src = "images/lof-curvature.png", alt = " ", other=list(width="100%"))
+
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+
+```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
+i2 <- img_modal(src = "images/lof-variability.png", alt = " ", other=list(width="100%"))
+
+c(str_split(i2, "\\n", simplify = T)[1:2],
+  str_split(i2, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+]
+
+???
+
+- Perception of Linear and Nonlinear Trends: Using Slope and Curvature Information to Make Trend Discriminations (Best, Smith, and Stubbs 2007)
+
+    - Asked to identify the type of curve (exponential, asymptotic, linear; increasing, decreasing)
+
+    - hypothesis is 2-stage estimation: (1) identify the type of curve and direction, (2) use that information for prediction
+
+    - this experiment is examining whether discrimination between curve types is possible
+    - Results:
+        - **accuracy higher when nonlinear trends presented** (e.g. it’s hard to say something is linear, but easy to say that it isn’t)
+        - **accuracy higher with low variability** – variability was additive, e.g. constant variance around mean function it appears that participants examined curvature to make the determination of type
+   
+---
+## Study Design
+
+**Treatment Design:** Target Panel gets model A and Null Panels get model B
+
+$3!\cdot 2!= 6$ panel comboinations of curvature $\times 2$ levels of variability $= 12$
+
+$2!\cdot 1!$ panel combinations of variability $\times 3$ levels of variability $=6$
+
+$= 18$ test parameter combinations
+
+$3 \times 2 = 6$ rorschach parameter combinations
+
+$= 24$ parameter combinations
+
+$\times 2$ lineup datasets per parameter combination $=$ **48 datasets**
+
+
+$\times 2$ scales (log & linear) $=$ **96 different lineups.**
+
+--
+
+<hr>
+
+**Experimental Design:** Split plot with an IBD for the whole plot factor
+
+$9$ test parameter combinations per participant $\times 2$ scales $= 18$ test lineups
+
+$1$ rorschach parameter combination per participant $\times 2$ scales $= 2$ rorschach lineups
+
+$=$ **20 lineup plots per participant**
+
+---
+class:inverse
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+.center[
+## Preliminary Results
+]
+
+---
+class:primary
+## Preliminary Results: Effect of Curvature
+.center[
+<img src="images/p_curvature_raw.svg" width="100%" />
+]
+---
+class:primary
+## Preliminary Results: Effect of Variability
+.center[
+<img src="images/p_variability_raw.svg" width="100%" />
+]
+---
+class:primary
+## Preliminary Results: Rorschach
+.center[
+<img src="images/p_rorschach_raw.svg" width="100%" />
+]
+
+---
+class:primary
+## References
+```{r, load_refs, echo=FALSE}
+library(RefManageR)
+bib <- ReadBib("references.bib", check = FALSE)
+ui <- "- "
+```
+<font size="2">
+.small[
+```{r, print_refs, results='asis', echo=FALSE, warning=FALSE, message=FALSE}
+print(bib[key = c("best_perception_2007", "wagenaar_misperception_1975", "menge_logarithmic_2018", "sevi_logarithmic_2020","buja_statistical_2009", "friel_making_2001")], 
+  .opts = list(check.entries = FALSE, 
+               style = "html", 
+               bib.style = "authoryear"))
+```
+]
+</font>
+
+---
+class:inverse
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+.center[
+# Questions?
+]
+
+---
+class:primary
+## The 'Goldilocks Zone'
+
+.center[
+```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
+i2 <- img_modal(src = "images/linear-sim-plot.png", alt = " ", other=list(width="70%"))
+
+c(str_split(i2, "\\n", simplify = T)[1:2],
+  str_split(i2, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+
+```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
+i2 <- img_modal(src = "images/log-sim-plot.png", alt = " ", other=list(width="70%"))
+
+c(str_split(i2, "\\n", simplify = T)[1:2],
+  str_split(i2, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+]
+
+---
+class:primary
+## Parameter Values
+
+```{r, parameterselection, eval=T, echo = F}
+xMid_vals  <- c(14.5, 13, 11.5)
+sigma_vals <- c(0.25, 0.37, 0.12, 0.18, 0.05, 0.07)
+
+yRange_vals = c(10,100)
+
+coefEst <- function(xMid, xRange = c(0,20), yRange = yRange_vals){
+  
+  # This creates the line y = -x (scaled to fit the x and y ranges)
+  # |*            0
+  # |  *
+  # |    *
+  # |      *
+  # |        1
+  # |          2
+  # |0___________3
+  #
+  # where 1, 2, 3 represent different points used to determine the line curvature
+  
+  lineData   <- tibble(xLine = seq(xRange[1],xRange[2],0.1),
+                       yLine = -(abs(diff(yRange))/abs(diff(xRange)))*(xLine-xRange[1])+yRange[2])
+  pointsData <- tibble(xPoint = c(xRange[1], (xMid-0.1), (xMid+0.1), xRange[2]),
+                       yPoint = c(yRange[1], lineData$yLine[lineData$xLine == xMid], lineData$yLine[lineData$xLine == xMid], yRange[2]))
+  
+  # Connecting the 0 points in the illustration above with the 3rd point that
+  # determines curvature gives us a set of 3 points to use to fit an exponential
+  # line to the data.
+  
+  # We fit a linear regression to the log-transformed data to get starting values
+  lm.fit <- lm(log(yPoint) ~ xPoint, data = pointsData)
+  
+  alpha.0  <- exp(coef(lm.fit)[1]) %>% as.numeric()
+  beta.0   <- coef(lm.fit)[2] %>% as.numeric()
+  theta.0 <- min(pointsData$yPoint) * 0.5  # Why 0.5?
+  
+  # and then use NLS to fit a better line to the data
+  start <- list(alpha = alpha.0, beta = beta.0, theta = theta.0)
+  nonlinear.fit   <- nls(yPoint ~ alpha * exp(beta * xPoint) + theta ,
+                         data = pointsData, start = start)
+  
+  coefficients <- tibble(alphahat = (coef(nonlinear.fit)[1] %>% as.numeric()),
+                         betahat  = coef(nonlinear.fit)[2] %>% as.numeric(),
+                         thetahat = coef(nonlinear.fit)[3] %>% as.numeric())
+  
+  return(coefficients)
+}
+
+
+coefData <- tibble(xMid = xMid_vals) %>%
+  mutate(coefficients = pmap(list(xMid),coefEst)) %>%
+  unnest(coefficients)
+
+#Identify parameters
+parmData <- tibble(Curvature   = c("Easy", "Easy", "Medium", "Medium", "Hard", "Hard"),
+                   Variability = c("Low", "High", "Low", "High", "Low", "High"),
+                   xMid        = c(rep(xMid_vals[1],2), rep(xMid_vals[2],2), rep(xMid_vals[3],2)),
+                   sigma       = sigma_vals) %>%
+  left_join(coefData, by = "xMid")
+
+knitr::kable(parmData, 'html', digits = 3)
+```
+
+<br>
+
+```{r parameterselection2, eval=T, echo = F}
+options(knitr.kable.NA = '')
+knitr::kable(rbind(Domain = c(0,20),
+             Range = c(10,100),
+             N = c(50, NA)), "html")
+```
