@@ -31,7 +31,7 @@ p_curvature <- results_data2 %>%
   scale_color_brewer(palette = "Paired") +
   ggtitle("Accuracy within Variability \n (Between Curvatures)")
 p_curvature
-ggsave(plot = p_curvature, filename = "p_curvature_raw.svg", path = "presentations/eskridge-PhD-seminars/oct_8_2020/images", device = "svg")
+# ggsave(plot = p_curvature, filename = "p_curvature_raw.svg", path = "presentations/eskridge-PhD-seminars/oct_8_2020/images", device = "svg")
 
 
 p_variability <- results_data2 %>%
@@ -47,7 +47,7 @@ p_variability <- results_data2 %>%
   scale_color_brewer(palette = "Paired") +
   ggtitle("Accuracy within Curvature \n (Between Variabilities)")
 p_variability
-ggsave(plot = p_variability, filename = "p_variability_raw.svg", path = "presentations/eskridge-PhD-seminars/oct_8_2020/images", device = "svg")
+# ggsave(plot = p_variability, filename = "p_variability_raw.svg", path = "presentations/eskridge-PhD-seminars/oct_8_2020/images", device = "svg")
 
 
 p_rorschach <- results_data2 %>%
@@ -63,7 +63,7 @@ p_rorschach <- results_data2 %>%
   scale_color_brewer(palette = "Paired") +
   ggtitle("Accuracy within Rorschach")
 p_rorschach
-ggsave(plot = p_rorschach, filename = "p_rorschach_raw.svg", path = "presentations/eskridge-PhD-seminars/oct_8_2020/images", device = "svg")
+# ggsave(plot = p_rorschach, filename = "p_rorschach_raw.svg", path = "presentations/eskridge-PhD-seminars/oct_8_2020/images", device = "svg")
 
 
 results_data2 %>% 
