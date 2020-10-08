@@ -99,7 +99,7 @@ p_rorschach <- results_data2 %>%
   scale_x_discrete("Scale") +
   scale_color_brewer(name = "Scale", labels = c("Linear", "Log"), palette = "Paired")
 p_rorschach
-ggsave(plot = p_rorschach, filename = "p_rorschach_raw.svg", path = "presentations/eskridge-PhD-seminars/oct_8_2020/images", device = "svg", width = 9, height = 9)
+ggsave(plot = p_rorschach, filename = "p_rorschach_raw.svg", path = "presentations/eskridge-PhD-seminars/oct_8_2020/images", device = "svg", width = 9, height = 6)
 
 # --------------------------------------------------------------------------
 # --------------------------------------------------------------------------

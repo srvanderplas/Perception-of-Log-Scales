@@ -597,7 +597,7 @@ class:primary
 	- `\(\beta_0 = b\)`
 	- `\(\theta_0 = \frac{\min(y)}{2}\)`
 3. Using `nls()`, fit selected model to the points and obtain parameter estimates.
-`$$py_i = \hat\alpha e^{\hat\beta x_i} + \hat\theta$$`
+`$$y_i = \hat\alpha e^{\hat\beta x_i} + \hat\theta$$`
 4. Using the parameter estimates, assume `\(\epsilon_i \sim N(0, \sigma^2)\)` and set `\(\tilde \alpha = \frac{\hat\alpha}{e^{\sigma^2/2}}\)`. Simulate data based on `\(y_i = \tilde\alpha e^{\hat\beta x_i + \epsilon_i}+\hat\theta.\)`
 .center[
 &lt;!-- Trigger the Modal --&gt;
