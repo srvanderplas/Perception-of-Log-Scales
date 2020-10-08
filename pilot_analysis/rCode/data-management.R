@@ -1,13 +1,14 @@
 library(tidyverse)
 library(RSQLite)
 library(DBI)
+library(svglite)
 
 right = function(text, num_char) {
   substr(text, nchar(text) - (num_char-1), nchar(text))
 }
 
 # Creates db connection
-con <- dbConnect(RSQLite::SQLite(), "lineups-pilot-app/20200917-graphics_group.db")
+con <- dbConnect(RSQLite::SQLite(), "lineups-pilot-app/exp_data.db")
 
 # List of datasets contained in db
 dbListTables(con)
@@ -69,36 +70,10 @@ summary
 results_data2 <- results_data %>%
                   left_join(participant_summary, by = "nick_name") %>%
                   left_join(plots_summary, by = "pic_id") %>%
-  mutate(param_value = factor(param_value, levels = c("target-E-Hv_null-E-Lv_r0",
-                                                      "target-E-Lv_null-E-Hv_r0",
-                                                      #"target-M-Hv_null-M-Lv_r0",
-                                                      #"target-M-Lv_null-M-Hv_r0",
-                                                      "target-H-Hv_null-H-Lv_r0",
-                                                      #"target-H-Lv_null-H-Hv_r0",
-                                                      
-                                                      #"target-H-Hv_null-E-Hv_r0",
-                                                      "target-E-Hv_null-H-Hv_r0",
-                                                      "target-H-Lv_null-E-Lv_r0",
-                                                      "target-E-Lv_null-H-Lv_r0",
-                                                      
-                                                      "target-H-Hv_null-M-Hv_r0",
-                                                      "target-M-Hv_null-H-Hv_r0",
-                                                      "target-H-Lv_null-M-Lv_r0",
-                                                      "target-M-Lv_null-H-Lv_r0",
-                                                      
-                                                      "target-M-Hv_null-E-Hv_r0",
-                                                      "target-E-Hv_null-M-Hv_r0",
-                                                      "target-M-Lv_null-E-Lv_r0",
-                                                      #"target-E-Lv_null-M-Lv_r0",
-                                                      
-                                                      #"target-E-Hv_null-E-Hv_r1",
-                                                      #"target-E-Lv_null-E-Lv_r1",
-                                                      "target-M-Hv_null-M-Hv_r1",
-                                                      "target-M-Lv_null-M-Lv_r1",
-                                                      "target-H-Hv_null-H-Hv_r1"
-                                                      #"target-H-Lv_null-H-Lv_r1"
-                                                      ))
-  )
-
+                  mutate(Target_Curvature   = factor(substr(param_value,8,8), levels = c("E", "M", "H")),
+                         Target_Variability = factor(substr(param_value,10,11), levels = c("Lv", "Hv")),
+                         Null_Curvature     = factor(substr(param_value,18,18), levels = c("E", "M", "H")),
+                         Null_Variability   = factor(substr(param_value,20,21), levels = c("Lv", "Hv")),
+                         Rorschach_Plot     = substr(param_value, 23,24))
 
 # write.csv(results_data2, file = "pilot_analysis/data/graphics-group-09.17.2020.csv", row.names = F, na = "")
