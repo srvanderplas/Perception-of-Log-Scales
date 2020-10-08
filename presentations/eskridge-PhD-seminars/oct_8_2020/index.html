@@ -78,7 +78,7 @@ Material Source: https://srvanderplas.netlify.app/talk/2019-09-05-the-power-of-v
 &lt;/font&gt;
 
 ???
-Typically, one of the first steps of a statisical analysis involves exploratory data analysis. I know at the consulting desk, the first thing I do when I get data is to generate some raw data plots. This usually guides discussions with the clients about what might be going on. However, how do we know if what we are seeing is actually there?
+Typically, one of the first steps of a statisical analysis involves exploratory data analysis. I know at the consulting desk, the first thing I do when I recieve new data from a client is to generate some raw data plots. This usually guides discussions with the clients about what might be going on. For example, here, there appears to be some separation between the two groups. However, how do we know if what we are seeing is actually there?
 
 ---
 class:primary
@@ -95,9 +95,9 @@ Material Source: https://srvanderplas.netlify.app/talk/2019-09-05-the-power-of-v
 
 ???
 
-One way of answering this question is to embed the true data plot (called target plot) into what is called a lineup of randomly permuted datasets (called null plots). 
+One way of answering this question is to embed the true data plot (called target plot) into a set of randomly permuted datasets (called null plots). This is what we call a lineup.
 
-Fun fact: the term lineup comes from is named after the law-enforcement procedure to line up a suspect among a set of innocents to check if a victim can identify the suspect as the perpetrator of the crime.
+Fun fact: the term lineup comes from the law-enforcement procedure to line up a suspect among a set of innocents to check if a victim can identify the suspect as the perpetrator of the crime.
 
 ---
 class:primary
@@ -150,7 +150,7 @@ Material Source: https://srvanderplas.netlify.app/talk/2019-09-05-the-power-of-v
 &lt;font&gt;
 
 ???
-So what we have is a visual test statistic which is a function that maps a dataset to a plot. We have our T(y) which maps the actual data to the desired plot and T(y_not) which maps a dataset generated under the null distribution (for example: by a randomization permutation) into that same plot.
+So what we have is a visual test statistic which is a function that maps a dataset to a plot. We have our observed test statistic, T(y), which maps the actual data to the desired plot and our T(y_not) which maps a dataset generated under the null distribution (for example: by a randomization permutation) into that same plot.
 
 A lineup usually consists of m-1 null plots and 1 target plot.
 
@@ -168,12 +168,23 @@ class:primary
 
     - Equivalent numerical assessment may involve multiple tests using different test statistics.
     
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;font size="3"&gt;
 .small[
 Source: https://github.com/srvanderplas/visual-inference-alpha
 ]
 &lt;font&gt;
 ???
-So what is the benefit of using visual inference? Most importantly, visual tests tend to be more comprehensive. Since individuals are being asked to select one or more plots from a the lineup which are different but the difference is left unspecified the individual eye is actually spotting many differences at once. An equavalent numerical assesment may involved multiple tests using different test statistics. 
+The main benefit of using visual inference is that visual tests tend to be more comprehensive. Since individuals are being asked to select one or more plots from a the lineup which are different but the difference is left unspecified the individual eye is actually spotting many differences at once. An equavalent numerical assesment may involved multiple tests using different test statistics. 
 
 ---
 class:inverse
@@ -189,7 +200,7 @@ class:inverse
 ]
 ???
 
-Now I am going to share a few different types of lineups using some fun pictures of dogs. I know we have all become comfortable sitting on zoom on mute, but this part will require some participation where you will have to unmute yourself.
+Now I am going to share a few different types of lineups using some fun pictures of dogs. I know we have all become comfortable sitting on zoom on mute, but this part will require some participation where you might have to unmute yourself.
 
 ---
 
@@ -206,6 +217,9 @@ Image Source: http://srvanderplas.github.io/Presentations/JSM2019/#p1
 ]
 ]
 
+???
+In this first example, which panel is different?
+
 --
 
 .left-column[
@@ -220,11 +234,8 @@ Consists entirely of null plots
 
 ???
 
-In this first example, which panel is different?
-
-Actually, this plot does not contain a target panel. We call this a null lineup where all of the plots are drawn from the same null distribution. For this lineup example, the dogs aren't all the same, but it consists of 20 komondor pictures. 
-
-A null lineup is called a Rorschach lineup which fun fact is named after the ink-blot test used in psychoanalysis. 
+Actually, this plot does not contain a target panel. We call this a null lineup where all of the plots are drawn from the same null distribution. For this lineup example, the dogs aren't all the same, but it consists of 20 Komondor dog pictures. 
+A null lineup is called a Rorschach lineup which was named after the ink-blot test used in psychoanalysis. 
 
 Rorschach plots are useful in the analysis part of a visual inference experiment by providing information about how often certain panels are selected.
 
@@ -298,7 +309,7 @@ Null plots from a third and/or mixture distribution.
 
 ???
 
-This is called a two-target lineup. The goal is to determine which target is more visually salient. Here, we have dogs for the null plots, and a fox and a cat for the two different "models". The cat is quite a bit more salient than the fox.
+This is called a two-target lineup. The goal is to make head-to-head comparisons in order to determine which target is more visually salient. Here, we have dogs for the null plots, and a fox and a cat for the two different "models". The cat is quite a bit more salient than the fox.
 
 ---
 class:primary
@@ -313,6 +324,17 @@ class:primary
 - **Complication:** Dependencies in the design of most visual inference experiments resulting from repeated evaluations of the same lineup.
 
     - Visual p-values are calculated using a Dirichlet-multinomial distribution to model the probabilities of selecting each panel and the observed participant selections.
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;font size="3"&gt;
+.small[
+Source: https://github.com/srvanderplas/visual-inference-alpha
+]
+&lt;font&gt;
 
 ???
 
@@ -412,7 +434,7 @@ class:primary
 ]
 
 ???
-For those of you who were able to participate in the study. What feedback do you have?
+For those of you who were able to participate in the study. I would appreciate any feedback you have.
 
 ---
 class:inverse
@@ -463,9 +485,11 @@ class:primary
     - Test an individuals ability to perceptually differentiate exponentially increasing data with differing rates of change on both the linear and log scale.
     
 ???
+
 The first part of the study is what you just participated in as the lineups. The goal of this is to test an individuals ability to perceptually differentiate exponentially increasing data with differing rates of change on both the linear and log scale.
 
 --
+
 2. You Draw It ✏️
     
     - Tests an individuals ability to make predictions for exponentially increasing data.
@@ -573,7 +597,7 @@ class:primary
 	- `\(\beta_0 = b\)`
 	- `\(\theta_0 = \frac{\min(y)}{2}\)`
 3. Using `nls()`, fit selected model to the points and obtain parameter estimates.
-`$$y_i = \hat\alpha e^{\hat\beta x_i} \text{ or } y_i = \hat\alpha e^{\hat\beta x_i} + \hat\theta$$`
+`$$py_i = \hat\alpha e^{\hat\beta x_i} + \hat\theta$$`
 4. Using the parameter estimates, assume `\(\epsilon_i \sim N(0, \sigma^2)\)` and set `\(\tilde \alpha = \frac{\hat\alpha}{e^{\sigma^2/2}}\)`. Simulate data based on `\(y_i = \tilde\alpha e^{\hat\beta x_i + \epsilon_i}+\hat\theta.\)`
 .center[
 &lt;!-- Trigger the Modal --&gt;
@@ -712,35 +736,35 @@ We are currently collecting pilot study data to catch any glitches and determine
 class:primary
 ## Preliminary Results: Effect of Curvature
 .center[
-&lt;img src="images/p_curvature_raw.svg" width="100%" /&gt;
+&lt;img src="images/p_curvature_raw.svg" width="75%" /&gt;
 ]
 
 ???
-Comparing the effect of curvature within the levels of variability:
+Here we are seeing the results of comparing the effect of curvature within the levels of variability.
 
-1. We can see that within low variability it is pretty easy to pick out a target plot with Easy curvature (lots of curvature) embeded in null plots of medium curvature on both the log and linear scale, but becomes more difficult within higher variability. Notice how within that higher variability, displaying the data on the log scale helps with the accruacy. 
+What we see along the top is the curvature level of the target plot embeded in a set of null plots with curvature levels indicated along the right side. Our variability levels are indicated by the color. 
 
-2. Within both levels of variability, it is easy to pick out a plot with easy curvature (a lot of curvature) within null plots of hard variability (close to a straight line) on both the log and linear scale. (i.e. easy to say something is not linear)
+From here, we have reason to beleive that presenting data on a log scale might have an effect when working with curvature levels closer to each other (for example a lot of curvature embeded in medium curvature). 
 
-3. Within low variability, it is is still pretty easy to pick out a target plot with medium curvature embeded in null plots of (easy curvature) lots of curvature. It is more difficult to differentiate this within the high variability and we are maybe seeing a benefit here of displaying the data on the log scale.
+We are also seeing that within lower variabilities, the accuracy tends to be higher than the accuracy within higher variabilities. This is supported by previous literature.
 
-4. Within low variability, it is difficult to select a target panel with medium curvature embeded in null plots with hard curvature (close to a straight line) within null panels with ha
+We are also seeing a potential for there being an effect of whether the target has more curvature than the null or not. For example in the bottom left here, we see a target plot with a lot of curvature embeded in null plots that are close to linear is easier to detect than a target plot close to a straight line embeded within null plots with lots of curvature. This also follows from previous literature which suggests that it is easy to say something is not linear than it is to say that something is linear.
 
 ---
 class:primary
 ## Preliminary Results: Effect of Variability
 .center[
-&lt;img src="images/p_variability_raw.svg" width="100%" /&gt;
+&lt;img src="images/p_variability_raw.svg" width="75%" /&gt;
 ]
 
 ???
-Comparing the effect of variability within the levels of curvature, we can see it is actually very difficult to pick out the target plot. The only success we are seeing is within the easy curvature levels. This is a benefit of running pilot studies since we can narrow in on the parameter combinations that are important to include in our final study.
+Here we are comparing the effect of variability within the levels of curvature, again, along the top we are indicating the variability level of the target plot embeded in the a set of null plots with the variability indicated on the right. The levels of curvature are indicated by the 3 colors. Overall, we can see it is actually very difficult to pick out the target plot. We are maybe seeing that it is possible to detect a target plot with higher variability than it is to detect a target plot with lower variability, but even that appears to be difficult. This is a benefit of running pilot studies since we can narrow in on the parameter combinations that are important to include in our final study.
 
 ---
 class:primary
 ## Preliminary Results: Rorschach
 .center[
-&lt;img src="images/p_rorschach_raw.svg" width="100%" /&gt;
+&lt;img src="images/p_rorschach_raw.svg" width="85%" /&gt;
 ]
 
 ???
@@ -812,6 +836,14 @@ class:inverse
 .center[
 # Questions?
 ]
+
+???
+
+Thank you for listening to some of the research I have been working on and participating in the pilot study. Feel free to send the reddit link to anyone you think may be interested in taking it.
+
+If you are interested in learning more about how visual inference is used, I beleive the seminar in a couple weeks is going to be about using visual inference in teaching introductory statistics courses. 
+
+Does anyone have questions and/or feedback?
 
 ---
 class:primary

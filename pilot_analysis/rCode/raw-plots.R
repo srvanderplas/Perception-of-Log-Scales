@@ -1,97 +1,106 @@
+# --------------------------------------------------------------------------
+# Collect newest pilot data ------------------------------------------------
+# --------------------------------------------------------------------------
+
 source("pilot_analysis/rCode/data-management.R")
 names(results_data2)
 
-target_curvature.labs <- c("Target: E", "Target: M", "Target: H")
+# --------------------------------------------------------------------------
+# -Create Labeler ----------------------------------------------------------
+# --------------------------------------------------------------------------
+
+target_curvature.labs <- c("Target: Lots of Curvature", "Target: Medium Curvature", "Target: Little Curvature")
 names(target_curvature.labs) <- c("E", "M", "H")
 
-null_curvature.labs <- c("Null: E", "Null: M", "Null: H")
+null_curvature.labs <- c("Null: Lots of Curvature", "Null: Medium Curvature", "Null: Little Curvature")
 names(null_curvature.labs) <- c("E", "M", "H")
 
-target_variability.labs <- c("Target: Lv", "Target: Hv")
+target_variability.labs <- c("Target: Low Variability", "Target: High Variability")
 names(target_variability.labs) <- c("Lv", "Hv")
 
-null_variability.labs <- c("Null: Lv", "Null: Hv")
+null_variability.labs <- c("Null: Low Variability", "Null: High Variability")
 names(null_variability.labs) <- c("Lv", "Hv")
 
-global_labeller <- labeller(Target_Curvature = target_curvature.labs,
+global_labeller <- labeller(
+                            Target_Curvature = target_curvature.labs,
                             Null_Curvature = null_curvature.labs,
                             Target_Variability = target_variability.labs,
                             Null_Variability = null_variability.labs)
 
+
+# --------------------------------------------------------------------------
+# Across Curvature Raw Plots -----------------------------------------------
+# --------------------------------------------------------------------------
+
 p_curvature <- results_data2 %>%
   filter(Null_Variability == Target_Variability, Rorschach_Plot == "r0") %>%
-  ggplot(aes(x = test_param, y = correct, color = test_param)) +
-  geom_jitter(width = 0.15, height = 0.15, alpha = 0.9) +
+  ggplot(aes(x = test_param, y = correct, group = Target_Variability, color = Target_Variability)) +
+  # geom_jitter(width = 0.15, height = 0.15, alpha = 0.9) +
+  geom_point(position = position_jitterdodge(jitter.width = 0.3, jitter.height = 0.1, dodge.width = 1), alpha = 0.9) +
   facet_grid(
-    Target_Variability + Null_Variability ~ Target_Curvature + Null_Curvature,
+    Null_Curvature~ Target_Curvature,
     labeller = global_labeller
-  )+
+  ) +
   theme_bw() +
   theme(aspect.ratio = 1) +
-  scale_color_brewer(palette = "Paired") +
-  ggtitle("Accuracy within Variability \n (Between Curvatures)")
+  scale_y_continuous("Target Panel Detected", breaks = c(0,1)) +
+  scale_x_discrete("Scale") +
+  scale_color_brewer(name = "Variability", labels = c("Low", "High"), palette = "Paired")
 p_curvature
-# ggsave(plot = p_curvature, filename = "p_curvature_raw.svg", path = "presentations/eskridge-PhD-seminars/oct_8_2020/images", device = "svg")
+ggsave(plot = p_curvature, filename = "p_curvature_raw.svg", path = "presentations/eskridge-PhD-seminars/oct_8_2020/images", device = "svg", width = 9, height = 9)
 
+# --------------------------------------------------------------------------
+# Variability Effect Plots -------------------------------------------------
+# --------------------------------------------------------------------------
 
 p_variability <- results_data2 %>%
   filter(Null_Variability != Target_Variability, Rorschach_Plot == "r0") %>%
-  ggplot(aes(x = test_param, y = correct, color = test_param)) +
-  geom_jitter(width = 0.15, height = 0.15, alpha = 0.9) +
+  ggplot(aes(x = test_param, y = correct, color = Target_Curvature, group = Target_Curvature )) +
+  geom_point(position = position_jitterdodge(jitter.width = 0.3, jitter.height = 0.1, dodge.width = 1), alpha = 0.9) +
   facet_grid(
-    Target_Variability + Null_Variability ~ Target_Curvature + Null_Curvature,
+    Null_Variability~Target_Variability,
     labeller = global_labeller
-  )+
+  ) +
   theme_bw() +
   theme(aspect.ratio = 1) +
-  scale_color_brewer(palette = "Paired") +
-  ggtitle("Accuracy within Curvature \n (Between Variabilities)")
+  scale_y_continuous("Target Panel Detected", breaks = c(0,1)) +
+  scale_x_discrete("Scale") +
+  scale_color_brewer(name = "Curvature", labels = c("Little Curvature", "Medium Curvature", "Lots of Curvature"), palette = "Paired")
 p_variability
-# ggsave(plot = p_variability, filename = "p_variability_raw.svg", path = "presentations/eskridge-PhD-seminars/oct_8_2020/images", device = "svg")
+ggsave(plot = p_variability, filename = "p_variability_raw.svg", path = "presentations/eskridge-PhD-seminars/oct_8_2020/images", device = "svg", width = 9, height = 9)
 
+# --------------------------------------------------------------------------
+# Rorschach raw results plots ----------------------------------------------
+# --------------------------------------------------------------------------
+
+target_curvature.labs <- c("Lots of Curvature", "Medium Curvature", "Little Curvature")
+names(target_curvature.labs) <- c("E", "M", "H")
+
+target_variability.labs <- c("Low Variability", "High Variability")
+names(target_variability.labs) <- c("Lv", "Hv")
+
+rorschach_labeller <- labeller(
+  Target_Curvature = target_curvature.labs,
+  Target_Variability = target_variability.labs)
+
+# --------------------------------------------------------------------------
 
 p_rorschach <- results_data2 %>%
   filter(Rorschach_Plot == "r1") %>%
   ggplot(aes(x = test_param, y = correct, color = test_param)) +
   geom_jitter(width = 0.15, height = 0.15, alpha = 0.9) +
   facet_grid(
-    Target_Variability + Null_Variability ~ Target_Curvature + Null_Curvature,
-    labeller = global_labeller
+    Target_Variability ~ Target_Curvature,
+    labeller = rorschach_labeller
   )+
   theme_bw() +
   theme(aspect.ratio = 1) +
-  scale_color_brewer(palette = "Paired") +
-  ggtitle("Accuracy within Rorschach")
+  scale_y_continuous("Target Panel Detected", breaks = c(0,1)) +
+  scale_x_discrete("Scale") +
+  scale_color_brewer(name = "Scale", labels = c("Linear", "Log"), palette = "Paired")
 p_rorschach
-# ggsave(plot = p_rorschach, filename = "p_rorschach_raw.svg", path = "presentations/eskridge-PhD-seminars/oct_8_2020/images", device = "svg")
+ggsave(plot = p_rorschach, filename = "p_rorschach_raw.svg", path = "presentations/eskridge-PhD-seminars/oct_8_2020/images", device = "svg", width = 9, height = 9)
 
-
-results_data2 %>% 
-  group_by(nick_name, test_param) %>%
-  filter(rorschach == 0) %>%
-  summarise(plots_correct = sum(correct),
-            plot_count = n()) %>%
-  mutate(prop_correct = plots_correct/plot_count) %>%
-  filter(plot_count > 6) %>%
-ggplot(aes(x = test_param, y = prop_correct, fill = test_param)) +
-  geom_bar(stat = "identity") +
-  facet_wrap(~nick_name, ncol = 4) +
-  theme_bw() +
-  theme(aspect.ratio = 1) +
-  scale_fill_brewer(palette = "Paired") +
-  scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25))
-
-results_data2 %>% 
-  group_by(param_value, test_param) %>%
-  summarise(plots_correct = sum(correct),
-            participant_count = n()) %>%
-  mutate(prop_correct = plots_correct/participant_count) %>%
-  filter(participant_count > 3) %>%
-ggplot(aes(x = test_param, y = prop_correct, fill = test_param)) +
-  geom_bar(stat = "identity") +
-  facet_wrap(~param_value, ncol = 5) +
-  theme_bw() +
-  theme(aspect.ratio = 1) +
-  scale_fill_brewer(palette = "Paired") +
-  scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25))
-
+# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
