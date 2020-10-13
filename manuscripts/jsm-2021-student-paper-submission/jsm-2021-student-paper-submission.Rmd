@@ -1,0 +1,90 @@
+---
+title: |
+  Perception of exponentially increasing data displayed on a log scale
+type: 
+  - JSM 2021 Student Paper Award (ASA sections on Statistical Computing and Statistical Graphics)
+author:
+  - name: Emily A. Robinson
+    affil: a
+    email: emily.robinson@huskers.unl.edu
+  - name: Susan VanderPlas
+    affil: a
+    email: susan.vanderplas@unl.edu
+  - name: Reka Howard
+    affil: a
+    email: rekahoward@unl.edu
+affiliation:
+  - num: a
+    address: |
+      Department of Statistics, University of Nebraska - Lincoln,
+bibliography: references.bib
+# appendix: appendix.tex
+abstract: |
+  Log scales are often used to display data over several orders of magnitude within one graph. During the COVID pandemic, we’ve seen both the benefits and the pitfalls of using log scales to display data. This paper aims to...
+keywords: |
+  Exponential; Log; Visual Inference; Perception
+header-includes: |
+  \usepackage{hyperref}
+  \usepackage[utf8]{inputenc}
+  \def\tightlist{}
+output: rticles::tf_article
+---
+
+<!-- How to comment out -->
+
+# Introduction
+
+[@buja_statistical_2009; @vanderplas_clusters_2017]
+
+# Data Generation
+
+
+## Model Generation and Simulation
+
+
+## Parameter Selection
+
+
+# Study Design
+
+
+## Lineup Setup
+
+
+## Participant Recruitment
+
+
+## Task Description
+
+
+# Results
+
+
+## Effect of Curvature
+
+
+## Effect of Variability
+
+
+## Linear vs Log
+
+
+## Participant Reasoning
+
+
+# Discussion
+
+
+## Conclusion
+
+
+## Future Research
+
+
+# Supplementary Materials {-}
+
+
+# Acknowledgement(s) {-}
+
+
+# References
