@@ -1,35 +1,58 @@
 *CLEARS SAS LOG AND RESULTS FOR CLEANER WORKING ENVIRONMENT;
 dm "log; clear; odsresults; clear;";
 
+* ----------------------------------------------------------------------------------------------------------------------------------------;
+* Import Full Results Data ---------------------------------------------------------------------------------------------------------------;
+* ----------------------------------------------------------------------------------------------------------------------------------------;
+
 PROC IMPORT
-	DATAFILE = 'C:\Users\ERobi\Documents\GitHub\Perception-of-Log-Scales\pilot_analysis\data\graphics-group-09.17.2020.csv'
-	OUT = results_data
+	DATAFILE = 'C:\Users\ERobi\Documents\GitHub\Perception-of-Log-Scales\lineups-pilot-analysis\data\lineup_results_data.csv'
+	OUT = lineup_results_data
 	REPLACE;
 	GUESSINGROWS = 50;
 RUN;
 
-TITLE "Results Data";
-PROC PRINT DATA = results_data (OBS = 10) NOOBS;
+TITLE "Lineup Results Data";
+PROC PRINT DATA = lineup_results_data (OBS = 10) NOOBS;
 RUN;
 
-/*description ip_address nick_name age gender academic_study start_time end_time run_time pic_id test_param param_value */
-/*rorschach sample_size obs_plot_location response_no correct conf_level choice_reason data_name pic_name participant_count plot_count */
+* ----------------------------------------------------------------------------------------------------------------------------------------;
+* Filter for Model Data ------------------------------------------------------------------------------------------------------------------;
+* ----------------------------------------------------------------------------------------------------------------------------------------;
 
-PROC GLIMMIX DATA = results_data METHOD = Laplace;
-	WHERE	plot_count > 3 & rorschach = "0" & param_value in  ("target-E-Hv_null-E-Lv_r0",
-																"target-H-Hv_null-H-Lv_r0",
+/*description ip_address nick_name age gender academic_study start_time end_time run_time data_name pic_name pic_id */
+/*test_param param_value rorschach target_curvature null_curvature target_variability null_variability */
+/*sample_size obs_plot_location response_no correct conf_level choice_reason participant_count plot_count */
 
-		                                                      	"target-H-Lv_null-E-Lv_r0",
-                                                     
-		                                                     	"target-H-Hv_null-M-Hv_r0",
-		                                                      	"target-H-Lv_null-M-Lv_r0",
-		                                                      	"target-M-Lv_null-H-Lv_r0",
-		                                                      
-		                                                        "target-E-Hv_null-M-Hv_r0",
-		                                                   		"target-H-Hv_null-H-Hv_r1");
-	CLASS 	nick_name pic_id test_param param_value rorschach;
-	MODEL 	correct = test_param|param_value / D = Binomial LINK = cloglog;
-	RANDOM	Intercept test_param / SUBJECT = nick_name;
-	LSMEANS	test_param*param_value / PLOT = MEANPLOT(SLICEBY = test_param JOIN CL);
+DATA lineup_model_data;
+	SET 	lineup_results_data;
+	WHERE 	participant_count > 6 & rorschach = '0' & target_variability = null_variability;
+/*	WHERE 	participant_count > 6 & rorschach = '0' & target_variability ne null_variability;*/
+RUN;
+
+TITLE "Lineup Model Data";
+PROC PRINT DATA = lineup_model_data (OBS = 10) NOOBS;
+RUN;
+
+* ----------------------------------------------------------------------------------------------------------------------------------------;
+* ----------------------------------------------------------------------------------------------------------------------------------------;
+* ----------------------------------------------------------------------------------------------------------------------------------------;
+
+TITLE "Binomial Overall Linear vs Log (Within Variability)";
+PROC GLIMMIX DATA = lineup_model_data;
+	CLASS 	nick_name pic_id test_param param_value rorschach target_curvature null_curvature target_variability null_variability;
+	MODEL 	correct = test_param / D = Binomial LINK = logit;
+	RANDOM	intercept / SUBJECT = nick_name;
+	LSMEANS	test_param / PLOT = MEANPLOT(CL ILINK) ILINK CL LINES;
+	NLOPTIONS MAXITER = 100;
+RUN;
+
+TITLE "Binomial Split Plot (Within Variability)";
+PROC GLIMMIX DATA = lineup_model_data METHOD = Laplace;
+	CLASS 	nick_name pic_id test_param param_value rorschach target_curvature null_curvature target_variability null_variability;
+	MODEL 	correct = test_param|target_curvature|null_curvature|target_variability / D = Binomial LINK = logit;
+	RANDOM	intercept target_curvature*null_curvature*target_variability / SUBJECT = nick_name;
+	LSMEANS	test_param*target_curvature*null_curvature*target_variability / SLICE = target_curvature*null_curvature*target_variability 
+																		   PLOT = MEANPLOT(SLICEBY = test_param PLOTBY = target_variability JOIN CL ILINK) ILINK CL;
 	NLOPTIONS MAXITER = 100;
 RUN;

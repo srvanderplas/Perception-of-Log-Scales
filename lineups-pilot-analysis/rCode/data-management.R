@@ -37,7 +37,7 @@ users_data <- dbReadTable(con,"users") %>%
 
 dbDisconnect(con)
 
-results_data <- feedback_data %>%
+lineup_results_data_raw <- feedback_data %>%
                   left_join(picture_details_data %>% filter(trial == 0), by = "pic_id") %>%
                   left_join(users_data %>% select(-ip_address), by = "nick_name") %>%
                   mutate(rorschach = right(param_value, 1),
@@ -49,31 +49,45 @@ results_data <- feedback_data %>%
                          obs_plot_location, response_no, correct, conf_level, choice_reason,
                          data_name, pic_name) %>%
                   filter(nick_name != "test")
-names(results_data)
+names(lineup_results_data_raw)
 
 # Number of plots evaluated per participant
-participant_summary <- results_data %>% 
+participant_summary <- lineup_results_data_raw %>% 
   group_by(nick_name) %>%
   summarise(participant_count = n())
 participant_summary
 
 # Number of participants who evaluated each plot
-plots_summary <- results_data %>% 
+plots_summary <- lineup_results_data_raw %>% 
   group_by(pic_id) %>%
   summarise(plot_count = n())
 plots_summary
 
-# Participant x Plot Summary
-summary <- with(results_data, table(nick_name, pic_id))
-summary
-
-results_data2 <- results_data %>%
+lineup_results_data <- lineup_results_data_raw %>%
                   left_join(participant_summary, by = "nick_name") %>%
                   left_join(plots_summary, by = "pic_id") %>%
-                  mutate(Target_Curvature   = factor(substr(param_value,8,8), levels = c("E", "M", "H")),
-                         Target_Variability = factor(substr(param_value,10,11), levels = c("Lv", "Hv")),
-                         Null_Curvature     = factor(substr(param_value,18,18), levels = c("E", "M", "H")),
-                         Null_Variability   = factor(substr(param_value,20,21), levels = c("Lv", "Hv")),
-                         Rorschach_Plot     = substr(param_value, 23,24))
+                  mutate(nick_name          = factor(nick_name),
+                         age                = factor(age),
+                         description        = factor(description),
+                         gender             = factor(gender),
+                         academic_study     = factor(academic_study),
+                         pic_id             = factor(pic_id),
+                         test_param         = factor(test_param),
+                         rorschach          = factor(rorschach),
+                         conf_level         = factor(conf_level),
+                         choice_reason      = factor(choice_reason),
+                         data_name          = factor(data_name),
+                         pic_name           = factor(pic_name),
+                         target_curvature   = factor(substr(param_value,8,8), levels = c("E", "M", "H")),
+                         target_variability = factor(substr(param_value,10,11), levels = c("Lv", "Hv")),
+                         null_curvature     = factor(substr(param_value,18,18), levels = c("E", "M", "H")),
+                         null_variability   = factor(substr(param_value,20,21), levels = c("Lv", "Hv"))
+                      ) %>%
+  select(description, ip_address, nick_name, age, gender, academic_study, start_time, end_time, run_time,
+         data_name, pic_name, pic_id, test_param, param_value, rorschach, target_curvature, null_curvature,
+         target_variability, null_variability, sample_size, obs_plot_location, response_no, correct, 
+         conf_level, choice_reason, participant_count, plot_count)
 
-# write.csv(results_data2, file = "pilot_analysis/data/graphics-group-09.17.2020.csv", row.names = F, na = "")
+# write.csv(results_data, file = "pilot_analysis/data/graphics-group-09.17.2020.csv", row.names = F, na = "")
+
+rm(list=setdiff(ls(), "lineup_results_data"))
