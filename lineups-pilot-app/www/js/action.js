@@ -125,16 +125,16 @@ function dim(i) {
 
 function frame(i) {
   var panel = document.getElementById(i);
-  panel.setAttribute("stroke-width", "5");
+  //panel.setAttribute("stroke-width", "5");
   panel.setAttribute("stroke-opacity", "1");
-  panel.setAttribute("stroke", "#336699");
+  //panel.setAttribute("stroke", "#336699");
 }
 
 function deframe(i) {
   var panel = document.getElementById(i);
-  panel.setAttribute("stroke-width", 0);
+  //panel.setAttribute("stroke-width", 0);
   panel.setAttribute("stroke-opacity", "0");
-  panel.setAttribute("stroke", "#e5e5e5");
+  //panel.setAttribute("stroke", "#e5e5e5");
 }
 
 
