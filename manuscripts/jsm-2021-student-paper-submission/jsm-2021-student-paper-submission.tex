@@ -1,0 +1,127 @@
+% interactcadsample.tex
+% v1.03 - April 2017
+
+\documentclass[]{interact}
+
+\usepackage{epstopdf}% To incorporate .eps illustrations using PDFLaTeX, etc.
+\usepackage{subfigure}% Support for small, `sub' figures and tables
+%\usepackage[nolists,tablesfirst]{endfloat}% To `separate' figures and tables from text if required
+
+\usepackage{natbib}% Citation support using natbib.sty
+\bibpunct[, ]{(}{)}{;}{a}{}{,}% Citation support using natbib.sty
+\renewcommand\bibfont{\fontsize{10}{12}\selectfont}% Bibliography support using natbib.sty
+
+\theoremstyle{plain}% Theorem-like structures provided by amsthm.sty
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newtheorem{notation}{Notation}
+
+% see https://stackoverflow.com/a/47122900
+
+
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\def\tightlist{}
+
+\begin{document}
+
+\articletype{JSM 2021 Student Paper Award (ASA sections on Statistical Computing and
+Statistical Graphics)}
+
+\title{Perception of exponentially increasing data displayed on a log scale}
+
+
+\author{\name{Emily A. Robinson$^{a}$, Susan VanderPlas$^{a}$, Reka Howard$^{a}$}
+\affil{$^{a}$Department of Statistics, University of Nebraska - Lincoln,}
+}
+
+\thanks{CONTACT Emily A. Robinson. Email: \href{mailto:emily.robinson@huskers.unl.edu}{\nolinkurl{emily.robinson@huskers.unl.edu}}, Susan VanderPlas. Email: \href{mailto:susan.vanderplas@unl.edu}{\nolinkurl{susan.vanderplas@unl.edu}}, Reka Howard. Email: \href{mailto:rekahoward@unl.edu}{\nolinkurl{rekahoward@unl.edu}}}
+
+\maketitle
+
+\begin{abstract}
+Log scales are often used to display data over several orders of
+magnitude within one graph. During the COVID pandemic, we've seen both
+the benefits and the pitfalls of using log scales to display data. This
+paper aims to\ldots{}
+\end{abstract}
+
+\begin{keywords}
+Exponential; Log; Visual Inference; Perception
+\end{keywords}
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+\citep{buja_statistical_2009, vanderplas_clusters_2017}
+
+\hypertarget{data-generation}{%
+\section{Data Generation}\label{data-generation}}
+
+\hypertarget{model-generation-and-simulation}{%
+\subsection{Model Generation and
+Simulation}\label{model-generation-and-simulation}}
+
+\hypertarget{parameter-selection}{%
+\subsection{Parameter Selection}\label{parameter-selection}}
+
+\hypertarget{study-design}{%
+\section{Study Design}\label{study-design}}
+
+\hypertarget{lineup-setup}{%
+\subsection{Lineup Setup}\label{lineup-setup}}
+
+\hypertarget{participant-recruitment}{%
+\subsection{Participant Recruitment}\label{participant-recruitment}}
+
+\hypertarget{task-description}{%
+\subsection{Task Description}\label{task-description}}
+
+\hypertarget{results}{%
+\section{Results}\label{results}}
+
+\hypertarget{effect-of-curvature}{%
+\subsection{Effect of Curvature}\label{effect-of-curvature}}
+
+\hypertarget{effect-of-variability}{%
+\subsection{Effect of Variability}\label{effect-of-variability}}
+
+\hypertarget{linear-vs-log}{%
+\subsection{Linear vs Log}\label{linear-vs-log}}
+
+\hypertarget{participant-reasoning}{%
+\subsection{Participant Reasoning}\label{participant-reasoning}}
+
+\hypertarget{discussion}{%
+\section{Discussion}\label{discussion}}
+
+\hypertarget{conclusion}{%
+\subsection{Conclusion}\label{conclusion}}
+
+\hypertarget{future-research}{%
+\subsection{Future Research}\label{future-research}}
+
+\hypertarget{supplementary-materials}{%
+\section*{Supplementary Materials}\label{supplementary-materials}}
+\addcontentsline{toc}{section}{Supplementary Materials}
+
+\hypertarget{acknowledgements}{%
+\section*{Acknowledgement(s)}\label{acknowledgements}}
+\addcontentsline{toc}{section}{Acknowledgement(s)}
+
+\bibliographystyle{tfcad}
+\bibliography{references.bib}
+
+
+
+
+\end{document}
