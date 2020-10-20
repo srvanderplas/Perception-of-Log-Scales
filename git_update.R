@@ -35,3 +35,5 @@ if ("lineups-pilot-app/exp_data.db" %in% status$unstaged$modified) {
   # Log no changes
   httr::POST("https://hc-ping.com/00fb59c2-a334-44ad-899a-1927e3d18023", body = "No changes")
 }
+
+git2r::config(repo = repo, global = F, "Susan Vanderplas", "srvanderplas@gmail.com")
