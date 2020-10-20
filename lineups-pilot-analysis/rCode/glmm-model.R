@@ -16,8 +16,8 @@ lineup_model_data <- lineup_results_data %>%
 summary(lineup_model_data)
 
 # export data to csv for sas modeling
-write.csv(lineup_results_data, file = "lineups-pilot-analysis/data/lineup_results_data.csv", row.names = F, na = "")
-write.csv(lineup_model_data, file = "lineups-pilot-analysis/data/lineup_model_data.csv", row.names = F, na = "")
+# write.csv(lineup_results_data, file = "lineups-pilot-analysis/data/lineup_results_data.csv", row.names = F, na = "")
+# write.csv(lineup_model_data, file = "lineups-pilot-analysis/data/lineup_model_data.csv", row.names = F, na = "")
 
 # --------------------------------------------------------------------------
 # Binomial Model -----------------------------------------------------------

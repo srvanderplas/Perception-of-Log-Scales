@@ -32,9 +32,9 @@ global_labeller <- labeller(
 # Across Curvature Raw Plots -----------------------------------------------
 # --------------------------------------------------------------------------
 
-p_curvature <- results_data2 %>%
-  filter(null_variability == target_variability, Rorschach_Plot == "r0") %>%
-  ggplot(aes(x = test_param, y = Correct, group = target_variability, color = target_variability)) +
+p_curvature <- lineup_results_data %>%
+  filter(null_variability == target_variability, rorschach == "0") %>%
+  ggplot(aes(x = test_param, y = correct, group = target_variability, color = target_variability)) +
   # geom_jitter(width = 0.15, height = 0.15, alpha = 0.9) +
   geom_point(position = position_jitterdodge(jitter.width = 0.3, jitter.height = 0.1, dodge.width = 1), alpha = 0.9) +
   facet_grid(
@@ -53,9 +53,9 @@ p_curvature
 # Variability Effect Plots -------------------------------------------------
 # --------------------------------------------------------------------------
 
-p_variability <- results_data2 %>%
-  filter(null_variability != target_variability, Rorschach_Plot == "r0") %>%
-  ggplot(aes(x = test_param, y = Correct, color = target_curvature, group = target_curvature )) +
+p_variability <- lineup_results_data %>%
+  filter(null_variability != target_variability, rorschach == "0") %>%
+  ggplot(aes(x = test_param, y = correct, color = target_curvature, group = target_curvature )) +
   geom_point(position = position_jitterdodge(jitter.width = 0.3, jitter.height = 0.1, dodge.width = 1), alpha = 0.9) +
   facet_grid(
     null_variability~target_variability,
@@ -85,9 +85,9 @@ rorschach_labeller <- labeller(
 
 # --------------------------------------------------------------------------
 
-p_rorschach <- results_data2 %>%
-  filter(Rorschach_Plot == "r1") %>%
-  ggplot(aes(x = test_param, y = Correct, color = test_param)) +
+p_rorschach <- lineup_results_data %>%
+  filter(rorschach == "1") %>%
+  ggplot(aes(x = test_param, y = correct, color = test_param)) +
   geom_jitter(width = 0.15, height = 0.15, alpha = 0.9) +
   facet_grid(
     target_variability ~ target_curvature,
