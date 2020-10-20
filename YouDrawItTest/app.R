@@ -14,6 +14,8 @@ inputUserid <- function(inputId, value='') {
   tagList(
     singleton(tags$head(tags$script(src = "js/md5.js", type='text/javascript'))),
     singleton(tags$head(tags$script(src = "js/shinyBindings.js", type='text/javascript'))),
+    singleton(tags$head(tags$script(src = "js/tinycolor.js", type='text/javascript'))),
+    singleton(tags$head(tags$script(src = "js/action.js", type='text/javascript'))),
     tags$body(onload="setvalues()"),
     tags$input(id = inputId, class = "userid", value=as.character(value), type="text", style="display:none;")
   )
@@ -317,6 +319,34 @@ ui <- navbarPage(
                            width = "100%")
       )
     )
+  ),
+  # ---- Tab 5 ---------------------------------------------------------------
+  tabPanel(
+    title = "Lineup (interactive)",
+    fluidRow(
+      column(
+        width = 8,
+        uiOutput("lineup2", height = "600px"),
+        helpText("Which panel or panels of this plot are the most different?
+                  Click on the panels, then explain why you chose that panel."),
+        useShinyjs(),  # Set up shinyjs
+      ),
+      column(
+        width = 4,
+        h3("Selected Plot"),
+        textInput("response_no", "Most Different Panel(s) (click on a plot to select)", value = ""),
+        textAreaInput(
+          inputId = "lineup_reason2", "Why did you choose the plot?",
+          placeholder = "Provide some description of the features you used to make your decision here."),
+        actionButton("lineup_submit2", "Submit my answer"),
+        hr(),
+        actionButton("lineup_answer_btn2", "What's the answer?", class = "btn-light"),
+        hidden(textOutput("lineup_answer2")),
+        hr(),
+        p("(Determined by experimental design)"),
+        checkboxInput("lineup_linear_axis2", "Linear Y Axis?", value = T)
+      )
+    )
   )
   # ---- End UI --------------------------------------------------------------
 )
@@ -417,7 +447,7 @@ server <- function(input, output, session) {
     lineup_plot <- ggplot(df, aes(x = x, y = yfix, color = group)) +
       geom_point() +
       facet_wrap(~pos, ncol = 5) +
-      scale_color_discrete(guide = F) +
+      scale_color_discrete(guide = "none") +
       theme(axis.text = element_blank(), axis.title = element_blank())
 
     if (!input$lineup_linear_axis)  lineup_plot <- lineup_plot + scale_y_log10()
@@ -507,7 +537,40 @@ server <- function(input, output, session) {
 
   # ---- Tab 4 ---------------------------------------------------------------
   output$testtext <- renderText(paste("Participant Browser fingerprint: ", input$fingerprint))
-
+  # ---- Tab 5 ---------------------------------------------------------------
+  
+  
+  observe({
+    onclick("lineup_answer_btn2", {
+      toggle("lineup_answer2")
+    })
+  })
+  
+  answertext <- reactive({
+    sprintf("The target is in panel %d", unique(filter(data_tab2(), .id == 1)$pos))
+  })
+  
+  # Hide the answer and clear the inputs if a new lineup is generated
+  observeEvent({
+    input$lineup_submit
+  }, {
+    hide("lineup_answer2")
+    updateTextAreaInput(session, "lineup_reason2", value = character(0))
+    updateSelectInput(session, "lineup_panel2", selected = character(0))
+  })
+  
+  
+  
+  output$lineup_answer2 <- renderText({
+    # message(sprintf("lineup_answer_btn value is %d", isolate(input$lineup_answer_btn)))
+    paste("The lineup is in panel 15. ", 
+          sprintf("You  selected %s", input$response_no))
+  })
+  
+  output$lineup2 <- renderUI({
+    HTML(readLines("test.svg"))
+  })
+  
 }
 
 # Run the application
