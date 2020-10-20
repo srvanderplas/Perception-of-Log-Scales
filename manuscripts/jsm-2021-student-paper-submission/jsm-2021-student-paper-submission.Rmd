@@ -7,12 +7,12 @@ author:
   - name: Emily A. Robinson
     affil: a
     email: emily.robinson@huskers.unl.edu
-  - name: Susan VanderPlas
-    affil: a
-    email: susan.vanderplas@unl.edu
   - name: Reka Howard
     affil: a
     email: rekahoward@unl.edu
+  - name: Susan VanderPlas
+    affil: a
+    email: susan.vanderplas@unl.edu
 affiliation:
   - num: a
     address: |
@@ -27,10 +27,19 @@ header-includes: |
   \usepackage{hyperref}
   \usepackage[utf8]{inputenc}
   \def\tightlist{}
+  \usepackage[usenames,dvipsnames]{color}
+  \newcommand{\er}[1]{\textcolor{Orange}{#1}}
+  \newcommand{\svp}[1]{\textcolor{Green}{#1}}
+  \newcommand{\rh}[1]{\textcolor{Plum}{#1}}
 output: rticles::tf_article
 ---
 
 <!-- How to comment out -->
+
+\svp{Emily and Reka, when we get into the editing stage, I've found this strategy to be useful: basically, when you add new text, use your color (feel free to change the command, for now yours are set to \er{$\backslash$er} and \rh{$\backslash$rh}.}
+\svp{The way this usually works is that when e.g. I read over a document that Emily has recently edited, I will remove her flagged text to indicate that I've seen/accepted the changes (and vice versa - I'll edit text and highlight it with my color, and you can accept/modify and flag yours too) -- sometimes modifications happen first and then all of the color in a paragraph gets taken out once we've moved on.}
+\svp{This not only leads to a nice rainbow effect, but you can quickly spot changes, too. If you're changing some slight phrasing/wording that doesn't change meaning, it's not necessary to highlight those changes - highlight content changes, not e.g. verb tenses.}
+\svp{If something is a comment and has been addressed, comment it out initially and then delete the line after a couple of weeks.}
 
 # Introduction
 
