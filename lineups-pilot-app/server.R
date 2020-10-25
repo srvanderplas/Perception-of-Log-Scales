@@ -310,8 +310,14 @@ shinyServer(function(input, output, session) {
             updateCheckboxGroupInput(session, "reasoning", selected = NA)
 
             if (is.null(nextplot$pic_name)) return(NULL)
+
+            # Read svg and remove width/height
+            tmp <- readLines(file.path(plotpath, "svg", basename(nextplot$pic_name)))
+            tmp[2] <- str_replace(tmp[2], "width=.*? height=.*? viewBox", "viewBox")
+
             # Include the picture
-            HTML(readLines(file.path(plotpath, "svg", basename(nextplot$pic_name))))
+            HTML(tmp)
+
             # div(
             #     class = "full-lineup-container",
             #     img(src = file.path(plotpath, "svg", basename(nextplot$pic_name)),
