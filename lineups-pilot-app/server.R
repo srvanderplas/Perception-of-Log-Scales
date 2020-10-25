@@ -87,7 +87,8 @@ shinyServer(function(input, output, session) {
         if (is.null(values$experiment)) return(NULL)
 
         list(src = file.path("examples", "example1.png"),
-             contentType = 'image/png')
+             contentType = 'image/png',
+             style = "max-width:100%; max-height = 100%")
     }, deleteFile = FALSE)
 
     output$example1_a <- renderUI({
@@ -106,7 +107,8 @@ shinyServer(function(input, output, session) {
         if (is.null(values$experiment)) return(NULL)
 
         list(src = file.path("examples", "example2.png"),
-             contentType = 'image/png')
+             contentType = 'image/png',
+             style = "max-width:100%; max-height = 100%")
     }, deleteFile = FALSE)
 
     output$example2_a <- renderUI({
@@ -309,13 +311,12 @@ shinyServer(function(input, output, session) {
 
             if (is.null(nextplot$pic_name)) return(NULL)
             # Include the picture
-            # HTML(readLines(file.path(plotpath, "svg", basename(nextplot$pic_name))))
-            div(
-                class = "full-lineup-container",
-                img(src = file.path(plotpath, "png",
-                                    stringr::str_replace(basename(nextplot$pic_name), "\\.svg$", ".png")),
-                    style = "max-width:100%; max-height = 100%")
-            )
+            HTML(readLines(file.path(plotpath, "svg", basename(nextplot$pic_name))))
+            # div(
+            #     class = "full-lineup-container",
+            #     img(src = file.path(plotpath, "svg", basename(nextplot$pic_name)),
+            #         style = "max-width:100%; max-height = 100%")
+            # )
 
             }) # end WithProgress
     }) # end renderUI

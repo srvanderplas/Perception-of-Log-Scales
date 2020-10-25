@@ -16,6 +16,8 @@ inputIp <- function(inputId, value=''){
   tagList(
     singleton(tags$head(tags$script(src = "js/md5.js", type='text/javascript'))),
     singleton(tags$head(tags$script(src = "js/shinyBindings.js", type='text/javascript'))),
+    singleton(tags$head(tags$script(src = "js/action.js", type='text/javascript'))),
+    singleton(tags$head(tags$script(src = "js/tinycolor.js", type='text/javascript'))),
     tags$body(onload="setvalues()"),
     tags$input(id = inputId, class = "ipaddr", value=as.character(value), type="text", style="display:none;")
   )
@@ -114,8 +116,8 @@ fillPage(
     conditionalPanel(
       condition = "input.ready && !input.done",
       h4("Selection"),
-      # textInput("response_no", "Choice", value = ""),
-      selectizeInput("response_no", "Choice", choices = 1:20, selected = NULL, multiple = T),
+      textInput("response_no", "Choice", value = ""),
+      # selectizeInput("response_no", "Choice", choices = 1:20, selected = NULL, multiple = T),
 
       # Handle other reasoning logic
       conditionalPanel(condition = "!input.otheronly",
