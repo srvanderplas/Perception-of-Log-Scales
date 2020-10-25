@@ -36,25 +36,39 @@ output: rticles::tf_article
 
 <!-- How to comment out -->
 
+<!-- 
 \svp{Emily and Reka, when we get into the editing stage, I've found this strategy to be useful: basically, when you add new text, use your color (feel free to change the command, for now yours are set to \er{$\backslash$er} and \rh{$\backslash$rh}.}
 \svp{The way this usually works is that when e.g. I read over a document that Emily has recently edited, I will remove her flagged text to indicate that I've seen/accepted the changes (and vice versa - I'll edit text and highlight it with my color, and you can accept/modify and flag yours too) -- sometimes modifications happen first and then all of the color in a paragraph gets taken out once we've moved on.}
 \svp{This not only leads to a nice rainbow effect, but you can quickly spot changes, too. If you're changing some slight phrasing/wording that doesn't change meaning, it's not necessary to highlight those changes - highlight content changes, not e.g. verb tenses.}
 \svp{If something is a comment and has been addressed, comment it out initially and then delete the line after a couple of weeks.}
+ -->
 
 # Introduction and Background
 
-+ \er{Why Graphics (communication to the public, technological advances, need for research on graphics)}
++ \er{Why Graphics? (communication to the public, technological advances, need for research on graphics)}
 
-\er{Graphics are a useful tool for displaying and communicating information. Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public. During the onset of the novel coronavirus - COVID19 - pandemic, we saw an influx of dashboards being developed to displaying case counts, transmission rates, and outbreak regions} (@lisa charlotte_2020). \er{As a result, people began subscribing to news sources involved in graphically tracking the coronavirus (example John Burn-Murdoch Financial Times - SITE THIS) and gaining more exposure to the use of graphics. Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing. Better software has meant easier and more flexible drawing, consistent themes, and higher standards. As more graphics are being developed, principles are needed on how to decide which of many possible graphics to draw.} (@unwin_why_2020).
+\er{Graphics are a useful tool for displaying and communicating information. Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public. During the onset of the novel coronavirus - COVID19 - pandemic, we saw an influx of dashboards being developed to displaying case counts, transmission rates, and outbreak regions} (@lisa_charlotte_2020). \er{As a result, people began subscribing to news sources involved in graphically tracking the coronavirus (example John Burn-Murdoch Financial Times - SITE THIS) and gaining more exposure to the use of graphics. Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing. Better software has meant easier and more flexible drawing, consistent themes, and higher standards. As a consequence, principles are needed on how to decide which of many possible graphics to draw} (@unwin_why_2020).
 
 + \er{Introduce Log Scales (what are they used for, where are they used (ecological data, covid, etc.))}
 
-\er{One common graphical display choice we saw was the use of log scales used to display data over several orders of magnitude within one graph. Logarithms convert multiplicative relationships to additive ones, providing an elegant way to span many orders of magnitude, to show elasticities and other proportional changes, and to linearize power laws} (@menge_logarithmic_2018). \er{We have recently experienced the use of log scales first-hand as case counts data from the novel coronavirus, COVID-19, were displayed on both the log and linear scale. PUT SOME DASHBOARD REFERENCES HERE}
+\er{One common graphical display choice is the use of log scales used to display data over several orders of magnitude within one graph. Logarithms convert multiplicative relationships to additive ones, providing an elegant way to span many orders of magnitude, to show elasticities and other proportional changes, and to linearize power laws} (@menge_logarithmic_2018). \er{When presenting log-scaled data, it is possible to use either untransformed values (for example, values of 1, 10 and 100 are equally spaced along the axis) or log-transformed values (for example, 0, 1, and 2). We have recently experienced the benefits and pitfalls of using log-scales as COVID-19 dashboards displayed case count data on both the log and linear scale} (@wade_fagen_ulmschneider_2020). \er{INSERT BENEFITS AND PITFALLS OF LOG SCALES HERE. While COVID-19 is the most well known example, log-scales have been used to display data in ecological research, etc. PUT OTHER AREAS HERE.}
 
 + \er{Previous exponential (log/linear scale) studies (literature review).}
 
+    + \er{Our default is on the log scale and the linear scale is a learnt behavior} (@varshney_why_2013)
+        + \er{whole number magnitude representations progress from a compressive, approximately logarithmic distribution to an approximately linear one. Transitions occur earlier for smaller than for larger ranges of whole numbers, corresponding both to the complexity of the numbers and to the ages when children gain experience with them. In summary, estimation proceeds logarithmically initially and transitions to linear later in development, for several different numerical ranges.} (@siegler_numerical_2017)
+        + \er{in American children, logarithmic mapping does not disappear all at once, but vanishes first for small numbers and much later for larger numbers from 1 to 1000 (up to fourth or sixth grade in some children).} (@dehaeneLogLinearDistinct2008)
+
+    + @jones_generalized_1979, @jones_polynomial_1977, @wagenaar_extrapolation_1978
+    
+    + \er{misconceptions} @menge_logarithmic_2018
+
 + \er{Visual Inference (what is it? how do we use it? etc.)}
 
+    + \er{lineup protocal} @buja_statistical_2009
+    
+    + \er{visual p-values (SITE SUSAN'S NEW PAPER HOPEFULLY SOON)}
+    
 + \er{What is new in this paper.}
 
 
