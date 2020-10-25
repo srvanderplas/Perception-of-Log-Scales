@@ -1,2 +1,2 @@
-"simulation_method" "model" "xRange" "yRange" "N"
-"heuristic" "alpha*exp^[beta*x+epsilon] + theta" "0-20" "10-100" "50"
+"simulation_method" "model" "xRange" "yRange" "N" "Variability" "Reps"
+"heuristic" "alpha*exp^[beta*x+epsilon] + theta" "0-20" "10-100" "50" "Low Only" "2"

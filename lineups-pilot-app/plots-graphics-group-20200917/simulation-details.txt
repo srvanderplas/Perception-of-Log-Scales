@@ -1,0 +1,2 @@
+"simulation_method" "model" "xRange" "yRange" "N"
+"heuristic" "alpha*exp^[beta*x+epsilon] + theta" "0-20" "10-100" "50"
