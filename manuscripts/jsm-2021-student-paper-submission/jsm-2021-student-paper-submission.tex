@@ -36,26 +36,19 @@
 \newcommand{\svp}[1]{\textcolor{Green}{#1}}
 \newcommand{\rh}[1]{\textcolor{Plum}{#1}}
 
-
 \begin{document}
 
-\articletype{JSM 2021 Student Paper Award (ASA sections on Statistical
-Computing and Statistical Graphics)}
+\articletype{JSM 2021 Student Paper Award (ASA sections on Statistical Computing and
+Statistical Graphics)}
 
-\title{Perception of exponentially increasing data displayed on a log
-scale}
+\title{Perception of exponentially increasing data displayed on a log scale}
 
 
-\author{\name{Emily A. Robinson$^{a}$, Reka Howard$^{a}$, Susan
-VanderPlas$^{a}$}
-\affil{$^{a}$Department of Statistics, University of Nebraska -
-Lincoln,}
+\author{\name{Emily A. Robinson$^{a}$, Reka Howard$^{a}$, Susan VanderPlas$^{a}$}
+\affil{$^{a}$Department of Statistics, University of Nebraska - Lincoln,}
 }
 
-\thanks{CONTACT Emily A.
-Robinson. Email: \href{mailto:emily.robinson@huskers.unl.edu}{\nolinkurl{emily.robinson@huskers.unl.edu}}, Reka
-Howard. Email: \href{mailto:rekahoward@unl.edu}{\nolinkurl{rekahoward@unl.edu}}, Susan
-VanderPlas. Email: \href{mailto:susan.vanderplas@unl.edu}{\nolinkurl{susan.vanderplas@unl.edu}}}
+\thanks{CONTACT Emily A. Robinson. Email: \href{mailto:emily.robinson@huskers.unl.edu}{\nolinkurl{emily.robinson@huskers.unl.edu}}, Reka Howard. Email: \href{mailto:rekahoward@unl.edu}{\nolinkurl{rekahoward@unl.edu}}, Susan VanderPlas. Email: \href{mailto:susan.vanderplas@unl.edu}{\nolinkurl{susan.vanderplas@unl.edu}}}
 
 \maketitle
 
@@ -75,10 +68,37 @@ Exponential; Log; Visual Inference; Perception
 \textcolor{Green}{This not only leads to a nice rainbow effect, but you can quickly spot changes, too. If you're changing some slight phrasing/wording that doesn't change meaning, it's not necessary to highlight those changes - highlight content changes, not e.g. verb tenses.}
 \textcolor{Green}{If something is a comment and has been addressed, comment it out initially and then delete the line after a couple of weeks.}
 
-\hypertarget{introduction}{%
-\section{Introduction}\label{introduction}}
+\hypertarget{introduction-and-background}{%
+\section{Introduction and
+Background}\label{introduction-and-background}}
 
-\citep{buja_statistical_2009, vanderplas_clusters_2017}
+\begin{itemize}
+\item
+  \textcolor{Orange}{Why Graphics (communication to the public, technological advances, need for research on graphics)}
+\end{itemize}
+
+\textcolor{Orange}{Graphics are a useful tool for displaying and communicating information. Researchers include graphics to communicate their results with other researchers and news sources rely on graphics to convey news stories to the public. Better software has meant easier and more flexible drawing, consistent themes, and higher standards}
+(\citet{unwin_why_2020}). \textcolor{Orange}{}
+
+\begin{itemize}
+\item
+  \textcolor{Orange}{Introduce Log Scales (what are they used for, where are they used (ecological data, covid, etc.))}
+\end{itemize}
+
+\textcolor{Orange}{One common graphical display choice is the use of log scales used to display data over several orders of magnitude within one graph. Logarithms convert multiplicative relationships to additive ones, providing an elegant way to span many orders of magnitude, to show elasticities and other proportional changes, and to linearize power laws}
+(\citet{menge_logarithmic_2018}).
+\textcolor{Orange}{We have recently experienced the use of log scales first-hand as case counts data from the novel coronavirus, COVID-19, were displayed on both the log and linear scale. PUT SOME DASHBOARD REFERENCES HERE}
+
+\begin{itemize}
+\item
+  \textcolor{Orange}{Previous exponential (log/linear scale) studies (literature review).}
+\item
+  \textcolor{Orange}{Visual Inference (what is it? how do we use it? etc.)}
+\item
+  \textcolor{Orange}{What is new in this paper.}
+\end{itemize}
+
+\citet{buja_statistical_2009}
 
 \hypertarget{data-generation}{%
 \section{Data Generation}\label{data-generation}}
@@ -89,6 +109,15 @@ Simulation}\label{model-generation-and-simulation}}
 
 \hypertarget{parameter-selection}{%
 \subsection{Parameter Selection}\label{parameter-selection}}
+
+\begin{itemize}
+\item
+  \textcolor{Orange}{Use of lack of fit statistic.}
+\item
+  \textcolor{Orange}{Mapping parameter selections to what we see visually.}
+\item
+  \textcolor{Orange}{Curvature (Easy/Medium/Hard)}
+\end{itemize}
 
 \hypertarget{study-design}{%
 \section{Study Design}\label{study-design}}
@@ -101,6 +130,16 @@ Simulation}\label{model-generation-and-simulation}}
 
 \hypertarget{task-description}{%
 \subsection{Task Description}\label{task-description}}
+
+\begin{itemize}
+\item
+  \textcolor{Orange}{Lineup}
+
+  \begin{itemize}
+  \item
+    \textcolor{Orange}{The goal of this is to test an individuals ability to perceptually differentiate exponentially increasing data with differing rates of change on both the linear and log scale.}
+  \end{itemize}
+\end{itemize}
 
 \hypertarget{results}{%
 \section{Results}\label{results}}
@@ -125,6 +164,36 @@ Simulation}\label{model-generation-and-simulation}}
 
 \hypertarget{future-research}{%
 \subsection{Future Research}\label{future-research}}
+
+\begin{itemize}
+\item
+  \textcolor{Orange}{What we learned from lineups but what we still want to learn.}
+\item
+  \textcolor{Orange}{You draw it}
+
+  \begin{itemize}
+  \item
+    \citet{mosteller_eye_1981}
+    \textcolor{Orange}{designed and carried out an empirical investigation to explore properties of lines fitted by eye. The researchers found that students tended to fit the slope of the first principal component or major axis (the line that minimizes the sum of squares of perpendicular rather than vertical distances) and that students who gave steep slopes for one data set also tended to give steep slopes on the others. Interestingly, the individual-to-individual variability in slope and in intercept was near the standard error provided by least squares for the four data sets.}
+  \item
+    \textcolor{Orange}{The goal of this task is to test an individuals ability to make predictions for exponentially increasing data.}
+  \item
+    \textcolor{Orange}{Previous literature suggests that we tend to underestimate predictions of exponentially increasing data.}
+    \emph{find reference}
+  \item
+    \textcolor{Orange}{The idea for this task was inspired by the New York Times "You Draw It" page which is fun to check out.}
+  \end{itemize}
+\item
+  \textcolor{Orange}{Estimation}
+
+  \begin{itemize}
+  \item
+    \textcolor{Orange}{This tests an individuals ability to translate a graph of exponentially increasing data into real value quantities. We then ask individuals to extend their estimates by making comparisons across levels of the independent variable.}
+  \item
+    \citet{friel_making_2001}
+    \textcolor{Orange}{emphasize the importance of graph comprehension proposing that the graph construction plays a role in the ability to read and interpret graphs.}
+  \end{itemize}
+\end{itemize}
 
 \hypertarget{supplementary-materials}{%
 \section*{Supplementary Materials}\label{supplementary-materials}}

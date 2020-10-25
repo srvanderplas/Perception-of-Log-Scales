@@ -41,9 +41,24 @@ output: rticles::tf_article
 \svp{This not only leads to a nice rainbow effect, but you can quickly spot changes, too. If you're changing some slight phrasing/wording that doesn't change meaning, it's not necessary to highlight those changes - highlight content changes, not e.g. verb tenses.}
 \svp{If something is a comment and has been addressed, comment it out initially and then delete the line after a couple of weeks.}
 
-# Introduction
+# Introduction and Background
 
-[@buja_statistical_2009; @vanderplas_clusters_2017]
++ \er{Why Graphics (communication to the public, technological advances, need for research on graphics)}
+
+\er{Graphics are a useful tool for displaying and communicating information. Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public. During the onset of the novel coronavirus - COVID19 - pandemic, we saw an influx of dashboards being developed to displaying case counts, transmission rates, and outbreak regions} (@lisa charlotte_2020). \er{As a result, people began subscribing to news sources involved in graphically tracking the coronavirus (example John Burn-Murdoch Financial Times - SITE THIS) and gaining more exposure to the use of graphics. Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing. Better software has meant easier and more flexible drawing, consistent themes, and higher standards. As more graphics are being developed, principles are needed on how to decide which of many possible graphics to draw.} (@unwin_why_2020).
+
++ \er{Introduce Log Scales (what are they used for, where are they used (ecological data, covid, etc.))}
+
+\er{One common graphical display choice we saw was the use of log scales used to display data over several orders of magnitude within one graph. Logarithms convert multiplicative relationships to additive ones, providing an elegant way to span many orders of magnitude, to show elasticities and other proportional changes, and to linearize power laws} (@menge_logarithmic_2018). \er{We have recently experienced the use of log scales first-hand as case counts data from the novel coronavirus, COVID-19, were displayed on both the log and linear scale. PUT SOME DASHBOARD REFERENCES HERE}
+
++ \er{Previous exponential (log/linear scale) studies (literature review).}
+
++ \er{Visual Inference (what is it? how do we use it? etc.)}
+
++ \er{What is new in this paper.}
+
+
+@buja_statistical_2009 
 
 # Data Generation
 
@@ -53,6 +68,9 @@ output: rticles::tf_article
 
 ## Parameter Selection
 
++ \er{Use of lack of fit statistic.}
++ \er{Mapping parameter selections to what we see visually.}
++ \er{Curvature (Easy/Medium/Hard)}
 
 # Study Design
 
@@ -65,6 +83,9 @@ output: rticles::tf_article
 
 ## Task Description
 
++ \er{Lineup}
+
+    +  \er{The goal of this is to test an individuals ability to perceptually differentiate exponentially increasing data with differing rates of change on both the linear and log scale.}
 
 # Results
 
@@ -88,6 +109,20 @@ output: rticles::tf_article
 
 
 ## Future Research
+
++ \er{What we learned from lineups but what we still want to learn.}
+
++ \er{You draw it}
+    
+    + @mosteller_eye_1981 \er{designed and carried out an empirical investigation to explore properties of lines fitted by eye. The researchers found that students tended to fit the slope of the first principal component or major axis (the line that minimizes the sum of squares of perpendicular rather than vertical distances) and that students who gave steep slopes for one data set also tended to give steep slopes on the others. Interestingly, the individual-to-individual variability in slope and in intercept was near the standard error provided by least squares for the four data sets.}
+    + \er{The goal of this task is to test an individuals ability to make predictions for exponentially increasing data.}
+    + \er{Previous literature suggests that we tend to underestimate predictions of exponentially increasing data.} *find reference*
+    + \er{The idea for this task was inspired by the New York Times "You Draw It" page which is fun to check out.}
+
++ \er{Estimation}
+
+    + \er{This tests an individuals ability to translate a graph of exponentially increasing data into real value quantities. We then ask individuals to extend their estimates by making comparisons across levels of the independent variable.}
+    + @friel_making_2001 \er{emphasize the importance of graph comprehension proposing that the graph construction plays a role in the ability to read and interpret graphs.}
 
 
 # Supplementary Materials {-}
