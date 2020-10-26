@@ -316,7 +316,10 @@ shinyServer(function(input, output, session) {
             tmp[2] <- str_replace(tmp[2], "width=.*? height=.*? viewBox", "viewBox")
 
             # Include the picture
-            HTML(tmp)
+            div(
+                class="full-lineup-container",
+                HTML(tmp)
+            )
 
             # div(
             #     class = "full-lineup-container",

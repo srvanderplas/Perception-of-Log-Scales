@@ -38,7 +38,9 @@ fillPage(
              ".left label {color: #555555;}",
              # Scale image to 80% of browser window height
              ".full-lineup-container img {object-fit:contain; height:80vh;}",
-             ".ex-lineup-container img {object-fit:contain; height:20vh;}"),
+             ".ex-lineup-container img {object-fit:contain; height:20vh;}",
+             ".full-lineup-container svg {object-fit:contain; height:80vh;}",
+             ".ex-lineup-container svg {object-fit:contain; height:20vh;}"),
 
   useShinyjs(),
   div(
