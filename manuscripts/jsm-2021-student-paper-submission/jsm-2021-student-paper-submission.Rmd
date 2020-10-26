@@ -45,46 +45,60 @@ output: rticles::tf_article
 
 # Introduction and Background
 
-+ \er{Why Graphics? (communication to the public, technological advances, need for research on graphics)}
++ Why Graphics? (communication to the public, technological advances, need for research on graphics)
 
-\er{Graphics are a useful tool for displaying and communicating information. Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public. During the onset of the novel coronavirus - COVID19 - pandemic, we saw an influx of dashboards being developed to displaying case counts, transmission rates, and outbreak regions} (@lisa_charlotte_2020). \er{As a result, people began subscribing to news sources involved in graphically tracking the coronavirus (example John Burn-Murdoch Financial Times - SITE THIS) and gaining more exposure to the use of graphics. Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing. Better software has meant easier and more flexible drawing, consistent themes, and higher standards. As a consequence, principles are needed on how to decide which of many possible graphics to draw} (@unwin_why_2020).
+\er{Graphics are a useful tool for displaying and communicating information. Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public. During the onset of the novel coronavirus - COVID19 - pandemic, we saw an influx of dashboards being developed to displaying case counts, transmission rates, and outbreak regions} [@lisa_charlotte_2020]. \er{As a result, people began subscribing to news sources involved in graphically tracking the coronavirus (example John Burn-Murdoch Financial Times - SITE THIS) and gaining more exposure to the use of graphics. Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing. Better software has meant easier and more flexible drawing, consistent themes, and higher standards. As a consequence, principles are needed on how to decide which of many possible graphics to draw} [@unwin_why_2020].
 
-+ \er{Introduce Log Scales (what are they used for, where are they used (ecological data, covid, etc.))}
++ Introduce Log Scales (what are they used for, where are they used (ecological data, covid, etc.))
 
-\er{One common graphical display choice is the use of log scales used to display data over several orders of magnitude within one graph. Logarithms convert multiplicative relationships to additive ones, providing an elegant way to span many orders of magnitude, to show elasticities and other proportional changes, and to linearize power laws} (@menge_logarithmic_2018). \er{When presenting log-scaled data, it is possible to use either untransformed values (for example, values of 1, 10 and 100 are equally spaced along the axis) or log-transformed values (for example, 0, 1, and 2). We have recently experienced the benefits and pitfalls of using log-scales as COVID-19 dashboards displayed case count data on both the log and linear scale} (@wade_fagen_ulmschneider_2020). \er{INSERT BENEFITS AND PITFALLS OF LOG SCALES HERE. While COVID-19 is the most well known example, log-scales have been used to display data in ecological research, etc. PUT OTHER AREAS HERE.}
+\er{One common graphical display choice is the use of log scales used to display data over several orders of magnitude within one graph. Logarithms convert multiplicative relationships to additive ones, providing an elegant way to span many orders of magnitude, to show elasticities and other proportional changes, and to linearize power laws} [@menge_logarithmic_2018]. \er{When presenting log-scaled data, it is possible to use either untransformed values (for example, values of 1, 10 and 100 are equally spaced along the axis) or log-transformed values (for example, 0, 1, and 2). We have recently experienced the benefits and pitfalls of using log-scales as COVID-19 dashboards displayed case count data on both the log and linear scale} [@wade_fagen_ulmschneider_2020]. \er{INSERT BENEFITS AND PITFALLS OF LOG SCALES HERE. While COVID-19 is the most well known example, log-scales have been used to display data in ecological research, etc. PUT OTHER AREAS HERE.}
 
-+ \er{Previous exponential (log/linear scale) studies (literature review).}
++ Previous exponential (log/linear scale) studies (literature review).
 
-    + \er{Our default is on the log scale and the linear scale is a learnt behavior} (@varshney_why_2013)
-        + \er{whole number magnitude representations progress from a compressive, approximately logarithmic distribution to an approximately linear one. Transitions occur earlier for smaller than for larger ranges of whole numbers, corresponding both to the complexity of the numbers and to the ages when children gain experience with them. In summary, estimation proceeds logarithmically initially and transitions to linear later in development, for several different numerical ranges.} (@siegler_numerical_2017)
-        + \er{in American children, logarithmic mapping does not disappear all at once, but vanishes first for small numbers and much later for larger numbers from 1 to 1000 (up to fourth or sixth grade in some children).} (@dehaeneLogLinearDistinct2008)
+    + \er{Our default is on the log scale and the linear scale is a learnt behavior} [@varshney_why_2013]
+        + \er{whole number magnitude representations progress from a compressive, approximately logarithmic distribution to an approximately linear one. Transitions occur earlier for smaller than for larger ranges of whole numbers, corresponding both to the complexity of the numbers and to the ages when children gain experience with them. In summary, estimation proceeds logarithmically initially and transitions to linear later in development, for several different numerical ranges.} [@siegler_numerical_2017]
+        + \er{in American children, logarithmic mapping does not disappear all at once, but vanishes first for small numbers and much later for larger numbers from 1 to 1000 (up to fourth or sixth grade in some children).} [@dehaeneLogLinearDistinct2008]
 
-    + @jones_generalized_1979, @jones_polynomial_1977, @wagenaar_extrapolation_1978
+    + [@jones_generalized_1979], [@jones_polynomial_1977], [@wagenaar_extrapolation_1978]
     
-    + \er{misconceptions} @menge_logarithmic_2018
-
-+ \er{Visual Inference (what is it? how do we use it? etc.)}
-
-    + \er{lineup protocal} @buja_statistical_2009
+    + \er{misconceptions} [@menge_logarithmic_2018]
     
-    + \er{visual p-values (SITE SUSAN'S NEW PAPER HOPEFULLY SOON)}
+    + \er{descrimination between curve types is possible} [@best_perception_2007]
     
-+ \er{What is new in this paper.}
+        + \er{Compared many factors: exponential, asymptotic, and linear trends increasing or decreasing bar, suspended bar, scatter, and line plots number of points high, medium, low variability}
+        + \er{Asked to identify the type of curve (exponential, asymptotic, linear; increasing, decreasing)}
+        
+        + \er{hypothesis is 2-stage estimation: first, identify the type of curve and direction, then use that information for prediction}
 
+        + \er{this experiment is examining whether discrimination between curve types is possible}
+        
+        + \er{Results}
+        
+            + \er{accuracy higher when nonlinear trends presented (e.g. it’s hard to say something is linear, but easy to say that it isn’t)}
+            + \er{accuracy higher with low variability – variability was additive, e.g. constant variance around mean function it appears that participants examined curvature to make the determination of type}
 
-@buja_statistical_2009 
++ Visual Inference (what is it? how do we use it? etc.)
+
+    + \er{lineup protocal} [@buja_statistical_2009, @wickham2010graphical, @hofmann_graphical_2012, @majumder_validation_2013, @vanderplas_clusters_2017] REREAD/SKIM ALL THESE
+        + \er{Statistical lineups have previously been utilized in graphical experiments to quantify the...}
+    
+    + \er{visual p-values} [@vanderplas_statistical_nodate]
+    
++ What is new in this paper.
 
 # Data Generation
 
+\er{The most common type of lineup used in graphical experiments is a standard lineup containing one "target" dataset embeded within a set of null datasets. One way to generate the null datasets when working with real data is through the use of permutation. In this study, the target dataset was generated by model A while the null datasets were generated by model B. FIX WORDING HERE}
 
-## Model Generation and Simulation
+## Exponential Model
 
+\er{}
 
 ## Parameter Selection
 
-+ \er{Use of lack of fit statistic.}
-+ \er{Mapping parameter selections to what we see visually.}
-+ \er{Curvature (Easy/Medium/Hard)}
++ Use of lack of fit statistic.
++ Mapping parameter selections to what we see visually.
++ Curvature (Easy/Medium/Hard)
 
 # Study Design
 
@@ -94,10 +108,11 @@ output: rticles::tf_article
 
 ## Participant Recruitment
 
+\er{Participants were recruited from Reddit. GIVE SUMMARY DESCRIPTIVE STATISTICS OF PARTICIPANT DEMOGRAPHICS.}
 
 ## Task Description
 
-+ \er{Lineup}
++ Lineup Task
 
     +  \er{The goal of this is to test an individuals ability to perceptually differentiate exponentially increasing data with differing rates of change on both the linear and log scale.}
 
@@ -124,19 +139,19 @@ output: rticles::tf_article
 
 ## Future Research
 
-+ \er{What we learned from lineups but what we still want to learn.}
++ What we learned from lineups but what we still want to learn.
 
-+ \er{You draw it}
++ You draw it
     
-    + @mosteller_eye_1981 \er{designed and carried out an empirical investigation to explore properties of lines fitted by eye. The researchers found that students tended to fit the slope of the first principal component or major axis (the line that minimizes the sum of squares of perpendicular rather than vertical distances) and that students who gave steep slopes for one data set also tended to give steep slopes on the others. Interestingly, the individual-to-individual variability in slope and in intercept was near the standard error provided by least squares for the four data sets.}
+    + [@mosteller_eye_1981] \er{designed and carried out an empirical investigation to explore properties of lines fitted by eye. The researchers found that students tended to fit the slope of the first principal component or major axis (the line that minimizes the sum of squares of perpendicular rather than vertical distances) and that students who gave steep slopes for one data set also tended to give steep slopes on the others. Interestingly, the individual-to-individual variability in slope and in intercept was near the standard error provided by least squares for the four data sets.}
     + \er{The goal of this task is to test an individuals ability to make predictions for exponentially increasing data.}
     + \er{Previous literature suggests that we tend to underestimate predictions of exponentially increasing data.} *find reference*
     + \er{The idea for this task was inspired by the New York Times "You Draw It" page which is fun to check out.}
 
-+ \er{Estimation}
++ Estimation
 
     + \er{This tests an individuals ability to translate a graph of exponentially increasing data into real value quantities. We then ask individuals to extend their estimates by making comparisons across levels of the independent variable.}
-    + @friel_making_2001 \er{emphasize the importance of graph comprehension proposing that the graph construction plays a role in the ability to read and interpret graphs.}
+    + [@friel_making_2001] \er{emphasize the importance of graph comprehension proposing that the graph construction plays a role in the ability to read and interpret graphs.}
 
 
 # Supplementary Materials {-}
