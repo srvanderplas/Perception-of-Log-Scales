@@ -25,11 +25,11 @@ res <- tbl(con, "feedback") %>%
 res
 
 # Combine feedback, picture_details, and users
+experiment_details_data <- dbReadTable(con, "experiment_details") 
+
 feedback_data <- dbReadTable(con, "feedback") 
-head(feedback_data)
 
 picture_details_data <- dbReadTable(con,"picture_details")
-head(picture_details_data)
 
 users_data <- dbReadTable(con,"users") %>%
                     unique() %>%
