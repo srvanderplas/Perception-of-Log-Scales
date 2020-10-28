@@ -23,6 +23,21 @@ inputIp <- function(inputId, value=''){
   )
 }
 
+inputBrowserDims <- tags$head(
+  tags$script('
+    var dimension = [0, 0];
+    $(document).on("shiny:connected", function(e) {
+        dimension[0] = window.innerWidth;
+        dimension[1] = window.innerHeight;
+        Shiny.onInputChange("dimension", dimension);
+    });
+    $(window).resize(function(e) {
+        dimension[0] = window.innerWidth;
+        dimension[1] = window.innerHeight;
+        Shiny.onInputChange("dimension", dimension);
+    });
+  '))
+
 
 fillPage(
   theme = shinytheme("cerulean"),
@@ -41,7 +56,7 @@ fillPage(
              ".ex-lineup-container img {object-fit:contain; height:20vh;}",
              ".full-lineup-container svg {object-fit:contain; height:80vh;}",
              ".ex-lineup-container svg {object-fit:contain; height:20vh;}"),
-
+  inputBrowserDims,
   useShinyjs(),
   div(
     id = "one", class = "left",

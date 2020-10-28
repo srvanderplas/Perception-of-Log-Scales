@@ -46,12 +46,23 @@ output: rticles::tf_article
 # Introduction and Background
 
 + Why Graphics? (communication to the public, technological advances, need for research on graphics)
-
-\er{Graphics are a useful tool for displaying and communicating information. Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public. During the onset of the novel coronavirus - COVID19 - pandemic, we saw an influx of dashboards being developed to displaying case counts, transmission rates, and outbreak regions} [@lisa_charlotte_2020]. \er{As a result, people began subscribing to news sources involved in graphically tracking the coronavirus (example John Burn-Murdoch Financial Times - SITE THIS) and gaining more exposure to the use of graphics. Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing. Better software has meant easier and more flexible drawing, consistent themes, and higher standards. As a consequence, principles are needed on how to decide which of many possible graphics to draw} [@unwin_why_2020].
+<!-- If you put each sentence on a new line, it makes it a lot easier for git to spot changes that only affect one line and not the whole paragraph. This reduces merge conflict probability -->
+\er{Graphics are a useful tool for displaying and communicating information. 
+Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public. 
+During the onset of the novel coronavirus - COVID19 - pandemic, we saw an influx of dashboards being developed to displaying case counts, transmission rates, and outbreak regions} [@lisa_charlotte_2020]. 
+\er{As a result, people began subscribing to news sources involved in graphically tracking the coronavirus (example John Burn-Murdoch Financial Times - CITE THIS) and gaining more exposure to the use of graphics. 
+Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing. 
+Better software has meant easier and more flexible drawing, consistent themes, and higher standards. 
+As a consequence, principles are needed on how to decide which of many possible graphics to draw} [@unwin_why_2020]. \svp{It's probably worth getting rid of passive voice here - we're making active decisions. Something like "Consequentially, we must actively choose which of many possible graphics to draw". I know technical writing classes often prefer passive voice to "take yourself out" of the science, but I think it de-emphasizes the conscious choices we make when we create charts.}
 
 + Introduce Log Scales (what are they used for, where are they used (ecological data, covid, etc.))
 
-\er{One common graphical display choice is the use of log scales used to display data over several orders of magnitude within one graph. Logarithms convert multiplicative relationships to additive ones, providing an elegant way to span many orders of magnitude, to show elasticities and other proportional changes, and to linearize power laws} [@menge_logarithmic_2018]. \er{When presenting log-scaled data, it is possible to use either untransformed values (for example, values of 1, 10 and 100 are equally spaced along the axis) or log-transformed values (for example, 0, 1, and 2). We have recently experienced the benefits and pitfalls of using log-scales as COVID-19 dashboards displayed case count data on both the log and linear scale} [@wade_fagen_ulmschneider_2020]. \er{INSERT BENEFITS AND PITFALLS OF LOG SCALES HERE. While COVID-19 is the most well known example, log-scales have been used to display data in ecological research, etc. PUT OTHER AREAS HERE.}
+\svp{Start with why we'd choose a log scale: When faced with data which spans several orders of magnitude, we must decide whether to show the data on its original scale (compressing the smaller magnitudes into relatively little area) or to transform the scale and alter the contextual appearance of the data. You could even show a simple example, if you wanted to}
+\er{One common graphical display choice is the use of log scales used to display data over several orders of magnitude within one graph. 
+Logarithms convert multiplicative relationships to additive ones, providing an elegant way to span many orders of magnitude, to show elasticities and other proportional changes, and to linearize power laws} [@menge_logarithmic_2018]. 
+\er{When presenting log-scaled data, it is possible to use either untransformed values (for example, values of 1, 10 and 100 are equally spaced along the axis) or log-transformed values (for example, 0, 1, and 2). 
+We have recently experienced the benefits and pitfalls of using log-scales as COVID-19 dashboards displayed case count data on both the log and linear scale} [@wade_fagen_ulmschneider_2020]. \er{INSERT BENEFITS AND PITFALLS OF LOG SCALES HERE. 
+While COVID-19 is the most well known example, log-scales have been used to display data in ecological research, etc. PUT OTHER AREAS HERE.}
 
 + Previous exponential (log/linear scale) studies (literature review).
 
