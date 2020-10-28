@@ -6,6 +6,9 @@ load("lineups-pilot-analysis/data/sim_response_data.rda")
 # Simulate Response Data----------------------------------------------------
 # --------------------------------------------------------------------------
 nparticipants = 50
+participant_var = 0.3
+data_var = 0.6
+wp_var = 0.23
 
 # funciton to simulate one individual's plots --------------------------------------------------
 
@@ -58,19 +61,19 @@ unique_phat_ijk <- sim_response_data %>%
 unique_nickname_l <- sim_response_data %>%
   select(nick_name) %>%
   unique() %>%
-  mutate(nick_name_l = map(nick_name, function(nick_name){nick_name_l = rnorm(1, 0, 0.23)})) %>%
+  mutate(nick_name_l = map(nick_name, function(nick_name){nick_name_l = rnorm(1, 0, participant_var)})) %>%
   unnest(nick_name_l)
 
 unique_dataname_m <- sim_response_data %>%
   select(data_name) %>%
   unique() %>%
-  mutate(data_name_m = map(data_name, function(data_name){data_name_m = rnorm(1, 0, 0.12)})) %>%
+  mutate(data_name_m = map(data_name, function(data_name){data_name_m = rnorm(1, 0, data_var)})) %>%
   unnest(data_name_m)
 
 unique_wp_ijlm <- sim_response_data %>%
   select(target_curvature, null_curvature, nick_name, data_name) %>%
   unique() %>%
-  mutate(wp_ijlm = map(data_name, function(data_name){wp_ijlm = rnorm(1, 0, 0.018)})) %>%
+  mutate(wp_ijlm = map(data_name, function(data_name){wp_ijlm = rnorm(1, 0, wp_var)})) %>%
   unnest(wp_ijlm)
 
 # funciton to simulate response ---------------------------------------------
