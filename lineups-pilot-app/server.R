@@ -68,6 +68,22 @@ shinyServer(function(input, output, session) {
         if (input$consent) updateCheckboxInput(session, "welcome", value = TRUE)
     })
 
+    # Provide a message if the browser is too small
+    observeEvent(input$dimension, {
+        if (any(input$dimension < 750))
+            showModal(
+                modalDialog(
+                    title = "Window Size is too small",
+                    "You must view this experiment in a browser window which is at least 800 x 800.",
+                    size = "s",
+                    easyClose = T
+                )
+            )
+        else {
+            removeModal()
+        }
+    })
+
     # Title header
     output$welcome_header <- renderText("Welcome to a Survey on Graphical Inference")
 
@@ -126,7 +142,7 @@ shinyServer(function(input, output, session) {
 
     # add demographic information to the database
     observeEvent(input$submitdemo, {
-        if (!is.null(input$nickname) && nchar(input$nickname) > 0) {
+        if (!is.null(input$nickname) && nchar(input$nickname) > 0 && !any(input$dimension < 750)) {
             con <- dbConnect(SQLite(), dbname = "exp_data.db")
 
             age <- ifelse(is.null(input$age), "", input$age)
@@ -178,7 +194,8 @@ shinyServer(function(input, output, session) {
             all(strsplit(response, ",")[[1]] %in% 1:20) &&
             values$lppleft > 0 &&
             (length(input$reasoning) > 0 || (nchar(input$other) > 0)) &&
-            nchar(input$certain) > 0) {
+            nchar(input$certain) > 0 &&
+            !any(input$dimension < 750)) {
 
             # Things to do when responses are all filled in and submitted
             disable("submit")
@@ -244,7 +261,7 @@ shinyServer(function(input, output, session) {
 
     # This renders the trial/lineup image
     output$lineup <- renderUI({
-        if (values$lppleft == 0 || !input$ready) return(NULL)
+        if (values$lppleft == 0 || !input$ready || any(input$dimension < 750)) return(NULL)
 
         withProgress(
             # Message: Loading (trial) plot i of n
