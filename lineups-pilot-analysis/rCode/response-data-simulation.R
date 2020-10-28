@@ -5,9 +5,9 @@ load("lineups-pilot-analysis/data/sim_response_data.rda")
 # --------------------------------------------------------------------------
 # Simulate Response Data----------------------------------------------------
 # --------------------------------------------------------------------------
-nparticipants = 50
-participant_var = 0.3
-data_var = 0.6
+nparticipants = 40
+participant_var = 0.2
+data_var = 0.15
 wp_var = 0.23
 
 # funciton to simulate one individual's plots --------------------------------------------------
@@ -32,6 +32,7 @@ samplingPicID <- function(participant, num_param_values = 9, param_values_per_pa
 # set up participant's plot ids --------------------------------------------------
 
 picture_details <- readr::read_csv(here("lineups-pilot-app", "plots", "picture-details.csv"))
+picture_details$set <- rep(c(1,1,2,2),9)
 set.seed(56156)
 sim_response_data <- tibble(nick_name = 1:nparticipants) %>%
                      mutate(pic_id = map(nick_name, samplingPicID)) %>%
@@ -45,9 +46,11 @@ sim_response_data <- tibble(nick_name = 1:nparticipants) %>%
                             target_variability = factor(substr(param_value,10,11), levels = c("Lv")),
                             null_curvature     = factor(substr(param_value,18,18), levels = c("E", "M", "H")),
                             null_variability   = factor(substr(param_value,20,21), levels = c("Lv")),
-                            rorschach          = factor(substr(param_value,24,24), levels = c("0", "1"))
+                            rorschach          = factor(substr(param_value,24,24), levels = c("0", "1")),
+                            wp                 = as.factor(as.numeric(interaction(nick_name, data_name)))
                             ) %>%
-                     filter(rorschach == 0)
+                     filter(rorschach == 0) %>%
+                     mutate(curvature = paste("t-", target_curvature, "_n-", null_curvature, sep =""))
 
 # Set-up eta effects ------------------------------------------
 
@@ -61,19 +64,19 @@ unique_phat_ijk <- sim_response_data %>%
 unique_nickname_l <- sim_response_data %>%
   select(nick_name) %>%
   unique() %>%
-  mutate(nick_name_l = map(nick_name, function(nick_name){nick_name_l = rnorm(1, 0, participant_var)})) %>%
+  mutate(nick_name_l = map(nick_name, function(nick_name){nick_name_l = rnorm(1, 0, sqrt(participant_var))})) %>%
   unnest(nick_name_l)
 
 unique_dataname_m <- sim_response_data %>%
   select(data_name) %>%
   unique() %>%
-  mutate(data_name_m = map(data_name, function(data_name){data_name_m = rnorm(1, 0, data_var)})) %>%
+  mutate(data_name_m = map(data_name, function(data_name){data_name_m = rnorm(1, 0, sqrt(data_var))})) %>%
   unnest(data_name_m)
 
 unique_wp_ijlm <- sim_response_data %>%
   select(target_curvature, null_curvature, nick_name, data_name) %>%
   unique() %>%
-  mutate(wp_ijlm = map(data_name, function(data_name){wp_ijlm = rnorm(1, 0, wp_var)})) %>%
+  mutate(wp_ijlm = map(nick_name, function(data_name){wp_ijlm = rnorm(1, 0, sqrt(wp_var))})) %>%
   unnest(wp_ijlm)
 
 # funciton to simulate response ---------------------------------------------
@@ -145,10 +148,13 @@ p_curvature
 library(lme4)
 names(sim_response_data)
 
-glm.mod <- glmer(correct ~ target_curvature*null_curvature*test_param +
+glm.mod <- glmer(correct ~ curvature*test_param +
                            (1 | nick_name) +
                            (1 | data_name) +
-                           (target_curvature:null_curvature | nick_name:data_name),
+                           (curvature | nick_name:data_name),
                  family = binomial(link = "logit"),
                  data = sim_response_data
                 )
+length(unique(sim_response_data$wp))*6
+summary(glm.mod)
+anova(glm.mod)
