@@ -70,11 +70,11 @@ shinyServer(function(input, output, session) {
 
     # Provide a message if the browser is too small
     observeEvent(input$dimension, {
-        if (any(input$dimension < 750))
+        if (any(input$dimension < 650))
             showModal(
                 modalDialog(
                     title = "Window Size is too small",
-                    "You must view this experiment in a browser window which is at least 800 x 800.",
+                    "You must view this experiment in a browser window which is at least 700 x 700.",
                     size = "s",
                     easyClose = T
                 )
