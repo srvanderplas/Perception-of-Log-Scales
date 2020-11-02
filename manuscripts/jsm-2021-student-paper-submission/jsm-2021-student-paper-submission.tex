@@ -74,10 +74,15 @@ Background}\label{introduction-and-background}}
   need for research on graphics)
 \end{itemize}
 
-\textcolor{Orange}{Graphics are a useful tool for displaying and communicating information. Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public. During the onset of the novel coronavirus - COVID19 - pandemic, we saw an influx of dashboards being developed to displaying case counts, transmission rates, and outbreak regions}
-\citep{lisa_charlotte_2020}.
-\textcolor{Orange}{As a result, people began subscribing to news sources involved in graphically tracking the coronavirus (example John Burn-Murdoch Financial Times - SITE THIS) and gaining more exposure to the use of graphics. Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing. Better software has meant easier and more flexible drawing, consistent themes, and higher standards. As a consequence, principles are needed on how to decide which of many possible graphics to draw}
-\citep{unwin_why_2020}.
+\textcolor{Orange}{
+Graphics are a useful tool for displaying and communicating information. 
+Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public. 
+During the onset of the novel coronavirus - covid19 - pandemic, we saw an influx of dashboards being developed to display case counts, transmission rates, and outbreak regions \citep{lisa_charlotte_2020}.
+As a result, people began subscribing to news sources involved in graphically tracking the coronavirus (example John Burn-Murdoch Financial Times - CITE THIS) and gaining more exposure to the use of graphics. 
+Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing. 
+Better software has meant easier and more flexible drawing, consistent themes, and higher standards.
+Consequentially, we must develop a set of principles to help us actively choose which of many possible graphics to draw \citep{unwin_why_2020}.
+}
 
 \begin{itemize}
 \tightlist
@@ -86,79 +91,40 @@ Background}\label{introduction-and-background}}
   (ecological data, covid, etc.))
 \end{itemize}
 
-\textcolor{Orange}{One common graphical display choice is the use of log scales used to display data over several orders of magnitude within one graph. Logarithms convert multiplicative relationships to additive ones, providing an elegant way to span many orders of magnitude, to show elasticities and other proportional changes, and to linearize power laws}
-\citep{menge_logarithmic_2018}.
-\textcolor{Orange}{When presenting log-scaled data, it is possible to use either untransformed values (for example, values of 1, 10 and 100 are equally spaced along the axis) or log-transformed values (for example, 0, 1, and 2). We have recently experienced the benefits and pitfalls of using log-scales as COVID-19 dashboards displayed case count data on both the log and linear scale}
-\citep{wade_fagen_ulmschneider_2020}.
-\textcolor{Orange}{INSERT BENEFITS AND PITFALLS OF LOG SCALES HERE. While COVID-19 is the most well known example, log-scales have been used to display data in ecological research, etc. PUT OTHER AREAS HERE.}
+\textcolor{Orange}{
+When faced with data which spans several orders of magnitude, we must decide whether to show the data on its original scale (compressing the smaller magnitudes into relatively little area) or to transform the scale and alter the contextual appearance of the data. [EXAMPLE HERE]
+One common graphical display choice is the use of log scales used to display data over several orders of magnitude within one graph. 
+Logarithms convert multiplicative relationships to additive ones, providing an elegant way to span many orders of magnitude, to show elasticities and other proportional changes, and to linearize power laws \citep{menge_logarithmic_2018}. 
+When presenting log-scaled data, it is possible to use either untransformed values (for example, values of 1, 10 and 100 are equally spaced along the axis) or log-transformed values (for example, 0, 1, and 2). 
+We have recently experienced the benefits and pitfalls of using log-scales as covid-19 dashboards displayed case count data on both the log and linear scale \citep{wade_fagen_ulmschneider_2020}. 
+INSERT BENEFITS AND PITFALLS OF LOG SCALES HERE. 
+While COVID-19 is the most well known example, log-scales have been used to display data in ecological research, etc. 
+PUT OTHER AREAS HERE.
+}
 
 \begin{itemize}
+\tightlist
 \item
   Previous exponential (log/linear scale) studies (literature review).
+\end{itemize}
 
-  \begin{itemize}
-  \item
-    \textcolor{Orange}{Our default is on the log scale and the linear scale is a learnt behavior}
-    \citep{varshney_why_2013}
+\textcolor{Orange}{
+Previous research suggests our perception and mapping of numbers to a numberline proceeds logrithmically at first and transitions to linear later in development. 
+The logarithmic mapping is more noticible in larger numbers as the transition to linear mapping occurs first for small numbers in young children and later for larger numbers \citep{varshney_why_2013, siegler_numerical_2017, dehaeneLogLinearDistinct2008}.
+}
 
-    \begin{itemize}
-    \tightlist
-    \item
-      \textcolor{Orange}{whole number magnitude representations progress from a compressive, approximately logarithmic distribution to an approximately linear one. Transitions occur earlier for smaller than for larger ranges of whole numbers, corresponding both to the complexity of the numbers and to the ages when children gain experience with them. In summary, estimation proceeds logarithmically initially and transitions to linear later in development, for several different numerical ranges.}
-      \citep{siegler_numerical_2017}
-    \item
-      \textcolor{Orange}{in American children, logarithmic mapping does not disappear all at once, but vanishes first for small numbers and much later for larger numbers from 1 to 1000 (up to fourth or sixth grade in some children).}
-      \citep{dehaeneLogLinearDistinct2008}
-    \end{itemize}
-  \item
-    \citep{jones_generalized_1979}, \citep{jones_polynomial_1977},
-    \citep{wagenaar_extrapolation_1978}
-  \item
-    \textcolor{Orange}{misconceptions} \citep{menge_logarithmic_2018}
-  \item
-    \textcolor{Orange}{descrimination between curve types is possible}
-    \citep{best_perception_2007}
-
-    \begin{itemize}
-    \item
-      \textcolor{Orange}{Compared many factors: exponential, asymptotic, and linear trends increasing or decreasing bar, suspended bar, scatter, and line plots number of points high, medium, low variability}
-    \item
-      \textcolor{Orange}{Asked to identify the type of curve (exponential, asymptotic, linear; increasing, decreasing)}
-    \item
-      \textcolor{Orange}{hypothesis is 2-stage estimation: first, identify the type of curve and direction, then use that information for prediction}
-    \item
-      \textcolor{Orange}{this experiment is examining whether discrimination between curve types is possible}
-    \item
-      \textcolor{Orange}{Results}
-
-      \begin{itemize}
-      \item
-        \textcolor{Orange}{accuracy higher when nonlinear trends presented (e.g. it’s hard to say something is linear, but easy to say that it isn’t)}
-      \item
-        \textcolor{Orange}{accuracy higher with low variability – variability was additive, e.g. constant variance around mean function it appears that participants examined curvature to make the determination of type}
-      \end{itemize}
-    \end{itemize}
-  \end{itemize}
+\begin{itemize}
+\tightlist
 \item
   Visual Inference (what is it? how do we use it? etc.)
+\end{itemize}
 
-  \begin{itemize}
-  \tightlist
-  \item
-    \textcolor{Orange}{lineup protocal}
-    \citep[\citet{wickham2010graphical}, \citet{hofmann_graphical_2012},
-    \citet{majumder_validation_2013},
-    \citet{vanderplas_clusters_2017}]{buja_statistical_2009} REREAD/SKIM
-    ALL THESE
+\textcolor{Orange}{Statistical lineups have previously been utilized in graphical experiments to quantify... \citep{buja_statistical_2009, wickham2010graphical, hofmann_graphical_2012, majumder_validation_2013, vanderplas_clusters_2017}.
+\cite{vanderplas_statistical_nodate} provides an approach for calculating visual p-values
+}
 
-    \begin{itemize}
-    \item
-      \textcolor{Orange}{Statistical lineups have previously been utilized in graphical experiments to quantify the...}
-    \end{itemize}
-  \item
-    \textcolor{Orange}{visual p-values}
-    \citep{vanderplas_statistical_nodate}
-  \end{itemize}
+\begin{itemize}
+\tightlist
 \item
   What is new in this paper.
 \end{itemize}
@@ -166,7 +132,10 @@ Background}\label{introduction-and-background}}
 \hypertarget{data-generation}{%
 \section{Data Generation}\label{data-generation}}
 
-\textcolor{Orange}{The most common type of lineup used in graphical experiments is a standard lineup containing one "target" dataset embeded within a set of null datasets. One way to generate the null datasets when working with real data is through the use of permutation. In this study, the target dataset was generated by model A while the null datasets were generated by model B. FIX WORDING HERE}
+\textcolor{Orange}{
+The most common type of lineup used in graphical experiments is a standard lineup containing one "target" dataset embeded within a set of null datasets. 
+One way to generate the null datasets when working with real data is through the use of permutation. In this study, the target dataset was generated by model A while the null datasets were generated by model B.
+}
 
 \hypertarget{exponential-model}{%
 \subsection{Exponential Model}\label{exponential-model}}
@@ -242,13 +211,11 @@ Background}\label{introduction-and-background}}
 
   \begin{itemize}
   \item
-    \citep{mosteller_eye_1981}
-    \textcolor{Orange}{designed and carried out an empirical investigation to explore properties of lines fitted by eye. The researchers found that students tended to fit the slope of the first principal component or major axis (the line that minimizes the sum of squares of perpendicular rather than vertical distances) and that students who gave steep slopes for one data set also tended to give steep slopes on the others. Interestingly, the individual-to-individual variability in slope and in intercept was near the standard error provided by least squares for the four data sets.}
+    \textcolor{Orange}{\citep{mosteller_eye_1981} designed and carried out an empirical investigation to explore properties of lines fitted by eye. The researchers found that students tended to fit the slope of the first principal component or major axis (the line that minimizes the sum of squares of perpendicular rather than vertical distances) and that students who gave steep slopes for one data set also tended to give steep slopes on the others. Interestingly, the individual-to-individual variability in slope and in intercept was near the standard error provided by least squares for the four data sets.}
   \item
     \textcolor{Orange}{The goal of this task is to test an individuals ability to make predictions for exponentially increasing data.}
   \item
-    \textcolor{Orange}{Previous literature suggests that we tend to underestimate predictions of exponentially increasing data.}
-    \emph{find reference}
+    \textcolor{Orange}{Previous literature suggests that we tend to underestimate predictions of exponentially increasing data.\citep{jones_generalized_1979, jones_polynomial_1977, wagenaar_extrapolation_1978}}
   \item
     \textcolor{Orange}{The idea for this task was inspired by the New York Times "You Draw It" page which is fun to check out.}
   \end{itemize}
@@ -259,8 +226,7 @@ Background}\label{introduction-and-background}}
   \item
     \textcolor{Orange}{This tests an individuals ability to translate a graph of exponentially increasing data into real value quantities. We then ask individuals to extend their estimates by making comparisons across levels of the independent variable.}
   \item
-    \citep{friel_making_2001}
-    \textcolor{Orange}{emphasize the importance of graph comprehension proposing that the graph construction plays a role in the ability to read and interpret graphs.}
+    \textcolor{Orange}{\citep{friel_making_2001} emphasize the importance of graph comprehension proposing that the graph construction plays a role in the ability to read and interpret graphs.}
   \end{itemize}
 \end{itemize}
 
