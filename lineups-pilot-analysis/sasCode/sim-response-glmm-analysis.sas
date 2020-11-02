@@ -13,7 +13,7 @@ PROC PRINT DATA = sim_lineup_data (OBS = 10) NOOBS;
 RUN;
 
 TITLE "Simulated Lineup Model";
-PROC GLIMMIX DATA = sim_lineup_data PCONV = 1e-4;
+PROC GLIMMIX DATA = sim_lineup_data;
 	CLASS 	wp nick_name data_name pic_id test_param param_value target_curvature null_curvature curvature;
 
 	MODEL 	correct = curvature|test_param / D = Binomial LINK = logit;
