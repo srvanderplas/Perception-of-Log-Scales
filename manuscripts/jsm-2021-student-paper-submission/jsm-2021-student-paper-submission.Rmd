@@ -90,36 +90,59 @@ PUT OTHER AREAS HERE.
 \er{
 Previous research suggests our perception and mapping of numbers to a numberline proceeds logrithmically at first and transitions to linear later in development. 
 The logarithmic mapping is more noticible in larger numbers as the transition to linear mapping occurs first for small numbers in young children and later for larger numbers \citep{varshney_why_2013, siegler_numerical_2017, dehaeneLogLinearDistinct2008}.
+Early studies explored the estimation and prediction of exponential growth. 
+Findings indicate that growth is underestimated when presented both numerically and graphically but that numerical estimation is more accurate than graphical estimation for exponential curves. 
+While prior contextual knowledge or experience with exponential growth does not improve estimation, previous instruction on exponential growth reduces the underestimation by adjusting the initial starting value but not adjusting their perception of growth parameter
+\citep{wagenaar_misperception_1975, jones_polynomial_1977}.
+Estimation was shown to improve when subjects were presented with decreasing exponential functions \citep{timmers_inverse_1977}.
+\cite{jones_polynomial_1977}, \cite{wagenaar_extrapolation_1978}, and \cite{jones_generalized_1979} propose competing polynomial models for the perception and extrapolation of exponential series.
+We hypothesize that estimation is a two-stage process. First, we identify the type of curve and direction and then use that information for prediction \citep{best_perception_2007}.
 }
 
+\er{
+This paper aims to investigate the use of log scales to display exponentially increasing data. We hypothesize log scales should make it much easier to estimate the growth paramter since we estimate slopes relatively accurately, resolving much of the difficulty with exponential estimation \citep{mosteller_eye_1981}.
+In \cite{menge_logarithmic_2018}, ecologists were surveyed to determine how often ecologists encounter log-scaled data and how well ecologists understand log-scaled data. 
+Participants were presented two relationships displayed on linear-linear scales, log-log scales with untransformed values, or log–log scales with log-transformed values. 
+\cite{menge_logarithmic_2018} propose three types of misconceptions participants encountered when presented data on log-log scales: 'hand-hold fallacy', 'Zeno's zero fallacy', and 'watch out for curves fallacies'. 
+}
 <!--
+Three falacy's (explain further?)
 
-    + [@jones_generalized_1979], [@jones_polynomial_1977], [@wagenaar_extrapolation_1978]
-    
-    + \er{misconceptions} [@menge_logarithmic_2018]
-    
-    + \er{descrimination between curve types is possible} [@best_perception_2007]
-    
-        + \er{Compared many factors: exponential, asymptotic, and linear trends increasing or decreasing bar, suspended bar, scatter, and line plots number of points high, medium, low variability}
-        + \er{Asked to identify the type of curve (exponential, asymptotic, linear; increasing, decreasing)}
-        
-        + \er{hypothesis is 2-stage estimation: first, identify the type of curve and direction, then use that information for prediction}
+Two relationships were shown on each graph, with distance from the edge of a habitat on the horizontal axis and population size.
 
-        + \er{this experiment is examining whether discrimination between curve types is possible}
-        
-        + \er{Results}
-        
-            + \er{accuracy higher when nonlinear trends presented (e.g. it’s hard to say something is linear, but easy to say that it isn’t)}
-            + \er{accuracy higher with low variability – variability was additive, e.g. constant variance around mean function it appears that participants examined curvature to make the determination of type}
+whether each population was increasing or decreasing with distance
+how steeply the rabbit population changed with distance compared to the chipmunk population.!!!!
+Misconception: ‘hand-hold fallacy’
+Climbing something steep is harder than climbing something gradual, but climbing something smooth (such as a window) is harder than climbing something with hand-holds (such as a ladder), regardless of slope.
+
+population level at the edge of the habitat.
+Misconception: ‘Zeno’s zero fallacy’
+Zeno’s famous paradox states that a distance can never be reduced to zero because it must be halved infinitely many times and it is impossible to perform an infinite number of tasks.
+
+the manner in which a population changes.
+3 Misconceptions: ‘watch out for curves fallacies’
+all lines in log–log space are also lines in linear–linear space
+all lines in log–log space curve upwards in linear–linear space
+curves in log–log space have similar curvature in linear–linear space
 -->
 
-+ Visual Inference (what is it? how do we use it? etc.)
++ Visual Inference (what is it? how do we use it? etc.) *needs lots of work yet*
 
-\er{Statistical lineups have previously been utilized in graphical experiments to quantify... \citep{buja_statistical_2009, wickham2010graphical, hofmann_graphical_2012, majumder_validation_2013, vanderplas_clusters_2017}.
-\cite{vanderplas_statistical_nodate} provides an approach for calculating visual p-values
+\er{Recent graphical experiments have utilized statistical lineups to quantify the perception of graphical design choices\citep{vanderplas_clusters_2017}. 
+Statistical lineups provide an elegant way of combining perception and statistical signficiance by valdiating the findings from a graphical experiment \citep{buja_statistical_2009, wickham2010graphical, hofmann_graphical_2012, majumder_validation_2013, vanderplas_clusters_2017}.
+'Lineups' are named after the 'police lineup' of criminal investigations where witnesses are asked to identify the criminal from a set of individuals. 
+Similarly, a statistical lineup is a plot consisting of smaller panels of plots in which the viewer is asked to identify the plot of the real data from among a set of decoys, the null plots. 
+A statistical lineup typically consists of 20 panels - 1 target panel and 19 null panels (INSERT EXAMPLE). 
+If the viewer can identify the target panel embeded within the set of null panels, this suggests that the real data is interesting or has unqiue properties.
+Crowd sourcing websites such as Amazon Mechanical Turk, Reddit, and Proflic allow us to collect responses from multiple viewers.
+\cite{vanderplas_statistical_nodate} provides an approach for calculating visual p-values utilizing a 'rorschach' lineup which consists soley of null panels.
 }
     
 + What is new in this paper.
+
+\er{
+In this paper, we use statistical lineups to test human subjects ability to differentiate between increasing exponential data with differing growth rates displayed on both the linear scale and log scale.
+}
 
 # Data Generation
 
@@ -146,13 +169,17 @@ One way to generate the null datasets when working with real data is through the
 
 ## Participant Recruitment
 
-\er{Participants were recruited from Reddit. GIVE SUMMARY DESCRIPTIVE STATISTICS OF PARTICIPANT DEMOGRAPHICS.}
+\er{Participants above age 19 were recruited from Reddit. 
+GIVE SUMMARY DESCRIPTIVE STATISTICS OF PARTICIPANT DEMOGRAPHICS.}
 
 ## Task Description
 
-+ Lineup Task
-
-    +  \er{The goal of this is to test an individuals ability to perceptually differentiate exponentially increasing data with differing rates of change on both the linear and log scale.}
+\er{Participants were shown a series of twelve test lineup plots and asked to identify the plot that was different. 
+On each plot, participants were asked to justify their choice and provide their level of confidence in their choice.
+The goal of this experimental task is to test an individuals ability to perceptually differentiate exponentially increasing data with differing rates of change on both the linear and log scale. 
+In \cite{best_perception_2007}, the authors expored whether descrimination between curve types is possible. 
+They found that accuracy higher when nonlinear trends presented (e.g. it’s hard to say something is linear, but easy to say that it isn’t) and that accuracy higher with low additive variability.
+}
 
 # Results
 
@@ -178,9 +205,12 @@ One way to generate the null datasets when working with real data is through the
 ## Future Research
 
 + What we learned from lineups but what we still want to learn.
+\er{
+In this study, we discovered that differentiation between data following exponentially increasing trends with differing growth rates is ...
+}
 
 + You draw it
-    
+
     + \er{\citep{mosteller_eye_1981} designed and carried out an empirical investigation to explore properties of lines fitted by eye. The researchers found that students tended to fit the slope of the first principal component or major axis (the line that minimizes the sum of squares of perpendicular rather than vertical distances) and that students who gave steep slopes for one data set also tended to give steep slopes on the others. Interestingly, the individual-to-individual variability in slope and in intercept was near the standard error provided by least squares for the four data sets.}
     + \er{The goal of this task is to test an individuals ability to make predictions for exponentially increasing data.}
     + \er{Previous literature suggests that we tend to underestimate predictions of exponentially increasing data.\citep{jones_generalized_1979, jones_polynomial_1977, wagenaar_extrapolation_1978}}
@@ -190,6 +220,7 @@ One way to generate the null datasets when working with real data is through the
 
     + \er{This tests an individuals ability to translate a graph of exponentially increasing data into real value quantities. We then ask individuals to extend their estimates by making comparisons across levels of the independent variable.}
     + \er{\citep{friel_making_2001} emphasize the importance of graph comprehension proposing that the graph construction plays a role in the ability to read and interpret graphs.}
+    
 
 
 # Supplementary Materials {-}
