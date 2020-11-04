@@ -263,7 +263,7 @@ shinyServer(function(input, output, session) {
 
     # This renders the trial/lineup image
     output$lineup <- renderUI({
-        if (values$lppleft == 0 || !input$ready || any(input$dimension < 750)) return(NULL)
+        if (values$lppleft == 0 || !input$ready || any(input$dimension < window_dim_min)) return(NULL)
 
         withProgress(
             # Message: Loading (trial) plot i of n
