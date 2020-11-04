@@ -19,6 +19,8 @@ plots_folder <- "plots" # subfolders for data, pdf, png, svg. picture_details.cs
 trials_folder <- "trials" # subfolders for svg. picture_details_trial.csv in this folder
 
 
+window_dim_min <- 650
+
 con <- dbConnect(SQLite(), dbname = "exp_data.db")
 experiment <- dbReadTable(con, "experiment_details")
 if (nrow(experiment) > 1) {
@@ -70,11 +72,11 @@ shinyServer(function(input, output, session) {
 
     # Provide a message if the browser is too small
     observeEvent(input$dimension, {
-        if (any(input$dimension < 650))
+        if (any(input$dimension < window_dim_min))
             showModal(
                 modalDialog(
                     title = "Window Size is too small",
-                    "You must view this experiment in a browser window which is at least 700 x 700.",
+                    sprintf("You must view this experiment in a browser window which is at least %s x %s", window_dim_min, window_dim_min),
                     size = "s",
                     easyClose = T
                 )
@@ -142,7 +144,7 @@ shinyServer(function(input, output, session) {
 
     # add demographic information to the database
     observeEvent(input$submitdemo, {
-        if (!is.null(input$nickname) && nchar(input$nickname) > 0 && !any(input$dimension < 750)) {
+        if (!is.null(input$nickname) && nchar(input$nickname) > 0 && !any(input$dimension < window_dim_min)) {
             con <- dbConnect(SQLite(), dbname = "exp_data.db")
 
             age <- ifelse(is.null(input$age), "", input$age)
