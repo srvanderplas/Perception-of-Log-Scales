@@ -38,8 +38,8 @@
 
 \begin{document}
 
-\articletype{JSM 2021 Student Paper Award (ASA sections on Statistical Computing and
-Statistical Graphics)}
+\articletype{JSM 2021 Student Paper Competition (ASA sections on Statistical
+Computing and Statistical Graphics)}
 
 \title{Perception of exponentially increasing data displayed on a log scale}
 
@@ -73,24 +73,25 @@ Researchers include graphics to communicate their results in scientific publicat
 During the onset of the novel coronavirus - covid19 - pandemic, we saw an influx of dashboards being developed to display case counts, transmission rates, and outbreak regions \citep{lisa_charlotte_2020}.
 As a result, people began subscribing to news sources involved in graphically tracking the coronavirus (example John Burn-Murdoch Financial Times - CITE THIS) and gaining more exposure to the use of graphics. 
 Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing. 
-Better software has meant easier and more flexible drawing, consistent themes, and higher standards.
-Consequentially, we must develop a set of principles to help us actively choose which of many possible graphics to draw \citep{unwin_why_2020}.
+Better software has meant easier and more flexible drawing, consistent themes, and higher standards.\textcolor{Green}{You need to source this somehow, please. Otherwise it seems disconnected from your main argument.}
+Consequentially, we must develop a set of principles to help us actively choose which of many possible graphics to draw \citep{unwin_why_2020}.\textcolor{Green}{You might need to lead into this a bit more - connect the purposes we use these graphics for to the fact that different choices serve those purposes in different ways.}
 }
 
 \textcolor{Orange}{
 When faced with data which spans several orders of magnitude, we must decide whether to show the data on its original scale (compressing the smaller magnitudes into relatively little area) or to transform the scale and alter the contextual appearance of the data. [EXAMPLE HERE]
 One common graphical display choice is the use of log scales used to display data over several orders of magnitude within one graph. 
-Logarithms convert multiplicative relationships to additive ones, providing an elegant way to span many orders of magnitude, to show elasticities and other proportional changes, and to linearize power laws \citep{menge_logarithmic_2018}. 
-When presenting log-scaled data, it is possible to use either untransformed values (for example, values of 1, 10 and 100 are equally spaced along the axis) or log-transformed values (for example, 0, 1, and 2). 
-We have recently experienced the benefits and pitfalls of using log-scales as covid-19 dashboards displayed case count data on both the log and linear scale \citep{wade_fagen_ulmschneider_2020}. 
+Logarithms \textcolor{Green}{make} multiplicative relationships \textcolor{Green}{additive}, providing an elegant way to span many orders of magnitude, to show elasticities and other proportional changes, and to linearize power laws \citep{menge_logarithmic_2018}. 
+When presenting log-scaled data, it is possible to use either untransformed values (for example, values of 1, 10 and 100 are equally spaced along the axis) or log-transformed values (for example, 0, 1, and 2).} 
+\textcolor{Green}{This is the difference between a transformed scale transformed values; it's not the difference between untransformed values and transformed values. see https://r4ds.had.co.nz/graphics-for-communication.html\#scales for an explanation of scales, but I'm still looking for a perfect reference for transformations at the value vs. scale level.}
+\textcolor{Orange}{We have recently experienced the benefits and pitfalls of using log-scales as covid-19 dashboards displayed case count data on both the log and linear scale \citep{wade_fagen_ulmschneider_2020}. 
 INSERT BENEFITS AND PITFALLS OF LOG SCALES HERE. 
 While COVID-19 is the most well known example, log-scales have been used to display data in ecological research, etc. 
 PUT OTHER AREAS HERE.
 }
 
 \textcolor{Orange}{
-Previous research suggests our perception and mapping of numbers to a numberline proceeds logrithmically at first and transitions to linear later in development. 
-The logarithmic mapping is more noticible in larger numbers as the transition to linear mapping occurs first for small numbers in young children and later for larger numbers \citep{varshney_why_2013, siegler_numerical_2017, dehaeneLogLinearDistinct2008}.
+Previous research suggests our perception and mapping of numbers to a number line proceeds logarithmically at first and transitions to linear later in development\textcolor{Green}{, after formal schooling begins}.
+The logarithmic mapping is more noticeable in larger numbers as the transition to linear mapping occurs first for small numbers in young children and later for larger numbers \citep{varshney_why_2013, siegler_numerical_2017, dehaeneLogLinearDistinct2008}.\textcolor{Green}{Invert this sentence, because right now it's a bit confusing... e.g. In young children, the transition to linear scales occurs first in small numbers (e.g. 1-10) and then gradually expands to higher orders of magnitude; thus, the logarithmic intuition about numbers in children is often more noticeable on scales in the thousands to hundreds of thousands.}
 Early studies explored the estimation and prediction of exponential growth. 
 Findings indicate that growth is underestimated when presented both numerically and graphically but that numerical estimation is more accurate than graphical estimation for exponential curves. 
 While prior contextual knowledge or experience with exponential growth does not improve estimation, previous instruction on exponential growth reduces the underestimation by adjusting the initial starting value but not adjusting their perception of growth parameter
@@ -107,6 +108,7 @@ Participants were presented two relationships displayed on linear-linear scales,
 \cite{menge_logarithmic_2018} propose three types of misconceptions participants encountered when presented data on log-log scales: 'hand-hold fallacy', 'Zeno's zero fallacy', and 'watch out for curves fallacies'. 
 }
 
+\textcolor{Green}{Might be easier to start with graphs are statistics, but that to evaluate a graph we have to run our statistic through a visual evaluation - a person. Then you can explain that with the same data, if two different methods of presenting the data result in qualitatively different results re. evaluation by a human, then it is possible to develop recommendations based on the visual inference experiment.}
 \textcolor{Orange}{Recent graphical experiments have utilized statistical lineups to quantify the perception of graphical design choices\citep{vanderplas_clusters_2017}. 
 Statistical lineups provide an elegant way of combining perception and statistical signficiance by valdiating the findings from a graphical experiment \citep{buja_statistical_2009, wickham2010graphical, hofmann_graphical_2012, majumder_validation_2013, vanderplas_clusters_2017}.
 'Lineups' are named after the 'police lineup' of criminal investigations where witnesses are asked to identify the criminal from a set of individuals. 
