@@ -26,6 +26,7 @@ keywords: |
 header-includes: |
   \usepackage{hyperref}
   \usepackage[utf8]{inputenc}
+  \usepackage
   \def\tightlist{}
   \usepackage[usenames,dvipsnames]{color}
   \newcommand{\er}[1]{\textcolor{Orange}{#1}}
