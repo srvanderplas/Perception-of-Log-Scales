@@ -29,37 +29,39 @@ inputBrowserDims <- tags$head(
     $(document).on("shiny:connected", function(e) {
         dimension[0] = window.innerWidth;
         dimension[1] = window.innerHeight;
-        Shiny.onInputChange("dimension", dimension);
+        Shiny.setInputValue("dimension", dimension);
     });
     $(window).resize(function(e) {
         dimension[0] = window.innerWidth;
         dimension[1] = window.innerHeight;
-        Shiny.onInputChange("dimension", dimension);
+        Shiny.setInputValue("dimension", dimension);
     });
   '))
 
 
-fillPage(
+fluidPage(
   theme = shinytheme("cerulean"),
   tags$style(type = "text/css",
              # Define the col widths
              ".left {width:25%;height:100%;padding:10px;}",
              ".right {width:75%;height:100%;padding:10px;}",
              # Define the column position and background
-             "#one {float:left; background-color:#fbfbfb;color:#dfdfdf;}",
+             "#one {float:left; background-color:#fbfbfb;color:#555555;}",
              "#two {float:right;background-color:#ffffff;}",
              # Fix text highlighting
              ".left .checkbox span {color: #555555;}",
              ".left label {color: #555555;}",
              # Scale image to 80% of browser window height
-             ".full-lineup-container img {object-fit:contain; height:80vh;}",
+             ".full-lineup-container img {object-fit:contain; height:80vh; max-width:100%;}",
              ".ex-lineup-container img {object-fit:contain; height:20vh;}",
-             ".full-lineup-container svg {object-fit:contain; height:80vh;}",
+             ".full-lineup-container svg {object-fit:contain; height:80vh; max-width:100%; padding:0; margin:0;}",
              ".ex-lineup-container svg {object-fit:contain; height:20vh;}"),
   inputBrowserDims,
   useShinyjs(),
-  div(
-    id = "one", class = "left",
+  fluidRow(
+    column(id = "one", width = 3,
+  # div(
+    # id = "one", class = "left",
     # This panel shows if the experiment was chosen and informed consent hasn't been given
     conditionalPanel(
       condition = "!input.welcome",
@@ -133,7 +135,7 @@ fillPage(
     conditionalPanel(
       condition = "input.ready && !input.done",
       h4("Selection"),
-      textInput("response_no", "Choice", value = ""),
+      textInput("response_no", "Choice", value = "", placeholder = "Click the plot to select"),
       # selectizeInput("response_no", "Choice", choices = 1:20, selected = NULL, multiple = T),
 
       # Handle other reasoning logic
@@ -153,8 +155,9 @@ fillPage(
       h5(textOutput("status"))
     )
   ),
-  div(
-    id = "two", class = "right",
+  # div(
+  #   id = "two", class = "right",
+  column(id = "two", width = 9,
     conditionalPanel(condition = "!input.welcome",
                      h4(textOutput("welcome_header")),
                      uiOutput("welcome_text"),
@@ -192,4 +195,5 @@ fillPage(
   ),
   # Javascript action script for lineups -- may not be necessary
   includeScript("www/js/action.js")
+)
 )

@@ -19,7 +19,7 @@ plots_folder <- "plots" # subfolders for data, pdf, png, svg. picture_details.cs
 trials_folder <- "trials" # subfolders for svg. picture_details_trial.csv in this folder
 
 
-window_dim_min <- 650
+window_dim_min <- 600 #c(800, 600) # width, height
 
 con <- dbConnect(SQLite(), dbname = "exp_data.db")
 experiment <- dbReadTable(con, "experiment_details")
@@ -197,7 +197,7 @@ shinyServer(function(input, output, session) {
             values$lppleft > 0 &&
             (length(input$reasoning) > 0 || (nchar(input$other) > 0)) &&
             nchar(input$certain) > 0 &&
-            !any(input$dimension < 750)) {
+            !any(input$dimension < window_dim_min)) {
 
             # Things to do when responses are all filled in and submitted
             disable("submit")
