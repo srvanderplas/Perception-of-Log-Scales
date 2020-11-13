@@ -1,6 +1,6 @@
 #!/usr/bin/Rscript
 # Sorry this isn't elegant but necessary for the cron tab to work
-setwd("~/Projects/Work/2020-log-scales/")
+setwd("~/Projects/Graphics/2020-log-scales/")
 
 # Set up authentication via ssh
 cred <- git2r::cred_ssh_key("~/.ssh/id_rsa.pub", "~/.ssh/id_rsa")
