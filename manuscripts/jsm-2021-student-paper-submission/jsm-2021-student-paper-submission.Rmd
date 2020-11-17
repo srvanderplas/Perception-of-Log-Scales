@@ -52,12 +52,16 @@ output: rticles::tf_article
 \er{
 Graphics are a useful tool for displaying and communicating information. 
 Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public. 
-During the onset of the novel coronavirus - covid19 - pandemic, we saw an influx of dashboards being developed to display case counts, transmission rates, and outbreak regions \citep{lisa_charlotte_2020}.
-As a result, people began subscribing to news sources involved in graphically tracking the coronavirus (example John Burn-Murdoch Financial Times - CITE THIS) and gaining more exposure to the use of graphics. 
+During the onset of the novel coronavirus pandemic, we saw an influx of dashboards being developed to display case counts, transmission rates, and outbreak regions \citep{lisa_charlotte_2020}.
+As a result, people began subscribing to news sources involved in graphically tracking the coronavirus \citep{rost_2020} and gaining more exposure to the use of graphics. 
 Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing. 
-Better software has meant easier and more flexible drawing, consistent themes, and higher standards.\svp{You need to source this somehow, please. Otherwise it seems disconnected from your main argument.}
-Consequentially, we must develop a set of principles to help us actively choose which of many possible graphics to draw \citep{unwin_why_2020}.\svp{You might need to lead into this a bit more - connect the purposes we use these graphics for to the fact that different choices serve those purposes in different ways.}
+With the increasing importance graphics play in our everyday choices, we must actively choose which of many possible graphics to draw. Better sofware has mean easier and more flexible drawing allowing us to make design choices that best communicate the message of the data graphically \citep{unwin_why_2020}. Consequentially, we must develop a set of principles to help guide our design choices for various situations \citep{unwin_why_2020}.
 }
+
+<!-- \er{ -->
+<!-- Better software has meant easier and more flexible drawing, consistent themes, and higher standards.\svp{You need to source this somehow, please. Otherwise it seems disconnected from your main argument.} -->
+<!-- Consequentially, we must develop a set of principles to help us actively choose which of many possible graphics to draw \citep{unwin_why_2020}.\svp{You might need to lead into this a bit more - connect the purposes we use these graphics for to the fact that different choices serve those purposes in different ways.} -->
+<!-- } -->
 <!--
 \er{
 As a consequence, principles are needed on how to decide which of many possible graphics to draw \citep{unwin_why_2020}.
@@ -75,25 +79,27 @@ Start with why we'd choose a log scale: When faced with data which spans several
 }
 -->
 \er{
-When faced with data which spans several orders of magnitude, we must decide whether to show the data on its original scale (compressing the smaller magnitudes into relatively little area) or to transform the scale and alter the contextual appearance of the data. [EXAMPLE HERE]
-One common graphical display choice is the use of log scales used to display data over several orders of magnitude within one graph. 
-Logarithms \svp{make} multiplicative relationships \svp{additive}, providing an elegant way to span many orders of magnitude, to show elasticities and other proportional changes, and to linearize power laws \citep{menge_logarithmic_2018}. 
-When presenting log-scaled data, it is possible to use either untransformed values (for example, values of 1, 10 and 100 are equally spaced along the axis) or log-transformed values (for example, 0, 1, and 2).} 
-\svp{This is the difference between a transformed scale transformed values; it's not the difference between untransformed values and transformed values. see https://r4ds.had.co.nz/graphics-for-communication.html\#scales for an explanation of scales, but I'm still looking for a perfect reference for transformations at the value vs. scale level.}
+When faced with data which spans several orders of magnitude, we must decide whether to show the data on its original scale (compressing the smaller magnitudes into relatively little area) or to transform the scale and alter the contextual appearance of the data.
+One common graphical scale transformation is the use of log scales which allow us to display data over several orders of magnitude within one graph. 
+Logarithms make multiplicative relationships additive, providing an elegant way to span many orders of magnitude, to show elasticities and other proportional changes, and to linearize power laws \citep{menge_logarithmic_2018}. 
+When presenting log-scaled data, it is possible to use either untransformed scale labels (for example, values of 1, 10 and 100 are equally spaced along the axis) or log-transformed scale labels (for example, 0, 1, and 2).} 
+<!-- \svp{This is the difference between a transformed scale transformed values; it's not the difference between untransformed values and transformed values. see https://r4ds.had.co.nz/graphics-for-communication.html\#scales for an explanation of scales, but I'm still looking for a perfect reference for transformations at the value vs. scale level.} -->
 \er{We have recently experienced the benefits and pitfalls of using log-scales as covid-19 dashboards displayed case count data on both the log and linear scale \citep{wade_fagen_ulmschneider_2020}. 
-INSERT BENEFITS AND PITFALLS OF LOG SCALES HERE. 
-While COVID-19 is the most well known example, log-scales have been used to display data in ecological research, etc. 
+In spring 2020 early on during the coronavirus pandemic, there was a large magnitude discrepancy at a given time between geographic regions. 
+During this time, we saw the usefulness of log-scales showing case count curves for areas with few cases and areas with many cases within one chart. 
+Later on during the pandemic in summer 2020, the linear scale was effective at commmunicating the waves in case surges.
+While the cornovirus pandemic is the most recent and well known example, log-scales have been used to display data in ecological research, etc. 
 PUT OTHER AREAS HERE.
 }
 
 <!-- + Previous exponential (log/linear scale) studies (literature review). -->
 
 \er{
-Previous research suggests our perception and mapping of numbers to a number line proceeds logarithmically at first and transitions to linear later in development\svp{, after formal schooling begins}.
-The logarithmic mapping is more noticeable in larger numbers as the transition to linear mapping occurs first for small numbers in young children and later for larger numbers \citep{varshney_why_2013, siegler_numerical_2017, dehaeneLogLinearDistinct2008}.\svp{Invert this sentence, because right now it's a bit confusing... e.g. In young children, the transition to linear scales occurs first in small numbers (e.g. 1-10) and then gradually expands to higher orders of magnitude; thus, the logarithmic intuition about numbers in children is often more noticeable on scales in the thousands to hundreds of thousands.}
+Previous research suggests our perception and mapping of numbers to a number line proceeds logarithmically at first and transitions to linear later in development, after formal schooling begins.
+In young children, the transition to linear scales occurs first in small numbers (e.g. 1-10) and then gradually expands to higher orders of magnitude; thus, the logarithmic intuition about numbers in children is often more noticeable on scales in the thousands to hundreds of thousands. \citep{varshney_why_2013, siegler_numerical_2017, dehaeneLogLinearDistinct2008}.
 Early studies explored the estimation and prediction of exponential growth. 
 Findings indicate that growth is underestimated when presented both numerically and graphically but that numerical estimation is more accurate than graphical estimation for exponential curves. 
-While prior contextual knowledge or experience with exponential growth does not improve estimation, previous instruction on exponential growth reduces the underestimation by adjusting the initial starting value but not adjusting their perception of growth parameter
+While prior contextual knowledge or experience with exponential growth does not improve estimation, previous instruction on exponential growth reduces the underestimation by adjusting the initial starting value but not adjusting their perception of growth rate
 \citep{wagenaar_misperception_1975, jones_polynomial_1977}.
 Estimation was shown to improve when subjects were presented with decreasing exponential functions \citep{timmers_inverse_1977}.
 \cite{jones_polynomial_1977}, \cite{wagenaar_extrapolation_1978}, and \cite{jones_generalized_1979} propose competing polynomial models for the perception and extrapolation of exponential series.
@@ -101,7 +107,7 @@ We hypothesize that estimation is a two-stage process. First, we identify the ty
 }
 
 \er{
-This paper aims to investigate the use of log scales to display exponentially increasing data. We hypothesize log scales should make it much easier to estimate the growth paramter since we estimate slopes relatively accurately, resolving much of the difficulty with exponential estimation \citep{mosteller_eye_1981}.
+This paper aims to investigate the use of log scales to display exponentially increasing data. We hypothesize log scales should make it much easier to estimate the growth rate since we estimate slopes relatively accurately, resolving much of the difficulty with exponential estimation \citep{mosteller_eye_1981}.
 In \cite{menge_logarithmic_2018}, ecologists were surveyed to determine how often ecologists encounter log-scaled data and how well ecologists understand log-scaled data. 
 Participants were presented two relationships displayed on linear-linear scales, log-log scales with untransformed values, or log–log scales with log-transformed values. 
 \cite{menge_logarithmic_2018} propose three types of misconceptions participants encountered when presented data on log-log scales: 'hand-hold fallacy', 'Zeno's zero fallacy', and 'watch out for curves fallacies'. 
