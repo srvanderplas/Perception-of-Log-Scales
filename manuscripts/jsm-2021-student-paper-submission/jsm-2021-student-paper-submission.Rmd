@@ -26,12 +26,11 @@ keywords: |
 header-includes: |
   \usepackage{hyperref}
   \usepackage[utf8]{inputenc}
-  \usepackage
   \def\tightlist{}
   \usepackage[usenames,dvipsnames]{color}
-  \newcommand{\er}[1]{\textcolor{Orange}{#1}}
+  \newcommand{\er}[1]{\textcolor{Plum}{#1}}
   \newcommand{\svp}[1]{\textcolor{Green}{#1}}
-  \newcommand{\rh}[1]{\textcolor{Plum}{#1}}
+  \newcommand{\rh}[1]{\textcolor{Orange}{#1}}
 output: rticles::tf_article
 ---
 
@@ -186,13 +185,13 @@ The data was simulated heuristically by the following procedures:
 
 \er{Input Paremeters: sample size $N = 50$, estimated parameters $\hat\alpha$, $\hat\beta$, and $\hat\theta$, $\sigma$ standard deviation from the exponential curve.}
 
-\er{Output Parameters: $N$ points, in the form of vectors $\mathbf{x}$ and $\mathbf{y}$}
+\er{Output Parameters: $N$ points, in the form of vectors $\mathbf{x}$ and $\mathbf{y}$.}
 
 1. \er{Generate $\tilde x_j, j = 1,..., N\cdot \frac{3}{4}$ as a sequence of evenly spaced points in $[0,20]$. This ensures the full domain of $x$ is used, fulfilling the constraints of spanning the same domain and range for each parameter combination.}
 
-2. \er{Obtain $\tilde x_i, i = 1,...N$ by sampling $N = 50$ values from the set of $\tilde x_j$ values. This gaurantees some variability and potential clustring in the exponential growth curve disrupting the perception due to continuity of points.} 
+2. \er{Obtain $\tilde x_i, i = 1,...N$ by sampling $N = 50$ values from the set of $\tilde x_j$ values. This gaurantees some variability and potential clustring in the exponential growth curve disrupting the perception due to continuity of points.}
 
-3. \er{Obtain the final $x_i$ values by jittering $\tilde x_i$}.
+3. \er{Obtain the final $x_i$ values by jittering $\tilde x_i$.}
 
 4. \er{Calculate $\tilde\alpha = \frac{\hat\alpha}{e^{\sigma^2/2}}.$ This ensures that the range of simulated values for different standard devaition parameters has an equal expected value for a given rate of change due to the non-constant variance across the domain.}
 
