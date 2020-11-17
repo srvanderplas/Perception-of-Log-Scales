@@ -95,7 +95,7 @@ Previous research suggests our perception and mapping of numbers to a number lin
 In young children, the transition to linear scales occurs first in small numbers (e.g. 1-10) and then gradually expands to higher orders of magnitude; thus, the logarithmic intuition about numbers in children is often more noticeable on scales in the thousands to hundreds of thousands. \citep{varshney_why_2013, siegler_numerical_2017, dehaeneLogLinearDistinct2008}.
 Early studies explored the estimation and prediction of exponential growth. 
 Findings indicate that growth is underestimated when presented both numerically and graphically but that numerical estimation is more accurate than graphical estimation for exponential curves. 
-While prior contextual knowledge or experience with exponential growth does not improve estimation, previous instruction on exponential growth reduces the underestimation by adjusting the initial starting value but not adjusting their perception of growth parameter
+While prior contextual knowledge or experience with exponential growth does not improve estimation, previous instruction on exponential growth reduces the underestimation by adjusting the initial starting value but not adjusting their perception of growth rate
 \citep{wagenaar_misperception_1975, jones_polynomial_1977}.
 Estimation was shown to improve when subjects were presented with decreasing exponential functions \citep{timmers_inverse_1977}.
 \cite{jones_polynomial_1977}, \cite{wagenaar_extrapolation_1978}, and \cite{jones_generalized_1979} propose competing polynomial models for the perception and extrapolation of exponential series.
@@ -103,18 +103,20 @@ We hypothesize that estimation is a two-stage process. First, we identify the ty
 }
 
 \textcolor{Plum}{
-This paper aims to investigate the use of log scales to display exponentially increasing data. We hypothesize log scales should make it much easier to estimate the growth paramter since we estimate slopes relatively accurately, resolving much of the difficulty with exponential estimation \citep{mosteller_eye_1981}.
+This paper aims to investigate the use of log scales to display exponentially increasing data. We hypothesize log scales should make it much easier to estimate the growth rate since we estimate slopes relatively accurately, resolving much of the difficulty with exponential estimation \citep{mosteller_eye_1981}.
 In \cite{menge_logarithmic_2018}, ecologists were surveyed to determine how often ecologists encounter log-scaled data and how well ecologists understand log-scaled data. 
 Participants were presented two relationships displayed on linear-linear scales, log-log scales with untransformed values, or log–log scales with log-transformed values. 
 \cite{menge_logarithmic_2018} propose three types of misconceptions participants encountered when presented data on log-log scales: 'hand-hold fallacy', 'Zeno's zero fallacy', and 'watch out for curves fallacies'. 
 }
 
-\textcolor{Green}{Might be easier to start with graphs are statistics, but that to evaluate a graph we have to run our statistic through a visual evaluation - a person. Then you can explain that with the same data, if two different methods of presenting the data result in qualitatively different results re. evaluation by a human, then it is possible to develop recommendations based on the visual inference experiment.}
-\textcolor{Plum}{Recent graphical experiments have utilized statistical lineups to quantify the perception of graphical design choices\citep{vanderplas_clusters_2017}. 
+\textcolor{Plum}{
+Graphs are considered statistics where the numerical data is mapped to a visual display.
+To evaluate a graph, we have to run our statistic thrugh a visual evaluation - a person. Using the same data, if two different methods of presenting data result in qualitatively different results, re. evaluation by a human, then it is possible to develop recommendations based on the visual inference experiment.  
+Recent graphical experiments have utilized statistical lineups to quantify the perception of graphical design choices\citep{vanderplas_clusters_2017}. 
 Statistical lineups provide an elegant way of combining perception and statistical signficiance by valdiating the findings from a graphical experiment \citep{buja_statistical_2009, wickham2010graphical, hofmann_graphical_2012, majumder_validation_2013, vanderplas_clusters_2017}.
 'Lineups' are named after the 'police lineup' of criminal investigations where witnesses are asked to identify the criminal from a set of individuals. 
 Similarly, a statistical lineup is a plot consisting of smaller panels of plots in which the viewer is asked to identify the plot of the real data from among a set of decoys, the null plots. 
-A statistical lineup typically consists of 20 panels - 1 target panel and 19 null panels (INSERT EXAMPLE). 
+A statistical lineup typically consists of 20 panels - 1 target panel and 19 null panels (Figure 1). 
 If the viewer can identify the target panel embeded within the set of null panels, this suggests that the real data is interesting or has unqiue properties.
 Crowd sourcing websites such as Amazon Mechanical Turk, Reddit, and Proflic allow us to collect responses from multiple viewers.
 \cite{vanderplas_statistical_nodate} provides an approach for calculating visual p-values utilizing a 'rorschach' lineup which consists soley of null panels.
@@ -192,7 +194,7 @@ The data was simulated heuristically by the following procedures:
 \textcolor{Plum}{
 The exponential model provides the base for this graphical experiment. 
 We manipulate the midpoint, $x_{mid}$, and in turn the estimated parameters to control the amount of curvature present in the data and the error standard deviation, $\sigma$, to control the amount of deviation from the exponential curve.
-We selected three midpoints corresponding to difficulty levels easy (obvious curvature), medium (noticable curvature), and hard (almost linear) along with a sensible choice of standard deviation, $\sigma.$ (INSERT TABLE WITH PARAMETER SELECTIONS HERE). 
+We selected three midpoints corresponding to difficulty levels easy (obvious curvature), medium (noticeable curvature), and hard (almost linear) along with a sensible choice of standard deviation, $\sigma$ (Table 1).
 The midpoints and standard deviation combinations were chosen similar to in \cite{vanderplas_clusters_2017}. 
 For each level of difficulty, we simulated 1000 datasets of $(x_{ij}, y_{ij})$ points for $i = 1,...,50$ and $j = 1...10$. 
 Each generated $x_i$ point from \textit{Algorithm 2.1.2} was replicated 10 times.  
@@ -205,7 +207,7 @@ While the LOF statistic provides us a numerical value for discriminating between
 \hypertarget{lineup-setup}{%
 \subsection{Lineup Setup}\label{lineup-setup}}
 
-\textcolor{Plum}{There were a total of three parameter combinations corresponding to the three difficulty levels - easy (obvious curvature), medium (noticable curvature), and hard (almost linear). 
+\textcolor{Plum}{There were a total of three parameter combinations corresponding to the three difficulty levels - easy (obvious curvature), medium (noticeable curvature), and hard (almost linear). 
 The lineup plots were generated by mapping simulating data corresponding to difficulty level A to a scatterplot while the null plots were generated by mapping simulated data corresponding to difficulty level B to a scatterplot. 
 For exmaple, a target plot with simulated data following an increasing exponential curve with obvious curvature is embeded within null plots with simulated data following an increasing exponential that is almost linear (i.e. Easy-Hard). 
 By our constraints, the target plot and null plots will span a similar domain and range. 

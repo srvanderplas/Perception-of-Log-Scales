@@ -34,6 +34,15 @@ header-includes: |
 output: rticles::tf_article
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, include = FALSE)
+library(readr)
+library(tidyverse)
+library(scales)
+library(knitr)
+library(gridExtra)
+```
+
 <!-- How to comment out -->
 
 <!-- 
@@ -135,16 +144,48 @@ curves in log–log space have similar curvature in linear–linear space
 
 <!-- + Visual Inference (what is it? how do we use it? etc.) *needs lots of work yet* -->
 
-\svp{Might be easier to start with graphs are statistics, but that to evaluate a graph we have to run our statistic through a visual evaluation - a person. Then you can explain that with the same data, if two different methods of presenting the data result in qualitatively different results re. evaluation by a human, then it is possible to develop recommendations based on the visual inference experiment.}
-\er{Recent graphical experiments have utilized statistical lineups to quantify the perception of graphical design choices\citep{vanderplas_clusters_2017}. 
+<!-- \svp{Might be easier to start with graphs are statistics, but that to evaluate a graph we have to run our statistic through a visual evaluation - a person. Then you can explain that with the same data, if two different methods of presenting the data result in qualitatively different results re. evaluation by a human, then it is possible to develop recommendations based on the visual inference experiment.} -->
+\er{
+Graphs are considered statistics where the numerical data is mapped to a visual display.
+To evaluate a graph, we have to run our statistic thrugh a visual evaluation - a person. Using the same data, if two different methods of presenting data result in qualitatively different results, re. evaluation by a human, then it is possible to develop recommendations based on the visual inference experiment.  
+Recent graphical experiments have utilized statistical lineups to quantify the perception of graphical design choices\citep{vanderplas_clusters_2017}. 
 Statistical lineups provide an elegant way of combining perception and statistical signficiance by valdiating the findings from a graphical experiment \citep{buja_statistical_2009, wickham2010graphical, hofmann_graphical_2012, majumder_validation_2013, vanderplas_clusters_2017}.
 'Lineups' are named after the 'police lineup' of criminal investigations where witnesses are asked to identify the criminal from a set of individuals. 
 Similarly, a statistical lineup is a plot consisting of smaller panels of plots in which the viewer is asked to identify the plot of the real data from among a set of decoys, the null plots. 
-A statistical lineup typically consists of 20 panels - 1 target panel and 19 null panels (INSERT EXAMPLE). 
+A statistical lineup typically consists of 20 panels - 1 target panel and 19 null panels (Figure 1). 
 If the viewer can identify the target panel embeded within the set of null panels, this suggests that the real data is interesting or has unqiue properties.
 Crowd sourcing websites such as Amazon Mechanical Turk, Reddit, and Proflic allow us to collect responses from multiple viewers.
 \cite{vanderplas_statistical_nodate} provides an approach for calculating visual p-values utilizing a 'rorschach' lineup which consists soley of null panels.
 }
+
+```{r lineup-example}
+lineupData_linear <- read.csv(file = "data/lineupData_linear.csv")
+linearPlot <- ggplot(lineupData_linear, aes(x=x, y=y)) +
+  facet_wrap(~.sample, ncol=5) +
+  geom_point(size = .75) +
+  theme(aspect.ratio = 1) +
+  theme_bw(base_size = 14) +
+  theme(axis.title.y = element_blank(),
+        axis.title.x = element_blank(),
+        axis.text.y  = element_blank(),
+        axis.text.x  = element_blank(),
+  )
+
+lineupData_log <- read.csv(file = "data/lineupData_log.csv")
+logPlot <- ggplot(lineupData_log, aes(x=x, y=y)) +
+  facet_wrap(~.sample, ncol=5) +
+  geom_point(size = .75) +
+  theme(aspect.ratio = 1) +
+  theme_bw(base_size = 14) +
+  theme(axis.title.y = element_blank(),
+        axis.title.x = element_blank(),
+        axis.text.y  = element_blank(),
+        axis.text.x  = element_blank(),
+  ) +
+  scale_y_continuous(trans = "log10")
+
+grid.arrange(linearPlot, logPlot, ncol = 2)
+```
     
 <!-- + What is new in this paper. -->
 
@@ -208,7 +249,7 @@ The data was simulated heuristically by the following procedures:
 \er{
 The exponential model provides the base for this graphical experiment. 
 We manipulate the midpoint, $x_{mid}$, and in turn the estimated parameters to control the amount of curvature present in the data and the error standard deviation, $\sigma$, to control the amount of deviation from the exponential curve.
-We selected three midpoints corresponding to difficulty levels easy (obvious curvature), medium (noticable curvature), and hard (almost linear) along with a sensible choice of standard deviation, $\sigma.$ (INSERT TABLE WITH PARAMETER SELECTIONS HERE). 
+We selected three midpoints corresponding to difficulty levels easy (obvious curvature), medium (noticeable curvature), and hard (almost linear) along with a sensible choice of standard deviation, $\sigma$ (Table 1).
 The midpoints and standard deviation combinations were chosen similar to in \cite{vanderplas_clusters_2017}. 
 For each level of difficulty, we simulated 1000 datasets of $(x_{ij}, y_{ij})$ points for $i = 1,...,50$ and $j = 1...10$. 
 Each generated $x_i$ point from \textit{Algorithm 2.1.2} was replicated 10 times.  
@@ -218,8 +259,30 @@ In figure [INSERT DENSITY CURVE HERE], we can see the densities of each of the t
 While the LOF statistic provides us a numerical value for discriminating between the difficulty levels, we cannot directly realte this to the perceptual discriminability. 
 }
 
+```{r parameter-data}
+parameter_data <- read.csv(file = "data/parameter_data.csv")
+parameter_data 
+# %>%
+# kable("latex", escape = F, booktabs = T, linesep = "", align = "c", col.names = c("", "$x_{Mid}$",  "$\\hat\\sigma$", "$\\hat\\alpha$", "$\\tilde\\alpha$", "$\\hat\\beta$", "$\\hat\\theta$"))
+```
+
+```{r lof-density-curves}
+lofData <- read.csv(file = "data/lofData.csv")
+lofPlot_curvature <- lofData %>%
+  mutate(Curvature = factor(Curvature, levels = c("Obvious Curvature", "Noticeable Curvature", "Almost Linear"))) %>%
+  mutate(Variability = factor(Variability, levels = c("Low"))) %>%
+  ggplot(aes(x = statistic, fill = Curvature, color = Curvature)) +
+  geom_density(alpha = 0.7) +
+  scale_fill_brewer(palette = "Paired") + 
+  scale_color_brewer(palette = "Paired") + 
+  theme_bw(base_size = 14) +
+  theme(legend.position = "bottom",
+        aspect.ratio = 1)
+lofPlot_curvature
+```
+
 ## Lineup Setup
-\er{There were a total of three parameter combinations corresponding to the three difficulty levels - easy (obvious curvature), medium (noticable curvature), and hard (almost linear). 
+\er{There were a total of three parameter combinations corresponding to the three difficulty levels - easy (obvious curvature), medium (noticeable curvature), and hard (almost linear). 
 The lineup plots were generated by mapping simulating data corresponding to difficulty level A to a scatterplot while the null plots were generated by mapping simulated data corresponding to difficulty level B to a scatterplot. 
 For exmaple, a target plot with simulated data following an increasing exponential curve with obvious curvature is embeded within null plots with simulated data following an increasing exponential that is almost linear (i.e. Easy-Hard). 
 By our constraints, the target plot and null plots will span a similar domain and range. 
