@@ -35,7 +35,7 @@ output: rticles::tf_article
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, include = FALSE)
+knitr::opts_chunk$set(echo = TRUE, include = FALSE, eval = T)
 library(readr)
 library(tidyverse)
 library(scales)
@@ -158,7 +158,7 @@ Crowd sourcing websites such as Amazon Mechanical Turk, Reddit, and Proflic allo
 \cite{vanderplas_statistical_nodate} provides an approach for calculating visual p-values utilizing a 'rorschach' lineup which consists soley of null panels.
 }
 
-```{r lineup-example}
+```{r lineup-example, eval = T}
 lineupData_linear <- read.csv(file = "data/lineupData_linear.csv")
 linearPlot <- ggplot(lineupData_linear, aes(x=x, y=y)) +
   facet_wrap(~.sample, ncol=5) +
@@ -259,14 +259,14 @@ In figure [INSERT DENSITY CURVE HERE], we can see the densities of each of the t
 While the LOF statistic provides us a numerical value for discriminating between the difficulty levels, we cannot directly realte this to the perceptual discriminability. 
 }
 
-```{r parameter-data}
+```{r parameter-data, eval = T}
 parameter_data <- read.csv(file = "data/parameter_data.csv")
 parameter_data 
 # %>%
 # kable("latex", escape = F, booktabs = T, linesep = "", align = "c", col.names = c("", "$x_{Mid}$",  "$\\hat\\sigma$", "$\\hat\\alpha$", "$\\tilde\\alpha$", "$\\hat\\beta$", "$\\hat\\theta$"))
 ```
 
-```{r lof-density-curves}
+```{r lof-density-curves, eval = T}
 lofData <- read.csv(file = "data/lofData.csv")
 lofPlot_curvature <- lofData %>%
   mutate(Curvature = factor(Curvature, levels = c("Obvious Curvature", "Noticeable Curvature", "Almost Linear"))) %>%
