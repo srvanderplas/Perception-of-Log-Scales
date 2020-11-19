@@ -51,11 +51,11 @@ output: rticles::tf_article
 <!-- + Why Graphics? (communication to the public, technological advances, need for research on graphics) -->
 
 \er{
-Graphics are a useful tool for displaying and communicating information. 
-Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public. 
+Graphics are a useful tool for displaying and communicating information. \svp{See annual review article for references for this claim.}
+Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public. \svp{May want to ask Heather about this one during the meeting (or by email)?}
 During the onset of the novel coronavirus - covid19 - pandemic, we saw an influx of dashboards being developed to display case counts, transmission rates, and outbreak regions \citep{lisa_charlotte_2020}.
-As a result, people began subscribing to news sources involved in graphically tracking the coronavirus (example John Burn-Murdoch Financial Times - CITE THIS) and gaining more exposure to the use of graphics. 
-Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing. 
+As a result, people began subscribing to news sources involved in graphically tracking the coronavirus (example John Burn-Murdoch Financial Times - CITE THIS) and gaining more exposure to the use of graphics. \svp{Did people subscribe to news sources as a result, of the graphics or the need for up-to-date info?}
+Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing. \svp{Also, these graphics helped officials communicate why policies were being enacted, with the hope of increasing population compliance. -- not sure what to cite, but the communication part can't be understated.}
 Better software has meant easier and more flexible drawing, consistent themes, and higher standards.\svp{You need to source this somehow, please. Otherwise it seems disconnected from your main argument.}
 Consequentially, we must develop a set of principles to help us actively choose which of many possible graphics to draw \citep{unwin_why_2020}.\svp{You might need to lead into this a bit more - connect the purposes we use these graphics for to the fact that different choices serve those purposes in different ways.}
 }
