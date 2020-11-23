@@ -2,19 +2,19 @@
 dm "log; clear; odsresults; clear;";
 
 PROC IMPORT
-	DATAFILE = 'C:\Users\ERobi\Documents\GitHub\Perception-of-Log-Scales\lineups-pilot-analysis\data\sim_response_data.csv'
+	DATAFILE = 'C:\Users\ERobi\Documents\GitHub\Perception-of-Log-Scales\lineups-pilot-analysis\data\jsm-student-paper-11232020.csv'
 	OUT = sim_lineup_data
 	REPLACE;
 	GUESSINGROWS = 50;
 RUN;
 
-TITLE "Simulated Lineup Results Data";
+TITLE "Lineup Results Data";
 PROC PRINT DATA = sim_lineup_data (OBS = 10) NOOBS;
 RUN;
 
-TITLE "Simulated Lineup Model";
+TITLE "Lineup Model";
 PROC GLIMMIX DATA = sim_lineup_data;
-	CLASS 	wp nick_name data_name pic_id test_param param_value target_curvature null_curvature curvature;
+	CLASS 	nick_name data_name pic_id test_param param_value curvature target_curvature null_curvature;
 
 	MODEL 	correct = curvature|test_param / D = Binomial LINK = logit;
 
