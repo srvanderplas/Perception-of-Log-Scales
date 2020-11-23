@@ -22,7 +22,8 @@ PROC GLIMMIX DATA = sim_lineup_data;
 	RANDOM	intercept / SUBJECT = data_name;
 	RANDOM	curvature / SUBJECT = nick_name*data_name;
 
-	LSMEANS	test_param*curvature / PLOT = MEANPLOT(SLICEBY = test_param CL ILINK JOIN) ILINK CL LINES;
+	LSMEANS	test_param*curvature / PLOT = MEANPLOT(SLICEBY = test_param CL ILINK JOIN) ILINK CL;
+	SLICE	test_param*curvature / SLICEBY = curvature LINES;
 
 	NLOPTIONS MAXITER = 100;
 RUN;
