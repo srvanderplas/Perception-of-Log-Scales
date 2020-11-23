@@ -1617,7 +1617,7 @@ var getSVGMappings = function(name, type, result) {
             </clipPath>
           </defs>
           <g id="layout::panel-2-3.23-13-23-13.1" clip-path="url(#layout::panel-2-3.23-13-23-13.1.clipPath)">
-            <g id="23" onmouseover="frame('panel.background..rect.33350.1')" onmouseout="deframe('panel.background..rect.33350.1')" onmousedown="togglehigh(evt, 'panel.background..rect.33350.1')">
+            <g id="18" onmouseover="frame('panel.background..rect.33350.1')" onmouseout="deframe('panel.background..rect.33350.1')" onmousedown="togglehigh(evt, 'panel.background..rect.33350.1')">
               <g id="grill.gTree.33359">
                 <g id="panel.background..rect.33350">
                   <rect id="panel.background..rect.33350.1" x="265.57" y="13.95" width="116.51" height="63.59" transform="" stroke-width="1.81" stroke="none" fill="rgb(255,255,255)" stroke-dasharray="none" stroke-opacity="0" fill-opacity="1"/>

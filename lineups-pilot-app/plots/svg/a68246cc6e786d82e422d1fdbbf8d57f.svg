@@ -113,28 +113,28 @@ var viewportConvertPos = function(vpname, x, y, from, to) {
  */
 convertx = function(vpname, x, from, to, loc) {
     var i = toInches(from, x,
-                     gridSVGCoords[vpname].width, 
-                     gridSVGCoords[vpname].xscale, 
-                     gridSVGCoords[vpname].inch, 
+                     gridSVGCoords[vpname].width,
+                     gridSVGCoords[vpname].xscale,
+                     gridSVGCoords[vpname].inch,
                      loc);
     var u = toUnit(to, i,
-                   gridSVGCoords[vpname].width, 
-                   gridSVGCoords[vpname].xscale, 
-                   gridSVGCoords[vpname].inch, 
+                   gridSVGCoords[vpname].width,
+                   gridSVGCoords[vpname].xscale,
+                   gridSVGCoords[vpname].inch,
                    loc);
     return u;
 }
 
 converty = function(vpname, x, from, to, loc) {
     var i = toInches(from, x,
-                     gridSVGCoords[vpname].height, 
-                     gridSVGCoords[vpname].yscale, 
-                     gridSVGCoords[vpname].inch, 
+                     gridSVGCoords[vpname].height,
+                     gridSVGCoords[vpname].yscale,
+                     gridSVGCoords[vpname].inch,
                      loc);
     var u = toUnit(to, i,
-                   gridSVGCoords[vpname].height, 
-                   gridSVGCoords[vpname].yscale, 
-                   gridSVGCoords[vpname].inch, 
+                   gridSVGCoords[vpname].height,
+                   gridSVGCoords[vpname].yscale,
+                   gridSVGCoords[vpname].inch,
                    loc);
     return u;
 }
@@ -177,14 +177,14 @@ var viewportConvertHeight = function(vpname, x, from, to) {
  */
 viewportConvertDim = function(vpname, w, h, from, to) {
     var wi = toInches(from, w,
-                      gridSVGCoords[vpname].width, 
-                      gridSVGCoords[vpname].xscale, 
-                      gridSVGCoords[vpname].inch, 
+                      gridSVGCoords[vpname].width,
+                      gridSVGCoords[vpname].xscale,
+                      gridSVGCoords[vpname].inch,
                       false);
     var hi = toInches(from, h,
-                      gridSVGCoords[vpname].height, 
-                      gridSVGCoords[vpname].yscale, 
-                      gridSVGCoords[vpname].inch, 
+                      gridSVGCoords[vpname].height,
+                      gridSVGCoords[vpname].yscale,
+                      gridSVGCoords[vpname].inch,
                       false);
     if (gridSVGCoords[vpname].angle != 0) {
         var theta = -gridSVGCoords[vpname].angle/180*Math.PI;
@@ -194,14 +194,14 @@ viewportConvertDim = function(vpname, w, h, from, to) {
         hi = h;
     }
     var wu = toUnit(to, wi,
-                    gridSVGCoords[vpname].width, 
-                    gridSVGCoords[vpname].xscale, 
-                    gridSVGCoords[vpname].inch, 
+                    gridSVGCoords[vpname].width,
+                    gridSVGCoords[vpname].xscale,
+                    gridSVGCoords[vpname].inch,
                     false);
     var hu = toUnit(to, hi,
-                    gridSVGCoords[vpname].height, 
-                    gridSVGCoords[vpname].yscale, 
-                    gridSVGCoords[vpname].inch, 
+                    gridSVGCoords[vpname].height,
+                    gridSVGCoords[vpname].yscale,
+                    gridSVGCoords[vpname].inch,
                     false);
     var result = {w: wu, h: hu};
     return result;
@@ -215,12 +215,12 @@ viewportConvertDim = function(vpname, w, h, from, to) {
  * @param {number} vpDimSize The size of the viewport that the unit belongs in, in SVG pixels
  * @param {Array.<number>} nativeScale For the given dimension that we're converting along (x or y)
  * @param {number} dimInchSize The size of an inch along this dimension
- * @param {boolean} loc  Is the conversion for a location (or a dimension)? 
+ * @param {boolean} loc  Is the conversion for a location (or a dimension)?
  * @returns {number} The input unit in inches
  */
-var toInches = function(from, unitValue, vpDimSize, nativeScale, 
+var toInches = function(from, unitValue, vpDimSize, nativeScale,
                         dimInchSize, loc) {
-    var nativeToInches = function(nativeValue, nativeScale, vpDimSize, 
+    var nativeToInches = function(nativeValue, nativeScale, vpDimSize,
                                   dimInchSize, loc) {
         var dist;
         if (loc) {
@@ -228,11 +228,11 @@ var toInches = function(from, unitValue, vpDimSize, nativeScale,
         } else {
             dist = nativeValue;
         }
-        var nativeUnitSize = vpDimSize / Math.abs(nativeScale[1] - 
+        var nativeUnitSize = vpDimSize / Math.abs(nativeScale[1] -
                                                   nativeScale[0]);
         return dist * nativeUnitSize / dimInchSize;
     };
-    
+
     var npcToInches = function(npcValue, vpDimSize, dimInchSize) {
         return (npcValue * vpDimSize) / dimInchSize;
     };
@@ -240,7 +240,7 @@ var toInches = function(from, unitValue, vpDimSize, nativeScale,
     var result;
     switch (from) {
         case "native":
-            result = nativeToInches(unitValue, nativeScale, vpDimSize, 
+            result = nativeToInches(unitValue, nativeScale, vpDimSize,
                                     dimInchSize, loc);
             break;
         case "npc":
@@ -290,11 +290,11 @@ var toInches = function(from, unitValue, vpDimSize, nativeScale,
  * @param {number} vpDimSize The size of the viewport that the unit belongs in, in SVG pixels
  * @param {Array.<number>} nativeScale For the given dimension that we're converting along (x or y)
  * @param {number} dimInchSize The size of an inch along this dimension
- * @param {boolean} loc  Is the conversion for a location (or a dimension)? 
+ * @param {boolean} loc  Is the conversion for a location (or a dimension)?
  * @returns {number} The input unit in 'to' units
  */
 var toUnit = function(to, unitValue, vpDimSize, nativeScale, dimInchSize, loc) {
-    var inchesToNative = function(inchesValue, nativeScale, vpDimSize, 
+    var inchesToNative = function(inchesValue, nativeScale, vpDimSize,
                                   dimInchSize, loc) {
         var npc = (inchesValue * dimInchSize) / vpDimSize;
         var vpRange = nativeScale[1] - nativeScale[0];
@@ -304,7 +304,7 @@ var toUnit = function(to, unitValue, vpDimSize, nativeScale, dimInchSize, loc) {
             return (npc * vpRange);
         }
     };
-    
+
     var inchesToNpc = function(inchesValue, vpDimSize, dimInchSize) {
         return (inchesValue * dimInchSize) / vpDimSize;
     };
@@ -312,7 +312,7 @@ var toUnit = function(to, unitValue, vpDimSize, nativeScale, dimInchSize, loc) {
     var result;
     switch (to) {
         case "native":
-            result = inchesToNative(unitValue, nativeScale, vpDimSize, 
+            result = inchesToNative(unitValue, nativeScale, vpDimSize,
                                     dimInchSize, loc);
             break;
         case "npc":
@@ -389,7 +389,7 @@ var grobViewport = function(grobName) {
             var testVP = gridSVGCoords[vpPath];
             // If we have found a match in our VP coordinate list we
             // have a candidate viewport path, but a grob might have
-            // the same name as a viewport path... 
+            // the same name as a viewport path...
             if (testVP) {
                 viewportPath = vpPath;
                 foundViewport = true;
@@ -419,10 +419,10 @@ var grobViewport = function(grobName) {
  *
  * We would expect the <svg> node to have one child, when it in fact has
  * *three* child nodes. A text node, a rect node and a text node. This
- * goes against intuition so we would ideally like it so that only the 
+ * goes against intuition so we would ideally like it so that only the
  * nodes that contain elements, such as the rect node, remain. This is
  * the purpose of this function.
- * 
+ *
  * @param {Object} node An XML tree that we wish to prune
  */
 var pruneTextNodes = function(node) {
@@ -495,7 +495,7 @@ var queryBuilder = function(loc, params) {
     var query = [];
     for (var k in params)
        query.push(encodeURIComponent(k) + "=" + encodeURIComponent(params[k]));
-    var queryText = query.join("&"); 
+    var queryText = query.join("&");
 
     // If params is an object of length 0 we end up with ""
     if (!queryText)
@@ -1639,7 +1639,7 @@ var getSVGMappings = function(name, type, result) {
             </clipPath>
           </defs>
           <g id="layout::panel-2-3.23-13-23-13.1" clip-path="url(#layout::panel-2-3.23-13-23-13.1.clipPath)">
-            <g id="23" onmouseover="frame('panel.background..rect.49004.1')" onmouseout="deframe('panel.background..rect.49004.1')" onmousedown="togglehigh(evt, 'panel.background..rect.49004.1')">
+            <g id="18" onmouseover="frame('panel.background..rect.49004.1')" onmouseout="deframe('panel.background..rect.49004.1')" onmousedown="togglehigh(evt, 'panel.background..rect.49004.1')">
               <g id="grill.gTree.49013">
                 <g id="panel.background..rect.49004">
                   <rect id="panel.background..rect.49004.1" x="265.57" y="13.95" width="116.51" height="63.59" transform="" stroke-width="1.81" stroke="none" fill="rgb(255,255,255)" stroke-dasharray="none" stroke-opacity="0" fill-opacity="1"/>
