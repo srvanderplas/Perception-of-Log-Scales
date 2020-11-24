@@ -83,11 +83,12 @@ lineup_results_data <- lineup_results_data_raw %>%
                          null_curvature     = factor(substr(param_value,18,18), levels = c("E", "M", "H")),
                          null_variability   = factor(substr(param_value,20,21), levels = c("Lv", "Hv"))
                       ) %>%
+  mutate(curvature = paste("t-", target_curvature, "_n-", null_curvature, sep ="")) %>%
   select(description, ip_address, nick_name, age, gender, academic_study, start_time, end_time, run_time,
-         data_name, pic_name, pic_id, test_param, param_value, rorschach, target_curvature, null_curvature,
+         data_name, pic_name, pic_id, test_param, param_value, rorschach, curvature, target_curvature, null_curvature,
          target_variability, null_variability, sample_size, obs_plot_location, response_no, correct, 
          conf_level, choice_reason, participant_count, plot_count)
 
-# write.csv(results_data, file = "pilot_analysis/data/graphics-group-09.17.2020.csv", row.names = F, na = "")
+write.csv(lineup_results_data, file = "lineups-pilot-analysis/data/jsm-student-paper-11232020.csv", row.names = F, na = "")
 
 rm(list=setdiff(ls(), "lineup_results_data"))

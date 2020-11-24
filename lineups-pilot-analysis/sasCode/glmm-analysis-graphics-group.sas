@@ -6,7 +6,7 @@ dm "log; clear; odsresults; clear;";
 * ----------------------------------------------------------------------------------------------------------------------------------------;
 
 PROC IMPORT
-	DATAFILE = 'C:\Users\ERobi\Documents\GitHub\Perception-of-Log-Scales\lineups-pilot-analysis\data\lineup_results_data.csv'
+	DATAFILE = 'C:\Users\ERobi\Documents\GitHub\Perception-of-Log-Scales\lineups-pilot-analysis\data\jsm-student-paper-11232020.csv'
 	OUT = lineup_results_data
 	REPLACE;
 	GUESSINGROWS = 50;
