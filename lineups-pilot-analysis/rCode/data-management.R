@@ -31,19 +31,26 @@ feedback_data <- dbReadTable(con, "feedback")
 
 picture_details_data <- dbReadTable(con,"picture_details")
 
-users_data <- dbReadTable(con,"users") %>%
-                    unique() %>%
-                    filter(age > 0)
+users_data <- dbReadTable(con,"users")
 
 dbDisconnect(con)
 
+feedback_data <- feedback_data %>%
+  arrange(nick_name, start_time) %>%
+  group_by(nick_name) %>%
+  mutate(end_time_lag = lag(end_time)) %>%
+  mutate(same_time = ifelse(start_time < end_time_lag + 30, 1, 0)) %>%
+  select("ip_address", "nick_name", "start_time", "end_time", "end_time_lag", "same_time", "pic_id", 
+         "response_no", "conf_level", "choice_reason", "description")
+
 lineup_results_data_raw <- feedback_data %>%
+                  filter(nick_name != "test") %>%
                   left_join(picture_details_data %>% filter(trial == 0), by = "pic_id") %>%
-                  left_join(users_data %>% select(-ip_address), by = "nick_name") %>%
+                  # left_join(users_data %>% select(-ip_address), by = "nick_name") %>%
                   mutate(rorschach = right(param_value, 1),
                          run_time = end_time - start_time,
                          correct = ifelse(obs_plot_location == response_no, 1, 0)) %>%
-                  select(description, ip_address, nick_name, age, gender, academic_study,
+                  select(description, ip_address, nick_name,
                          start_time, end_time, run_time, 
                          pic_id, test_param, param_value, rorschach, sample_size,
                          obs_plot_location, response_no, correct, conf_level, choice_reason,
