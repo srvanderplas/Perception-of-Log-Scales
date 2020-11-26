@@ -31,7 +31,8 @@ feedback_data <- dbReadTable(con, "feedback")
 
 picture_details_data <- dbReadTable(con,"picture_details")
 
-users_data <- dbReadTable(con,"users")
+users_data <- dbReadTable(con,"users") %>%
+  unique()
 
 dbDisconnect(con)
 
