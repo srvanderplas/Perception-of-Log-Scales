@@ -107,7 +107,7 @@ lineupData_linear <- lineup(true = simData %>%
                        filter(panel == "null") %>%
                        select("x", "y", ".n"),
                      pos = pos_linear)
-# write.csv(lineupData_linear, file = "manuscripts/jsm-2021-student-paper-submission/data/lineupData_linear.csv", row.names = F)
+#write.csv(lineupData_linear, file = "manuscripts/jsm-2021-student-paper-submission/data/lineupData_linear.csv", row.names = F)
 linearPlot <- ggplot(lineupData_linear, aes(x=x, y=y)) +
   facet_wrap(~.sample, ncol=5) +
   geom_point(size = .75) +
@@ -131,7 +131,7 @@ lineupData_log <- lineup(true = simData %>%
                            filter(panel == "null") %>%
                            select("x", "y", ".n"),
                          pos = pos_log)
-# write.csv(lineupData_log, file = "manuscripts/jsm-2021-student-paper-submission/data/lineupData_log.csv", row.names = F)
+#write.csv(lineupData_log, file = "manuscripts/jsm-2021-student-paper-submission/data/lineupData_log.csv", row.names = F)
 logPlot <- ggplot(lineupData_log, aes(x=x, y=y)) +
   facet_wrap(~.sample, ncol=5) +
   geom_point(size = .75) +

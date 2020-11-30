@@ -34,8 +34,8 @@ header-includes: |
 output: rticles::tf_article
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, include = FALSE, eval = T)
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = F, eval = T)
 library(readr)
 library(tidyverse)
 library(scales)
@@ -56,12 +56,13 @@ library(gridExtra)
 
 # Introduction and Background
 
-<!-- + Why Graphics? (communication to the public, technological advances, need for research on graphics) -->
 
-\er{Graphics are a useful tool for displaying and communicating information.} \svp{See annual review article for references for this claim.}
-\er{Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public.} \svp{May want to ask Heather about this one during the meeting (or by email)?}
+<!-- \svp{See annual review article for references for this claim.} -->
+\er{Graphics are a useful tool for displaying and communicating information. \citep{vanderplas2020testing}
+Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public.} \svp{May want to ask Heather about this one during the meeting (or by email)?}
 \er{During the onset of the novel coronavirus pandemic, we saw an influx of dashboards being developed to display case counts, transmission rates, and outbreak regions \citep{lisa_charlotte_2020}.
-People began subscribing to news sources involved in graphically tracking the coronavirus as a direct result of these pieces of work and the need for continually updated information \citep{rost_2020}; thus, gaining more exposure to the use of graphics.} 
+People began subscribing to news sources involved in graphically tracking the coronavirus as a direct result of these pieces of work and the need for continually updated information \citep{rost_2020}; thus, gaining more exposure to the use of graphics.
+} 
 <!-- \svp{Did people subscribe to news sources as a result, of the graphics or the need for up-to-date info?} -->
 \er{Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing.
 Also, these graphics helped officials communicate why policies were being enacted, with the hope of increasing population compliance.}
@@ -156,35 +157,40 @@ Recent graphical experiments have utilized statistical lineups to quantify the p
 Statistical lineups provide an elegant way of combining perception and statistical signficiance by valdiating the findings from a graphical experiment \citep{buja_statistical_2009, wickham2010graphical, hofmann_graphical_2012, majumder_validation_2013, vanderplas_clusters_2017}.
 'Lineups' are named after the 'police lineup' of criminal investigations where witnesses are asked to identify the criminal from a set of individuals. 
 Similarly, a statistical lineup is a plot consisting of smaller panels of plots in which the viewer is asked to identify the plot of the real data from among a set of decoys, the null plots. 
-A statistical lineup typically consists of 20 panels - 1 target panel and 19 null panels (Figure 1). 
+A statistical lineup typically consists of 20 panels - 1 target panel and 19 null panels (Figure \ref{fig:lineup-example}). 
 If the viewer can identify the target panel embeded within the set of null panels, this suggests that the real data is interesting or has unqiue properties.
 Crowd sourcing websites such as Amazon Mechanical Turk, Reddit, and Proflic allow us to collect responses from multiple viewers.
 \cite{vanderplas_statistical_nodate} provides an approach for calculating visual p-values utilizing a 'rorschach' lineup which consists soley of null panels.
+In this paper, we use statistical lineups to test human subjects ability to differentiate between increasing exponential data with differing growth rates displayed on both the linear scale and log scale.
 }
 
-```{r lineup-example, eval = T}
+```{r lineup-example, eval = T, fig.height = 2.75, fig.width = 5.5, fig.align = 'center', fig.cap = "The plot on the left displays increasing exponential data on a linear scale with panel (2 x 5) + 3 as the target. The plot on the right displays increasing exponential data on the log scale with panel 2 x 2 as the target."}
 lineupData_linear <- read.csv(file = "data/lineupData_linear.csv")
 linearPlot <- ggplot(lineupData_linear, aes(x=x, y=y)) +
   facet_wrap(~.sample, ncol=5) +
-  geom_point(size = .75) +
+  geom_point(size = .05) +
   theme(aspect.ratio = 1) +
   theme_bw(base_size = 14) +
   theme(axis.title.y = element_blank(),
         axis.title.x = element_blank(),
         axis.text.y  = element_blank(),
         axis.text.x  = element_blank(),
+        strip.text = element_text(size = 5, margin = margin(0.05,0,0.05,0, "cm")),
+        strip.background = element_rect(size = 0.5)
   )
 
 lineupData_log <- read.csv(file = "data/lineupData_log.csv")
 logPlot <- ggplot(lineupData_log, aes(x=x, y=y)) +
   facet_wrap(~.sample, ncol=5) +
-  geom_point(size = .75) +
+  geom_point(size = .05) +
   theme(aspect.ratio = 1) +
   theme_bw(base_size = 14) +
   theme(axis.title.y = element_blank(),
         axis.title.x = element_blank(),
         axis.text.y  = element_blank(),
         axis.text.x  = element_blank(),
+        strip.text = element_text(size = 5, margin = margin(0.05,0,0.05,0, "cm")),
+        strip.background = element_rect(size = 0.5)
   ) +
   scale_y_continuous(trans = "log10")
 
@@ -192,10 +198,6 @@ grid.arrange(linearPlot, logPlot, ncol = 2)
 ```
     
 <!-- + What is new in this paper. -->
-
-\er{
-In this paper, we use statistical lineups to test human subjects ability to differentiate between increasing exponential data with differing growth rates displayed on both the linear scale and log scale.
-}
 
 # Data Generation
 
@@ -259,18 +261,17 @@ For each level of difficulty, we simulated 1000 datasets of $(x_{ij}, y_{ij})$ p
 Each generated $x_i$ point from \textit{Algorithm 2.1.2} was replicated 10 times.  
 Then the lack of fit statistic (LOF) was computed for each simulated dataset by calculating the deviation of the data from a linear line. 
 Plotting the density curves of the LOF statistics for each level of difficulty choice allows us to evalute the ability of differentiating between the difficulty levels and thus detecting the target plot.
-In figure [INSERT DENSITY CURVE HERE], we can see the densities of each of the three difficulty levels. 
+In Figure \ref{fig:lof-density-curves}, we can see the densities of each of the three difficulty levels. 
 While the LOF statistic provides us a numerical value for discriminating between the difficulty levels, we cannot directly realte this to the perceptual discriminability. 
 }
 
 ```{r parameter-data, eval = T}
 parameter_data <- read.csv(file = "data/parameter_data.csv")
-parameter_data 
-# %>%
-# kable("latex", escape = F, booktabs = T, linesep = "", align = "c", col.names = c("", "$x_{Mid}$",  "$\\hat\\sigma$", "$\\hat\\alpha$", "$\\tilde\\alpha$", "$\\hat\\beta$", "$\\hat\\theta$"))
+parameter_data %>%
+  kable("latex", digits = 2, escape = F, booktabs = T, linesep = "", align = "c", col.names = c("",   "$x_{Mid}$",  "$\\hat\\sigma$", "$\\hat\\alpha$", "$\\tilde\\alpha$", "$\\hat\\beta$", "$\\hat\\theta$"), caption = "Exponential parameter selection")
 ```
 
-```{r lof-density-curves, eval = T}
+```{r lof-density-curves, eval = T, fig.height = 2.5, fig.width = 5, fig.align = 'center', fig.cap = "Density plot of the lack of fit statistic showing separation of difficulty levels: obvious curvature, noticable curvature, and almost linear."}
 lofData <- read.csv(file = "data/lofData.csv")
 lofPlot_curvature <- lofData %>%
   mutate(Curvature = factor(Curvature, levels = c("Obvious Curvature", "Noticeable Curvature", "Almost Linear"))) %>%
@@ -281,7 +282,13 @@ lofPlot_curvature <- lofData %>%
   scale_color_brewer(palette = "Paired") + 
   theme_bw(base_size = 14) +
   theme(legend.position = "bottom",
-        aspect.ratio = 1)
+        axis.text    = element_text(size = 6),
+        axis.title   = element_text(size = 8),
+        legend.title = element_text(size = 8),
+        legend.text  = element_text(size = 6),
+        legend.key.size = unit(0.5,"line")
+        ) +
+  scale_x_continuous("Lack of Fit Statistic")
 lofPlot_curvature
 ```
 

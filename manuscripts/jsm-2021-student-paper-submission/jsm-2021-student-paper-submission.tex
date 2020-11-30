@@ -67,12 +67,12 @@ Exponential; Log; Visual Inference; Perception
 \section{Introduction and
 Background}\label{introduction-and-background}}
 
-\textcolor{Plum}{Graphics are a useful tool for displaying and communicating information.}
-\textcolor{Green}{See annual review article for references for this claim.}
-\textcolor{Plum}{Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public.}
+\textcolor{Plum}{Graphics are a useful tool for displaying and communicating information. \citep{vanderplas2020testing}
+Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public.}
 \textcolor{Green}{May want to ask Heather about this one during the meeting (or by email)?}
 \textcolor{Plum}{During the onset of the novel coronavirus pandemic, we saw an influx of dashboards being developed to display case counts, transmission rates, and outbreak regions \citep{lisa_charlotte_2020}.
-People began subscribing to news sources involved in graphically tracking the coronavirus as a direct result of these pieces of work and the need for continually updated information \citep{rost_2020}; thus, gaining more exposure to the use of graphics.}
+People began subscribing to news sources involved in graphically tracking the coronavirus as a direct result of these pieces of work and the need for continually updated information \citep{rost_2020}; thus, gaining more exposure to the use of graphics.
+}
 \textcolor{Plum}{Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing.
 Also, these graphics helped officials communicate why policies were being enacted, with the hope of increasing population compliance.}
 \textcolor{Green}{-- not sure what to cite, but the communication part can't be understated.}
@@ -127,15 +127,21 @@ Recent graphical experiments have utilized statistical lineups to quantify the p
 Statistical lineups provide an elegant way of combining perception and statistical signficiance by valdiating the findings from a graphical experiment \citep{buja_statistical_2009, wickham2010graphical, hofmann_graphical_2012, majumder_validation_2013, vanderplas_clusters_2017}.
 'Lineups' are named after the 'police lineup' of criminal investigations where witnesses are asked to identify the criminal from a set of individuals. 
 Similarly, a statistical lineup is a plot consisting of smaller panels of plots in which the viewer is asked to identify the plot of the real data from among a set of decoys, the null plots. 
-A statistical lineup typically consists of 20 panels - 1 target panel and 19 null panels (Figure 1). 
+A statistical lineup typically consists of 20 panels - 1 target panel and 19 null panels (Figure \ref{fig:lineup-example}). 
 If the viewer can identify the target panel embeded within the set of null panels, this suggests that the real data is interesting or has unqiue properties.
 Crowd sourcing websites such as Amazon Mechanical Turk, Reddit, and Proflic allow us to collect responses from multiple viewers.
 \cite{vanderplas_statistical_nodate} provides an approach for calculating visual p-values utilizing a 'rorschach' lineup which consists soley of null panels.
-}
-
-\textcolor{Plum}{
 In this paper, we use statistical lineups to test human subjects ability to differentiate between increasing exponential data with differing growth rates displayed on both the linear scale and log scale.
 }
+
+\begin{figure}
+
+{\centering \includegraphics{jsm-2021-student-paper-submission_files/figure-latex/lineup-example-1} 
+
+}
+
+\caption{The plot on the left displays increasing exponential data on a linear scale with panel (2 x 5) + 3 as the target. The plot on the right displays increasing exponential data on the log scale with panel 2 x 2 as the target.}\label{fig:lineup-example}
+\end{figure}
 
 \hypertarget{data-generation}{%
 \section{Data Generation}\label{data-generation}}
@@ -211,9 +217,33 @@ For each level of difficulty, we simulated 1000 datasets of $(x_{ij}, y_{ij})$ p
 Each generated $x_i$ point from \textit{Algorithm 2.1.2} was replicated 10 times.  
 Then the lack of fit statistic (LOF) was computed for each simulated dataset by calculating the deviation of the data from a linear line. 
 Plotting the density curves of the LOF statistics for each level of difficulty choice allows us to evalute the ability of differentiating between the difficulty levels and thus detecting the target plot.
-In figure [INSERT DENSITY CURVE HERE], we can see the densities of each of the three difficulty levels. 
+In Figure \ref{fig:lof-density-curves}, we can see the densities of each of the three difficulty levels. 
 While the LOF statistic provides us a numerical value for discriminating between the difficulty levels, we cannot directly realte this to the perceptual discriminability. 
 }
+
+\begin{table}
+
+\caption{\label{tab:parameter-data}Exponential parameter selection}
+\centering
+\begin{tabular}[t]{ccccccc}
+\toprule
+ & $x_{Mid}$ & $\hat\sigma$ & $\hat\alpha$ & $\tilde\alpha$ & $\hat\beta$ & $\hat\theta$\\
+\midrule
+Obvious Curvature & 14.5 & 0.25 & 0.91 & 0.88 & 0.23 & 9.10\\
+Noticable Curvature & 13.0 & 0.12 & 6.86 & 6.82 & 0.13 & 3.14\\
+Almost Linear & 11.5 & 0.05 & 37.26 & 37.22 & 0.06 & -27.26\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}
+
+{\centering \includegraphics{jsm-2021-student-paper-submission_files/figure-latex/lof-density-curves-1} 
+
+}
+
+\caption{Density plot of the lack of fit statistic showing separation of difficulty levels: obvious curvature, noticable curvature, and almost linear.}\label{fig:lof-density-curves}
+\end{figure}
 
 \hypertarget{lineup-setup}{%
 \subsection{Lineup Setup}\label{lineup-setup}}
