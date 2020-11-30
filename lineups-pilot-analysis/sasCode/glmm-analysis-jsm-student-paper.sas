@@ -1,8 +1,10 @@
 *CLEARS SAS LOG AND RESULTS FOR CLEANER WORKING ENVIRONMENT;
 dm "log; clear; odsresults; clear;";
 
+ODS PDF FILE = "C:\Users\ERobi\Documents\GitHub\Perception-of-Log-Scales\lineups-pilot-analysis\results\jsm-student-paper-sas-output.pdf";
+
 PROC IMPORT
-	DATAFILE = 'C:\Users\ERobi\Documents\GitHub\Perception-of-Log-Scales\lineups-pilot-analysis\data\jsm-student-paper-11232020.csv'
+	DATAFILE = 'C:\Users\ERobi\Documents\GitHub\Perception-of-Log-Scales\lineups-pilot-analysis\data\jsm-student-paper-11302020.csv'
 	OUT = sim_lineup_data
 	REPLACE;
 	GUESSINGROWS = 50;
@@ -23,8 +25,18 @@ PROC GLIMMIX DATA = sim_lineup_data;
 	RANDOM	intercept / SUBJECT = data_name;
 	RANDOM	curvature / SUBJECT = run*data_name;
 
-	LSMEANS	test_param*curvature / PLOT = MEANPLOT(SLICEBY = test_param CL ILINK JOIN) ILINK CL;
+	LSMEANS	test_param*curvature / PLOT = MEANPLOT(SLICEBY = test_param CL ILINK JOIN) ILINK CL LINES;
 	SLICE	test_param*curvature / SLICEBY = curvature LINES;
+	SLICE	test_param*curvature / SLICEBY = test_param LINES;
 
+	ODS OUTPUT LSMeans = lsmeans;
 	NLOPTIONS MAXITER = 100;
 RUN;
+
+PROC EXPORT DATA = lsmeans
+	OUTFILE = 'C:\Users\ERobi\Documents\GitHub\Perception-of-Log-Scales\lineups-pilot-analysis\results\jsm-student-paper-lsmeans-11302020.csv'
+	DBMS    = csv
+	REPLACE;
+RUN;
+
+ODS PDF CLOSE;
