@@ -27,7 +27,6 @@
 
 % see https://stackoverflow.com/a/47122900
 
-% Pandoc citation processing
 
 \usepackage{hyperref}
 \usepackage[utf8]{inputenc}
@@ -37,26 +36,19 @@
 \newcommand{\svp}[1]{\textcolor{Green}{#1}}
 \newcommand{\rh}[1]{\textcolor{Orange}{#1}}
 
-
 \begin{document}
 
-\articletype{JSM 2021 Student Paper Competition (ASA sections on
-Statistical Computing and Statistical Graphics)}
+\articletype{JSM 2021 Student Paper Competition (ASA sections on Statistical
+Computing and Statistical Graphics)}
 
-\title{Perception of exponentially increasing data displayed on a log
-scale}
+\title{Perception of exponentially increasing data displayed on a log scale}
 
 
-\author{\name{Emily A. Robinson$^{a}$, Reka Howard$^{a}$, Susan
-VanderPlas$^{a}$}
-\affil{$^{a}$Department of Statistics, University of Nebraska -
-Lincoln,}
+\author{\name{Emily A. Robinson$^{a}$, Reka Howard$^{a}$, Susan VanderPlas$^{a}$}
+\affil{$^{a}$Department of Statistics, University of Nebraska - Lincoln,}
 }
 
-\thanks{CONTACT Emily A.
-Robinson. Email: \href{mailto:emily.robinson@huskers.unl.edu}{\nolinkurl{emily.robinson@huskers.unl.edu}}, Reka
-Howard. Email: \href{mailto:rekahoward@unl.edu}{\nolinkurl{rekahoward@unl.edu}}, Susan
-VanderPlas. Email: \href{mailto:susan.vanderplas@unl.edu}{\nolinkurl{susan.vanderplas@unl.edu}}}
+\thanks{CONTACT Emily A. Robinson. Email: \href{mailto:emily.robinson@huskers.unl.edu}{\nolinkurl{emily.robinson@huskers.unl.edu}}, Reka Howard. Email: \href{mailto:rekahoward@unl.edu}{\nolinkurl{rekahoward@unl.edu}}, Susan VanderPlas. Email: \href{mailto:susan.vanderplas@unl.edu}{\nolinkurl{susan.vanderplas@unl.edu}}}
 
 \maketitle
 
@@ -75,53 +67,52 @@ Exponential; Log; Visual Inference; Perception
 \section{Introduction and
 Background}\label{introduction-and-background}}
 
-\textcolor{Plum}{Graphics are a useful tool for displaying and communicating information.}
-\textcolor{Green}{See annual review article for references for this claim.}
-\textcolor{Plum}{Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public.}
+\textcolor{Plum}{Graphics are a useful tool for displaying and communicating information. \citep{vanderplas2020testing}
+Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public.}
 \textcolor{Green}{May want to ask Heather about this one during the meeting (or by email)?}
 \textcolor{Plum}{During the onset of the novel coronavirus pandemic, we saw an influx of dashboards being developed to display case counts, transmission rates, and outbreak regions \citep{lisa_charlotte_2020}.
-As a result, people began subscribing to news sources involved in graphically tracking the coronavirus \citep{rost_2020} and gaining more exposure to the use of graphics.}
-\textcolor{Green}{Did people subscribe to news sources as a result, of the graphics or the need for up-to-date info?}
-\textcolor{Plum}{Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing.}
-\textcolor{Green}{Also, these graphics helped officials communicate why policies were being enacted, with the hope of increasing population compliance. -- not sure what to cite, but the communication part can't be understated.}
+People began subscribing to news sources involved in graphically tracking the coronavirus as a direct result of these pieces of work and the need for continually updated information \citep{rost_2020}; thus, gaining more exposure to the use of graphics.
+}
+\textcolor{Plum}{Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing.
+Also, these graphics helped officials communicate why policies were being enacted, with the hope of increasing population compliance.}
+\textcolor{Green}{-- not sure what to cite, but the communication part can't be understated.}
 \textcolor{Plum}{With the increasing importance graphics play in our everyday choices, we must actively choose which of many possible graphics to draw. 
-Better sofware has mean easier and more flexible drawing allowing us to make design choices that best communicate the message of the data graphically}\textcolor{Green}{, but as a result, we must consciously choose a set of principles to guide design choices in order to ensure that our charts are effective}
-\citep{unwin_why_2020}.
+Better sofware has mean easier and more flexible drawing allowing us to make design choices that best communicate the message of the data graphically, but as a result, we must consciously choose a set of principles to guide design choices in order to ensure that our charts are effective \citep{unwin_why_2020}.}
 
 \textcolor{Plum}{
 When faced with data which spans several orders of magnitude, we must decide whether to show the data on its original scale (compressing the smaller magnitudes into relatively little area) or to transform the scale and alter the contextual appearance of the data.
-One common \textcolor{Green}{solution is to use a log scale transformation} to display data over several orders of magnitude within one graph.
-Logarithms make multiplicative relationships additive \textcolor{Green}{, showing} elasticities and other proportional changes, and}
-\textcolor{Green}{also}
-\textcolor{Plum}{linearize power laws \citep{menge_logarithmic_2018}. 
-When presenting log-scaled data, it is possible to use either untransformed scale labels (for example, values of 1, 10 and 100 are equally spaced along the axis) or log-transformed scale labels (for example, 0, 1, and 2,}
-\textcolor{Green}{showing the corresponding powers of 10}).
+One common solution is to use a log scale transformation to display data over several orders of magnitude within one graph.
+Logarithms make multiplicative relationships additive, showing elasticities and other proportional changes, and also linearize power laws \citep{menge_logarithmic_2018}. 
+When presenting log-scaled data, it is possible to use either untransformed scale labels (for example, values of 1, 10 and 100 are equally spaced along the axis) or log-transformed scale labels (for example, 0, 1, and 2, showing the corresponding powers of 10).
+}
+
 \textcolor{Plum}{We have recently experienced the benefits and pitfalls of using log-scales as covid-19 dashboards displayed case count data on both the log and linear scale \citep{wade_fagen_ulmschneider_2020}. 
-In spring 2020, during the} \textcolor{Green}{early stages of the}
-\textcolor{Plum}{coronavirus pandemic, there was a large magnitude discrepancy at a given time between}
-\textcolor{Green}{different} \textcolor{Plum}{geographic regions}
-\textcolor{Green}{(at all orders of magnitude - states and provinces as well as countries and continents)}.
-\textcolor{Plum}{During this time, we saw the usefulness of log-scales showing case count curves for areas with few cases and areas with many cases within one chart. }
-\textcolor{Green}{As the pandemic evolved, and the case counts were no longer spreading exponentially, graphs with linear scales seemed more effective at spotting early increases in case counts that signaled more localized outbreaks.}
-\textcolor{Green}{This is only one recent example of a situation in which both log and linear scales are useful for showing different aspects of the same data; there are long histories of using log scales to display results in ecology, psychophysics, engineering, and physics.}
-\textcolor{Green}{XXX it may be interesting to find papers objecting to the use of log scales in some other disciplines beyond ecology. Can we cite XKCD here? https://xkcd.com/1162/}
-\}
+In spring 2020, during the early stages of the coronavirus pandemic, there was a large magnitude discrepancy at a given time between different geographic regions (at all orders of magnitude - states and provinces as well as countries and continents). 
+During this time, we saw the usefulness of log-scales showing case count curves for areas with few cases and areas with many cases within one chart.
+As the pandemic evolved, and the case counts were no longer spreading exponentially, graphs with linear scales seemed more effective at spotting early increases in case counts that signaled more localized outbreaks.
+}
 
 \textcolor{Plum}{
-Research suggests our perception and mapping of numbers to a number line \textcolor{Green}{is logarithmic} at first, \textcolor{Green}{but} transitions to a linear \textcolor{Green}{scale} later in development, with formal \textcolor{Green}{mathematics education}.
+This is only one recent example of a situation in which both log and linear scales are useful for showing different aspects of the same data; there are long histories of using log scales to display results in ecology, psychophysics, engineering, and physics. 
+\citep{xkcd}
+}
+\textcolor{Green}{XXX it may be interesting to find papers objecting to the use of log scales in some other disciplines beyond ecology.}
+
+\textcolor{Plum}{
+Research suggests our perception and mapping of numbers to a number line is logarithmic at first, but transitions to a linear scale later in development, with formal mathematics education.
 This transition to linear scales occurs first in small numbers (e.g. 1-10) and then gradually expands to higher orders of magnitude; thus, the logarithmic intuition about numbers in children is often more noticeable on scales in the thousands to hundreds of thousands. \citep{varshney_why_2013, siegler_numerical_2017, dehaeneLogLinearDistinct2008}.
-\textcolor{Green}{Explain why this matters - if we perceive logarithmically by default, it is a natural (and presumably low-effort) way to display information and should be easy to read and understand/use. In fact, research shows that we do not perceive exponential growth accurately (whether information is presented in graphical or tabular form): we systematically under-estimate exponential growth. There is one way to improve estimation of exponential trends other than changing the scale: ...}\textcolor{Green}{XXX we have to explicitly connect log perception to exponential prediction, which isn't easy, but does matter for our purposes XXX}
-Early studies explored the estimation and prediction of exponential growth, finding that growth is underestimated when presented both numerically and graphically but that numerical estimation is more accurate than graphical estimation for exponential curves. 
-While prior contextual knowledge or experience with exponential growth does not improve estimation, previous instruction on exponential growth reduces the underestimation by adjusting the initial starting value but not adjusting their perception of growth rate
+If we percieve logarithmically by default, it is a natural (and presumably low-effort) way to display information and should be easy to read and understand/use.}
+\textcolor{Plum}{In fact, early studies explored the estimation and prediction of exponential growth, finding that growth is underestimated when presented both numerically and graphically but that numerical estimation is more accurate than graphical estimation for exponential curves.}
+\textcolor{Green}{There is one way to improve estimation of exponential trends other than changing the scale:}
+\textcolor{Plum}{While prior contextual knowledge or experience with exponential growth does not improve estimation, previous instruction on exponential growth reduces the underestimation by adjusting the initial starting value but not adjusting their perception of growth rate
 \citep{wagenaar_misperception_1975, jones_polynomial_1977}.
 Estimation was shown to improve when subjects were presented with decreasing exponential functions \citep{timmers_inverse_1977}.
 \cite{jones_polynomial_1977}, \cite{wagenaar_extrapolation_1978}, and \cite{jones_generalized_1979} propose competing polynomial models for the perception and extrapolation of exponential series.
-\textcolor{Green}{It seems that} estimation is a two-stage process: First, we identify the type of curve and direction and then, we use that information for prediction \citep{best_perception_2007}.
+It seems that estimation is a two-stage process: first, we identify the type of curve and direction and then, we use that information for prediction \citep{best_perception_2007}.
 }
 
-\textcolor{Green}{Our inability to accurately predict exponential growth might also be addressed by log-transforming the data, however, this transformation introduces new complexities: most readers are not mathematically sophisticated enough to intuitively understand logarithmic math and translate that back into real-world effects.}
-\textcolor{Plum}{
-In \cite{menge_logarithmic_2018}, ecologists were surveyed to determine how often ecologists encounter log-scaled data and how well ecologists understand log-scaled data \textcolor{Green}{when they see it in the literature}. 
+\textcolor{Plum}{Our inability to accurately predict exponential growth might also be addressed by log-transforming the data, however, this transformation introduces new complexities: most readers are not mathematically sophisticated enough to intuitively understand logarithmic math and translate that back into real-world effects.
+In \cite{menge_logarithmic_2018}, ecologists were surveyed to determine how often ecologists encounter log-scaled data and how well ecologists understand log-scaled data when they see it in the literature. 
 Participants were presented two relationships displayed on linear-linear scales, log-log scales with untransformed values, or log–log scales with log-transformed values. 
 \cite{menge_logarithmic_2018} propose three types of misconceptions participants encountered when presented data on log-log scales: 'hand-hold fallacy', 'Zeno's zero fallacy', and 'watch out for curves fallacies'. 
 }\textcolor{Green}{Expand on this, please - this information is pretty critical...}
@@ -136,15 +127,21 @@ Recent graphical experiments have utilized statistical lineups to quantify the p
 Statistical lineups provide an elegant way of combining perception and statistical signficiance by valdiating the findings from a graphical experiment \citep{buja_statistical_2009, wickham2010graphical, hofmann_graphical_2012, majumder_validation_2013, vanderplas_clusters_2017}.
 'Lineups' are named after the 'police lineup' of criminal investigations where witnesses are asked to identify the criminal from a set of individuals. 
 Similarly, a statistical lineup is a plot consisting of smaller panels of plots in which the viewer is asked to identify the plot of the real data from among a set of decoys, the null plots. 
-A statistical lineup typically consists of 20 panels - 1 target panel and 19 null panels (Figure 1). 
+A statistical lineup typically consists of 20 panels - 1 target panel and 19 null panels (Figure \ref{fig:lineup-example}). 
 If the viewer can identify the target panel embeded within the set of null panels, this suggests that the real data is interesting or has unqiue properties.
 Crowd sourcing websites such as Amazon Mechanical Turk, Reddit, and Proflic allow us to collect responses from multiple viewers.
 \cite{vanderplas_statistical_nodate} provides an approach for calculating visual p-values utilizing a 'rorschach' lineup which consists soley of null panels.
-}
-
-\textcolor{Plum}{
 In this paper, we use statistical lineups to test human subjects ability to differentiate between increasing exponential data with differing growth rates displayed on both the linear scale and log scale.
 }
+
+\begin{figure}
+
+{\centering \includegraphics{jsm-2021-student-paper-submission_files/figure-latex/lineup-example-1} 
+
+}
+
+\caption{The plot on the left displays increasing exponential data on a linear scale with panel (2 x 5) + 3 as the target. The plot on the right displays increasing exponential data on the log scale with panel 2 x 2 as the target.}\label{fig:lineup-example}
+\end{figure}
 
 \hypertarget{data-generation}{%
 \section{Data Generation}\label{data-generation}}
@@ -220,9 +217,33 @@ For each level of difficulty, we simulated 1000 datasets of $(x_{ij}, y_{ij})$ p
 Each generated $x_i$ point from \textit{Algorithm 2.1.2} was replicated 10 times.  
 Then the lack of fit statistic (LOF) was computed for each simulated dataset by calculating the deviation of the data from a linear line. 
 Plotting the density curves of the LOF statistics for each level of difficulty choice allows us to evalute the ability of differentiating between the difficulty levels and thus detecting the target plot.
-In figure [INSERT DENSITY CURVE HERE], we can see the densities of each of the three difficulty levels. 
+In Figure \ref{fig:lof-density-curves}, we can see the densities of each of the three difficulty levels. 
 While the LOF statistic provides us a numerical value for discriminating between the difficulty levels, we cannot directly realte this to the perceptual discriminability. 
 }
+
+\begin{table}
+
+\caption{\label{tab:parameter-data}Exponential parameter selection}
+\centering
+\begin{tabular}[t]{ccccccc}
+\toprule
+ & $x_{Mid}$ & $\hat\sigma$ & $\hat\alpha$ & $\tilde\alpha$ & $\hat\beta$ & $\hat\theta$\\
+\midrule
+Obvious Curvature & 14.5 & 0.25 & 0.91 & 0.88 & 0.23 & 9.10\\
+Noticable Curvature & 13.0 & 0.12 & 6.86 & 6.82 & 0.13 & 3.14\\
+Almost Linear & 11.5 & 0.05 & 37.26 & 37.22 & 0.06 & -27.26\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}
+
+{\centering \includegraphics{jsm-2021-student-paper-submission_files/figure-latex/lof-density-curves-1} 
+
+}
+
+\caption{Density plot of the lack of fit statistic showing separation of difficulty levels: obvious curvature, noticable curvature, and almost linear.}\label{fig:lof-density-curves}
+\end{figure}
 
 \hypertarget{lineup-setup}{%
 \subsection{Lineup Setup}\label{lineup-setup}}
