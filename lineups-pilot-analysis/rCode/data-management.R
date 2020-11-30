@@ -37,31 +37,38 @@ users_data <- dbReadTable(con,"users") %>%
 dbDisconnect(con)
 
 feedback_data <- feedback_data %>%
+  filter(nick_name != "test") %>%
   arrange(nick_name, start_time) %>%
   group_by(nick_name) %>%
   mutate(end_time_lag = lag(end_time)) %>%
-  mutate(same_time = ifelse(start_time < end_time_lag + 30, 1, 0)) %>%
-  select("ip_address", "nick_name", "start_time", "end_time", "end_time_lag", "same_time", "pic_id", 
+  mutate(same_time = ifelse(start_time < end_time_lag + 30, 1, 0),
+         run = NA) %>%
+  mutate(same_time = ifelse(is.na(same_time), 0, 
+                            ifelse(same_time == 0, 0, 1))) %>%
+  select("ip_address", "nick_name", "start_time", "end_time", "end_time_lag", "same_time", "run", "pic_id", 
          "response_no", "conf_level", "choice_reason", "description")
 
+feedback_data$run[1] <- 1
+for(i in 2:nrow(feedback_data)){
+  feedback_data$run[i] <- ifelse(feedback_data$same_time[i] == 1, feedback_data$run[(i-1)], feedback_data$run[(i-1)]+1)
+}
+
 lineup_results_data_raw <- feedback_data %>%
-                  filter(nick_name != "test") %>%
                   left_join(picture_details_data %>% filter(trial == 0), by = "pic_id") %>%
                   # left_join(users_data %>% select(-ip_address), by = "nick_name") %>%
                   mutate(rorschach = right(param_value, 1),
                          run_time = end_time - start_time,
                          correct = ifelse(obs_plot_location == response_no, 1, 0)) %>%
                   select(description, ip_address, nick_name,
-                         start_time, end_time, run_time, 
+                         start_time, end_time, run_time, run, 
                          pic_id, test_param, param_value, rorschach, sample_size,
                          obs_plot_location, response_no, correct, conf_level, choice_reason,
-                         data_name, pic_name) %>%
-                  filter(nick_name != "test")
+                         data_name, pic_name)
 names(lineup_results_data_raw)
 
 # Number of plots evaluated per participant
 participant_summary <- lineup_results_data_raw %>% 
-  group_by(nick_name) %>%
+  group_by(run) %>%
   summarise(participant_count = n())
 participant_summary
 
@@ -72,13 +79,16 @@ plots_summary <- lineup_results_data_raw %>%
 plots_summary
 
 lineup_results_data <- lineup_results_data_raw %>%
-                  left_join(participant_summary, by = "nick_name") %>%
+                  filter(rorschach == 0) %>%
+                  left_join(participant_summary, by = "run") %>%
                   left_join(plots_summary, by = "pic_id") %>%
-                  mutate(nick_name          = factor(nick_name),
-                         age                = factor(age),
+                  mutate(
+                         # nick_name          = factor(nick_name),
+                         # age                = factor(age),
                          description        = factor(description),
-                         gender             = factor(gender),
-                         academic_study     = factor(academic_study),
+                         # gender             = factor(gender),
+                         # academic_study     = factor(academic_study),
+                         run                = factor(run),
                          pic_id             = factor(pic_id),
                          test_param         = factor(test_param),
                          rorschach          = factor(rorschach),
@@ -92,10 +102,37 @@ lineup_results_data <- lineup_results_data_raw %>%
                          null_variability   = factor(substr(param_value,20,21), levels = c("Lv", "Hv"))
                       ) %>%
   mutate(curvature = paste("t-", target_curvature, "_n-", null_curvature, sep ="")) %>%
-  select(description, ip_address, nick_name, age, gender, academic_study, start_time, end_time, run_time,
-         data_name, pic_name, pic_id, test_param, param_value, rorschach, curvature, target_curvature, null_curvature,
-         target_variability, null_variability, sample_size, obs_plot_location, response_no, correct, 
-         conf_level, choice_reason, participant_count, plot_count)
+  select(
+         description, 
+         # ip_address, 
+         nick_name,
+         # age, 
+         # gender, 
+         # academic_study, 
+         start_time, 
+         end_time, 
+         run_time,
+         run,
+         data_name, 
+         pic_name, 
+         pic_id, 
+         test_param, 
+         param_value, 
+         rorschach, 
+         curvature, 
+         target_curvature, 
+         null_curvature,
+         target_variability, 
+         null_variability, 
+         sample_size, 
+         obs_plot_location, 
+         response_no, 
+         correct, 
+         conf_level, 
+         choice_reason, 
+         participant_count, 
+         plot_count
+         )
 
 write.csv(lineup_results_data, file = "lineups-pilot-analysis/data/jsm-student-paper-11232020.csv", row.names = F, na = "")
 
