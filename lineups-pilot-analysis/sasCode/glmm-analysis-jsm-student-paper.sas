@@ -1,10 +1,13 @@
 *CLEARS SAS LOG AND RESULTS FOR CLEANER WORKING ENVIRONMENT;
 dm "log; clear; odsresults; clear;";
 
-ODS PDF FILE = "C:\Users\ERobi\Documents\GitHub\Perception-of-Log-Scales\lineups-pilot-analysis\results\jsm-student-paper-sas-output.pdf";
+* Dell: C:\Users\erobinson6\ ;
+* PC: C:\Users\ERobi\ ;
+
+ODS PDF FILE = "C:\Users\erobinson6\Documents\GitHub\Perception-of-Log-Scales\lineups-pilot-analysis\results\jsm-student-paper-sas-output.pdf";
 
 PROC IMPORT
-	DATAFILE = 'C:\Users\ERobi\Documents\GitHub\Perception-of-Log-Scales\lineups-pilot-analysis\data\jsm-student-paper-11302020.csv'
+	DATAFILE = 'C:\Users\erobinson6\Documents\GitHub\Perception-of-Log-Scales\lineups-pilot-analysis\data\jsm-student-paper-11302020.csv'
 	OUT = sim_lineup_data
 	REPLACE;
 	GUESSINGROWS = 50;
@@ -34,7 +37,7 @@ PROC GLIMMIX DATA = sim_lineup_data;
 RUN;
 
 PROC EXPORT DATA = lsmeans
-	OUTFILE = 'C:\Users\ERobi\Documents\GitHub\Perception-of-Log-Scales\lineups-pilot-analysis\results\jsm-student-paper-lsmeans-11302020.csv'
+	OUTFILE = 'C:\Users\erobinson6\Documents\GitHub\Perception-of-Log-Scales\lineups-pilot-analysis\results\jsm-student-paper-lsmeans-11302020.csv'
 	DBMS    = csv
 	REPLACE;
 RUN;
