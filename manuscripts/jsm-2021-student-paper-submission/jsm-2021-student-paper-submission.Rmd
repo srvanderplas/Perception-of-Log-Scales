@@ -61,10 +61,13 @@ library(gridExtra)
 \er{Graphics are a useful tool for displaying and communicating information.} \svp{See annual review article for references for this claim.}
 \er{Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public.} \svp{May want to ask Heather about this one during the meeting (or by email)?}
 \er{During the onset of the novel coronavirus pandemic, we saw an influx of dashboards being developed to display case counts, transmission rates, and outbreak regions \citep{lisa_charlotte_2020}.
-As a result, people began subscribing to news sources involved in graphically tracking the coronavirus \citep{rost_2020} and gaining more exposure to the use of graphics.} \svp{Did people subscribe to news sources as a result, of the graphics or the need for up-to-date info?}
-\er{Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing.} \svp{Also, these graphics helped officials communicate why policies were being enacted, with the hope of increasing population compliance. -- not sure what to cite, but the communication part can't be understated.}
+People began subscribing to news sources involved in graphically tracking the coronavirus as a direct result of these pieces of work and the need for continually updated information \citep{rost_2020}; thus, gaining more exposure to the use of graphics.} 
+<!-- \svp{Did people subscribe to news sources as a result, of the graphics or the need for up-to-date info?} -->
+\er{Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing.
+Also, these graphics helped officials communicate why policies were being enacted, with the hope of increasing population compliance.}
+\svp{-- not sure what to cite, but the communication part can't be understated.}
 \er{With the increasing importance graphics play in our everyday choices, we must actively choose which of many possible graphics to draw. 
-Better sofware has mean easier and more flexible drawing allowing us to make design choices that best communicate the message of the data graphically}\svp{, but as a result, we must consciously choose a set of principles to guide design choices in order to ensure that our charts are effective} \citep{unwin_why_2020}. 
+Better sofware has mean easier and more flexible drawing allowing us to make design choices that best communicate the message of the data graphically, but as a result, we must consciously choose a set of principles to guide design choices in order to ensure that our charts are effective \citep{unwin_why_2020}.}
 
 
 <!-- + Introduce Log Scales (what are they used for, where are they used (ecological data, covid, etc.)) -->
@@ -76,36 +79,46 @@ Start with why we'd choose a log scale: When faced with data which spans several
 -->
 \er{
 When faced with data which spans several orders of magnitude, we must decide whether to show the data on its original scale (compressing the smaller magnitudes into relatively little area) or to transform the scale and alter the contextual appearance of the data.
-One common \svp{solution is to use a log scale transformation} to display data over several orders of magnitude within one graph.
-Logarithms make multiplicative relationships additive \svp{, showing} elasticities and other proportional changes, and} \svp{also} \er{linearize power laws \citep{menge_logarithmic_2018}. 
-When presenting log-scaled data, it is possible to use either untransformed scale labels (for example, values of 1, 10 and 100 are equally spaced along the axis) or log-transformed scale labels (for example, 0, 1, and 2,} \svp{showing the corresponding powers of 10}).
+One common solution is to use a log scale transformation to display data over several orders of magnitude within one graph.
+Logarithms make multiplicative relationships additive, showing elasticities and other proportional changes, and also linearize power laws \citep{menge_logarithmic_2018}. 
+When presenting log-scaled data, it is possible to use either untransformed scale labels (for example, values of 1, 10 and 100 are equally spaced along the axis) or log-transformed scale labels (for example, 0, 1, and 2, showing the corresponding powers of 10).
+}
 <!-- \svp{This is the difference between a transformed scale transformed values; it's not the difference between untransformed values and transformed values. see https://r4ds.had.co.nz/graphics-for-communication.html\#scales for an explanation of scales, but I'm still looking for a perfect reference for transformations at the value vs. scale level.} -->
 \er{We have recently experienced the benefits and pitfalls of using log-scales as covid-19 dashboards displayed case count data on both the log and linear scale \citep{wade_fagen_ulmschneider_2020}. 
-In spring 2020, during the} \svp{early stages of the} \er{coronavirus pandemic, there was a large magnitude discrepancy at a given time between} \svp{different} \er{geographic regions} \svp{(at all orders of magnitude - states and provinces as well as countries and continents)}. 
-\er{During this time, we saw the usefulness of log-scales showing case count curves for areas with few cases and areas with many cases within one chart. }
-\svp{As the pandemic evolved, and the case counts were no longer spreading exponentially, graphs with linear scales seemed more effective at spotting early increases in case counts that signaled more localized outbreaks.} 
+In spring 2020, during the early stages of the coronavirus pandemic, there was a large magnitude discrepancy at a given time between different geographic regions (at all orders of magnitude - states and provinces as well as countries and continents). 
+During this time, we saw the usefulness of log-scales showing case count curves for areas with few cases and areas with many cases within one chart.
+As the pandemic evolved, and the case counts were no longer spreading exponentially, graphs with linear scales seemed more effective at spotting early increases in case counts that signaled more localized outbreaks.
+}
 <!-- Later on during the pandemic in summer 2020, the linear scale was effective at commmunicating the waves in case surges. -->
-\svp{This is only one recent example of a situation in which both log and linear scales are useful for showing different aspects of the same data; there are long histories of using log scales to display results in ecology, psychophysics, engineering, and physics.} \svp{XXX it may be interesting to find papers objecting to the use of log scales in some other disciplines beyond ecology. Can we cite XKCD here? https://xkcd.com/1162/}
+\er{
+This is only one recent example of a situation in which both log and linear scales are useful for showing different aspects of the same data; there are long histories of using log scales to display results in ecology, psychophysics, engineering, and physics. 
+\citep{xkcd}
+}
+\svp{XXX it may be interesting to find papers objecting to the use of log scales in some other disciplines beyond ecology.}
+<!-- Can we cite XKCD here? https://xkcd.com/1162/} -->
 <!-- While the cornovirus pandemic is the most recent and well known example, log-scales have been used to display data in ecological research, etc.  -->
 <!-- PUT OTHER AREAS HERE. -->
-}
 
 <!-- + Previous exponential (log/linear scale) studies (literature review). -->
 
+<!-- \svp{In fact, research shows that we do not perceive exponential growth accurately (whether information is presented in graphical or tabular form): we systematically under-estimate exponential growth.
+... XXX we have to explicitly connect log perception to exponential prediction, which isn't easy, but does matter for our purposes XXX} -->
+
 \er{
-Research suggests our perception and mapping of numbers to a number line \svp{is logarithmic} at first, \svp{but} transitions to a linear \svp{scale} later in development, with formal \svp{mathematics education}.
+Research suggests our perception and mapping of numbers to a number line is logarithmic at first, but transitions to a linear scale later in development, with formal mathematics education.
 This transition to linear scales occurs first in small numbers (e.g. 1-10) and then gradually expands to higher orders of magnitude; thus, the logarithmic intuition about numbers in children is often more noticeable on scales in the thousands to hundreds of thousands. \citep{varshney_why_2013, siegler_numerical_2017, dehaeneLogLinearDistinct2008}.
-\svp{Explain why this matters - if we perceive logarithmically by default, it is a natural (and presumably low-effort) way to display information and should be easy to read and understand/use. In fact, research shows that we do not perceive exponential growth accurately (whether information is presented in graphical or tabular form): we systematically under-estimate exponential growth. There is one way to improve estimation of exponential trends other than changing the scale: ...}\svp{XXX we have to explicitly connect log perception to exponential prediction, which isn't easy, but does matter for our purposes XXX}
-Early studies explored the estimation and prediction of exponential growth, finding that growth is underestimated when presented both numerically and graphically but that numerical estimation is more accurate than graphical estimation for exponential curves. 
-While prior contextual knowledge or experience with exponential growth does not improve estimation, previous instruction on exponential growth reduces the underestimation by adjusting the initial starting value but not adjusting their perception of growth rate
+If we percieve logarithmically by default, it is a natural (and presumably low-effort) way to display information and should be easy to read and understand/use.}
+\er{In fact, early studies explored the estimation and prediction of exponential growth, finding that growth is underestimated when presented both numerically and graphically but that numerical estimation is more accurate than graphical estimation for exponential curves.}
+\svp{There is one way to improve estimation of exponential trends other than changing the scale:}
+\er{While prior contextual knowledge or experience with exponential growth does not improve estimation, previous instruction on exponential growth reduces the underestimation by adjusting the initial starting value but not adjusting their perception of growth rate
 \citep{wagenaar_misperception_1975, jones_polynomial_1977}.
 Estimation was shown to improve when subjects were presented with decreasing exponential functions \citep{timmers_inverse_1977}.
 \cite{jones_polynomial_1977}, \cite{wagenaar_extrapolation_1978}, and \cite{jones_generalized_1979} propose competing polynomial models for the perception and extrapolation of exponential series.
-\svp{It seems that} estimation is a two-stage process: First, we identify the type of curve and direction and then, we use that information for prediction \citep{best_perception_2007}.
+It seems that estimation is a two-stage process: first, we identify the type of curve and direction and then, we use that information for prediction \citep{best_perception_2007}.
 }
 
-\svp{Our inability to accurately predict exponential growth might also be addressed by log-transforming the data, however, this transformation introduces new complexities: most readers are not mathematically sophisticated enough to intuitively understand logarithmic math and translate that back into real-world effects.} \er{
-In \cite{menge_logarithmic_2018}, ecologists were surveyed to determine how often ecologists encounter log-scaled data and how well ecologists understand log-scaled data \svp{when they see it in the literature}. 
+\er{Our inability to accurately predict exponential growth might also be addressed by log-transforming the data, however, this transformation introduces new complexities: most readers are not mathematically sophisticated enough to intuitively understand logarithmic math and translate that back into real-world effects.
+In \cite{menge_logarithmic_2018}, ecologists were surveyed to determine how often ecologists encounter log-scaled data and how well ecologists understand log-scaled data when they see it in the literature. 
 Participants were presented two relationships displayed on linear-linear scales, log-log scales with untransformed values, or log–log scales with log-transformed values. 
 \cite{menge_logarithmic_2018} propose three types of misconceptions participants encountered when presented data on log-log scales: 'hand-hold fallacy', 'Zeno's zero fallacy', and 'watch out for curves fallacies'. 
 }\svp{Expand on this, please - this information is pretty critical...}
