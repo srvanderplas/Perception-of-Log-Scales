@@ -92,8 +92,8 @@ As the pandemic evolved, and the case counts were no longer spreading exponentia
 }
 <!-- Later on during the pandemic in summer 2020, the linear scale was effective at commmunicating the waves in case surges. -->
 \er{
-This is only one recent example of a situation in which both log and linear scales are useful for showing different aspects of the same data; there are long histories of using log scales to display results in ecology, psychophysics, engineering, and physics. 
-\citep{xkcd}
+This is only one recent example of a situation in which both log and linear scales are useful for showing different aspects of the same data; there are long histories of using log scales to display results in ecology, psychophysics, engineering, and physics 
+\citep{xkcd, menge_logarithmic_2018}.
 }
 \svp{XXX it may be interesting to find papers objecting to the use of log scales in some other disciplines beyond ecology.}
 <!-- Can we cite XKCD here? https://xkcd.com/1162/} -->
@@ -123,7 +123,16 @@ It seems that estimation is a two-stage process: first, we identify the type of 
 In \cite{menge_logarithmic_2018}, ecologists were surveyed to determine how often ecologists encounter log-scaled data and how well ecologists understand log-scaled data when they see it in the literature. 
 Participants were presented two relationships displayed on linear-linear scales, log-log scales with untransformed values, or log–log scales with log-transformed values. 
 \cite{menge_logarithmic_2018} propose three types of misconceptions participants encountered when presented data on log-log scales: 'hand-hold fallacy', 'Zeno's zero fallacy', and 'watch out for curves fallacies'. 
-}\svp{Expand on this, please - this information is pretty critical...}
+The 'hand-hold falacy' stems from the misconception that steeper slopes in log-log relationships are steeper slopes in linear-linear space. 
+In fact, it is not only the slope that matters, but also the intercept and the location on the horizontal axis since a line in log-log space represents a power law in linear-linear space (i.e. linear extraploation). 
+Emerging from 'Zeno's zero fallacy' is the misconception that positively sloped lines in log-log space can imply a non-zero value of y when x is zero. This is never true as postively sloped lines in log-log space actually imply that y = 0 when x = 0. 
+This misconception again is a result of linear extrapolation assuming that a line in log-log space represents a line instead of the power law in linear-linear space. 
+The last misconception, 'watch out for curves fallacies' encompases three faults: (1) lines in log-log space are lines in linear-linear space, (2) lines in log-log space curve upward in linear-linear space, and (3) curves in log-log space have the same curvature in linear-linear space. 
+Linear extrapolation is again responsible for the first and third faults while the second fault is a result of error in thinking that log-log lines represent power laws (which are exponential relationships), and all exponential relationships curve upward; this is only true when the log-log slope is greater than 1.
+\cite{menge_logarithmic_2018} found that in each of these scenarios, participants were consideraly confident in their incorrect responses indicating a incorrect knowledge rather than a lack of knowledge providing affirmation that our graphical design choices have a direct impact on the user's evaluation of the information.
+}
+
+<!-- }\svp{Expand on this, please - this information is pretty critical...} -->
 
 <!--
 Three fallacies (explain further?)

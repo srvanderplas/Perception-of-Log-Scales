@@ -93,8 +93,8 @@ As the pandemic evolved, and the case counts were no longer spreading exponentia
 }
 
 \textcolor{Plum}{
-This is only one recent example of a situation in which both log and linear scales are useful for showing different aspects of the same data; there are long histories of using log scales to display results in ecology, psychophysics, engineering, and physics. 
-\citep{xkcd}
+This is only one recent example of a situation in which both log and linear scales are useful for showing different aspects of the same data; there are long histories of using log scales to display results in ecology, psychophysics, engineering, and physics 
+\citep{xkcd, menge_logarithmic_2018}.
 }
 \textcolor{Green}{XXX it may be interesting to find papers objecting to the use of log scales in some other disciplines beyond ecology.}
 
@@ -115,7 +115,14 @@ It seems that estimation is a two-stage process: first, we identify the type of 
 In \cite{menge_logarithmic_2018}, ecologists were surveyed to determine how often ecologists encounter log-scaled data and how well ecologists understand log-scaled data when they see it in the literature. 
 Participants were presented two relationships displayed on linear-linear scales, log-log scales with untransformed values, or log–log scales with log-transformed values. 
 \cite{menge_logarithmic_2018} propose three types of misconceptions participants encountered when presented data on log-log scales: 'hand-hold fallacy', 'Zeno's zero fallacy', and 'watch out for curves fallacies'. 
-}\textcolor{Green}{Expand on this, please - this information is pretty critical...}
+The 'hand-hold falacy' stems from the misconception that steeper slopes in log-log relationships are steeper slopes in linear-linear space. 
+In fact, it is not only the slope that matters, but also the intercept and the location on the horizontal axis since a line in log-log space represents a power law in linear-linear space (i.e. linear extraploation). 
+Emerging from 'Zeno's zero fallacy' is the misconception that positively sloped lines in log-log space can imply a non-zero value of y when x is zero. This is never true as postively sloped lines in log-log space actually imply that y = 0 when x = 0. 
+This misconception again is a result of linear extrapolation assuming that a line in log-log space represents a line instead of the power law in linear-linear space. 
+The last misconception, 'watch out for curves fallacies' encompases three faults: (1) lines in log-log space are lines in linear-linear space, (2) lines in log-log space curve upward in linear-linear space, and (3) curves in log-log space have the same curvature in linear-linear space. 
+Linear extrapolation is again responsible for the first and third faults while the second fault is a result of error in thinking that log-log lines represent power laws (which are exponential relationships), and all exponential relationships curve upward; this is only true when the log-log slope is greater than 1.
+\cite{menge_logarithmic_2018} found that in each of these scenarios, participants were consideraly confident in their incorrect responses indicating a incorrect knowledge rather than a lack of knowledge providing affirmation that our graphical design choices have a direct impact on the user's evaluation of the information.
+}
 
 \textcolor{Plum}{
 In order to provide a set of principles to guide design choices, we must evaluate these design choices through the use of graphical tests. We can ask for participants to read information off of a chart and make effective decisions, we can ask participants to make predictions by e.g. drawing the next $n$ observations on a graph (this does not require understanding the data itself), or we can ask them to spot differences in one of several similar displays. In this paper, we explore the use of linear and log scales to determine whether our ability to notice differences in the data is different when different scales are used. This is the most basic level of exploration - it does not require that participants understand exponential growth, recognize a log scale, or have any sophisticated mathematical training: we are simply testing the change in perceptual sensitivity resulting from visualization choices. Our goal is to provide basic research to support the principles used to guide design decisions in scientific visualizations of exponential data.}
@@ -269,7 +276,7 @@ Each participant was shown a total of thirteen lineup plots (twelve) test lineup
 
 \textcolor{Plum}{Participants above age 19 were recruited from Reddit's R Visualization and R Sample Size communities. 
 Since participants recruitted on Reddit were not compensated for their time, most participants have an interest in data visualization research. 
-Previous literature suggests that prior mathematical knowledge or experience with exponential data is not associated with the outcome of graphical experiments (SITE THIS!). 
+Previous literature suggests that prior mathematical knowledge or experience with exponential data is not associated with the outcome of graphical experiments (CITE THIS!). 
 Participants were then directed to complete the experimental task available at https://shiny.srvanderplas.com/log-study/.
 }
 
@@ -287,7 +294,7 @@ They found that accuracy higher when nonlinear trends presented (e.g. it’s har
 \section{Results}\label{results}}
 
 \textcolor{Plum}{
-Participant data was anlalyzed using the Glimmix Procedure in SAS 9.4. Each lineup plot evaluated was assigned a value based on the participant response (correct = 1, not correct = 0). The binary response was analyzed using generalized linear mixed model following a binomial distribution. 
+Participant data was anlalyzed using the Glimmix Procedure in SAS 9.4. Each lineup plot evaluated was assigned a value based on the participant response (correct = 1, not correct = 0). The binary response was analyzed using generalized linear mixed model following a binomial distribution.
 }
 
 \hypertarget{curvature-differentiation}{%
