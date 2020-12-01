@@ -20,7 +20,7 @@ affiliation:
 bibliography: references.bib
 # appendix: appendix.tex
 abstract: |
-  Log scales are often used to display data over several orders of magnitude within one graph. During the COVID pandemic, we’ve seen both the benefits and the pitfalls of using log scales to display data. This paper aims to...
+  Log scales are often used to display data over several orders of magnitude within one graph. During the COVID-19 pandemic, we have seen both the benefits and the pitfalls of using log scales to display case counts, transmission rates, and outbreak regions. In this paper, we explore the use of linear and log scales to determine whether our ability to notice differences in the data is different when different scales are used. Our goal is to provide basic research to support the principles used to guide design decisions in scientific visualizations of exponential data. We found that displaying increasing exponential data on a log scale improved the accuracy of differentiating between two increasing exponential trends with more similar growth rates, particularly when identifying an exponential curve with a lower growth rate than others. When there was a larger discrepancy in exponential growth rates, participants accurately differentiated between the two curves on both the linear and log scale.
 keywords: |
   Exponential; Log; Visual Inference; Perception
 header-includes: |
@@ -343,10 +343,16 @@ They found that accuracy higher when nonlinear trends presented (e.g. it’s har
 
 # Results
 \er{
-Participant recruitment through Reddit occurred over the course of two weeks during which 58 individuals completed 518 unique test lineup evaluations. Participants who completed fewer than 6 lineup evaluations were removed from the study (17 participants, 41 evaluations). The final dataset included a total of 41 participants and 477 lineup evaluations. Each plot was evaluated between 18 and 28 individuals (Mean: 21.77, SD: 2.29). In 67% of the 477 lineup evaluations, participants correctly identified the target panel.
+Participant recruitment through Reddit occurred over the course of two weeks during which 58 individuals completed 518 unique test lineup evaluations. 
+Participants who completed fewer than 6 lineup evaluations were removed from the study (17 participants, 41 evaluations).
+The final dataset included a total of 41 participants and 477 lineup evaluations. 
+Each plot was evaluated between 18 and 28 individuals (Mean: 21.77, SD: 2.29). In 67% of the 477 lineup evaluations, participants correctly identified the target panel.
 }
 \er{
-Target plot identification was anlalyzed using the Glimmix Procedure in SAS 9.4. Each lineup plot evaluated was assigned a value based on the participant response (correct = 1, not correct = 0). Define $Y_{ijkl}$ to be the event that participant $l$ correctly identifies the target plot for dataset $k$ with curvature $j$ plotted on scale $i$. The binary response was analyzed using generalized linear mixed model following a binomial distribution with a logit link function following a row-column blocking design accounting for the variation due to participant and dataset respectively with a split plot design accounting for the same participant evaluating the same dataset on both the linear scale and log scale as shown in the Equation (1).
+Target plot identification was anlalyzed using the Glimmix Procedure in SAS 9.4. 
+Each lineup plot evaluated was assigned a value based on the participant response (correct = 1, not correct = 0). 
+Define $Y_{ijkl}$ to be the event that participant $l$ correctly identifies the target plot for dataset $k$ with curvature $j$ plotted on scale $i$. 
+The binary response was analyzed using generalized linear mixed model following a binomial distribution with a logit link function following a row-column blocking design accounting for the variation due to participant and dataset respectively with a split plot design accounting for the same participant evaluating the same dataset on both the linear scale and log scale as shown in the Equation (1).
 \begin{equation}
 \text{logit }P(Y_{ijk}) = \eta + \delta_i + \gamma_j + \delta \gamma_{ij} + s_l + d_k + wp_{jkl}
 \end{equation}
@@ -360,13 +366,8 @@ where
 &d_k \sim N(0,\sigma^2_{\text{dataset}}), \text{ random effect for data specific characteristics.} \\
 &wp_{jkl} \sim N(0,\sigma^2_\text{{whole-plot}}), \text{ random effect for the particular participant by dataset charactersitics.}
 \end{align*}
-We assume that random effects for dataset, participant, and whole plot effects are independent. ADD MODEL DETAILS TO APPENDIX?
+We assume that random effects for dataset, participant, and whole plot effects are independent. ADD MODEL DETAILS TO APPENDIX (e.g. ANOVA, p-values, pairwise comparisons, etc.)
 }
-
-\er{
-The estimated probability of selecitng the target plot for each of the curvature combinations on both the linear and log scale are shown in Figure \ref{fig:lsmeans-plot}. We see that detecting the target panel in a lineup consisting of a combination of easy (lots of curvature) and hard (almost linear) (i.e. Easy-Hard or Hard-Easy) is detected with higher probabilities on both the linear and log scale. This is to be expected since the easy and hard models have the largest difference in rates of exponential growth. When comparing models that have similar rates of change (e.g. Medium-Easy), we notice a slight decrease in accuracy, particularly when presented on the linear scale. It is worth noting that there is a more significant decrease in accuracy on the linear scale when comparing a target plot with a lower rate of change embeded in null plots with higher rates of change (e.g. Medium-Easy and Hard-Medium). This agrees with \cite{best_perception_2007} whose results found that accurcy was higher when nonlinear trends were presented indicating that it is hard to say something is linear (i.e. something has less curvature), but easy to say that it isn't (i.e. something has more curvature). Overall, there is are no signficant differences in accuracy between curvature combinations when data is presented on a log scale indicating participants were consistent in their success of identifying the target panel on the log scale. 
-}
-
 ```{r lsmeans-plot, eval = T, fig.width = 5.5, fig.height = 2.5, fig.align = 'center', fig.cap = "Least Squares Means"}
 lsmeans <- read.csv("results/jsm-student-paper-lsmeans.csv")
 lsmeans_plot <- lsmeans %>%
@@ -391,9 +392,26 @@ lsmeans_plot <- lsmeans %>%
   scale_x_discrete("")
 lsmeans_plot
 ```
-Figure \ref{fig:odds-ratio-plot} displays the estimated odds of successfully identifying the target panel on the log scale compared to the linear scale. From left to right, the (log) odds of successfully identifying the target panel on the log scale compared to the linear scale increase. As hypothesized, the scale had the least effect on selecting a target plot with lots of curvature (Easy) embeded in almost linear null plots (Hard) followed closely by a target plot with noticable curvature (Medium) embedded in almost linear null plots (Hard) on both the linear and log scales. As described above, the log scale 
 
-```{r odds-ratio-plot, eval = T, fig.width = 5.5, fig.height = 2.5, fig.align='center', fig.cap = "Odds Ratio's"}
+\er{
+The estimated probability of selecitng the target plot for each of the curvature combinations on both the linear and log scale are shown in Figure \ref{fig:lsmeans-plot}. 
+We see that detecting the target panel in a lineup consisting of a combination of easy (lots of curvature) and hard (almost linear) (i.e. Easy-Hard or Hard-Easy) is detected with higher probabilities on both the linear and log scale. 
+This is to be expected since the easy and hard models have the largest difference in rates of exponential growth.
+When comparing models that have similar rates of change (e.g. Medium-Easy), we notice a slight decrease in accuracy, particularly when presented on the linear scale. 
+It is worth noting that there is a more significant decrease in accuracy on the linear scale when comparing a target plot with a lower rate of change embeded in null plots with higher rates of change (e.g. Medium-Easy and Hard-Medium). 
+This agrees with \cite{best_perception_2007} whose results found that accurcy was higher when nonlinear trends were presented indicating that it is hard to say something is linear (i.e. something has less curvature), but easy to say that it isn't (i.e. something has more curvature). 
+Overall, there is are no signficant differences in accuracy between curvature combinations when data is presented on a log scale indicating participants were consistent in their success of identifying the target panel on the log scale. 
+}
+
+\er{
+Figure \ref{fig:odds-ratio-plot} displays the estimated odds of successfully identifying the target panel on the log scale compared to the linear scale. 
+From left to right, the (log) odds of successfully identifying the target panel on the log scale compared to the linear scale increase. 
+As hypothesized, the scale had the least effect on selecting a target plot with lots of curvature (Easy) embeded in almost linear null plots (Hard) followed closely by a target plot with noticable curvature (Medium) embedded in almost linear null plots (Hard) on both the linear and log scales. 
+While the log scale increased the estimated accuracy of detecting an almost linear target plot (Hard) embeded in obvious curvature plots (Easy), there is no significant evidence of a difference between the log and linear scale due to the large difference in exponential growth rates. 
+We saw a signifcant increase in accuracy when exponential growth was plotted on the log scale when detecting a an almost linear target plot (Hard) embedded in null plots with noticable curvature (Medium) and a target plot with obvious curvature (Easy) embeded in null plots with noticable curvature (Medium). 
+Displaying data on a log scale had the largest effect on selecting a target plot with noticable curvature (Medium) embeded in null plots with obvious curvature (Hard).
+}
+```{r odds-ratio-plot, eval = T, fig.width = 5, fig.height = 2, fig.align='center', fig.cap = "Odds Ratio's"}
 slice_curvature <- read.csv("results/jsm-student-paper-slice-curvature.csv")
 odds_ratio_plot <- slice_curvature %>%
   mutate(Simple.Effect.Level = substr(Simple.Effect.Level, 11, 17)) %>%
@@ -414,7 +432,9 @@ odds_ratio_plot
 
 <!-- + What we learned from lineups but what we still want to learn. -->
 \er{
-In this study, we discovered that differentiation between data following exponentially increasing trends with differing growth rates is FINISH THIS.
+The overall goal of this research is to provide basic research to support the principles used to guide design decisions in scientific visualizations of exponential data. 
+In this study, we explored the use of linear and log scales to determine whether our ability to notice differences in the data is different when different scales are used. 
+Our results indicated that displaying increasing exponential data on a log scale improved the accuracy of differentiating between two increasing exponential trends with more similar growth rates, particularly when identifying an exponential curve with a lower growth rate than others. When there was a larger discrepancy in exponential growth rates, participants accurately differentiated between the two curves on both the linear and log scale.
 }
 
 \er{
@@ -423,7 +443,7 @@ Previous literature suggests that we tend to underestimate predictions of expone
 \citep{mosteller_eye_1981} designed and carried out an empirical investigation to explore properties of lines fitted by eye.
 The researchers found that students tended to fit the slope of the first principal component or major axis (the line that minimizes the sum of squares of perpendicular rather than vertical distances) and that students who gave steep slopes for one data set also tended to give steep slopes on the others. 
 Interestingly, the individual-to-individual variability in slope and in intercept was near the standard error provided by least squares.
-A similar graphical taxk is used in the New York Times "You Draw It" page asking readers to test their knowledge by using their curser to estimate values of a certain topic under different political administrations or over different years (CITE THIS).
+A similar graphical task is used in the New York Times "You Draw It" page asking readers to test their knowledge by using their curser to estimate values of a certain topic under different political administrations or over different years (CITE THIS).
 In addition to differentiation and prediction of exponentially increasing data, it is of interest to test an individuals ability to translate a graph of exponentially increasing data into real value quantities and extend their estimations by making comparisons. 
 \citep{friel_making_2001} emphasize the importance of graph comprehension proposing that the graph construction plays a role in the ability to read and interpret graphs.
 }
