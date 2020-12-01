@@ -319,7 +319,7 @@ Each participant was shown a total of thirteen lineup plots (twelve) test lineup
 
 \er{Participants above age 19 were recruited from Reddit's R Visualization and R Sample Size communities. 
 Since participants recruitted on Reddit were not compensated for their time, most participants have an interest in data visualization research. 
-Previous literature suggests that prior mathematical knowledge or experience with exponential data is not associated with the outcome of graphical experiments (SITE THIS!). 
+Previous literature suggests that prior mathematical knowledge or experience with exponential data is not associated with the outcome of graphical experiments (CITE THIS!). 
 Participants were then directed to complete the experimental task available at https://shiny.srvanderplas.com/log-study/.
 }
 
