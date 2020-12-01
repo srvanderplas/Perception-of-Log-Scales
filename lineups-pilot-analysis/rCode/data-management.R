@@ -137,3 +137,10 @@ lineup_results_data <- lineup_results_data_raw %>%
 # write.csv(lineup_results_data, file = "lineups-pilot-analysis/data/jsm-student-paper-11302020.csv", row.names = F, na = "")
 
 rm(list=setdiff(ls(), "lineup_results_data"))
+
+final_data <- lineup_results_data %>%
+  filter(participant_count > 5)
+
+
+summary(final_data)
+unique(final_data$run)

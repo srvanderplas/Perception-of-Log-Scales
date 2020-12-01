@@ -25,7 +25,7 @@ global_labeller <- labeller(
 
 # p_curvature <- lineup_results_data %>%
   
-  wayne_data %>%
+p_curvature <- lineup_results_data %>%
   ggplot(aes(x = test_param, y = correct, group = test_param, color = test_param)) +
   # geom_jitter(width = 0.15, height = 0.15, alpha = 0.9) +
   geom_point(position = position_jitterdodge(jitter.width = 0.3, jitter.height = 0.1, dodge.width = 1), alpha = 0.5) +

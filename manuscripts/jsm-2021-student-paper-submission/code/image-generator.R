@@ -324,3 +324,42 @@ lofPlot_curvature <- lofData %>%
         aspect.ratio = 1)
 lofPlot_curvature
 # ggsave(plot = lofPlot_curvature, filename = "lof-curvature.png", path = here::here("manuscripts", "jsm-2021-student-paper-submission", "images"), device = "png", width = 10, height = 5, dpi = 600)
+
+# ----------------------------------------------------------------------------------
+# LSMEANS --------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------
+lsmeans <- read.csv("lineups-pilot-analysis/results/jsm-student-paper-lsmeans.csv")
+summary(lsmeans)
+
+lsmeans %>%
+  mutate(target_curvature = substr(as.character(curvature), 3,3),
+         null_curvature   = substr(as.character(curvature), 7,7),
+         ) %>%
+  mutate(target_curvature = factor(target_curvature, levels = c("E", "M", "H")),
+         null_curvature = factor(null_curvature, levels = c("E", "M", "H")),
+         curvature = factor(curvature, levels = c("t-E_n-H", "t-H_n-E", "t-E_n-M", "t-M_n-E", "t-M_n-H", "t-H_n-M"))) %>%
+  ggplot(aes(x = curvature, y = Mu, group = test_param, label = Tukey_Grouping_overall)) +
+  geom_bar(stat = "identity", fill = "lightgray") +
+  geom_text(aes(y = UpperMu + 0.05)) +
+  facet_wrap(~test_param, ncol = 1) +
+  geom_errorbar(aes(ymin = LowerMu, ymax = UpperMu), width = 0.1) +
+  theme_bw() +
+  scale_y_continuous("Probability of target panel detected", limit = c(0,1.1), breaks = seq(0,1,0.2)) +
+  scale_x_discrete("Curvature")
+
+# ----------------------------------------------------------------------------------
+# Odds Ratios --------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------
+slice_curvature <- read.csv("lineups-pilot-analysis/results/jsm-student-paper-slice-curvature.csv")
+summary(slice_curvature)
+
+slice_curvature %>%
+  mutate(Simple.Effect.Level = substr(Simple.Effect.Level, 11, 17)) %>%
+  ggplot(aes(x = Odds_Ratio_log_linear, y = reorder(Simple.Effect.Level, Odds_Ratio_log_linear))) +
+  geom_point() + 
+  geom_errorbar(aes(xmin = Lower_Odds_Ratio_log_linear, xmax = Upper_Odds_Ratio_log_linear), width = 0) +
+  geom_vline(xintercept = 1) +
+  theme_bw() +
+  scale_y_discrete("") +
+  scale_x_continuous("Odds ratio (on log scale) \n (Log vs Linear)", trans = "log10") +
+  ggtitle("Odds Ratio of selecting the target panel on the log scale compared to the linear scale")
