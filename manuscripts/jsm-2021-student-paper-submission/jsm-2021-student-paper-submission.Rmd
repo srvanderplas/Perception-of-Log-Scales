@@ -295,15 +295,15 @@ lofPlot_curvature <- lofData %>%
   mutate(Variability = factor(Variability, levels = c("Low"))) %>%
   ggplot(aes(x = statistic, fill = Curvature, color = Curvature)) +
   geom_density(alpha = 0.7) +
-  scale_fill_brewer(palette = "Paired") + 
-  scale_color_brewer(palette = "Paired") + 
+  scale_fill_grey() + 
+  scale_color_grey() + 
   theme_bw(base_size = 14) +
   theme(legend.position = "bottom",
         axis.text    = element_text(size = 6),
         axis.title   = element_text(size = 8),
         legend.title = element_text(size = 8),
         legend.text  = element_text(size = 6),
-        legend.key.size = unit(0.5,"line")
+        legend.key.size = unit(0.5, "line")
         ) +
   scale_x_continuous("Lack of Fit Statistic")
 lofPlot_curvature
@@ -363,9 +363,13 @@ where
 We assume that random effects for dataset, participant, and whole plot effects are independent. ADD MODEL DETAILS TO APPENDIX?
 }
 
-```{r lsmeans-plot, fig.cap = "Least Squares Means", fig.width = 5.5, fig.height = 2.5}
+\er{
+The estimated probability of selecitng the target plot for each of the curvature combinations on both the linear and log scale are shown in Figure \ref{fig:lsmeans-plot}. We see that detecting the target panel in a lineup consisting of a combination of easy (lots of curvature) and hard (almost linear) (i.e. Easy-Hard or Hard-Easy) is detected with higher probabilities on both the linear and log scale. This is to be expected since the easy and hard models have the largest difference in rates of exponential growth. When comparing models that have similar rates of change (e.g. Medium-Easy), we notice a slight decrease in accuracy, particularly when presented on the linear scale. It is worth noting that there is a more significant decrease in accuracy on the linear scale when comparing a target plot with a lower rate of change embeded in null plots with higher rates of change (e.g. Medium-Easy and Hard-Medium). This agrees with \cite{best_perception_2007} whose results found that accurcy was higher when nonlinear trends were presented indicating that it is hard to say something is linear (i.e. something has less curvature), but easy to say that it isn't (i.e. something has more curvature). Overall, there is are no signficant differences in accuracy between curvature combinations when data is presented on a log scale indicating participants were consistent in their success of identifying the target panel on the log scale. 
+}
+
+```{r lsmeans-plot, eval = T, fig.width = 5.5, fig.height = 2.5, fig.align = 'center', fig.cap = "Least Squares Means"}
 lsmeans <- read.csv("results/jsm-student-paper-lsmeans.csv")
-lsmeans %>%
+lsmeans_plot <- lsmeans %>%
   mutate(target_curvature = substr(as.character(curvature), 3,3),
          null_curvature   = substr(as.character(curvature), 7,7),
          ) %>%
@@ -385,12 +389,13 @@ lsmeans %>%
         ) +
   scale_y_continuous("Probability of Detecting Target Panel", limit = c(0,1.1), breaks = seq(0,1,0.2)) +
   scale_x_discrete("")
+lsmeans_plot
 ```
+Figure \ref{fig:odds-ratio-plot} displays the estimated odds of successfully identifying the target panel on the log scale compared to the linear scale. From left to right, the (log) odds of successfully identifying the target panel on the log scale compared to the linear scale increase. As hypothesized, the scale had the least effect on selecting a target plot with lots of curvature (Easy) embeded in almost linear null plots (Hard) followed closely by a target plot with noticable curvature (Medium) embedded in almost linear null plots (Hard) on both the linear and log scales. As described above, the log scale 
 
-
-```{r odds-ratio-plot, fig.cap = "Odds Ratio's", fig.width = 5.5, fig.height = 2.5}
+```{r odds-ratio-plot, eval = T, fig.width = 5.5, fig.height = 2.5, fig.align='center', fig.cap = "Odds Ratio's"}
 slice_curvature <- read.csv("results/jsm-student-paper-slice-curvature.csv")
-slice_curvature %>%
+odds_ratio_plot <- slice_curvature %>%
   mutate(Simple.Effect.Level = substr(Simple.Effect.Level, 11, 17)) %>%
   ggplot(aes(x = Odds_Ratio_log_linear, y = reorder(Simple.Effect.Level, Odds_Ratio_log_linear))) +
   geom_point() + 
@@ -402,6 +407,7 @@ slice_curvature %>%
         ) +
   scale_y_discrete("") +
   scale_x_continuous("Odds ratio (on log scale) \n (Log vs Linear)", trans = "log10")
+odds_ratio_plot
 ```
 
 # Discussion and Conclusion
