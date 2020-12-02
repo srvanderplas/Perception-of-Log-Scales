@@ -20,7 +20,7 @@ affiliation:
 bibliography: references.bib
 # appendix: appendix.tex
 abstract: |
-  Log scales are often used to display data over several orders of magnitude within one graph. During the COVID pandemic, we’ve seen both the benefits and the pitfalls of using log scales to display data. This paper aims to...
+  Log scales are often used to display data over several orders of magnitude within one graph. During the COVID-19 pandemic, we have seen both the benefits and the pitfalls of using log scales to display case counts, transmission rates, and outbreak regions. In this paper, we explore the use of linear and log scales to determine whether our ability to notice differences in the data is different when different scales are used. Our goal is to provide basic research to support the principles used to guide design decisions in scientific visualizations of exponential data. We found that displaying increasing exponential data on a log scale improved the accuracy of differentiating between two increasing exponential trends with more similar growth rates, particularly when identifying an exponential curve with a lower growth rate than others. When there was a larger discrepancy in exponential growth rates, participants accurately differentiated between the two curves on both the linear and log scale.
 keywords: |
   Exponential; Log; Visual Inference; Perception
 header-includes: |
@@ -92,8 +92,8 @@ As the pandemic evolved, and the case counts were no longer spreading exponentia
 }
 <!-- Later on during the pandemic in summer 2020, the linear scale was effective at commmunicating the waves in case surges. -->
 \er{
-This is only one recent example of a situation in which both log and linear scales are useful for showing different aspects of the same data; there are long histories of using log scales to display results in ecology, psychophysics, engineering, and physics. 
-\citep{xkcd}
+This is only one recent example of a situation in which both log and linear scales are useful for showing different aspects of the same data; there are long histories of using log scales to display results in ecology, psychophysics, engineering, and physics 
+\citep{xkcd, menge_logarithmic_2018}.
 }
 \svp{XXX it may be interesting to find papers objecting to the use of log scales in some other disciplines beyond ecology.}
 <!-- Can we cite XKCD here? https://xkcd.com/1162/} -->
@@ -104,14 +104,15 @@ This is only one recent example of a situation in which both log and linear scal
 
 <!-- \svp{In fact, research shows that we do not perceive exponential growth accurately (whether information is presented in graphical or tabular form): we systematically under-estimate exponential growth.
 ... XXX we have to explicitly connect log perception to exponential prediction, which isn't easy, but does matter for our purposes XXX} -->
+<!-- \svp{There is one way to improve estimation of exponential trends other than changing the scale:} -->
 
 \er{
 Research suggests our perception and mapping of numbers to a number line is logarithmic at first, but transitions to a linear scale later in development, with formal mathematics education.
 This transition to linear scales occurs first in small numbers (e.g. 1-10) and then gradually expands to higher orders of magnitude; thus, the logarithmic intuition about numbers in children is often more noticeable on scales in the thousands to hundreds of thousands. \citep{varshney_why_2013, siegler_numerical_2017, dehaeneLogLinearDistinct2008}.
 If we percieve logarithmically by default, it is a natural (and presumably low-effort) way to display information and should be easy to read and understand/use.}
-\er{In fact, early studies explored the estimation and prediction of exponential growth, finding that growth is underestimated when presented both numerically and graphically but that numerical estimation is more accurate than graphical estimation for exponential curves.}
-\svp{There is one way to improve estimation of exponential trends other than changing the scale:}
-\er{While prior contextual knowledge or experience with exponential growth does not improve estimation, previous instruction on exponential growth reduces the underestimation by adjusting the initial starting value but not adjusting their perception of growth rate
+\er{In fact, early studies explored the estimation and prediction of exponential growth, finding that growth is underestimated when presented both numerically and graphically but that numerical estimation is more accurate than graphical estimation for exponential curves.
+One way to improve estimation of increasing exponential trends other than changing the scale is through the use of providing immediate feedback \citep{mackinnon_feedback_1991}.
+While prior contextual knowledge or experience with exponential growth does not improve estimation, previous instruction on exponential growth reduces the underestimation by adjusting the initial starting value but not adjusting their perception of growth rate
 \citep{wagenaar_misperception_1975, jones_polynomial_1977}.
 Estimation was shown to improve when subjects were presented with decreasing exponential functions \citep{timmers_inverse_1977}.
 \cite{jones_polynomial_1977}, \cite{wagenaar_extrapolation_1978}, and \cite{jones_generalized_1979} propose competing polynomial models for the perception and extrapolation of exponential series.
@@ -122,10 +123,17 @@ It seems that estimation is a two-stage process: first, we identify the type of 
 In \cite{menge_logarithmic_2018}, ecologists were surveyed to determine how often ecologists encounter log-scaled data and how well ecologists understand log-scaled data when they see it in the literature. 
 Participants were presented two relationships displayed on linear-linear scales, log-log scales with untransformed values, or log–log scales with log-transformed values. 
 \cite{menge_logarithmic_2018} propose three types of misconceptions participants encountered when presented data on log-log scales: 'hand-hold fallacy', 'Zeno's zero fallacy', and 'watch out for curves fallacies'. 
-}\svp{Expand on this, please - this information is pretty critical...}
+The 'hand-hold falacy' stems from the misconception that steeper slopes in log-log relationships are steeper slopes in linear-linear space. 
+In fact, it is not only the slope that matters, but also the intercept and the location on the horizontal axis since a line in log-log space represents a power law in linear-linear space (i.e. linear extraploation). 
+Emerging from 'Zeno's zero fallacy' is the misconception that positively sloped lines in log-log space can imply a non-zero value of y when x is zero. This is never true as postively sloped lines in log-log space actually imply that y = 0 when x = 0. 
+This misconception again is a result of linear extrapolation assuming that a line in log-log space represents a line instead of the power law in linear-linear space. 
+The last misconception, 'watch out for curves fallacies' encompases three faults: (1) lines in log-log space are lines in linear-linear space, (2) lines in log-log space curve upward in linear-linear space, and (3) curves in log-log space have the same curvature in linear-linear space. 
+Linear extrapolation is again responsible for the first and third faults while the second fault is a result of error in thinking that log-log lines represent power laws (which are exponential relationships), and all exponential relationships curve upward; this is only true when the log-log slope is greater than 1.
+\cite{menge_logarithmic_2018} found that in each of these scenarios, participants were consideraly confident in their incorrect responses indicating a incorrect knowledge rather than a lack of knowledge providing affirmation that our graphical design choices have a direct impact on the user's evaluation of the information.
+}
 
-\svp{Introduce the different ways that graphics can be tested: we can ask for participants to read information off of a chart and make effective decisions, we can ask participants to make predictions by e.g. drawing the next $n$ observations on a graph (this does not require understanding the data itself), or we can ask them to spot differences in one of several similar displays. In this paper, we explore the use of linear and log scales to determine whether our ability to notice differences in the data is different when different scales are used. This is the most basic level of exploration - it does not require that participants understand exponential growth, recognize a log scale, or have any sophisticated mathematical training: we are simply testing the change in perceptual sensitivity resulting from visualization choices. Our goal is to provide basic research to support the principles used to guide design decisions in scientific visualizations of exponential data.}\er{
-This paper aims to investigate the use of log scales to display exponentially increasing data. We hypothesize log scales should make it much easier to estimate the growth rate since we estimate slopes relatively accurately, resolving much of the difficulty with exponential estimation \citep{mosteller_eye_1981}.}
+<!-- }\svp{Expand on this, please - this information is pretty critical...} -->
+
 <!--
 Three fallacies (explain further?)
 
@@ -150,9 +158,18 @@ curves in log–log space have similar curvature in linear–linear space
 <!-- + Visual Inference (what is it? how do we use it? etc.) *needs lots of work yet* -->
 
 <!-- \svp{Might be easier to start with graphs are statistics, but that to evaluate a graph we have to run our statistic through a visual evaluation - a person. Then you can explain that with the same data, if two different methods of presenting the data result in qualitatively different results re. evaluation by a human, then it is possible to develop recommendations based on the visual inference experiment.} -->
+
+<!-- \svp{Introduce the different ways that graphics can be tested: we can ask for participants to read information off of a chart and make effective decisions, we can ask participants to make predictions by e.g. drawing the next $n$ observations on a graph (this does not require understanding the data itself), or we can ask them to spot differences in one of several similar displays. In this paper, we explore the use of linear and log scales to determine whether our ability to notice differences in the data is different when different scales are used. This is the most basic level of exploration - it does not require that participants understand exponential growth, recognize a log scale, or have any sophisticated mathematical training: we are simply testing the change in perceptual sensitivity resulting from visualization choices. Our goal is to provide basic research to support the principles used to guide design decisions in scientific visualizations of exponential data.} -->
+
+<!-- \er{ -->
+<!-- This paper aims to investigate the use of log scales to display exponentially increasing data. We hypothesize log scales should make it much easier to estimate the growth rate since we estimate slopes relatively accurately, resolving much of the difficulty with exponential estimation \citep{mosteller_eye_1981}.} -->
+
+\er{
+In order to provide a set of principles to guide design choices, we must evaluate these design choices through the use of graphical tests. We can ask for participants to read information off of a chart and make effective decisions, we can ask participants to make predictions by e.g. drawing the next $n$ observations on a graph (this does not require understanding the data itself), or we can ask them to spot differences in one of several similar displays. In this paper, we explore the use of linear and log scales to determine whether our ability to notice differences in the data is different when different scales are used. This is the most basic level of exploration - it does not require that participants understand exponential growth, recognize a log scale, or have any sophisticated mathematical training: we are simply testing the change in perceptual sensitivity resulting from visualization choices. Our goal is to provide basic research to support the principles used to guide design decisions in scientific visualizations of exponential data.}
+
 \er{
 Graphs are considered statistics where the numerical data is mapped to a visual display.
-To evaluate a graph, we have to run our statistic thrugh a visual evaluation - a person. Using the same data, if two different methods of presenting data result in qualitatively different results, re. evaluation by a human, then it is possible to develop recommendations based on the visual inference experiment.  
+To evaluate a graph, we have to run our statistic throuugh a visual evaluation - a person. Using the same data, if two different methods of presenting data result in qualitatively different results, re. evaluation by a human, then it is possible to develop recommendations based on the visual inference experiment.  
 Recent graphical experiments have utilized statistical lineups to quantify the perception of graphical design choices\citep{vanderplas_clusters_2017}. 
 Statistical lineups provide an elegant way of combining perception and statistical signficiance by valdiating the findings from a graphical experiment \citep{buja_statistical_2009, wickham2010graphical, hofmann_graphical_2012, majumder_validation_2013, vanderplas_clusters_2017}.
 'Lineups' are named after the 'police lineup' of criminal investigations where witnesses are asked to identify the criminal from a set of individuals. 
@@ -164,7 +181,7 @@ Crowd sourcing websites such as Amazon Mechanical Turk, Reddit, and Proflic allo
 In this paper, we use statistical lineups to test human subjects ability to differentiate between increasing exponential data with differing growth rates displayed on both the linear scale and log scale.
 }
 
-```{r lineup-example, eval = T, fig.height = 2.75, fig.width = 5.5, fig.align = 'center', fig.cap = "The plot on the left displays increasing exponential data on a linear scale with panel (2 x 5) + 3 as the target. The plot on the right displays increasing exponential data on the log scale with panel 2 x 2 as the target."}
+```{r lineup-example, eval = T, fig.height = 2.75, fig.width = 5.75, fig.align = 'center', fig.cap = "The plot on the left displays increasing exponential data on a linear scale with panel (2 x 5) + 3 as the target. The plot on the right displays increasing exponential data on the log scale with panel 2 x 2 as the target."}
 lineupData_linear <- read.csv(file = "data/lineupData_linear.csv")
 linearPlot <- ggplot(lineupData_linear, aes(x=x, y=y)) +
   facet_wrap(~.sample, ncol=5) +
@@ -278,15 +295,15 @@ lofPlot_curvature <- lofData %>%
   mutate(Variability = factor(Variability, levels = c("Low"))) %>%
   ggplot(aes(x = statistic, fill = Curvature, color = Curvature)) +
   geom_density(alpha = 0.7) +
-  scale_fill_brewer(palette = "Paired") + 
-  scale_color_brewer(palette = "Paired") + 
+  scale_fill_grey() + 
+  scale_color_grey() + 
   theme_bw(base_size = 14) +
   theme(legend.position = "bottom",
         axis.text    = element_text(size = 6),
         axis.title   = element_text(size = 8),
         legend.title = element_text(size = 8),
         legend.text  = element_text(size = 6),
-        legend.key.size = unit(0.5,"line")
+        legend.key.size = unit(0.5, "line")
         ) +
   scale_x_continuous("Lack of Fit Statistic")
 lofPlot_curvature
@@ -299,7 +316,7 @@ For exmaple, a target plot with simulated data following an increasing exponenti
 By our constraints, the target plot and null plots will span a similar domain and range. 
 There are a total of 6 (i.e. 3 choose 2) lineup parameter combinations.
 Two sets of each lineup parameter combination were simulated (total of 12 test datasets) and plotted on both the linear and the log scale (total of 24 test lineup plots). 
-It is worth noting that there were also three rorschach lineup parameter combinations (e.g. Easy-Easy) and that each of these also had two sets of datasets simulated and plotted on both scales (12 rorscahch lineup plots).
+It is worth noting that there were also three rorschach lineup parameter combinations (e.g. Easy-Easy) and that each of these also had two sets of datasets simulated and plotted on both scales (12 rorscahch lineup plots). Evaluations of the rorscahch lineup plots were not included in the anaysis of this paper.
 }
 
 ## Study Design
@@ -309,10 +326,10 @@ Each participant was shown a total of thirteen lineup plots (twelve) test lineup
 
 ## Participant Recruitment
 
-\er{Participants above age 19 were recruited from Reddit's R Visualization community. 
+\er{Participants above age 19 were recruited from Reddit's R Visualization and R Sample Size communities.
 Since participants recruitted on Reddit were not compensated for their time, most participants have an interest in data visualization research. 
-Previous literature suggests that prior mathematical knowledge or experience with exponential data is not associated with the outcome of graphical experiments (SITE THIS!). 
-Participants were then directed to complete the experimental task available at LINK TO SHINY APP HERE.
+Previous literature suggests that prior mathematical knowledge or experience with exponential data is not associated with the outcome of graphical experiments (CITE THIS!). 
+Participants were then directed to complete the experimental task available at https://shiny.srvanderplas.com/log-study/.
 }
 
 ## Task Description
@@ -321,53 +338,123 @@ Participants were then directed to complete the experimental task available at L
 On each plot, participants were asked to justify their choice and provide their level of confidence in their choice.
 The goal of this experimental task is to test an individuals ability to perceptually differentiate exponentially increasing data with differing rates of change on both the linear and log scale. 
 In \cite{best_perception_2007}, the authors explored whether descrimination between curve types is possible. 
-They found that accuracy higher when nonlinear trends presented (e.g. it’s hard to say something is linear, but easy to say that it isn’t) and that accuracy higher with low additive variability.
+They found that accuracy higher when nonlinear trends presented (e.g. it’s hard to say something is linear, but easy to say that it isn’t) and that accuracy higher with low additive variability. We hypothesize log scales should make it much easier to estimate the growth rate since we estimate slopes relatively accurately, resolving much of the difficulty with exponential estimation \citep{mosteller_eye_1981}.
 }
 
 # Results
 \er{
-Participant data was anlalyzed using the Glimmix Procedure in SAS 9.4. Each lineup plot evaluated was assigned a value based on the participant response (correct = 1, not correct = 0). The binary response was analyzed using generalized linear mixed model following a binomial distribution. 
+Participant recruitment through Reddit occurred over the course of two weeks during which 58 individuals completed 518 unique test lineup evaluations. 
+Participants who completed fewer than 6 lineup evaluations were removed from the study (17 participants, 41 evaluations).
+The final dataset included a total of 41 participants and 477 lineup evaluations. 
+Each plot was evaluated between 18 and 28 individuals (Mean: 21.77, SD: 2.29). In 67% of the 477 lineup evaluations, participants correctly identified the target panel.
+}
+\er{
+Target plot identification was anlalyzed using the Glimmix Procedure in SAS 9.4. 
+Each lineup plot evaluated was assigned a value based on the participant response (correct = 1, not correct = 0). 
+Define $Y_{ijkl}$ to be the event that participant $l$ correctly identifies the target plot for dataset $k$ with curvature $j$ plotted on scale $i$. 
+The binary response was analyzed using generalized linear mixed model following a binomial distribution with a logit link function following a row-column blocking design accounting for the variation due to participant and dataset respectively with a split plot design accounting for the same participant evaluating the same dataset on both the linear scale and log scale as shown in the Equation (1).
+\begin{equation}
+\text{logit }P(Y_{ijk}) = \eta + \delta_i + \gamma_j + \delta \gamma_{ij} + s_l + d_k + wp_{jkl}
+\end{equation}
+where
+\begin{align*}
+&\eta               \text{ is the beaseline average probability of selecting the target plot.} \\
+&\delta_i           \text{ is the effect of the log/linear scale.} \\
+&\gamma_j           \text{ is the effect of the curvature combination.} \\
+&\delta\gamma_{ij}  \text{ is the two-way interaction effect of the scale and curvature.} \\
+&s_l \sim N(0,\sigma^2_\text{{participant}}), \text{ random effect for participant characteristics} \\
+&d_k \sim N(0,\sigma^2_{\text{dataset}}), \text{ random effect for data specific characteristics.} \\
+&wp_{jkl} \sim N(0,\sigma^2_\text{{whole-plot}}), \text{ random effect for the particular participant by dataset charactersitics.}
+\end{align*}
+We assume that random effects for dataset, participant, and whole plot effects are independent. ADD MODEL DETAILS TO APPENDIX (e.g. ANOVA, p-values, pairwise comparisons, etc.)
+}
+```{r lsmeans-plot, eval = T, fig.width = 5.5, fig.height = 2.5, fig.align = 'center', fig.cap = "Least Squares Means"}
+lsmeans <- read.csv("results/jsm-student-paper-lsmeans.csv")
+lsmeans_plot <- lsmeans %>%
+  mutate(target_curvature = substr(as.character(curvature), 3,3),
+         null_curvature   = substr(as.character(curvature), 7,7),
+         ) %>%
+  mutate(target_curvature = factor(target_curvature, levels = c("E", "M", "H")),
+         null_curvature = factor(null_curvature, levels = c("E", "M", "H")),
+         curvature = factor(curvature, levels = c("t-E_n-H", "t-H_n-E", "t-E_n-M", "t-M_n-E", "t-M_n-H", "t-H_n-M"))) %>%
+  ggplot(aes(x = curvature, y = Mu, group = test_param, label = Tukey_Grouping_overall)) +
+  geom_bar(stat = "identity", fill = "lightgray") +
+  geom_text(aes(y = UpperMu + 0.05), size = 2) +
+  facet_wrap(~test_param, ncol = 2) +
+  geom_errorbar(aes(ymin = LowerMu, ymax = UpperMu), width = 0.1) +
+  theme_bw() +
+  theme(axis.title = element_text(size = 8),
+        axis.text = element_text(size = 6),
+        strip.text = element_text(size = 8, margin = margin(0.1,0,0.1,0, "cm")),
+        strip.background = element_rect(size = 0.5)
+        ) +
+  scale_y_continuous("Probability of Detecting Target Panel", limit = c(0,1.1), breaks = seq(0,1,0.2)) +
+  scale_x_discrete("")
+lsmeans_plot
+```
+
+\er{
+The estimated probability of selecitng the target plot for each of the curvature combinations on both the linear and log scale are shown in Figure \ref{fig:lsmeans-plot}. 
+We see that detecting the target panel in a lineup consisting of a combination of easy (lots of curvature) and hard (almost linear) (i.e. Easy-Hard or Hard-Easy) is detected with higher probabilities on both the linear and log scale. 
+This is to be expected since the easy and hard models have the largest difference in rates of exponential growth.
+When comparing models that have similar rates of change (e.g. Medium-Easy), we notice a slight decrease in accuracy, particularly when presented on the linear scale. 
+It is worth noting that there is a more significant decrease in accuracy on the linear scale when comparing a target plot with a lower rate of change embeded in null plots with higher rates of change (e.g. Medium-Easy and Hard-Medium). 
+This agrees with \cite{best_perception_2007} whose results found that accurcy was higher when nonlinear trends were presented indicating that it is hard to say something is linear (i.e. something has less curvature), but easy to say that it isn't (i.e. something has more curvature). 
+Overall, there is are no signficant differences in accuracy between curvature combinations when data is presented on a log scale indicating participants were consistent in their success of identifying the target panel on the log scale. 
 }
 
-## Curvature Differentiation
-
-
-## Linear vs Log
-
-
-## Participant Reasoning
-
+\er{
+Figure \ref{fig:odds-ratio-plot} displays the estimated odds of successfully identifying the target panel on the log scale compared to the linear scale. 
+From left to right, the (log) odds of successfully identifying the target panel on the log scale compared to the linear scale increase. 
+As hypothesized, the scale had the least effect on selecting a target plot with lots of curvature (Easy) embeded in almost linear null plots (Hard) followed closely by a target plot with noticable curvature (Medium) embedded in almost linear null plots (Hard) on both the linear and log scales. 
+While the log scale increased the estimated accuracy of detecting an almost linear target plot (Hard) embeded in obvious curvature plots (Easy), there is no significant evidence of a difference between the log and linear scale due to the large difference in exponential growth rates. 
+We saw a signifcant increase in accuracy when exponential growth was plotted on the log scale when detecting a an almost linear target plot (Hard) embedded in null plots with noticable curvature (Medium) and a target plot with obvious curvature (Easy) embeded in null plots with noticable curvature (Medium). 
+Displaying data on a log scale had the largest effect on selecting a target plot with noticable curvature (Medium) embeded in null plots with obvious curvature (Hard).
+}
+```{r odds-ratio-plot, eval = T, fig.width = 5, fig.height = 2, fig.align='center', fig.cap = "Odds Ratio's"}
+slice_curvature <- read.csv("results/jsm-student-paper-slice-curvature.csv")
+odds_ratio_plot <- slice_curvature %>%
+  mutate(Simple.Effect.Level = substr(Simple.Effect.Level, 11, 17)) %>%
+  ggplot(aes(x = Odds_Ratio_log_linear, y = reorder(Simple.Effect.Level, Odds_Ratio_log_linear))) +
+  geom_point() + 
+  geom_errorbar(aes(xmin = Lower_Odds_Ratio_log_linear, xmax = Upper_Odds_Ratio_log_linear), width = 0) +
+  geom_vline(xintercept = 1) +
+  theme_bw()  +
+  theme(axis.title = element_text(size = 8),
+        axis.text = element_text(size = 6)
+        ) +
+  scale_y_discrete("") +
+  scale_x_continuous("Odds ratio (on log scale) \n (Log vs Linear)", trans = "log10")
+odds_ratio_plot
+```
 
 # Discussion and Conclusion
 
-
-# Future Research
-
 <!-- + What we learned from lineups but what we still want to learn. -->
 \er{
-In this study, we discovered that differentiation between data following exponentially increasing trends with differing growth rates is FINISH THIS.
+The overall goal of this research is to provide basic research to support the principles used to guide design decisions in scientific visualizations of exponential data. 
+In this study, we explored the use of linear and log scales to determine whether our ability to notice differences in the data is different when different scales are used. 
+Our results indicated that displaying increasing exponential data on a log scale improved the accuracy of differentiating between two increasing exponential trends with more similar growth rates, particularly when identifying an exponential curve with a lower growth rate than others. When there was a larger discrepancy in exponential growth rates, participants accurately differentiated between the two curves on both the linear and log scale.
 }
-
-<!-- + You draw it -->
 
 \er{
 Further experimentation is necessary to test an individual's ability to make predictions for exponentially increasing data. 
 Previous literature suggests that we tend to underestimate predictions of exponentially increasing data.\citep{jones_generalized_1979, jones_polynomial_1977, wagenaar_extrapolation_1978}.
-\citep{mosteller_eye_1981} designed and carried out an empirical investigation to explore properties of lines fitted by eye. 
+\citep{mosteller_eye_1981} designed and carried out an empirical investigation to explore properties of lines fitted by eye.
 The researchers found that students tended to fit the slope of the first principal component or major axis (the line that minimizes the sum of squares of perpendicular rather than vertical distances) and that students who gave steep slopes for one data set also tended to give steep slopes on the others. 
 Interestingly, the individual-to-individual variability in slope and in intercept was near the standard error provided by least squares.
-A similar graphical taxk is used in the New York Times "You Draw It" page asking readers to test their knowledge by using their curser to estimate values of a certain topic under different political administrations or over different years (CITE THIS).
-}
-
-<!-- + Estimation -->
-
-\er{
+A similar graphical task is used in the New York Times "You Draw It" page asking readers to test their knowledge by using their curser to estimate values of a certain topic under different political administrations or over different years (CITE THIS).
 In addition to differentiation and prediction of exponentially increasing data, it is of interest to test an individuals ability to translate a graph of exponentially increasing data into real value quantities and extend their estimations by making comparisons. 
 \citep{friel_making_2001} emphasize the importance of graph comprehension proposing that the graph construction plays a role in the ability to read and interpret graphs.
 }
   
 # Supplementary Materials {-}
 
-<!-- # Acknowledgement(s) {-} -->
++ \er{\textbf{Code:} R code to reproduce figures of the article as well as SAS code to fit models used in the article. (\href{https://github.com/srvanderplas/Perception-of-Log-Scales/blob/master/manuscripts/jsm-2021-student-paper-submission/code/image-generator.R}{image-generator.R}, R file; \href{https://github.com/srvanderplas/Perception-of-Log-Scales/blob/master/lineups-pilot-analysis/sasCode/glmm-analysis-jsm-student-paper.sas}{glmm-analysis-jsm-student-paper.sas}, SAS file)}
+
++ \er{\textbf{Data:} Anonymized responses from the Reddit study to investigate the use of logarithmic scales. Each line corresponds to one lineup evaluation by a participant. (\href{https://github.com/srvanderplas/Perception-of-Log-Scales/blob/master/lineups-pilot-analysis/data/jsm-student-paper-11302020.csv}{jsm-student-paper.csv}, csv file)}
+
+# Acknowledgement(s) {-}
+\er{I gratefully acknowledge Dr. Susan VanderPlas and Dr. Reka Howard for their compuatational and statistical guidance. All data collection has been conducted with approval from the University of Nebraska - Lincoln Institutional Review Board (UNL IRB).}
 
 # References

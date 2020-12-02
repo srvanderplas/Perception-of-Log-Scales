@@ -23,6 +23,8 @@ global_labeller <- labeller(
 # Plot Simulated Data ------------------------------------------------------
 # --------------------------------------------------------------------------
 
+# p_curvature <- lineup_results_data %>%
+  
 p_curvature <- lineup_results_data %>%
   ggplot(aes(x = test_param, y = correct, group = test_param, color = test_param)) +
   # geom_jitter(width = 0.15, height = 0.15, alpha = 0.9) +
