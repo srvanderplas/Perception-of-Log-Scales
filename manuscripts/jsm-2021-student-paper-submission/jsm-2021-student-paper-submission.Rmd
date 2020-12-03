@@ -9,10 +9,8 @@ author:
     email: emily.robinson@huskers.unl.edu
   - name: Reka Howard
     affil: a
-    email: rekahoward@unl.edu
   - name: Susan VanderPlas
     affil: a
-    email: susan.vanderplas@unl.edu
 affiliation:
   - num: a
     address: |
