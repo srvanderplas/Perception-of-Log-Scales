@@ -64,11 +64,9 @@ Researchers include graphics to communicate their results in scientific publicat
 People began subscribing to news sources involved in graphically tracking the coronavirus as a direct result of these pieces of work and the need for continually updated information \citep{rost_2020}; thus, gaining more exposure to the use of graphics.
 } 
 <!-- \svp{Did people subscribe to news sources as a result, of the graphics or the need for up-to-date info?} -->
-\er{Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing.
-Also, these graphics helped officials communicate why policies were being enacted, with the hope of increasing population compliance.}
-\svp{-- not sure what to cite, but the communication part can't be understated.}
-\er{With the increasing importance graphics play in our everyday choices, we must actively choose which of many possible graphics to draw. 
-Better sofware has mean easier and more flexible drawing allowing us to make design choices that best communicate the message of the data graphically, but as a result, we must consciously choose a set of principles to guide design choices in order to ensure that our charts are effective \citep{unwin_why_2020}.}
+\er{Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing}\svp{, but also facilitated communication with the public to increase compliance.}
+\er{With the increasing importance graphics play in our everyday lives, we must actively choose which of many possible graphics to draw}, \svp{according to some set of design choices to ensure that our charts are effective, as suggested in \citet{unwin_why_2020}}. 
+<!-- Better sofware has mean easier and more flexible drawing allowing us to make design choices that best communicate the message of the data graphically, but as a result, we must consciously choose a set of principles to guide design choices in order to ensure that our charts are effective \citep{unwin_why_2020.}.} -->
 
 
 <!-- + Introduce Log Scales (what are they used for, where are they used (ecological data, covid, etc.)) -->
@@ -115,57 +113,30 @@ One way to improve estimation of increasing exponential trends other than changi
 While prior contextual knowledge or experience with exponential growth does not improve estimation, previous instruction on exponential growth reduces the underestimation by adjusting the initial starting value but not adjusting their perception of growth rate
 \citep{wagenaar_misperception_1975, jones_polynomial_1977}.
 Estimation was shown to improve when subjects were presented with decreasing exponential functions \citep{timmers_inverse_1977}.
-\cite{jones_polynomial_1977}, \cite{wagenaar_extrapolation_1978}, and \cite{jones_generalized_1979} propose competing polynomial models for the perception and extrapolation of exponential series.
+\citet{jones_polynomial_1977,jones_generalized_1979} \svp{and} \citet{wagenaar_extrapolation_1978} propose competing polynomial models for the perception and extrapolation of exponential series.
 It seems that estimation is a two-stage process: first, we identify the type of curve and direction and then, we use that information for prediction \citep{best_perception_2007}.
 }
 
 \er{Our inability to accurately predict exponential growth might also be addressed by log-transforming the data, however, this transformation introduces new complexities: most readers are not mathematically sophisticated enough to intuitively understand logarithmic math and translate that back into real-world effects.
-In \cite{menge_logarithmic_2018}, ecologists were surveyed to determine how often ecologists encounter log-scaled data and how well ecologists understand log-scaled data when they see it in the literature. 
+In \citet{menge_logarithmic_2018}, ecologists were surveyed to determine how often ecologists encounter log-scaled data and how well ecologists understand log-scaled data when they see it in the literature. 
 Participants were presented two relationships displayed on linear-linear scales, log-log scales with untransformed values, or log–log scales with log-transformed values. 
-\cite{menge_logarithmic_2018} propose three types of misconceptions participants encountered when presented data on log-log scales: 'hand-hold fallacy', 'Zeno's zero fallacy', and 'watch out for curves fallacies'. 
+\citet{menge_logarithmic_2018} propose three types of misconceptions participants encountered when presented data on log-log scales: 
+'hand-hold fallacy', 'Zeno's zero fallacy', and 'watch out for curves fallacies'.} 
+ <!-- You might be able to move this to the appendix if necessary or just remove it if you're pressed for space -->
+\er{
 The 'hand-hold falacy' stems from the misconception that steeper slopes in log-log relationships are steeper slopes in linear-linear space. 
 In fact, it is not only the slope that matters, but also the intercept and the location on the horizontal axis since a line in log-log space represents a power law in linear-linear space (i.e. linear extraploation). 
 Emerging from 'Zeno's zero fallacy' is the misconception that positively sloped lines in log-log space can imply a non-zero value of y when x is zero. This is never true as postively sloped lines in log-log space actually imply that y = 0 when x = 0. 
 This misconception again is a result of linear extrapolation assuming that a line in log-log space represents a line instead of the power law in linear-linear space. 
 The last misconception, 'watch out for curves fallacies' encompases three faults: (1) lines in log-log space are lines in linear-linear space, (2) lines in log-log space curve upward in linear-linear space, and (3) curves in log-log space have the same curvature in linear-linear space. 
-Linear extrapolation is again responsible for the first and third faults while the second fault is a result of error in thinking that log-log lines represent power laws (which are exponential relationships), and all exponential relationships curve upward; this is only true when the log-log slope is greater than 1.
-\cite{menge_logarithmic_2018} found that in each of these scenarios, participants were consideraly confident in their incorrect responses indicating a incorrect knowledge rather than a lack of knowledge providing affirmation that our graphical design choices have a direct impact on the user's evaluation of the information.
+Linear extrapolation is again responsible for the first and third faults while the second fault is a result of error in thinking that log-log lines represent power laws (which are exponential relationships), and all exponential relationships curve upward; this is only true when the log-log slope is greater than 1.}
+\er{
+\citet{menge_logarithmic_2018} found that in each of these scenarios, participants were confident in their incorrect responses, indicating incorrect knowledge rather than a lack of knowledge. \svp{This affirms that} our graphical design choices have a direct impact on the user's evaluation of the information.
 }
 
-<!-- }\svp{Expand on this, please - this information is pretty critical...} -->
-
-<!--
-Three fallacies (explain further?)
-
-Two relationships were shown on each graph, with distance from the edge of a habitat on the horizontal axis and population size.
-
-whether each population was increasing or decreasing with distance
-how steeply the rabbit population changed with distance compared to the chipmunk population.!!!!
-Misconception: ‘hand-hold fallacy’
-Climbing something steep is harder than climbing something gradual, but climbing something smooth (such as a window) is harder than climbing something with hand-holds (such as a ladder), regardless of slope.
-
-population level at the edge of the habitat.
-Misconception: ‘Zeno’s zero fallacy’
-Zeno’s famous paradox states that a distance can never be reduced to zero because it must be halved infinitely many times and it is impossible to perform an infinite number of tasks.
-
-the manner in which a population changes.
-3 Misconceptions: ‘watch out for curves fallacies’
-all lines in log–log space are also lines in linear–linear space
-all lines in log–log space curve upwards in linear–linear space
-curves in log–log space have similar curvature in linear–linear space
--->
-
-<!-- + Visual Inference (what is it? how do we use it? etc.) *needs lots of work yet* -->
-
-<!-- \svp{Might be easier to start with graphs are statistics, but that to evaluate a graph we have to run our statistic through a visual evaluation - a person. Then you can explain that with the same data, if two different methods of presenting the data result in qualitatively different results re. evaluation by a human, then it is possible to develop recommendations based on the visual inference experiment.} -->
-
-<!-- \svp{Introduce the different ways that graphics can be tested: we can ask for participants to read information off of a chart and make effective decisions, we can ask participants to make predictions by e.g. drawing the next $n$ observations on a graph (this does not require understanding the data itself), or we can ask them to spot differences in one of several similar displays. In this paper, we explore the use of linear and log scales to determine whether our ability to notice differences in the data is different when different scales are used. This is the most basic level of exploration - it does not require that participants understand exponential growth, recognize a log scale, or have any sophisticated mathematical training: we are simply testing the change in perceptual sensitivity resulting from visualization choices. Our goal is to provide basic research to support the principles used to guide design decisions in scientific visualizations of exponential data.} -->
-
-<!-- \er{ -->
-<!-- This paper aims to investigate the use of log scales to display exponentially increasing data. We hypothesize log scales should make it much easier to estimate the growth rate since we estimate slopes relatively accurately, resolving much of the difficulty with exponential estimation \citep{mosteller_eye_1981}.} -->
-
 \er{
-In order to provide a set of principles to guide design choices, we must evaluate these design choices through the use of graphical tests. We can ask for participants to read information off of a chart and make effective decisions, we can ask participants to make predictions by e.g. drawing the next $n$ observations on a graph (this does not require understanding the data itself), or we can ask them to spot differences in one of several similar displays. In this paper, we explore the use of linear and log scales to determine whether our ability to notice differences in the data is different when different scales are used. This is the most basic level of exploration - it does not require that participants understand exponential growth, recognize a log scale, or have any sophisticated mathematical training: we are simply testing the change in perceptual sensitivity resulting from visualization choices. Our goal is to provide basic research to support the principles used to guide design decisions in scientific visualizations of exponential data.}
+In order to provide a set of principles to guide design choices, we must evaluate these design choices through the use of graphical tests. 
+We can ask for participants to read information off of a chart and make effective decisions, we can ask participants to make predictions by e.g. drawing the next $n$ observations on a graph (this does not require understanding the data itself), or we can ask them to spot differences in one of several similar displays. In this paper, we explore the use of linear and log scales to determine whether our ability to notice differences in the data is different when different scales are used. This is the most basic level of exploration - it does not require that participants understand exponential growth, recognize a log scale, or have any sophisticated mathematical training: we are simply testing the change in perceptual sensitivity resulting from visualization choices. Our goal is to provide basic research to support the principles used to guide design decisions in scientific visualizations of exponential data.}
 
 \er{
 Graphs are considered statistics where the numerical data is mapped to a visual display.
