@@ -54,72 +54,57 @@ library(gridExtra)
 
 # Introduction and Background
 
-
+Graphics are a useful tool for displaying and communicating information. \citep{vanderplas2020testing}
 <!-- \svp{See annual review article for references for this claim.} -->
-\er{Graphics are a useful tool for displaying and communicating information. \citep{vanderplas2020testing}
-Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public.} \svp{May want to ask Heather about this one during the meeting (or by email)?}
-\er{During the onset of the novel coronavirus pandemic, we saw an influx of dashboards being developed to display case counts, transmission rates, and outbreak regions \citep{lisa_charlotte_2020}.
+Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public. \svp{May want to ask Heather about this one during the meeting (or by email)?}
+During the onset of the novel coronavirus pandemic (COVID-19), we saw an influx of dashboards being developed to display case counts, transmission rates, and outbreak regions \citep{lisa_charlotte_2020} and mass media routinely presenting the data on COVID-19 \er{\citep{romano_scale_2020}}.
 People began subscribing to news sources involved in graphically tracking the coronavirus as a direct result of these pieces of work and the need for continually updated information \citep{rost_2020}; thus, gaining more exposure to the use of graphics.
-} 
 <!-- \svp{Did people subscribe to news sources as a result, of the graphics or the need for up-to-date info?} -->
-\er{Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing}\svp{, but also facilitated communication with the public to increase compliance.}
-\er{With the increasing importance graphics play in our everyday lives, we must actively choose which of many possible graphics to draw}, \svp{according to some set of design choices to ensure that our charts are effective, as suggested in \citet{unwin_why_2020}}. 
-<!-- Better sofware has mean easier and more flexible drawing allowing us to make design choices that best communicate the message of the data graphically, but as a result, we must consciously choose a set of principles to guide design choices in order to ensure that our charts are effective \citep{unwin_why_2020.}.} -->
-
-
-<!-- + Introduce Log Scales (what are they used for, where are they used (ecological data, covid, etc.)) -->
+Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing, but also facilitated communication with the public to increase compliance \er{\citep{bavel_using_2020}}.
+With the increasing importance graphics play in our everyday lives, we must actively choose which of many possible graphics to draw, according to some set of design choices to ensure that our charts are effective, as suggested in \citet{unwin_why_2020}.
 
 <!--
 \svp{
 Start with why we'd choose a log scale: When faced with data which spans several orders of magnitude, we must decide whether to show the data on its original scale (compressing the smaller magnitudes into relatively little area) or to transform the scale and alter the contextual appearance of the data. You could even show a simple example, if you wanted to
 }
 -->
-\er{
 When faced with data which spans several orders of magnitude, we must decide whether to show the data on its original scale (compressing the smaller magnitudes into relatively little area) or to transform the scale and alter the contextual appearance of the data.
 One common solution is to use a log scale transformation to display data over several orders of magnitude within one graph.
 Logarithms make multiplicative relationships additive, showing elasticities and other proportional changes, and also linearize power laws \citep{menge_logarithmic_2018}. 
 When presenting log-scaled data, it is possible to use either untransformed scale labels (for example, values of 1, 10 and 100 are equally spaced along the axis) or log-transformed scale labels (for example, 0, 1, and 2, showing the corresponding powers of 10).
-}
 <!-- \svp{This is the difference between a transformed scale transformed values; it's not the difference between untransformed values and transformed values. see https://r4ds.had.co.nz/graphics-for-communication.html\#scales for an explanation of scales, but I'm still looking for a perfect reference for transformations at the value vs. scale level.} -->
-\er{We have recently experienced the benefits and pitfalls of using log-scales as covid-19 dashboards displayed case count data on both the log and linear scale \citep{wade_fagen_ulmschneider_2020}. 
+We have recently experienced the benefits and pitfalls of using log-scales as covid-19 dashboards displayed case count data on both the log and linear scale \er{\citep{wade_fagen_ulmschneider_2020, financial_times_2020}}. 
 In spring 2020, during the early stages of the coronavirus pandemic, there was a large magnitude discrepancy at a given time between different geographic regions (at all orders of magnitude - states and provinces as well as countries and continents). 
 During this time, we saw the usefulness of log-scales showing case count curves for areas with few cases and areas with many cases within one chart.
 As the pandemic evolved, and the case counts were no longer spreading exponentially, graphs with linear scales seemed more effective at spotting early increases in case counts that signaled more localized outbreaks.
-}
-<!-- Later on during the pandemic in summer 2020, the linear scale was effective at commmunicating the waves in case surges. -->
-\er{
 This is only one recent example of a situation in which both log and linear scales are useful for showing different aspects of the same data; there are long histories of using log scales to display results in ecology, psychophysics, engineering, and physics 
 \citep{xkcd, menge_logarithmic_2018}.
-}
 \svp{XXX it may be interesting to find papers objecting to the use of log scales in some other disciplines beyond ecology.}
 <!-- Can we cite XKCD here? https://xkcd.com/1162/} -->
 <!-- While the cornovirus pandemic is the most recent and well known example, log-scales have been used to display data in ecological research, etc.  -->
 <!-- PUT OTHER AREAS HERE. -->
 
-<!-- + Previous exponential (log/linear scale) studies (literature review). -->
-
 <!-- \svp{In fact, research shows that we do not perceive exponential growth accurately (whether information is presented in graphical or tabular form): we systematically under-estimate exponential growth.
 ... XXX we have to explicitly connect log perception to exponential prediction, which isn't easy, but does matter for our purposes XXX} -->
 <!-- \svp{There is one way to improve estimation of exponential trends other than changing the scale:} -->
 
-\er{
+
 Research suggests our perception and mapping of numbers to a number line is logarithmic at first, but transitions to a linear scale later in development, with formal mathematics education.
 This transition to linear scales occurs first in small numbers (e.g. 1-10) and then gradually expands to higher orders of magnitude; thus, the logarithmic intuition about numbers in children is often more noticeable on scales in the thousands to hundreds of thousands. \citep{varshney_why_2013, siegler_numerical_2017, dehaeneLogLinearDistinct2008}.
-If we percieve logarithmically by default, it is a natural (and presumably low-effort) way to display information and should be easy to read and understand/use.}
-\er{In fact, early studies explored the estimation and prediction of exponential growth, finding that growth is underestimated when presented both numerically and graphically but that numerical estimation is more accurate than graphical estimation for exponential curves.
+If we percieve logarithmically by default, it is a natural (and presumably low-effort) way to display information and should be easy to read and understand/use.
+In fact, early studies explored the estimation and prediction of exponential growth, finding that growth is underestimated when presented both numerically and graphically but that numerical estimation is more accurate than graphical estimation for exponential curves.
 One way to improve estimation of increasing exponential trends other than changing the scale is through the use of providing immediate feedback \citep{mackinnon_feedback_1991}.
 While prior contextual knowledge or experience with exponential growth does not improve estimation, previous instruction on exponential growth reduces the underestimation by adjusting the initial starting value but not adjusting their perception of growth rate
 \citep{wagenaar_misperception_1975, jones_polynomial_1977}.
 Estimation was shown to improve when subjects were presented with decreasing exponential functions \citep{timmers_inverse_1977}.
-\citet{jones_polynomial_1977,jones_generalized_1979} \svp{and} \citet{wagenaar_extrapolation_1978} propose competing polynomial models for the perception and extrapolation of exponential series.
+\citet{jones_polynomial_1977,jones_generalized_1979} and \citet{wagenaar_extrapolation_1978} propose competing polynomial models for the perception and extrapolation of exponential series.
 It seems that estimation is a two-stage process: first, we identify the type of curve and direction and then, we use that information for prediction \citep{best_perception_2007}.
-}
 
-\er{Our inability to accurately predict exponential growth might also be addressed by log-transforming the data, however, this transformation introduces new complexities: most readers are not mathematically sophisticated enough to intuitively understand logarithmic math and translate that back into real-world effects.
+Our inability to accurately predict exponential growth might also be addressed by log-transforming the data, however, this transformation introduces new complexities: most readers are not mathematically sophisticated enough to intuitively understand logarithmic math and translate that back into real-world effects.
 In \citet{menge_logarithmic_2018}, ecologists were surveyed to determine how often ecologists encounter log-scaled data and how well ecologists understand log-scaled data when they see it in the literature. 
 Participants were presented two relationships displayed on linear-linear scales, log-log scales with untransformed values, or log–log scales with log-transformed values. 
 \citet{menge_logarithmic_2018} propose three types of misconceptions participants encountered when presented data on log-log scales: 
-'hand-hold fallacy', 'Zeno's zero fallacy', and 'watch out for curves fallacies'.} 
+'hand-hold fallacy', 'Zeno's zero fallacy', and 'watch out for curves fallacies'.
  <!-- You might be able to move this to the appendix if necessary or just remove it if you're pressed for space -->
 \er{
 The 'hand-hold falacy' stems from the misconception that steeper slopes in log-log relationships are steeper slopes in linear-linear space. 
@@ -129,30 +114,27 @@ This misconception again is a result of linear extrapolation assuming that a lin
 The last misconception, 'watch out for curves fallacies' encompases three faults: (1) lines in log-log space are lines in linear-linear space, (2) lines in log-log space curve upward in linear-linear space, and (3) curves in log-log space have the same curvature in linear-linear space. 
 Linear extrapolation is again responsible for the first and third faults while the second fault is a result of error in thinking that log-log lines represent power laws (which are exponential relationships), and all exponential relationships curve upward; this is only true when the log-log slope is greater than 1.}
 \er{
-\citet{menge_logarithmic_2018} found that in each of these scenarios, participants were confident in their incorrect responses, indicating incorrect knowledge rather than a lack of knowledge. \svp{This affirms that} our graphical design choices have a direct impact on the user's evaluation of the information.
+\citet{menge_logarithmic_2018} found that in each of these scenarios, participants were confident in their incorrect responses, indicating incorrect knowledge rather than a lack of knowledge.
 }
 
-\er{
 In order to provide a set of principles to guide design choices, we must evaluate these design choices through the use of graphical tests. 
-\svp{These tests may take many forms: identifying differences in graphs, reading information off of a chart accurately, using data to make correct real-world decisions, and predicting the next few observations. 
+These tests may take many forms: identifying differences in graphs, reading information off of a chart accurately, using data to make correct real-world decisions, and predicting the next few observations. 
 All of these types of tests require different levels of use and manipulation of the information presented in the chart.
 To lay a foundation for future exploration of the use of log scales, we begin with the most fundamental ability to identify differences in charts: this does not require that participants understand exponential growth, identify log scales, or have any mathematical training.
-Instead,}
-we are simply testing the change in perceptual sensitivity resulting from visualization choices.}
+Instead, we are simply testing the change in perceptual sensitivity resulting from visualization choices.
 
-\svp{A statistic is a numerical function which summarizes the data; by this definition, graphs are visual statistics.}
-\er{
+A statistic is a numerical function which summarizes the data; by this definition, graphs are visual statistics.
 To evaluate a graph, we have to run our statistic throuugh a visual evaluation - a person. 
-If two different methods of presenting data result in qualitatively different results \svp{when evaluated visually}, then \svp{we can conclude that the visual statistics are significantly different}.  
+If two different methods of presenting data result in qualitatively different results when evaluated visually, then we can conclude that the visual statistics are significantly different. 
 Recent graphical experiments have utilized statistical lineups to quantify the perception of graphical design choices\citep{vanderplas_clusters_2017, hofmann_graphical_2012, loyVariationsQQPlots2016}. 
-Statistical lineups provide an elegant way of combining perception and statistical \svp{hypothesis testing using} graphical experiments \citep{wickham2010graphical, majumder_validation_2013, vanderplas_statistical_nodate}.
+Statistical lineups provide an elegant way of combining perception and statistical hypothesis testing using graphical experiments \citep{wickham2010graphical, majumder_validation_2013, vanderplas_statistical_nodate}.
 'Lineups' are named after the 'police lineup' of criminal investigations where witnesses are asked to identify the criminal from a set of individuals. 
 Similarly, a statistical lineup is a plot consisting of smaller panels; the viewer is asked to identify the plot of the real data from among a set of decoy null plots. 
 A statistical lineup typically consists of 20 panels - 1 target panel and 19 null panels (Figure \ref{fig:lineup-example}). 
-If the viewer can identify the target panel embeded within the set of null panels, this suggests that the real data is \svp{visually distinct from data generated under the null model}.
+If the viewer can identify the target panel embeded within the set of null panels, this suggests that the real data is visually distinct from data generated under the null model.
 Crowd sourcing websites such as Amazon Mechanical Turk, Reddit, and Proflic allow us to collect responses from multiple viewers.
-In this paper, we use statistical lineups to test \svp{our} ability to differentiate between increasing exponential data with differing growth rates, \svp{using linear and log scales}.
-}
+In this paper, we use statistical lineups to test our ability to differentiate between increasing exponential data with differing growth rates, using linear and log scales.
+
 <!-- \cite{vanderplas_statistical_nodate} provides an approach for calculating visual p-values utilizing a 'rorschach' lineup which consists soley of null panels. \svp{You don't use this method, so no big deal here}--> 
 
 ```{r lineup-example, eval = T, fig.height = 2.75, fig.width = 5.75, fig.align = 'center', fig.cap = "The plot on the left displays increasing exponential data on a linear scale with panel (2 x 5) + 3 as the target. The plot on the right displays increasing exponential data on the log scale with panel 2 x 2 as the target."}
@@ -188,70 +170,73 @@ logPlot <- ggplot(lineupData_log, aes(x=x, y=y)) +
 grid.arrange(linearPlot, logPlot, ncol = 2)
 ```
     
-<!-- + What is new in this paper. -->
 
 # Methodology
 
 ## Data Generation
-\er{In this study, both the target and null data sets were generated by simulating data from an exponential model;} \svp{the models differ in the parameters selected for the null and target panels}. 
+In this study, both the target and null data sets were generated by simulating data from an exponential model; the models differ in the parameters selected for the null and target panels. 
 <!-- The most common type of lineup used in graphical experiments is a standard lineup containing one "target" data set, embedded within a set of null data sets \svp{generated using different parameters}.  -->
 <!-- One way to generate the null data sets when working with real data is through the use of permutation.  -->
 <!-- This experiment was designed to test a participants ability to differentiate between different rates of exponential growth on both the log and linear scales.  -->
-\er{In order to guarantee the simulated data spans the same range of values, we implemented a range constraint of $y\in [10,100]$ and a domain constraint of $x\in [0,20]$ with $N = 50$ points randomly assigned throughout the domain and mapped to the y-axis using the exponential model with the selected parameters. 
+In order to guarantee the simulated data spans the same range of values, we implemented a range constraint of $y\in [10,100]$ and a domain constraint of $x\in [0,20]$ with $N = 50$ points randomly assigned throughout the domain and mapped to the y-axis using the exponential model with the selected parameters. 
 These constraints provide some assurance that participants who select the target plot are doing so because of their visual perception differentiating between curvature or slope rather than different starting or ending values. 
-}
 
+<!-- \svp{Use an actual equation to show the model with all parameters.}  -->
 \er{
-We simulated data based on a 3-parameter exponential model with multiplicative errors.}
-\svp{Use an actual equation to show the model with all parameters. \begin{align}...\end{align} with parameters defined underneath (though without the numeric references, use \\nonumber to get rid of the numeric references on the lines)}
+We simulated data based on a three-parameter exponential model with multiplicative errors: \svp{with parameters defined underneath}
+\begin{align}
+y_i & = \alpha\cdot e^{\beta\cdot x_i + \epsilon_i} + \theta \\
+\text{with } \epsilon_i & \sim N(0, \sigma^2). \nonumber
+\end{align} 
+}
+<!-- with parameters defined underneath (though without the numeric references, use \\nonumber to get rid of the numeric references on the lines) -->
 <!-- This model has a $\beta$ parameter to reflect the rate of growth and amount of curvature and $\sigma^2$ to reflect the amount of variability around the exponential growth curve.  -->
-\er{The parameters $\alpha$ and $\theta$ are adjusted based on $\beta$ and $\sigma^2$ to guarantee the range and domain constraints are met. 
+\noindent The parameters $\alpha$ and $\theta$ are adjusted based on $\beta$ and $\sigma^2$ to guarantee the range and domain constraints are met. 
 The model generated $N = 50$ points $(x_i, y_i), i = 1,...,N$ where $x$ and $y$ have an increasing exponential relationship. 
 The heuristic data generation procedure is provided in Appendix \ref{app:generation}.
-}
 
-\er{
 The exponential model provides the base for this graphical experiment. 
 We manipulate the midpoint, $x_{mid}$, and in turn the estimated parameters to control the amount of curvature present in the data and the error standard deviation, $\sigma$, to control the amount of deviation from the exponential curve.
 We selected three midpoints corresponding to difficulty levels easy (obvious curvature), medium (noticeable curvature), and hard (almost linear) along with a sensible choice of standard deviation, $\sigma$, as shown in Table \ref{tab:parameter-data}.
-The midpoints and standard deviation combinations were chosen using a method described in \cite{vanderplas_clusters_2017}}\svp{; additional details are available in Appendix \ref{app:parameters}.}
+The midpoints and standard deviation combinations were chosen using a method described in \cite{vanderplas_clusters_2017}; additional details are available in Appendix \ref{app:parameters}.
 
 ```{r parameter-data, eval = T}
 parameter_data <- read.csv(file = "data/parameter_data.csv")
 parameter_data %>%
+  mutate(difficulty = ifelse(difficulty == "Obvious Curvature", "Easy",
+                             ifelse(difficulty == "Noticable Curvature", "Medium", "Hard"))
+         ) %>%
+  select(difficulty, alphatilde, betahat, thetahat, sigma_vals) %>%
   kable("latex", digits = 2, escape = F, booktabs = T, linesep = "", align = "c", label = "parameter-data", 
-        col.names = c("",   "$x_{Mid}$",  "$\\hat\\sigma$", "$\\hat\\alpha$", "$\\tilde\\alpha$", "$\\hat\\beta$", "$\\hat\\theta$"), 
-        caption = "Exponential parameter selection")
+        col.names = c("",   "$\\alpha$", "$\\beta$", "$\\theta$", "$\\sigma^2$"), 
+        caption = "Final parameters used to simulate exponential data for each of the three diffculty levels: Easy (Obvious curvature), Medium (noticable curvature) and Hard (almost linear)")
 ```
 
 
 ## Lineup Setup
-\er{
+
 The lineup plots were generated by mapping simulating data corresponding to difficulty level A to a scatterplot while the null plots were generated by mapping simulated data corresponding to difficulty level B to a scatterplot. 
 For example, a target plot with simulated data following an increasing exponential curve with obvious curvature is embeded within null plots with simulated data following an increasing exponential that is almost linear (i.e. Easy-Hard). 
 By our constraints, the target plot and null plots will span a similar domain and range. 
 There are a total of 6 (i.e. 3 choose 2) lineup parameter combinations.
-Two sets of each lineup parameter combination were simulated (total of 12 test datasets) and plotted on both the linear and the log scale (total of 24 test lineup plots). }
-\svp{In addition, there are three parameter combinations which generate homogeneous "Rorschach" lineups, where all panels are from the same distribution. Each participant evaluated one of these lineups, but for simplicity, these evaluations are not described in this paper.}
+Two sets of each lineup parameter combination were simulated (total of 12 test datasets) and plotted on both the linear and the log scale (total of 24 test lineup plots).
+In addition, there are three parameter combinations which generate homogeneous "Rorschach" lineups, where all panels are from the same distribution. Each participant evaluated one of these lineups, but for simplicity, these evaluations are not described in this paper.
 
 ## Study Design
-\er{
-Each participant was shown a total of thirteen lineup plots (twelve) test lineup plots and one Rorschach lineup plot). Participants were randomly assigned one of the two replicate datasets for each of the six unique lineup parameter combinations. For each assigned test dataset, the participant was shown the lineup plot corresponding to both the linear scale and the log scale. For the additional Rorschach lineup plot, participants were randomly assigned a one data set shown on either the linear or the log scale. The order of the thirteen lineup plots shown was randomized for each participant. 
-}
 
-\er{Participants above \svp{the age of majority} were recruited from Reddit's Visualization and Sample Size communities.
+Each participant was shown a total of thirteen lineup plots (twelve test lineup plots and one Rorschach lineup plot). Participants were randomly assigned one of the two replicate datasets for each of the six unique lineup parameter combinations. For each assigned test dataset, the participant was shown the lineup plot corresponding to both the linear scale and the log scale. For the additional Rorschach lineup plot, participants were randomly assigned a one data set shown on either the linear or the log scale. The order of the thirteen lineup plots shown was randomized for each participant. 
+
+Participants above the age of majority were recruited from Reddit's Visualization and Sample Size communities.
 Since participants recruited on Reddit were not compensated for their time, most participants have an interest in data visualization research. 
 Previous literature suggests that prior mathematical knowledge or experience with exponential data is not associated with the outcome of graphical experiments \citep{vanderplasSpatialReasoningData2016}. 
-Participants \svp{completed the experiment using a Shiny applet} (https://shiny.srvanderplas.com/log-study/).
-}
+Participants completed the experiment using a Shiny applet (https://shiny.srvanderplas.com/log-study/).
 
-\er{Participants were shown a series of twelve test lineup plots and asked to identify the plot that was most different from the others. 
+Participants were shown a series of lineup plots and asked to identify the plot that was most different from the others. 
 On each plot, participants were asked to justify their choice and provide their level of confidence in their choice.
 The goal of this experimental task is to test an individuals ability to perceptually differentiate exponentially increasing data with differing rates of change on both the linear and log scale. 
-In \cite{best_perception_2007}, the authors explored whether discrimination between curve types is possible. 
-They found that accuracy higher when nonlinear trends presented (e.g. it’s hard to say something is linear, but easy to say that it isn’t) and that accuracy \svp{is} higher with low additive variability. \svp{XXX this may not be as relevant here, can you move it up to the lit review? XXX}
-We hypothesize log scales should make it much easier to estimate the growth rate since we estimate slopes relatively accurately, resolving much of the difficulty with exponential estimation \citep{mosteller_eye_1981}. \svp{XXX You don't have to state this explicitly XXX}
-}
+\er{In \cite{best_perception_2007}, the authors explored whether discrimination between curve types is possible. 
+They found that accuracy higher when nonlinear trends presented (e.g. it’s hard to say something is linear, but easy to say that it isn’t) and that accuracy is higher with low additive variability.} \svp{XXX this may not be as relevant here, can you move it up to the lit review? XXX}
+\er{We hypothesize log scales should make it much easier to estimate the growth rate since we estimate slopes relatively accurately, resolving much of the difficulty with exponential estimation \citep{mosteller_eye_1981}.} \svp{XXX You don't have to state this explicitly XXX}
 
 # Results
 \er{
@@ -265,7 +250,7 @@ In 67% of the 477 lineup evaluations, participants correctly identified the targ
 Target plot identification was analyzed using the Glimmix Procedure in SAS 9.4. 
 Each lineup plot evaluated was assigned a value based on the participant response (correct = 1, not correct = 0). 
 Define $Y_{ijkl}$ to be the event that participant $l$ correctly identifies the target plot for dataset $k$ with curvature $j$ plotted on scale $i$. 
-The binary response was analyzed using generalized linear mixed model following a binomial distribution with a logit link function following a row-column blocking design accounting for the variation due to participant and data set respectively, with a split plot design accounting for the same participant evaluating the same dataset on both the linear scale and log scale as shown in the Equation (1).
+The binary response was analyzed using generalized linear mixed model following a binomial distribution with a logit link function following a row-column blocking design accounting for the variation due to participant and data set respectively, with a split plot design accounting for the same participant evaluating the same dataset on both the linear scale and log scale as shown in the Equation (2).
 \begin{equation}
 \text{logit }P(Y_{ijk}) = \eta + \delta_i + \gamma_j + \delta \gamma_{ij} + s_l + d_k + wp_{jkl}
 \end{equation}
@@ -279,7 +264,7 @@ where
 &d_k \sim N(0,\sigma^2_{\text{dataset}}), \text{ random effect for data specific characteristics.} \\
 &wp_{jkl} \sim N(0,\sigma^2_\text{{whole-plot}}), \text{ random effect for the particular participant by dataset charactersitics.}
 \end{align*}
-We assume that random effects for dataset, participant, and whole plot effects are independent. ADD MODEL DETAILS TO APPENDIX (e.g. ANOVA, p-values, pairwise comparisons, etc.)
+We assume that random effects for dataset, participant, and whole plot effects are independent. See lineup evaluation model details in Appendix \ref{app:glmm-model}.
 }
 ```{r lsmeans-plot, eval = T, fig.width = 5.5, fig.height = 2.5, fig.align = 'center', fig.cap = "Least Squares Means"}
 lsmeans <- read.csv("results/jsm-student-paper-lsmeans.csv")
@@ -374,51 +359,49 @@ In addition to differentiation and prediction of exponentially increasing data, 
   
 # Supplementary Materials {-}
 
-+ \er{\textbf{Code:} R code to reproduce figures of the article as well as SAS code to fit models used in the article. (\href{https://github.com/srvanderplas/Perception-of-Log-Scales/blob/master/manuscripts/jsm-2021-student-paper-submission/code/image-generator.R}{image-generator.R}, R file; \href{https://github.com/srvanderplas/Perception-of-Log-Scales/blob/master/lineups-pilot-analysis/sasCode/glmm-analysis-jsm-student-paper.sas}{glmm-analysis-jsm-student-paper.sas}, SAS file)}
++ \textbf{Code:} R code to reproduce figures of the article as well as SAS code to fit models used in the article. (\href{https://github.com/srvanderplas/Perception-of-Log-Scales/blob/master/manuscripts/jsm-2021-student-paper-submission/code/image-generator.R}{image-generator.R}, R file; \href{https://github.com/srvanderplas/Perception-of-Log-Scales/blob/master/lineups-pilot-analysis/sasCode/glmm-analysis-jsm-student-paper.sas}{glmm-analysis-jsm-student-paper.sas}, SAS file)
 
-+ \er{\textbf{Data:} Anonymized responses from the Reddit study to investigate the use of logarithmic scales. Each line corresponds to one lineup evaluation by a participant. (\href{https://github.com/srvanderplas/Perception-of-Log-Scales/blob/master/lineups-pilot-analysis/data/jsm-student-paper-11302020.csv}{jsm-student-paper.csv}, csv file)}
++ \textbf{Data:} Anonymized responses from the Reddit study to investigate the use of logarithmic scales. Each line corresponds to one lineup evaluation by a participant. (\href{https://github.com/srvanderplas/Perception-of-Log-Scales/blob/master/lineups-pilot-analysis/data/jsm-student-paper-11302020.csv}{jsm-student-paper.csv}, csv file)
 
-
-# Acknowledgement(s) {-}
-\er{All data collection has been conducted with approval from the University of Nebraska - Lincoln Institutional Review Board (UNL IRB).}\svp{Add the approval number if you're going to mention this, otherwise you can remove it}
+<!-- # Acknowledgement(s) {-} -->
+<!-- \er{All data collection has been conducted with approval from the University of Nebraska - Lincoln Institutional Review Board (UNL IRB).}\svp{Add the approval number if you're going to mention this, otherwise you can remove it} -->
 <!-- We're listed as authors, you're good to go on that score -->
 \clearpage
 \appendix
 # Data Generation Procedure\label{app:generation}
-\er{\textit{Algorithm 2.1.1: Paremeter Estimation}}
+\textit{Algorithm 2.1.1: Paremeter Estimation}
 
-\er{Input Parameters: domain $x\in[0,20]$, range $y\in[10,100]$, midpoint $x_{mid}$.}
+Input Parameters: domain $x\in[0,20]$, range $y\in[10,100]$, midpoint $x_{mid}$.
 
-\er{Output: estimated model parameters $\hat\alpha, \hat\beta, \hat\theta$}
+Output: estimated model parameters $\hat\alpha, \hat\beta, \hat\theta$
 
-1. \er{Determine the $y=-x$ line scaled to fit the assigned domain and range.}
+1. Determine the $y=-x$ line scaled to fit the assigned domain and range.
 
-2. \er{Map the values $x_{mid} - 0.1$ and $x_{mid} + 0.1$ to the $y=-x$ line for two additional points.}
+2. Map the values $x_{mid} - 0.1$ and $x_{mid} + 0.1$ to the $y=-x$ line for two additional points.
 
-3. \er{From the set points $(x_k, y_k)$ for $k = 1,2,3,4$, obtain the coefficients from the linear model $\ln(y_k) = b_0 +b_1x_k$ to obtain starting values - $\alpha_0 = e^{b_0}, \beta_0 =  b_1, \theta_0 = 0.5\cdot \min(y)$}
+3. From the set points $(x_k, y_k)$ for $k = 1,2,3,4$, obtain the coefficients from the linear model $\ln(y_k) = b_0 +b_1x_k$ to obtain starting values - $\alpha_0 = e^{b_0}, \beta_0 =  b_1, \theta_0 = 0.5\cdot \min(y)$
 
-4. \er{Using the `nls()` function from the `stats` package in Rstudio and the starting parameter values - $\alpha_0, \beta_0, \theta_0$ - fit the nonlinear model, $y_k = \alpha\cdot e^{\beta\cdot x_k}+\theta$ to obtain estimated parameter values - $\hat\alpha, \hat\beta, \hat\theta.$}
+4. Using the `nls()` function from the `stats` package in Rstudio and the starting parameter values - $\alpha_0, \beta_0, \theta_0$ - fit the nonlinear model, $y_k = \alpha\cdot e^{\beta\cdot x_k}+\theta$ to obtain estimated parameter values - $\hat\alpha, \hat\beta, \hat\theta.$
 
-\noindent\er{\textit{Algorithm 2.1.2: Exponential Simulation}}
+\noindent\textit{Algorithm 2.1.2: Exponential Simulation}
 
-\er{Input Paremeters: sample size $N = 50$, estimated parameters $\hat\alpha$, $\hat\beta$, and $\hat\theta$, $\sigma$ standard deviation from the exponential curve.}
+Input Paremeters: sample size $N = 50$, estimated parameters $\hat\alpha$, $\hat\beta$, and $\hat\theta$, $\sigma$ standard \indent deviation from the exponential curve.
 
-\er{Output Parameters: $N$ points, in the form of vectors $\mathbf{x}$ and $\mathbf{y}$.}
+Output Parameters: $N$ points, in the form of vectors $\mathbf{x}$ and $\mathbf{y}$.
 
-1. \er{Generate $\tilde x_j, j = 1,..., N\cdot \frac{3}{4}$ as a sequence of evenly spaced points in $[0,20]$. This ensures the full domain of $x$ is used, fulfilling the constraints of spanning the same domain and range for each parameter combination.}
+1. Generate $\tilde x_j, j = 1,..., N\cdot \frac{3}{4}$ as a sequence of evenly spaced points in $[0,20]$. This ensures the full domain of $x$ is used, fulfilling the constraints of spanning the same domain and range for each parameter combination.
 
-2. \er{Obtain $\tilde x_i, i = 1,...N$ by sampling $N = 50$ values from the set of $\tilde x_j$ values. This gaurantees some variability and potential clustring in the exponential growth curve disrupting the perception due to continuity of points.}
+2. Obtain $\tilde x_i, i = 1,...N$ by sampling $N = 50$ values from the set of $\tilde x_j$ values. This gaurantees some variability and potential clustring in the exponential growth curve disrupting the perception due to continuity of points.
 
-3. \er{Obtain the final $x_i$ values by jittering $\tilde x_i$.}
+3. Obtain the final $x_i$ values by jittering $\tilde x_i$.
 
-4. \er{Calculate $\tilde\alpha = \frac{\hat\alpha}{e^{\sigma^2/2}}.$ This ensures that the range of simulated values for different standard devaition parameters has an equal expected value for a given rate of change due to the non-constant variance across the domain.}
+4. Calculate $\tilde\alpha = \frac{\hat\alpha}{e^{\sigma^2/2}}.$ This ensures that the range of simulated values for different standard devaition parameters has an equal expected value for a given rate of change due to the non-constant variance across the domain.
 
-4. \er{Generate $y_i = \tilde\alpha\cdot e^{\hat\beta x_i + e_i}+\hat\theta$ where $e_i\sim N(0,\sigma^2).$}
+4. Generate $y_i = \tilde\alpha\cdot e^{\hat\beta x_i + e_i}+\hat\theta$ where $e_i\sim N(0,\sigma^2).$
 
 # Parameter Selection \label{app:parameters}
 For each level of difficulty, we simulated 1000 data sets of $(x_{ij}, y_{ij})$ points for $i = 1,...,50$ and $j = 1...10$. 
-Each generated $x_i$ point from \textit{Algorithm 2.1.2} was replicated 10 times.  
-Then the lack of fit statistic (LOF) was computed for each simulated dataset by calculating the deviation of the data from a linear line. 
+Each generated $x_i$ point from \textit{Algorithm 2.1.2} was replicated 10 times.Then the lack of fit statistic (LOF) was computed for each simulated dataset by calculating the deviation of the data from a linear line. 
 Plotting the density curves of the LOF statistics for each level of difficulty choice allows us to evaluate the ability of differentiating between the difficulty levels and thus detecting the target plot.
 In Figure \ref{fig:lof-density-curves}, we can see the densities of each of the three difficulty levels. 
 While the LOF statistic provides us a numerical value for discriminating between the difficulty levels, we cannot directly relate this to the perceptual discriminability; it serves primarily as an approximation to ensure that we are testing parameters at several distinct levels of difficulty. 
@@ -443,5 +426,8 @@ lofPlot_curvature <- lofData %>%
   scale_x_continuous("Lack of Fit Statistic")
 lofPlot_curvature
 ```
+
+# Lineup Evaluation Model \label{app:glmm-model}
+\er{Add details here: ANOVA, p-values, pairwise comparisons, etc.}
 
 # References

@@ -1,0 +1,68 @@
+li p a {
+color: #000000 !important; /* This makes links in lists look the same as the other text */
+}
+
+.footer {
+  position: absolute;
+  bottom: 3px;
+  width: 100%;
+  font-size: 50%;
+}
+
+/* Convenient position modifiers */
+.move-margin {
+  position: absolute;
+  margin: auto;
+  top: 227px; bottom: 50px; right: 10px;
+  max-width: 160px;
+  max-height:400px;
+}
+
+.move-margin-wide {
+  position: absolute;
+  margin: auto;
+  top: 227px; bottom: 50px; right: 10px;
+  max-width: 320px;
+  max-height:400px;
+}
+
+.move-up {
+  margin-top:-50px !important;
+}
+.move-up-more {
+  margin-top:-170px !important;
+}
+
+.nudge-up {
+  margin-top:-20px !important;
+}
+
+.move-left {
+  margin-left:-50px !important;
+}
+
+.nudge-left {
+  margin-left:-20px !important;
+}
+.inverse{
+  background-image: url("../images/MyBackground.png"); 
+  background-size: cover; 
+  background-position: center center;
+  
+}
+.inverse h1, .inverse h2, .inverse h3 {
+  background: rgba(0,0,0,.3);
+  padding:20px;
+}
+
+.remark-slide {
+  background-image: url("../images/MyBackground.png"); 
+  background-size:  cover;
+  
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+
+img {
+  max-height: 60%;
+}
