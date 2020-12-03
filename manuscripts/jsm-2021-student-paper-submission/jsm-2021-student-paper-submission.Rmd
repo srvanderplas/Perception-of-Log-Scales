@@ -134,20 +134,25 @@ Linear extrapolation is again responsible for the first and third faults while t
 
 \er{
 In order to provide a set of principles to guide design choices, we must evaluate these design choices through the use of graphical tests. 
-We can ask for participants to read information off of a chart and make effective decisions, we can ask participants to make predictions by e.g. drawing the next $n$ observations on a graph (this does not require understanding the data itself), or we can ask them to spot differences in one of several similar displays. In this paper, we explore the use of linear and log scales to determine whether our ability to notice differences in the data is different when different scales are used. This is the most basic level of exploration - it does not require that participants understand exponential growth, recognize a log scale, or have any sophisticated mathematical training: we are simply testing the change in perceptual sensitivity resulting from visualization choices. Our goal is to provide basic research to support the principles used to guide design decisions in scientific visualizations of exponential data.}
+\svp{These tests may take many forms: identifying differences in graphs, reading information off of a chart accurately, using data to make correct real-world decisions, and predicting the next few observations. 
+All of these types of tests require different levels of use and manipulation of the information presented in the chart.
+To lay a foundation for future exploration of the use of log scales, we begin with the most fundamental ability to identify differences in charts: this does not require that participants understand exponential growth, identify log scales, or have any mathematical training.
+Instead,}
+we are simply testing the change in perceptual sensitivity resulting from visualization choices.}
 
+\svp{A statistic is a numerical function which summarizes the data; by this definition, graphs are visual statistics.}
 \er{
-Graphs are considered statistics where the numerical data is mapped to a visual display.
-To evaluate a graph, we have to run our statistic throuugh a visual evaluation - a person. Using the same data, if two different methods of presenting data result in qualitatively different results, re. evaluation by a human, then it is possible to develop recommendations based on the visual inference experiment.  
-Recent graphical experiments have utilized statistical lineups to quantify the perception of graphical design choices\citep{vanderplas_clusters_2017}. 
-Statistical lineups provide an elegant way of combining perception and statistical signficiance by valdiating the findings from a graphical experiment \citep{buja_statistical_2009, wickham2010graphical, hofmann_graphical_2012, majumder_validation_2013, vanderplas_clusters_2017}.
+To evaluate a graph, we have to run our statistic throuugh a visual evaluation - a person. 
+If two different methods of presenting data result in qualitatively different results \svp{when evaluated visually}, then \svp{we can conclude that the visual statistics are significantly different}.  
+Recent graphical experiments have utilized statistical lineups to quantify the perception of graphical design choices\citep{vanderplas_clusters_2017, hofmann_graphical_2012, loyVariationsQQPlots2016}. 
+Statistical lineups provide an elegant way of combining perception and statistical signficiance by valdiating the findings from a graphical experiment \citep{buja_statistical_2009, wickham2010graphical, majumder_validation_2013}.
 'Lineups' are named after the 'police lineup' of criminal investigations where witnesses are asked to identify the criminal from a set of individuals. 
-Similarly, a statistical lineup is a plot consisting of smaller panels of plots in which the viewer is asked to identify the plot of the real data from among a set of decoys, the null plots. 
+Similarly, a statistical lineup is a plot consisting of smaller panels; the viewer is asked to identify the plot of the real data from among a set of decoy null plots. 
 A statistical lineup typically consists of 20 panels - 1 target panel and 19 null panels (Figure \ref{fig:lineup-example}). 
-If the viewer can identify the target panel embeded within the set of null panels, this suggests that the real data is interesting or has unqiue properties.
+If the viewer can identify the target panel embeded within the set of null panels, this suggests that the real data is \svp{visually distinct from data generated under the null model}.
 Crowd sourcing websites such as Amazon Mechanical Turk, Reddit, and Proflic allow us to collect responses from multiple viewers.
-\cite{vanderplas_statistical_nodate} provides an approach for calculating visual p-values utilizing a 'rorschach' lineup which consists soley of null panels.
-In this paper, we use statistical lineups to test human subjects ability to differentiate between increasing exponential data with differing growth rates displayed on both the linear scale and log scale.
+<!-- \cite{vanderplas_statistical_nodate} provides an approach for calculating visual p-values utilizing a 'rorschach' lineup which consists soley of null panels. \svp{You don't use this method, so no big deal here}--> 
+In this paper, we use statistical lineups to test \svp{our} ability to differentiate between increasing exponential data with differing growth rates, \svp{using linear and log scales}.
 }
 
 ```{r lineup-example, eval = T, fig.height = 2.75, fig.width = 5.75, fig.align = 'center', fig.cap = "The plot on the left displays increasing exponential data on a linear scale with panel (2 x 5) + 3 as the target. The plot on the right displays increasing exponential data on the log scale with panel 2 x 2 as the target."}
