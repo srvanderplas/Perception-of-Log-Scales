@@ -383,9 +383,9 @@ We saw a signifcant increase in accuracy when exponential growth was plotted on 
 Displaying data on a log scale had the largest effect on selecting a target plot with noticable curvature (Medium) embeded in null plots with obvious curvature (Hard).
 }
 ```{r odds-ratio-plot, eval = T, fig.width = 5, fig.height = 2, fig.align='center', fig.cap = "Odds Ratio's"}
-slice_curvature <- read.csv("results/jsm-student-paper-slice-curvature.csv")
+slice_curvature <- read_csv("results/jsm-student-paper-slice-curvature.csv") %>% rename(Simple.Effect.Level = `Simple Effect Level`)
 odds_ratio_plot <- slice_curvature %>%
-  mutate(Simple.Effect.Level = substr(Simple.Effect.Level, 11, 17)) %>%
+  mutate(Simple.Effect.Level = substr(Simple.Effect.Level, 11, 17))  %>% 
   ggplot(aes(x = Odds_Ratio_log_linear, y = reorder(Simple.Effect.Level, Odds_Ratio_log_linear))) +
   geom_point() + 
   geom_errorbar(aes(xmin = Lower_Odds_Ratio_log_linear, xmax = Upper_Odds_Ratio_log_linear), width = 0) +
