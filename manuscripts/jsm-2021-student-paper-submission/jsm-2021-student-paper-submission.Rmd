@@ -333,7 +333,7 @@ slice_curvature <- read_csv("results/jsm-student-paper-slice-curvature.csv") %>%
 dodge <- position_dodge(width=0.9)
 odds_ratio_plot <- slice_curvature %>%
   mutate(Simple.Effect.Level = substr(Simple.Effect.Level, 11, 17))  %>% 
-  ggplot(aes(x = Odds_Ratio_log_linear, y = Target, color = Null, shape = Null)) + 
+  ggplot(aes(x = Odds_Ratio_log_linear, y = Null, color = Target, shape = Target)) + 
   geom_point(position = dodge) + 
   geom_errorbar(aes(xmin = Lower_Odds_Ratio_log_linear, xmax = Upper_Odds_Ratio_log_linear), position = dodge, width = .1) +
   geom_vline(xintercept = 1) +
@@ -341,10 +341,10 @@ odds_ratio_plot <- slice_curvature %>%
   theme(axis.title = element_text(size = 8),
         axis.text = element_text(size = 6)
         ) +
-  scale_y_discrete("Target plot type") +
+  scale_y_discrete("Null plot type") +
   scale_x_continuous("Odds ratio (on log scale) \n (Log vs Linear)", trans = "log10") + 
-  scale_color_manual("Null Plot Type", values = c("#004400", "#116611", "#55aa55")) + 
-  scale_shape_discrete("Null Plot Type")
+  scale_color_manual("Target Plot Type", values = c("#004400", "#116611", "#55aa55")) + 
+  scale_shape_discrete("Target Plot Type")
 odds_ratio_plot
 ```
 
