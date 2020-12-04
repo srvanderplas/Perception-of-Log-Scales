@@ -62,12 +62,17 @@ ability to notice differences in the data is different when different
 scales are used. Our goal is to provide basic research to support the
 principles used to guide design decisions in scientific visualizations
 of exponential data. We found that displaying increasing exponential
-data on a log scale improved the accuracy of differentiating between two
-increasing exponential trends with more similar growth rates,
-particularly when identifying an exponential curve with a lower growth
-rate than others. When there was a larger discrepancy in exponential
-growth rates, participants accurately differentiated between the two
-curves on both the linear and log scale.
+data on a log scale improved the accuracy of differentiating between
+models with slight curvature differences, particularly when identifying
+an exponential curve with a lower growth rate than others. When there
+was a larger curvature difference, participants accurately
+differentiated between the two curves on both the linear and log scale.
+An exception occurs when identifying a plot with more curvature than the
+surrounding plots, supporting \cite{best_perception_2007} whose results
+found that accuracy was higher when nonlinear trends were presented
+indicating that it is hard to say something is linear (i.e.~something
+has less curvature), but easy to say that it isn't (i.e.~something has
+more curvature).
 \end{abstract}
 
 \begin{keywords}
@@ -176,16 +181,7 @@ scales, log-log scales with untransformed values, or log--log scales
 with log-transformed values. \citet{menge_logarithmic_2018} propose
 three types of misconceptions participants encountered when presented
 data on log-log scales: `hand-hold fallacy', `Zeno's zero fallacy', and
-`watch out for curves fallacies'. \textcolor{Plum}{
-The 'hand-hold falacy' stems from the misconception that steeper slopes in log-log relationships are steeper slopes in linear-linear space. 
-In fact, it is not only the slope that matters, but also the intercept and the location on the horizontal axis since a line in log-log space represents a power law in linear-linear space (i.e. linear extraploation). 
-Emerging from 'Zeno's zero fallacy' is the misconception that positively sloped lines in log-log space can imply a non-zero value of y when x is zero. This is never true as postively sloped lines in log-log space actually imply that y = 0 when x = 0. 
-This misconception again is a result of linear extrapolation assuming that a line in log-log space represents a line instead of the power law in linear-linear space. 
-The last misconception, 'watch out for curves fallacies' encompases three faults: (1) lines in log-log space are lines in linear-linear space, (2) lines in log-log space curve upward in linear-linear space, and (3) curves in log-log space have the same curvature in linear-linear space. 
-Linear extrapolation is again responsible for the first and third faults while the second fault is a result of error in thinking that log-log lines represent power laws (which are exponential relationships), and all exponential relationships curve upward; this is only true when the log-log slope is greater than 1.}
-\textcolor{Plum}{
-\citet{menge_logarithmic_2018} found that in each of these scenarios, participants were confident in their incorrect responses, indicating incorrect knowledge rather than a lack of knowledge.
-}
+`watch out for curves fallacies'.
 
 In order to provide a set of principles to guide design choices, we must
 evaluate these design choices through the use of graphical tests. These
@@ -199,6 +195,8 @@ ability to identify differences in charts: this does not require that
 participants understand exponential growth, identify log scales, or have
 any mathematical training. Instead, we are simply testing the change in
 perceptual sensitivity resulting from visualization choices.
+\textcolor{Plum}{In \cite{best_perception_2007}, the authors explored whether discrimination between curve types is possible.
+They found that accuracy higher when nonlinear trends presented (e.g. it’s hard to say something is linear, but easy to say that it isn’t) and that accuracy is higher with low additive variability.}
 
 A statistic is a numerical function which summarizes the data; by this
 definition, graphs are visual statistics. To evaluate a graph, we have
@@ -276,26 +274,10 @@ the error standard deviation, \(\sigma\), to control the amount of
 deviation from the exponential curve. We selected three midpoints
 corresponding to difficulty levels easy (obvious curvature), medium
 (noticeable curvature), and hard (almost linear) along with a sensible
-choice of standard deviation, \(\sigma\), as shown in Table
-\ref{tab:parameter-data}. The midpoints and standard deviation
-combinations were chosen using a method described in
-\cite{vanderplas_clusters_2017}; additional details are available in
-Appendix \ref{app:parameters}.
-
-\begin{table}
-
-\caption{\label{tab:parameter-data}Final parameters used to simulate exponential data for each of the three diffculty levels: Easy (Obvious curvature), Medium (noticable curvature) and Hard (almost linear)}
-\centering
-\begin{tabular}[t]{ccccc}
-\toprule
- & $\alpha$ & $\beta$ & $\theta$ & $\sigma^2$\\
-\midrule
-Easy & 0.88 & 0.23 & 9.10 & 0.25\\
-Medium & 6.82 & 0.13 & 3.14 & 0.12\\
-Hard & 37.22 & 0.06 & -27.26 & 0.05\\
-\bottomrule
-\end{tabular}
-\end{table}
+choice of standard deviation, \(\sigma\). The midpoints and standard
+deviation combinations were chosen using a method described in
+\cite{vanderplas_clusters_2017}; additional details and final parameter
+values are available in Appendix \ref{app:parameters}.
 
 \hypertarget{lineup-setup}{%
 \subsection{Lineup Setup}\label{lineup-setup}}
@@ -347,69 +329,48 @@ of confidence in their choice. The goal of this experimental task is to
 test an individuals ability to perceptually differentiate exponentially
 increasing data with differing rates of change on both the linear and
 log scale.
-\textcolor{Plum}{In \cite{best_perception_2007}, the authors explored whether discrimination between curve types is possible. 
-They found that accuracy higher when nonlinear trends presented (e.g. it’s hard to say something is linear, but easy to say that it isn’t) and that accuracy is higher with low additive variability.}
-\textcolor{Green}{XXX this may not be as relevant here, can you move it up to the lit review? XXX}
-\textcolor{Plum}{We hypothesize log scales should make it much easier to estimate the growth rate since we estimate slopes relatively accurately, resolving much of the difficulty with exponential estimation \citep{mosteller_eye_1981}.}
-\textcolor{Green}{XXX You don't have to state this explicitly XXX}
 
 \hypertarget{results}{%
 \section{Results}\label{results}}
 
-\textcolor{Plum}{
-Participant recruitment through Reddit occurred over the course of two weeks during which 58 individuals completed 518 unique test lineup evaluations. 
-Participants who completed fewer than 6 lineup evaluations were removed from the study (17 participants, 41 evaluations).
-The final dataset included a total of 41 participants and 477 lineup evaluations. 
-Each plot was evaluated between 18 and 28 individuals (Mean: 21.77, SD: 2.29). 
-In 67% of the 477 lineup evaluations, participants correctly identified the target panel. 
-}
-\textcolor{Plum}{
-Target plot identification was analyzed using the Glimmix Procedure in SAS 9.4. 
-Each lineup plot evaluated was assigned a value based on the participant response (correct = 1, not correct = 0). 
-Define $Y_{ijkl}$ to be the event that participant $l$ correctly identifies the target plot for dataset $k$ with curvature $j$ plotted on scale $i$. 
-The binary response was analyzed using generalized linear mixed model following a binomial distribution with a logit link function following a row-column blocking design accounting for the variation due to participant and data set respectively, with a split plot design accounting for the same participant evaluating the same dataset on both the linear scale and log scale as shown in the Equation (2).
-\begin{equation}
-\text{logit }P(Y_{ijk}) = \eta + \delta_i + \gamma_j + \delta \gamma_{ij} + s_l + d_k + wp_{jkl}
-\end{equation}
-where
-\begin{align*}
-&\eta               \text{ is the beaseline average probability of selecting the target plot.} \\
-&\delta_i           \text{ is the effect of the log/linear scale.} \\
-&\gamma_j           \text{ is the effect of the curvature combination.} \\
-&\delta\gamma_{ij}  \text{ is the two-way interaction effect of the scale and curvature.} \\
-&s_l \sim N(0,\sigma^2_\text{{participant}}), \text{ random effect for participant characteristics} \\
-&d_k \sim N(0,\sigma^2_{\text{dataset}}), \text{ random effect for data specific characteristics.} \\
-&wp_{jkl} \sim N(0,\sigma^2_\text{{whole-plot}}), \text{ random effect for the particular participant by dataset charactersitics.}
-\end{align*}
-We assume that random effects for dataset, participant, and whole plot effects are independent. See lineup evaluation model details in Appendix \ref{app:glmm-model}.
-}
-\begin{figure}
+Participant recruitment through Reddit occurred over the course of two
+weeks during which 58 individuals completed 518 unique test lineup
+evaluations. Participants who completed fewer than 6 lineup evaluations
+were removed from the study (17 participants, 41 evaluations). The final
+dataset included a total of 41 participants and 477 lineup evaluations.
+Each plot was evaluated by between 18 and 28 individuals (Mean: 21.77,
+SD: 2.29). In 67\% of the 477 lineup evaluations, participants correctly
+identified the target panel.
 
-{\centering \includegraphics{jsm-2021-student-paper-submission_files/figure-latex/lsmeans-plot-1} 
+Target plot identification was analyzed using the Glimmix Procedure in
+SAS 9.4. Each lineup plot evaluated was assigned a value based on the
+participant response (correct = 1, not correct = 0). The binary response
+was analyzed using generalized linear mixed model following a binomial
+distribution with a logit link function following a row-column blocking
+design accounting for the variation due to participant and data set
+respectively, with a split plot design accounting for the same
+participant evaluating the same dataset on both the linear scale and log
+scale. See target plot identification model details and estimates in
+Appendix \ref{app:glmm-model}
 
-}
+On both the log and linear scales, the highest accuracy occured in
+lineup plots where the target model and null model had large curvature
+differences (e.g.~easy-hard and hard-easy). When comparing models that
+have slight curvature differences (e.g.~Medium-Easy), there is a
+sacrifice in accuracy when displayed on the linear scale. It is worth
+noting that there is a more significant decrease in accuracy on the
+linear scale when comparing a target plot with a lower rate of change
+embedded in null plots with higher rates of change (e.g.~Medium-Easy and
+Hard-Medium). This agrees with \cite{best_perception_2007} whose results
+found that accuracy was higher when nonlinear trends were presented
+indicating that it is hard to say something is linear (i.e.~something
+has less curvature), but easy to say that it isn't (i.e.~something has
+more curvature). Overall, there is are no significant differences in
+accuracy between curvature combinations when data is presented on a log
+scale indicating participants were consistent in their success of
+identifying the target panel on the log scale.
+\textcolor{Plum}{Figure \ref{fig:odds-ratio-plot} displays the estimated (log) odds ratio of successfully identifying the target panel on the log scale compared to the linear scale. We found the choice of scale has no impact if curvature differences are large. However, presenting data on the log scale makes us more sensitive to the the changes when there are only slight changes in curvature.}
 
-\caption{Least Squares Means}\label{fig:lsmeans-plot}
-\end{figure}
-
-\textcolor{Plum}{
-The estimated probability of selecting the target plot for each of the curvature combinations on both the linear and log scale are shown in Figure \ref{fig:lsmeans-plot}. 
-We see that detecting the target panel in a lineup consisting of a combination of easy (lots of curvature) and hard (almost linear) (i.e. Easy-Hard or Hard-Easy) is detected with higher probabilities on both the linear and log scale. 
-This is to be expected since the easy and hard models have the largest difference in rates of exponential growth.
-When comparing models that have similar rates of change (e.g. Medium-Easy), we notice a slight decrease in accuracy, particularly when presented on the linear scale. 
-It is worth noting that there is a more significant decrease in accuracy on the linear scale when comparing a target plot with a lower rate of change embedded in null plots with higher rates of change (e.g. Medium-Easy and Hard-Medium). 
-This agrees with \cite{best_perception_2007} whose results found that accuracy was higher when nonlinear trends were presented indicating that it is hard to say something is linear (i.e. something has less curvature), but easy to say that it isn't (i.e. something has more curvature). 
-Overall, there is are no significant differences in accuracy between curvature combinations when data is presented on a log scale indicating participants were consistent in their success of identifying the target panel on the log scale. 
-}
-
-\textcolor{Plum}{
-Figure \ref{fig:odds-ratio-plot} displays the estimated odds of successfully identifying the target panel on the log scale compared to the linear scale. 
-From left to right, the (log) odds of successfully identifying the target panel on the log scale compared to the linear scale increase. 
-As hypothesized, the scale had the least effect on selecting a target plot with lots of curvature (Easy) embedded in almost linear null plots (Hard) followed closely by a target plot with noticeable curvature (Medium) embedded in almost linear null plots (Hard) on both the linear and log scales. \textcolor{Green}{Can you revisit this with the modified figure? I think it's a bit more clear.}
-While the log scale increased the estimated accuracy of detecting an almost linear target plot (Hard) embedded in obvious curvature plots (Easy), there is no significant evidence of a difference between the log and linear scale due to the large difference in exponential growth rates. 
-We saw a significant increase in accuracy when exponential growth was plotted on the log scale when detecting a an almost linear target plot (Hard) embedded in null plots with noticeable curvature (Medium) and a target plot with obvious curvature (Easy) embeded in null plots with noticeable curvature (Medium). 
-Displaying data on a log scale had the largest effect on selecting a target plot with noticeable curvature (Medium) embedded in null plots with obvious curvature (Hard).
-}
 \begin{figure}
 
 {\centering \includegraphics{jsm-2021-student-paper-submission_files/figure-latex/odds-ratio-plot-1} 
@@ -419,35 +380,49 @@ Displaying data on a log scale had the largest effect on selecting a target plot
 \caption{Odds Ratio's}\label{fig:odds-ratio-plot}
 \end{figure}
 
-\textcolor{Green}{Breaking it out this way, it's clear that the scale type doesn't matter if the curvature differences are large - comparisons between easy and hard null and target plots are not significantly different. But comparisons between slight curvature differences are almost all significantly more likely to find the target on the log scale (if I'm reading it correctly) - we should probably adjust the y-axis labels to make this clearer. The one exception is a target with medium curvature vs. a null plot with hard curvature, but I think that might just be the effect you cited from the other paper - it's easier to find a curve in a bunch of lines than a line in a bunch of curves}
-
-\textcolor{Green}{I would move the LSMeans plot output to the appendix, along with as much of the modeling detail as you can (or condense it into a smaller table).}
-
 \hypertarget{discussion-and-conclusion}{%
 \section{Discussion and Conclusion}\label{discussion-and-conclusion}}
 
-\textcolor{Plum}{
-The overall goal of this research is to provide basic research to support the principles used to guide design decisions in scientific visualizations of exponential data. 
-In this study, we explored the use of linear and log scales to determine whether our ability to notice differences in the data is different when different scales are used. 
-Our results indicated that displaying increasing exponential data on a log scale improved the accuracy of differentiating between two increasing exponential trends with more similar growth rates, particularly when identifying an exponential curve with a lower growth rate than others. When there was a larger discrepancy in exponential growth rates, participants accurately differentiated between the two curves on both the linear and log scale.
-}
+The overall goal of this paper is to provide basic research to support
+the principles used to guide design decisions in scientific
+visualizations of exponential data. In this study, we explored the use
+of linear and log scales to determine whether our ability to notice
+differences in the data is different when different scales are used.
+\textcolor{Plum}{Our results indicated that displaying increasing exponential data on a log scale improved the accuracy of differentiating between models with slight curvature differences, particularly when identifying an exponential curve with a lower growth rate than others. 
+When there was a larger curvature difference, participants accurately differentiated between the two curves on both the linear and log scale. An exception occurs when identifying a plot with more curvature than the surrounding plots, supporting \cite{best_perception_2007} whose results found that accuracy was higher when nonlinear trends were presented indicating that it is hard to say something is linear (i.e. something has less curvature), but easy to say that it isn't (i.e. something has more curvature).}
 
-\textcolor{Plum}{
-Further experimentation is necessary to test an individual's ability to make predictions for exponentially increasing data. 
-Previous literature suggests that we tend to underestimate predictions of exponentially increasing data.\citep{jones_generalized_1979, jones_polynomial_1977, wagenaar_extrapolation_1978}.
-\citep{mosteller_eye_1981} designed and carried out an empirical investigation to explore properties of lines fitted by eye.
-The researchers found that students tended to fit the slope of the first principal component or major axis (the line that minimizes the sum of squares of perpendicular rather than vertical distances) and that students who gave steep slopes for one data set also tended to give steep slopes on the others. 
-Interestingly, the individual-to-individual variability in slope and in intercept was near the standard error provided by least squares.
-A similar graphical task is used in the New York Times "You Draw It" page asking readers to test their knowledge by using their curser to estimate values of a certain topic under different political administrations or over different years (CITE THIS).
-In addition to differentiation and prediction of exponentially increasing data, it is of interest to test an individuals ability to translate a graph of exponentially increasing data into real value quantities and extend their estimations by making comparisons. 
-\citep{friel_making_2001} emphasize the importance of graph comprehension proposing that the graph construction plays a role in the ability to read and interpret graphs.
-}
+Further experimentation is necessary to test an individual's ability to
+make predictions for exponentially increasing data. Previous literature
+suggests that we tend to underestimate predictions of exponentially
+increasing
+data.\citep{jones_generalized_1979, jones_polynomial_1977, wagenaar_extrapolation_1978}.
+\citep{mosteller_eye_1981} designed and carried out an empirical
+investigation to explore properties of lines fitted by eye. The
+researchers found that students tended to fit the slope of the first
+principal component or major axis (the line that minimizes the sum of
+squares of perpendicular rather than vertical distances) and that
+students who gave steep slopes for one data set also tended to give
+steep slopes on the others. Interestingly, the individual-to-individual
+variability in slope and in intercept was near the standard error
+provided by least squares. A similar graphical task is used in the New
+York Times ``You Draw It'' page asking readers to test their knowledge
+by using their curser to estimate values of a certain topic under
+different political administrations or over different years
+\textcolor{Plum}{(CITE THIS)}. In addition to differentiation and
+prediction of exponentially increasing data, it is of interest to test
+an individuals ability to translate a graph of exponentially increasing
+data into real value quantities and extend their estimations by making
+comparisons. \citep{friel_making_2001} emphasize the importance of graph
+comprehension proposing that the graph construction plays a role in the
+ability to read and interpret graphs.
 
 \hypertarget{supplementary-materials}{%
 \section*{Supplementary Materials}\label{supplementary-materials}}
 \addcontentsline{toc}{section}{Supplementary Materials}
 
 \begin{itemize}
+\item
+  \textbf{Appendix:}
 \item
   \textbf{Code:} R code to reproduce figures of the article as well as
   SAS code to fit models used in the article.
@@ -560,11 +535,58 @@ we are testing parameters at several distinct levels of difficulty.
 \caption{Density plot of the lack of fit statistic showing separation of difficulty levels: obvious curvature, noticable curvature, and almost linear.}\label{fig:lof-density-curves}
 \end{figure}
 
-\hypertarget{lineup-evaluation-model}{%
-\section{\texorpdfstring{Lineup Evaluation Model
-\label{app:glmm-model}}{Lineup Evaluation Model }}\label{lineup-evaluation-model}}
+Final parameter estimates are shown in Table \ref{tab:parameter-data}.
+
+\begin{table}
+
+\caption{\label{tab:parameter-data}Final parameters used to simulate exponential data for each of the three diffculty levels: Easy (Obvious curvature), Medium (noticable curvature) and Hard (almost linear)}
+\centering
+\begin{tabular}[t]{ccccccc}
+\toprule
+ & $x_{mid}$ & $\hat\alpha$ & $\tilde\alpha$ & $\hat\beta$ & $\hat\theta$ & $\hat\sigma$\\
+\midrule
+Easy & 14.5 & 0.91 & 0.88 & 0.23 & 9.10 & 0.25\\
+Medium & 13.0 & 6.86 & 6.82 & 0.13 & 3.14 & 0.12\\
+Hard & 11.5 & 37.26 & 37.22 & 0.06 & -27.26 & 0.05\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\hypertarget{target-plot-identification-model-details}{%
+\section{\texorpdfstring{Target Plot Identification Model Details
+\label{app:glmm-model}}{Target Plot Identification Model Details }}\label{target-plot-identification-model-details}}
+
+\textcolor{Plum}{
+Target plot identification was analyzed using the Glimmix Procedure in SAS 9.4. 
+Each lineup plot evaluated was assigned a value based on the participant response (correct = 1, not correct = 0). 
+Define $Y_{ijkl}$ to be the event that participant $l$ correctly identifies the target plot for dataset $k$ with curvature $j$ plotted on scale $i$. 
+The binary response was analyzed using generalized linear mixed model following a binomial distribution with a logit link function following a row-column blocking design accounting for the variation due to participant and data set respectively, with a split plot design accounting for the same participant evaluating the same dataset on both the linear scale and log scale as shown in the Equation (2).
+\begin{equation}
+\text{logit }P(Y_{ijk}) = \eta + \delta_i + \gamma_j + \delta \gamma_{ij} + s_l + d_k + wp_{jkl}
+\end{equation}
+where
+\begin{align*}
+&\eta               \text{ is the beaseline average probability of selecting the target plot.} \\
+&\delta_i           \text{ is the effect of the log/linear scale.} \\
+&\gamma_j           \text{ is the effect of the curvature combination.} \\
+&\delta\gamma_{ij}  \text{ is the two-way interaction effect of the scale and curvature.} \\
+&s_l \sim N(0,\sigma^2_\text{{participant}}), \text{ random effect for participant characteristics} \\
+&d_k \sim N(0,\sigma^2_{\text{dataset}}), \text{ random effect for data specific characteristics.} \\
+&wp_{jkl} \sim N(0,\sigma^2_\text{{whole-plot}}), \text{ random effect for the particular participant by dataset charactersitics.}
+\end{align*}
+We assume that random effects for dataset, participant, and whole plot effects are independent. See least squares means estimated probabilities and Tukey groupings at an $\alpha = 0.05$ significance level in Figure \ref{fig:lsmeans-plot}.
+}
 
 \textcolor{Plum}{Add details here: ANOVA, p-values, pairwise comparisons, etc.}
+
+\begin{figure}
+
+{\centering \includegraphics{jsm-2021-student-paper-submission_files/figure-latex/lsmeans-plot-1} 
+
+}
+
+\caption{Least Squares Means}\label{fig:lsmeans-plot}
+\end{figure}
 
 \bibliographystyle{tfcad}
 \bibliography{references.bib}
