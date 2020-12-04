@@ -32,25 +32,13 @@ library(knitr)
 library(gridExtra)
 ```
 
-<!-- How to comment out -->
-
-<!-- 
-\svp{Emily and Reka, when we get into the editing stage, I've found this strategy to be useful: basically, when you add new text, use your color (feel free to change the command, for now yours are set to \er{$\backslash$er} and \rh{$\backslash$rh}.}
-\svp{The way this usually works is that when e.g. I read over a document that Emily has recently edited, I will remove her flagged text to indicate that I've seen/accepted the changes (and vice versa - I'll edit text and highlight it with my color, and you can accept/modify and flag yours too) -- sometimes modifications happen first and then all of the color in a paragraph gets taken out once we've moved on.}
-\svp{This not only leads to a nice rainbow effect, but you can quickly spot changes, too. If you're changing some slight phrasing/wording that doesn't change meaning, it's not necessary to highlight those changes - highlight content changes, not e.g. verb tenses.}
-\svp{If something is a comment and has been addressed, comment it out initially and then delete the line after a couple of weeks.}
- -->
- 
-<!-- If you put each sentence on a new line, it makes it a lot easier for git to spot changes that only affect one line and not the whole paragraph. This reduces merge conflict probability -->
-
 # Introduction
 
 Graphics are a useful tool for displaying and communicating information. \citep{vanderplas2020testing}
-<!-- \svp{See annual review article for references for this claim.} -->
-Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public. \svp{May want to ask Heather about this one during the meeting (or by email)?}
-During the onset of the novel coronavirus pandemic (COVID-19), we saw an influx of dashboards being developed to display case counts, transmission rates, and outbreak regions \citep{lisa_charlotte_2020} and mass media routinely presenting the data on COVID-19 \er{\citep{romano_scale_2020}}.
-People began subscribing to news sources involved in graphically tracking the coronavirus as a direct result of these pieces of work and the need for continually updated information \citep{rost_2020}; thus, gaining more exposure to the use of graphics.
-<!-- \svp{Did people subscribe to news sources as a result, of the graphics or the need for up-to-date info?} -->
+Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public. 
+<!-- \svp{May want to ask Heather about this one during the meeting (or by email)?} -->
+At the beginning of the SARS-NCOV-2 pandemic, we saw an influx of dashboards being developed to display case counts, transmission rates, and outbreak regions \citep{lisa_charlotte_2020}; mass media routinely showed charts to provide information about COVID-19 \er{\citep{romano_scale_2020}}.
+People began seeking out graphical displays of coronavirus data as a direct result of these pieces of work \citep{rost_2020}; providing increased and ongoing exposure to these graphics over time.
 Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing, but also facilitated communication with the public to increase compliance \er{\citep{bavel_using_2020}}.
 With the increasing importance graphics play in our everyday lives, we must actively choose which of many possible graphics to draw, according to some set of design choices to ensure that our charts are effective, as suggested in \citet{unwin_why_2020}.
 
@@ -84,9 +72,8 @@ Research suggests our perception and mapping of numbers to a number line is loga
 This transition to linear scales occurs first in small numbers (e.g. 1-10) and then gradually expands to higher orders of magnitude; thus, the logarithmic intuition about numbers in children is often more noticeable on scales in the thousands to hundreds of thousands. \citep{varshney_why_2013, siegler_numerical_2017, dehaeneLogLinearDistinct2008}.
 If we percieve logarithmically by default, it is a natural (and presumably low-effort) way to display information and should be easy to read and understand/use.
 In fact, early studies explored the estimation and prediction of exponential growth, finding that growth is underestimated when presented both numerically and graphically but that numerical estimation is more accurate than graphical estimation for exponential curves.
-One way to improve estimation of increasing exponential trends other than changing the scale is through the use of providing immediate feedback \citep{mackinnon_feedback_1991}.
-While prior contextual knowledge or experience with exponential growth does not improve estimation, previous instruction on exponential growth reduces the underestimation by adjusting the initial starting value but not adjusting their perception of growth rate
-\citep{wagenaar_misperception_1975, jones_polynomial_1977}.
+One way to improve estimation of increasing exponential trends \svp{is to provide} immediate feedback \svp{to participants}\citep{mackinnon_feedback_1991}.
+While prior contextual knowledge or experience with exponential growth does not improve estimation, instruction on exponential growth reduces the underestimation: \svp{participants adjust their} initial starting value but not their perception of growth rate \citep{wagenaar_misperception_1975, jones_polynomial_1977}.
 Estimation was shown to improve when subjects were presented with decreasing exponential functions \citep{timmers_inverse_1977}.
 \citet{jones_polynomial_1977,jones_generalized_1979} and \citet{wagenaar_extrapolation_1978} propose competing polynomial models for the perception and extrapolation of exponential series.
 It seems that estimation is a two-stage process: first, we identify the type of curve and direction and then, we use that information for prediction \citep{best_perception_2007}.
