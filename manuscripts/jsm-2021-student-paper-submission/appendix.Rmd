@@ -76,7 +76,7 @@ parameter_data %>%
         caption = "Final parameters used to simulate exponential data for each of the three diffculty levels: Easy (Obvious curvature), Medium (noticable curvature) and Hard (almost linear)")
 ```
 
-# Target Plot Identification Model Details \label{app:glmm-model}
+# Model Details \label{app:glmm-model}
 \er{
 Target plot identification was analyzed using the Glimmix Procedure in SAS 9.4.
 Each lineup plot evaluated was assigned a value based on the participant response (correct = 1, not correct = 0).
