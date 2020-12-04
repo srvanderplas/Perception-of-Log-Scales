@@ -20,7 +20,7 @@ Output: estimated model parameters $\hat\alpha, \hat\beta, \hat\theta$
 
 \noindent\textit{Algorithm 2.1.2: Exponential Simulation}
 
-Input Paremeters: sample size $N = 50$, estimated parameters $\hat\alpha$, $\hat\beta$, and $\hat\theta$, $\sigma$ standard \indent deviation from the exponential curve.
+Input Paremeters: sample size $N = 50$, estimated parameters $\hat\alpha$, $\hat\beta$, and $\hat\theta$, $\sigma$ standard deviation from the exponential curve.
 
 Output Parameters: $N$ points, in the form of vectors $\mathbf{x}$ and $\mathbf{y}$.
 
@@ -36,7 +36,7 @@ Output Parameters: $N$ points, in the form of vectors $\mathbf{x}$ and $\mathbf{
 
 # Parameter Selection \label{app:parameters}
 For each level of difficulty, we simulated 1000 data sets of $(x_{ij}, y_{ij})$ points for $i = 1,...,50$ and $j = 1...10$.
-Each generated $x_i$ point from \textit{Algorithm 2.1.2} was replicated 10 times.Then the lack of fit statistic (LOF) was computed for each simulated dataset by calculating the deviation of the data from a linear line.
+Each generated $x_i$ point from \textit{Algorithm 2.1.2} was replicated 10 times. Then the lack of fit statistic (LOF) was computed for each simulated dataset by calculating the deviation of the data from a linear line.
 Plotting the density curves of the LOF statistics for each level of difficulty choice allows us to evaluate the ability of differentiating between the difficulty levels and thus detecting the target plot.
 In Figure \ref{fig:lof-density-curves}, we can see the densities of each of the three difficulty levels.
 While the LOF statistic provides us a numerical value for discriminating between the difficulty levels, we cannot directly relate this to the perceptual discriminability; it serves primarily as an approximation to ensure that we are testing parameters at several distinct levels of difficulty.

@@ -37,9 +37,9 @@ library(gridExtra)
 Graphics are a useful tool for displaying and communicating information. \citep{vanderplas2020testing}
 Researchers include graphics to communicate their results in scientific publications and news sources rely on graphics to convey news stories to the public. 
 <!-- \svp{May want to ask Heather about this one during the meeting (or by email)?} -->
-At the beginning of the SARS-NCOV-2 pandemic, we saw an influx of dashboards being developed to display case counts, transmission rates, and outbreak regions \citep{lisa_charlotte_2020}; mass media routinely showed charts to provide information about COVID-19 \er{\citep{romano_scale_2020}}.
+At the beginning of the SARS-NCOV-2 pandemic, we saw an influx of dashboards being developed to display case counts, transmission rates, and outbreak regions \citep{lisa_charlotte_2020}; mass media routinely showed charts to provide information about COVID-19 \citep{romano_scale_2020}.
 People began seeking out graphical displays of coronavirus data as a direct result of these pieces of work \citep{rost_2020}; providing increased and ongoing exposure to these graphics over time.
-Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing, but also facilitated communication with the public to increase compliance \er{\citep{bavel_using_2020}}.
+Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing, but also facilitated communication with the public to increase compliance \citep{bavel_using_2020}.
 With the increasing importance graphics play in our everyday lives, we must actively choose which of many possible graphics to draw, according to some set of design choices to ensure that our charts are effective, as suggested in \citet{unwin_why_2020}.
 
 <!--
@@ -52,13 +52,13 @@ One common solution is to use a log scale transformation to display data over se
 Logarithms make multiplicative relationships additive, showing elasticities and other proportional changes, and also linearize power laws \citep{menge_logarithmic_2018}. 
 When presenting log-scaled data, it is possible to use either untransformed scale labels (for example, values of 1, 10 and 100 are equally spaced along the axis) or log-transformed scale labels (for example, 0, 1, and 2, showing the corresponding powers of 10).
 <!-- \svp{This is the difference between a transformed scale transformed values; it's not the difference between untransformed values and transformed values. see https://r4ds.had.co.nz/graphics-for-communication.html\#scales for an explanation of scales, but I'm still looking for a perfect reference for transformations at the value vs. scale level.} -->
-We have recently experienced the benefits and pitfalls of using log-scales as covid-19 dashboards displayed case count data on both the log and linear scale \er{\citep{wade_fagen_ulmschneider_2020, financial_times_2020}}. 
+We have recently experienced the benefits and pitfalls of using log-scales as covid-19 dashboards displayed case count data on both the log and linear scale \citep{wade_fagen_ulmschneider_2020, financial_times_2020}. 
 In spring 2020, during the early stages of the coronavirus pandemic, there was a large magnitude discrepancy at a given time between different geographic regions (at all orders of magnitude - states and provinces as well as countries and continents). 
 During this time, we saw the usefulness of log-scales showing case count curves for areas with few cases and areas with many cases within one chart.
 As the pandemic evolved, and the case counts were no longer spreading exponentially, graphs with linear scales seemed more effective at spotting early increases in case counts that signaled more localized outbreaks.
 This is only one recent example of a situation in which both log and linear scales are useful for showing different aspects of the same data; there are long histories of using log scales to display results in ecology, psychophysics, engineering, and physics 
-\citep{xkcd, menge_logarithmic_2018}.
-\svp{XXX it may be interesting to find papers objecting to the use of log scales in some other disciplines beyond ecology.}
+\citep{xkcd, menge_logarithmic_2018, heckler_student_2013}.
+<!-- \svp{XXX it may be interesting to find papers objecting to the use of log scales in some other disciplines beyond ecology.} -->
 <!-- Can we cite XKCD here? https://xkcd.com/1162/} -->
 <!-- While the cornovirus pandemic is the most recent and well known example, log-scales have been used to display data in ecological research, etc.  -->
 <!-- PUT OTHER AREAS HERE. -->
@@ -68,7 +68,7 @@ This is only one recent example of a situation in which both log and linear scal
 <!-- \svp{There is one way to improve estimation of exponential trends other than changing the scale:} -->
 
 
-Research suggests our perception and mapping of numbers to a number line is logarithmic at first, but transitions to a linear scale later in development, with formal mathematics education \er{\citep{varshney_why_2013, siegler_numerical_2017, dehaeneLogLinearDistinct2008}}.
+Research suggests our perception and mapping of numbers to a number line is logarithmic at first, but transitions to a linear scale later in development, with formal mathematics education \citep{varshney_why_2013, siegler_numerical_2017, dehaeneLogLinearDistinct2008}.
 This transition to linear scales occurs first in small numbers (e.g. 1-10) and then gradually expands to higher orders of magnitude; thus, the logarithmic intuition about numbers in children is often more noticeable on scales in the thousands to hundreds of thousands.
 If we percieve logarithmically by default, it is a natural (and presumably low-effort) way to display information and should be easy to read and understand/use.
 In fact, early studies explored the estimation and prediction of exponential growth, finding that growth is underestimated when presented both numerically and graphically but that numerical estimation is more accurate than graphical estimation for exponential curves.
@@ -97,8 +97,8 @@ In order to provide a set of principles to guide design choices, we must evaluat
 These tests may take many forms: identifying differences in graphs, reading information off of a chart accurately, using data to make correct real-world decisions, and predicting the next few observations. 
 All of these types of tests require different levels of use and manipulation of the information presented in the chart.
 To lay a foundation for future exploration of the use of log scales, we begin with the most fundamental ability to identify differences in charts: this does not require that participants understand exponential growth, identify log scales, or have any mathematical training.
-Instead, we are simply testing the change in perceptual sensitivity resulting from visualization choices. \er{In \cite{best_perception_2007}, the authors explored whether discrimination between curve types is possible.
-They found that accuracy is higher when nonlinear trends presented (e.g. it’s hard to say something is linear, but easy to say that it isn’t) and that accuracy is higher with low additive variability.}
+Instead, we are simply testing the change in perceptual sensitivity resulting from visualization choices. In \cite{best_perception_2007}, the authors explored whether discrimination between curve types is possible.
+They found that accuracy is higher when nonlinear trends presented (e.g. it’s hard to say something is linear, but easy to say that it isn’t) and that accuracy is higher with low additive variability.
 
 A statistic is a numerical function which summarizes the data; by this definition, graphs are visual statistics.
 To evaluate a graph, we have to run our statistic throuugh a visual evaluation - a person. 
@@ -159,13 +159,12 @@ In order to guarantee the simulated data spans the same range of values, we impl
 These constraints provide some assurance that participants who select the target plot are doing so because of their visual perception differentiating between curvature or slope rather than different starting or ending values. 
 
 <!-- \svp{Use an actual equation to show the model with all parameters.}  -->
-\er{
-We simulated data based on a three-parameter exponential model with multiplicative errors: \svp{with parameters defined underneath}
+We simulated data based on a three-parameter exponential model with multiplicative errors: 
+<!-- \svp{with parameters defined underneath} -->
 \begin{align}
 y_i & = \alpha\cdot e^{\beta\cdot x_i + \epsilon_i} + \theta \\
 \text{with } \epsilon_i & \sim N(0, \sigma^2). \nonumber
 \end{align} 
-}
 <!-- with parameters defined underneath (though without the numeric references, use \\nonumber to get rid of the numeric references on the lines) -->
 <!-- This model has a $\beta$ parameter to reflect the rate of growth and amount of curvature and $\sigma^2$ to reflect the amount of variability around the exponential growth curve.  -->
 \noindent The parameters $\alpha$ and $\theta$ are adjusted based on $\beta$ and $\sigma^2$ to guarantee the range and domain constraints are met. 
@@ -195,7 +194,7 @@ The midpoints and standard deviation combinations were chosen using a method des
 The lineup plots were generated by mapping simulating data corresponding to difficulty level A to a scatterplot while the null plots were generated by mapping simulated data corresponding to difficulty level B to a scatterplot. 
 For example, a target plot with simulated data following an increasing exponential curve with obvious curvature is embeded within null plots with simulated data following an increasing exponential that is almost linear (i.e. Easy-Hard). 
 By our constraints, the target plot and null plots will span a similar domain and range. 
-There are a total of 6 (i.e. 3 choose 2) lineup parameter combinations.
+There are a total of 6 (i.e. $3 \choose 2$) lineup parameter combinations.
 Two sets of each lineup parameter combination were simulated (total of 12 test data sets) and plotted on both the linear and the log scale (total of 24 test lineup plots).
 In addition, there are three parameter combinations which generate homogeneous "Rorschach" lineups, where all panels are from the same distribution. Each participant evaluated one of these lineups, but for simplicity, these evaluations are not described in this paper.
 
@@ -232,7 +231,7 @@ On both the log and linear scales, the highest accuracy occured in lineup plots 
 It is worth noting that there is a more significant decrease in accuracy on the linear scale when comparing a target plot with a lower rate of change embedded in null plots with higher rates of change (e.g. Medium-Easy and Hard-Medium). 
 This agrees with \cite{best_perception_2007} whose results found that accuracy was higher when nonlinear trends were presented indicating that it is hard to say something is linear (i.e. something has less curvature), but easy to say that it isn't (i.e. something has more curvature). 
 Overall, there is are no significant differences in accuracy between curvature combinations when data is presented on a log scale indicating participants were consistent in their success of identifying the target panel on the log scale.
-\er{Figure \ref{fig:odds-ratio-plot} displays the estimated (log) odds ratio of successfully identifying the target panel on the log scale compared to the linear scale. We found the choice of scale has no impact if curvature differences are large. However, presenting data on the log scale makes us more sensitive to the the changes when there are only slight changes in curvature.}
+Figure \ref{fig:odds-ratio-plot} displays the estimated (log) odds ratio of successfully identifying the target panel on the log scale compared to the linear scale. We found the choice of scale has no impact if curvature differences are large. However, presenting data on the log scale makes us more sensitive to the the changes when there are only slight changes in curvature.
 <!-- \er{ -->
 <!-- As hypothesized, the scale had the least effect on selecting a target plot with lots of curvature (Easy) embedded in almost linear null plots (Hard) followed closely by a target plot with noticeable curvature (Medium) embedded in almost linear null plots (Hard) on both the linear and log scales. \svp{Can you revisit this with the modified figure? I think it's a bit more clear.} -->
 <!-- } -->
@@ -277,16 +276,16 @@ odds_ratio_plot
 
 The overall goal of this paper is to provide basic research to support the principles used to guide design decisions in scientific visualizations of exponential data. 
 In this study, we explored the use of linear and log scales to determine whether our ability to notice differences in the data is different when different scales are used. 
-\er{Our results indicated that displaying increasing exponential data on a log scale improved the accuracy of differentiating between models with slight curvature differences, particularly when identifying an exponential curve with a lower growth rate than others. 
+Our results indicated that displaying increasing exponential data on a log scale improved the accuracy of differentiating between models with slight curvature differences, particularly when identifying an exponential curve with a less curvature than others. 
 When there was a larger curvature difference, participants accurately differentiated between the two curves on both the linear and log scale. An exception occurs when identifying a plot with more curvature than the surrounding plots, supporting \cite{best_perception_2007} whose results found that accuracy was higher when nonlinear trends were presented indicating that it is hard to say something is linear (i.e. something has less curvature), but easy to say that it isn't (i.e. something has more curvature).}
 
 Further experimentation is necessary to test an individual's ability to make predictions for exponentially increasing data. 
 Previous literature suggests that we tend to underestimate predictions of exponentially increasing data.\citep{jones_generalized_1979, jones_polynomial_1977, wagenaar_extrapolation_1978}.
 \citep{mosteller_eye_1981} designed and carried out an empirical investigation to explore properties of lines fitted by eye.
-The researchers found that students tended to fit the slope of the first principal component or major axis (the line that minimizes the sum of squares of perpendicular rather than vertical distances) and that students \er{who overestimated the steepness of the slope were consistent in their overestimation throughout the entire study.}
+The researchers found that students tended to fit the slope of the first principal component or major axis (the line that minimizes the sum of squares of perpendicular rather than vertical distances) and that students who overestimated the steepness of the slope were consistent in their overestimation throughout the entire study.
 <!-- who estimated  steep slopes for one data set also tended to give steep slopes on the others.  -->
 Interestingly, the individual-to-individual variability in slope and in intercept was near the standard error provided by least squares.
-A similar graphical task is used in the New York Times "You Draw It" page asking readers to test their knowledge by using their curser to estimate values of a certain topic under different political administrations or over different years \er{(CITE THIS)}.
+A similar graphical task is used in the New York Times "You Draw It" page asking readers to test their knowledge by using their curser to estimate values of a certain topic under different political administrations or over different years \citep{new_york_times_2017}.
 In addition to differentiation and prediction of exponentially increasing data, it is of interest to test an individuals' ability to translate a graph of exponentially increasing data into real value quantities and extend their estimations by making comparisons. 
 \citep{friel_making_2001} emphasize the importance of graph comprehension proposing that the graph construction plays a role in the ability to read and interpret graphs.
 
