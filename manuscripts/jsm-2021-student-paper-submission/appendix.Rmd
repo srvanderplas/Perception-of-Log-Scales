@@ -1,0 +1,130 @@
+\clearpage
+\appendix
+```{r setup2, include = FALSE}
+knitr::opts_chunk$set(fig.env="figure")
+```
+# Data Generation Procedure\label{app:generation}
+\textit{Algorithm 2.1.1: Paremeter Estimation}
+
+Input Parameters: domain $x\in[0,20]$, range $y\in[10,100]$, midpoint $x_{mid}$.
+
+Output: estimated model parameters $\hat\alpha, \hat\beta, \hat\theta$
+
+1. Determine the $y=-x$ line scaled to fit the assigned domain and range.
+
+2. Map the values $x_{mid} - 0.1$ and $x_{mid} + 0.1$ to the $y=-x$ line for two additional points.
+
+3. From the set points $(x_k, y_k)$ for $k = 1,2,3,4$, obtain the coefficients from the linear model $\ln(y_k) = b_0 +b_1x_k$ to obtain starting values - $\alpha_0 = e^{b_0}, \beta_0 =  b_1, \theta_0 = 0.5\cdot \min(y)$
+
+4. Using the `nls()` function from the `stats` package in Rstudio and the starting parameter values - $\alpha_0, \beta_0, \theta_0$ - fit the nonlinear model, $y_k = \alpha\cdot e^{\beta\cdot x_k}+\theta$ to obtain estimated parameter values - $\hat\alpha, \hat\beta, \hat\theta.$
+
+\noindent\textit{Algorithm 2.1.2: Exponential Simulation}
+
+Input Paremeters: sample size $N = 50$, estimated parameters $\hat\alpha$, $\hat\beta$, and $\hat\theta$, $\sigma$ standard \indent deviation from the exponential curve.
+
+Output Parameters: $N$ points, in the form of vectors $\mathbf{x}$ and $\mathbf{y}$.
+
+1. Generate $\tilde x_j, j = 1,..., N\cdot \frac{3}{4}$ as a sequence of evenly spaced points in $[0,20]$. This ensures the full domain of $x$ is used, fulfilling the constraints of spanning the same domain and range for each parameter combination.
+
+2. Obtain $\tilde x_i, i = 1,...N$ by sampling $N = 50$ values from the set of $\tilde x_j$ values. This gaurantees some variability and potential clustring in the exponential growth curve disrupting the perception due to continuity of points.
+
+3. Obtain the final $x_i$ values by jittering $\tilde x_i$.
+
+4. Calculate $\tilde\alpha = \frac{\hat\alpha}{e^{\sigma^2/2}}.$ This ensures that the range of simulated values for different standard devaition parameters has an equal expected value for a given rate of change due to the non-constant variance across the domain.
+
+5. Generate $y_i = \tilde\alpha\cdot e^{\hat\beta x_i + e_i}+\hat\theta$ where $e_i\sim N(0,\sigma^2).$
+
+# Parameter Selection \label{app:parameters}
+For each level of difficulty, we simulated 1000 data sets of $(x_{ij}, y_{ij})$ points for $i = 1,...,50$ and $j = 1...10$.
+Each generated $x_i$ point from \textit{Algorithm 2.1.2} was replicated 10 times.Then the lack of fit statistic (LOF) was computed for each simulated dataset by calculating the deviation of the data from a linear line.
+Plotting the density curves of the LOF statistics for each level of difficulty choice allows us to evaluate the ability of differentiating between the difficulty levels and thus detecting the target plot.
+In Figure \ref{fig:lof-density-curves}, we can see the densities of each of the three difficulty levels.
+While the LOF statistic provides us a numerical value for discriminating between the difficulty levels, we cannot directly relate this to the perceptual discriminability; it serves primarily as an approximation to ensure that we are testing parameters at several distinct levels of difficulty.
+
+```{r lof-density-curves, eval = T, out.width="\\columnwidth", fig.height = 2.5, fig.width = 5, fig.align = 'center', fig.cap = "Density plot of the lack of fit statistic showing separation of difficulty levels: obvious curvature, noticable curvature, and almost linear."}
+lofData <- read.csv(file = "data/lofData.csv")
+lofPlot_curvature <- lofData %>%
+  mutate(Curvature = factor(Curvature, levels = c("Obvious Curvature", "Noticeable Curvature", "Almost Linear"), labels = c("Easy (Lots of curvature)", "Medium (Noticable curvature)", "Hard (Almost Linear)"))) %>%
+  mutate(Variability = factor(Variability, levels = c("Low"))) %>%
+  ggplot(aes(x = statistic, fill = Curvature, color = Curvature)) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual("Curvature Difficulty", values = c("#004400", "#116611", "#55aa55")) +
+  scale_color_manual("Curvature Difficulty", values = c("#004400", "#116611", "#55aa55")) +
+  theme_bw(base_size = 14) +
+  theme(legend.position = "bottom",
+        axis.text    = element_text(size = 6),
+        axis.title   = element_text(size = 8),
+        legend.title = element_text(size = 8),
+        legend.text  = element_text(size = 6),
+        legend.key.size = unit(0.5, "line")
+        ) +
+  scale_x_continuous("Lack of Fit Statistic")
+lofPlot_curvature
+```
+
+Final parameter estimates are shown in Table \ref{tab:parameter-data}.
+
+```{r parameter-data, eval = T}
+parameter_data <- read.csv(file = "data/parameter_data.csv")
+parameter_data %>%
+  mutate(difficulty = ifelse(difficulty == "Obvious Curvature", "Easy",
+                             ifelse(difficulty == "Noticable Curvature", "Medium", "Hard"))
+         ) %>%
+  select(difficulty, xMid, alphahat, alphatilde, betahat, thetahat, sigma_vals) %>%
+  kable("latex", digits = 2, escape = F, booktabs = T, linesep = "", align = "c", label = "parameter-data",
+        col.names = c("",   "$x_{mid}$", "$\\hat\\alpha$", "$\\tilde\\alpha$", "$\\hat\\beta$", "$\\hat\\theta$", "$\\hat\\sigma$"),
+        caption = "Final parameters used to simulate exponential data for each of the three diffculty levels: Easy (Obvious curvature), Medium (noticable curvature) and Hard (almost linear)")
+```
+
+# Target Plot Identification Model Details \label{app:glmm-model}
+\er{
+Target plot identification was analyzed using the Glimmix Procedure in SAS 9.4.
+Each lineup plot evaluated was assigned a value based on the participant response (correct = 1, not correct = 0).
+Define $Y_{ijkl}$ to be the event that participant $l$ correctly identifies the target plot for dataset $k$ with curvature $j$ plotted on scale $i$.
+The binary response was analyzed using generalized linear mixed model following a binomial distribution with a logit link function following a row-column blocking design accounting for the variation due to participant and data set respectively, with a split plot design accounting for the same participant evaluating the same dataset on both the linear scale and log scale as shown in the Equation (2).}
+\begin{equation}
+\text{logit }P(Y_{ijk}) = \eta + \delta_i + \gamma_j + \delta \gamma_{ij} + s_l + d_k + wp_{jkl}
+\end{equation}
+where
+\begin{itemize}
+\item $\eta$ is the beaseline average probability of selecting the target plot. 
+\item $\delta_i$ is the effect of the log/linear scale.
+\item $\gamma_j$ is the effect of the curvature combination.
+\item $\delta\gamma_{ij}$is the two-way interaction effect of the scale and curvature.
+\item $s_l \sim N(0,\sigma^2_\text{{participant}})$, random effect for participant characteristics.
+\item $d_k \sim N(0,\sigma^2_{\text{dataset}})$, random effect for data specific characteristics.
+\item $wp_{jkl} \sim N(0,\sigma^2_\text{{whole-plot}})$, random effect for the particular participant by dataset charactersitics.
+\end{itemize}
+\er{We assume that random effects for dataset, participant, and whole plot effects are independent. See least squares means estimated probabilities and Tukey groupings at an $\alpha = 0.05$ significance level in Figure \ref{fig:lsmeans-plot}.
+}
+
+\er{Add details here: ANOVA, p-values, pairwise comparisons, etc.}
+
+```{r lsmeans-plot, eval = T, out.width = "\\columnwidth", fig.width = 5.5, fig.height = 2.5, fig.align = 'center', fig.cap = "Least Squares Means"}
+lsmeans <- read.csv("results/jsm-student-paper-lsmeans.csv") %>%
+  extract(curvature, into = c("Target", "Null"), "t-([MEH])_n-([EMH])", remove = F) %>%
+  mutate(Target = factor(Target, levels = c("E", "M", "H"), labels = c("Easy", "Medium", "Hard")),
+         Null = factor(Null, levels = c("E", "M", "H"), labels = c("Easy", "Medium", "Hard")))
+
+dodge <- position_dodge(width=0.9)
+lsmeans_plot <- lsmeans %>%
+  ggplot(aes(x = Null, y = Mu, group = Target, fill = Target, label = Tukey_Grouping_overall)) +
+  geom_bar(stat = "identity", position = dodge) +
+  geom_errorbar(aes(ymin = LowerMu, ymax = UpperMu), width = 0.1, position = dodge) +
+  geom_text(aes(y = UpperMu + 0.05), size = 2, position = dodge) +
+  facet_wrap(~test_param, ncol = 2) +
+  theme_bw() +
+  theme(legend.position = "bottom",
+        axis.title = element_text(size = 8),
+        axis.text = element_text(size = 6),
+        strip.text = element_text(size = 8, margin = margin(0.1,0,0.1,0, "cm")),
+        strip.background = element_rect(size = 0.5),
+        legend.title = element_text(size = 8),
+        legend.text  = element_text(size = 6),
+        legend.key.size = unit(0.5, "line")
+        ) +
+  scale_y_continuous("Probability of Detecting Target Panel", limit = c(0,1.1), breaks = seq(0,1,0.2)) +
+  scale_x_discrete("Null Plot Type") +
+  scale_fill_manual("Target Plot Type", values = c("#004400", "#116611", "#55aa55"))
+lsmeans_plot
+```
