@@ -24,9 +24,10 @@ PROC GLIMMIX DATA = sim_lineup_data;
 
 	MODEL 	correct = curvature|test_param / D = Binomial LINK = logit SOLUTION;
 
-	RANDOM	intercept / SUBJECT = run;
-	RANDOM	intercept / SUBJECT = data_name;
-/*	RANDOM	curvature / SUBJECT = run*data_name;*/
+	RANDOM	intercept / SUBJECT = run; * (row) participant block;
+	RANDOM	intercept / SUBJECT = data_name; * (column) dataset block;
+	RANDOM	curvature / SUBJECT = run*data_name; *(whole plot);
+	*NOT INCLUDING SPLIT FOR OVERDISPERSION;
 
 	LSMEANS	test_param*curvature / SLICE = (curvature test_param)  SLICEDIFF = (curvature test_param) PLOT = MEANPLOT(SLICEBY = test_param CL ILINK JOIN) ILINK CL LINES ADJUST = TUKEY ODDS ODDSRATIO;
 	SLICE	test_param*curvature / SLICEBY = curvature  LINES ADJUST = TUKEY;
