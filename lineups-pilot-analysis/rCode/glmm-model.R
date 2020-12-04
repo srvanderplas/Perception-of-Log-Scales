@@ -22,7 +22,8 @@ library(emmeans)
 
 glmm_mod <- glmer(correct ~ curvature*test_param + 
                             (1 | run) +
-                            (1 | data_name),
+                            (1 | data_name)
+                            (1 | run:data_name),
                   data = model_data,
                   family = binomial(link = "logit"))
 summary(glmm_mod)
