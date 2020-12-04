@@ -71,22 +71,12 @@ This is only one recent example of a situation in which both log and linear scal
 Research suggests our perception and mapping of numbers to a number line is logarithmic at first, but transitions to a linear scale later in development, with formal mathematics education \er{\citep{varshney_why_2013, siegler_numerical_2017, dehaeneLogLinearDistinct2008}}.
 This transition to linear scales occurs first in small numbers (e.g. 1-10) and then gradually expands to higher orders of magnitude; thus, the logarithmic intuition about numbers in children is often more noticeable on scales in the thousands to hundreds of thousands.
 If we percieve logarithmically by default, it is a natural (and presumably low-effort) way to display information and should be easy to read and understand/use.
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 In fact, early studies explored the estimation and prediction of exponential growth, finding that growth is underestimated when presented both numerically and graphically but that numerical estimation is more accurate than graphical estimation for exponential curves.
-One way to improve estimation of increasing exponential trends \svp{is to provide} immediate feedback \svp{to participants}\citep{mackinnon_feedback_1991}.
-While prior contextual knowledge or experience with exponential growth does not improve estimation, instruction on exponential growth reduces the underestimation: \svp{participants adjust their} initial starting value but not their perception of growth rate \citep{wagenaar_misperception_1975, jones_polynomial_1977}.
-=======
-=======
->>>>>>> Stashed changes
-In fact, early studies explored the estimation and prediction of exponential growth, finding that growth is underestimated when presented both numerically and graphically but that numerical estimation is more accurate than graphical estimation for exponential curves \er{reference}.
-<!-- One way to improve estimation of increasing exponential trends other than changing the scale is through the use of providing immediate feedback \citep{mackinnon_feedback_1991}. -->
-While prior contextual knowledge or experience with exponential growth does not improve estimation, previous instruction on exponential growth reduces the underestimation by adjusting the initial starting value but not adjusting their perception of growth rate
-\citep{wagenaar_misperception_1975, jones_polynomial_1977}.
->>>>>>> Stashed changes
-Estimation was shown to improve when subjects were presented with decreasing exponential functions \citep{timmers_inverse_1977}.
-\citet{jones_polynomial_1977,jones_generalized_1979} and \citet{wagenaar_extrapolation_1978} propose competing polynomial models for the perception and extrapolation of exponential series.
-It seems that estimation is a two-stage process: first, we identify the type of curve and direction and then, we use that information for prediction \citep{best_perception_2007}.
+One way to improve estimation of increasing exponential trends is to provide immediate feedback to participants \citep{mackinnon_feedback_1991}.
+While prior contextual knowledge or experience with exponential growth does not improve estimation, instruction on exponential growth reduces the underestimation: participants adjust their initial starting value but not their perception of growth rate \citep{wagenaar_misperception_1975, jones_polynomial_1977}.
+<!-- Estimation was shown to improve when subjects were presented with decreasing exponential functions \citep{timmers_inverse_1977}. -->
+<!-- \citet{jones_polynomial_1977,jones_generalized_1979} and \citet{wagenaar_extrapolation_1978} propose competing polynomial models for the perception and extrapolation of exponential series. -->
+<!-- It seems that estimation is a two-stage process: first, we identify the type of curve and direction and then, we use that information for prediction \citep{best_perception_2007}. -->
 
 Our inability to accurately predict exponential growth might also be addressed by log-transforming the data, however, this transformation introduces new complexities: most readers are not mathematically sophisticated enough to intuitively understand logarithmic math and translate that back into real-world effects.
 In \citet{menge_logarithmic_2018}, ecologists were surveyed to determine how often ecologists encounter log-scaled data and how well ecologists understand log-scaled data when they see it in the literature. 

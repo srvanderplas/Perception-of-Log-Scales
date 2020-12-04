@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.10) (preloaded format=pdflatex 2020.10.13)  4 DEC 2020 13:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.10) (preloaded format=pdflatex 2020.10.13)  4 DEC 2020 13:39
 entering extended mode
 **./jsm-2021-student-paper-submission.tex
 (jsm-2021-student-paper-submission.tex
@@ -517,46 +517,34 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 38.
 
 ("C:\Users\ERobi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-Underfull \vbox (badness 1852) has occurred while \output is active []
-
-[1{C:/Users/ERobi/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}
+) [1{C:/Users/ERobi/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}
 
 
 ]
-<./images/lineup-example-1.pdf, id=131, 415.5525pt x 198.7425pt>
+Underfull \vbox (badness 1082) has occurred while \output is active []
+
+<./images/lineup-example-1.pdf, id=122, 415.5525pt x 198.7425pt>
 File: ./images/lineup-example-1.pdf Graphic file (type pdf)
 <use ./images/lineup-example-1.pdf>
-Package pdftex.def Info: ./images/lineup-example-1.pdf  used on input line 184.
+Package pdftex.def Info: ./images/lineup-example-1.pdf  used on input line 176.
 
 (pdftex.def)             Requested size: 415.55148pt x 198.742pt.
 [2]
-Underfull \vbox (badness 5519) has occurred while \output is active []
-
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 2
-77.
+69.
 ("C:\Users\ERobi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\t1cmtt.fd"
 File: t1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
-)
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-[3 <./images/lineup-example-1.pdf>]
-<./images/odds-ratio-plot-1.pdf, id=185, 361.35pt x 144.54pt>
+) [3 <./images/lineup-example-1.pdf>]
+<./images/odds-ratio-plot-1.pdf, id=175, 361.35pt x 144.54pt>
 File: ./images/odds-ratio-plot-1.pdf Graphic file (type pdf)
 <use ./images/odds-ratio-plot-1.pdf>
-Package pdftex.def Info: ./images/odds-ratio-plot-1.pdf  used on input line 330
+Package pdftex.def Info: ./images/odds-ratio-plot-1.pdf  used on input line 322
 .
 (pdftex.def)             Requested size: 361.34912pt x 144.53963pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
 (jsm-2021-student-paper-submission.bbl
 Underfull \hbox (badness 1571) in paragraph at lines 14--29
 \T1/cmr/m/n/10 S. Han, S. A. Haslam, J. Jet-ten, S. Ki-tayama,
  []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [4]
 Underfull \hbox (badness 3954) in paragraph at lines 42--46
@@ -591,84 +579,106 @@ Underfull \hbox (badness 1888) in paragraph at lines 49--58
  []
 
 
-Underfull \hbox (badness 1221) in paragraph at lines 120--129
+Underfull \hbox (badness 2529) in paragraph at lines 119--127
+[]\T1/cmr/m/n/10 A. J. Mack-in-non and A. J. Wear-ing.  Feed-back
+ []
+
+
+Underfull \hbox (badness 1043) in paragraph at lines 119--127
+\T1/cmr/m/n/10 and the fore-cast-ing of ex-po-nen-tial change.  \T1/cmr/m/it/10
+ Acta
+ []
+
+
+Underfull \hbox (badness 4391) in paragraph at lines 119--127
+\T1/cmr/m/it/10 Psy-cho-log-ica\T1/cmr/m/n/10 , 76(2):177--191, Apr. 1991.  ISS
+N
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 119--127
+[]$\T1/cmtt/m/n/10 https : / / linkinghub . elsevier . com / retrieve / pii /
+ []
+
+
+Underfull \hbox (badness 1221) in paragraph at lines 130--139
 \T1/cmr/m/n/10 ear Mod-els.  \T1/cmr/m/it/10 Jour-nal of the Amer-i-can Sta-tis
 -ti-cal
  []
 
 
-Underfull \hbox (badness 1259) in paragraph at lines 120--129
+Underfull \hbox (badness 1259) in paragraph at lines 130--139
 \T1/cmr/m/it/10 As-so-ci-a-tion\T1/cmr/m/n/10 , 108(503):942--956, Sept. 2013. 
  ISSN
  []
 
 [5 <./images/odds-ratio-plot-1.pdf>]
-Underfull \hbox (badness 3343) in paragraph at lines 144--152
+Underfull \hbox (badness 3343) in paragraph at lines 154--162
 \T1/cmr/m/it/10 ti-cian\T1/cmr/m/n/10 , 35(3):150--152, Aug. 1981.  ISSN 0003-
  []
 
 
-Underfull \hbox (badness 4686) in paragraph at lines 144--152
+Underfull \hbox (badness 4686) in paragraph at lines 154--162
 \T1/cmr/m/n/10 1305, 1537-2731.  doi: $10 . 1080 / 00031305 . 1981 .
  []
 
 
-Underfull \hbox (badness 4556) in paragraph at lines 168--172
+Underfull \hbox (badness 4556) in paragraph at lines 178--182
 []\T1/cmr/m/n/10 L. C. Rost.  You've in-formed the pub-lic with
  []
 
 
-Underfull \hbox (badness 2435) in paragraph at lines 168--172
+Underfull \hbox (badness 2435) in paragraph at lines 178--182
 \T1/cmr/m/n/10 vi-su-al-iza-tions about the coro-n-avirus. thank you.,
  []
 
 
-Underfull \hbox (badness 1997) in paragraph at lines 168--172
+Underfull \hbox (badness 1997) in paragraph at lines 178--182
 \T1/cmr/m/n/10 Jul 2020.  URL []$\T1/cmtt/m/n/10 https : / / blog . datawrapper
  . de /
  []
 
 
-Underfull \hbox (badness 1184) in paragraph at lines 174--182
+Underfull \hbox (badness 1184) in paragraph at lines 184--192
 \T1/cmr/m/n/10 vel-op-ment.  \T1/cmr/m/it/10 An-nual Re-view of Psy-chol-ogy\T1
 /cmr/m/n/10 , 68(1):
  []
 
 
-Underfull \hbox (badness 1466) in paragraph at lines 174--182
+Underfull \hbox (badness 1466) in paragraph at lines 184--192
 \T1/cmr/m/n/10 doi: $10 . 1146 / annurev-[]psych-[]010416-[]044101$.  URL
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 174--182
+Underfull \hbox (badness 10000) in paragraph at lines 184--192
 []$\T1/cmtt/m/n/10 http : / / www . annualreviews . org / doi / 10 . 1146 /
  []
 
 
-Underfull \hbox (badness 3525) in paragraph at lines 210--219
+Underfull \hbox (badness 3525) in paragraph at lines 211--220
 []\T1/cmr/m/n/10 S. Van-der-Plas and H. Hof-mann.  Clus-ters Beat
  []
 
 
-Underfull \hbox (badness 1286) in paragraph at lines 210--219
+Underfull \hbox (badness 1286) in paragraph at lines 211--220
 \T1/cmr/m/n/10 Trend!? Test-ing Fea-ture Hi-er-ar-chy in Sta-tis-ti-cal
  []
 
 ) [6]
-<./images/lof-density-curves-1.pdf, id=271, 361.35pt x 180.675pt>
+<./images/lof-density-curves-1.pdf, id=264, 361.35pt x 180.675pt>
 File: ./images/lof-density-curves-1.pdf Graphic file (type pdf)
 <use ./images/lof-density-curves-1.pdf>
 Package pdftex.def Info: ./images/lof-density-curves-1.pdf  used on input line 
-470.
+462.
 (pdftex.def)             Requested size: 247.94499pt x 123.97389pt.
 [7
 
 
  <./images/lof-density-curves-1.pdf>]
-<./images/lsmeans-plot-1.pdf, id=303, 397.485pt x 180.675pt>
+<./images/lsmeans-plot-1.pdf, id=296, 397.485pt x 180.675pt>
 File: ./images/lsmeans-plot-1.pdf Graphic file (type pdf)
 <use ./images/lsmeans-plot-1.pdf>
-Package pdftex.def Info: ./images/lsmeans-plot-1.pdf  used on input line 524.
+Package pdftex.def Info: ./images/lsmeans-plot-1.pdf  used on input line 516.
 (pdftex.def)             Requested size: 247.94499pt x 112.70654pt.
 [8
 
@@ -679,12 +689,12 @@ ot changed.
  ) 
 Here is how much of TeX's memory you used:
  7928 strings out of 480202
- 120930 string characters out of 2877025
- 444186 words of memory out of 3000000
+ 120942 string characters out of 2877025
+ 444879 words of memory out of 3000000
  24263 multiletter control sequences out of 15000+200000
  549841 words of font info for 69 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 60i,11n,66p,578b,451s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 60i,11n,66p,578b,453s stack positions out of 5000i,500n,10000p,200000b,50000s
  <C:\Users\ERobi\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/ec/dpi600\
 ecrm0700.pk> <C:\Users\ERobi\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/
 ec/dpi600\tcrm1000.pk> <C:\Users\ERobi\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour
@@ -706,10 +716,10 @@ r5.pfb><C:/Users/ERobi/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/ams
 fonts/cm/cmr7.pfb><C:/Users/ERobi/AppData/Local/Programs/MiKTeX 2.9/fonts/type1
 /public/amsfonts/cm/cmsy10.pfb><C:/Users/ERobi/AppData/Local/Programs/MiKTeX 2.
 9/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on jsm-2021-student-paper-submission.pdf (8 pages, 405086 bytes)
+Output written on jsm-2021-student-paper-submission.pdf (8 pages, 403448 bytes)
 .
 PDF statistics:
- 688 PDF objects out of 1000 (max. 8388607)
+ 681 PDF objects out of 1000 (max. 8388607)
  74 named destinations out of 1000 (max. 500000)
  101 words of extra memory for PDF output out of 10000 (max. 10000000)
 
