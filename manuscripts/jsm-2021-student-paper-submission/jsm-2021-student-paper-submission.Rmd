@@ -72,10 +72,13 @@ Research suggests our perception and mapping of numbers to a number line is loga
 This transition to linear scales occurs first in small numbers (e.g. 1-10) and then gradually expands to higher orders of magnitude; thus, the logarithmic intuition about numbers in children is often more noticeable on scales in the thousands to hundreds of thousands.
 If we percieve logarithmically by default, it is a natural (and presumably low-effort) way to display information and should be easy to read and understand/use.
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 In fact, early studies explored the estimation and prediction of exponential growth, finding that growth is underestimated when presented both numerically and graphically but that numerical estimation is more accurate than graphical estimation for exponential curves.
 One way to improve estimation of increasing exponential trends \svp{is to provide} immediate feedback \svp{to participants}\citep{mackinnon_feedback_1991}.
 While prior contextual knowledge or experience with exponential growth does not improve estimation, instruction on exponential growth reduces the underestimation: \svp{participants adjust their} initial starting value but not their perception of growth rate \citep{wagenaar_misperception_1975, jones_polynomial_1977}.
 =======
+=======
+>>>>>>> Stashed changes
 In fact, early studies explored the estimation and prediction of exponential growth, finding that growth is underestimated when presented both numerically and graphically but that numerical estimation is more accurate than graphical estimation for exponential curves \er{reference}.
 <!-- One way to improve estimation of increasing exponential trends other than changing the scale is through the use of providing immediate feedback \citep{mackinnon_feedback_1991}. -->
 While prior contextual knowledge or experience with exponential growth does not improve estimation, previous instruction on exponential growth reduces the underestimation by adjusting the initial starting value but not adjusting their perception of growth rate
