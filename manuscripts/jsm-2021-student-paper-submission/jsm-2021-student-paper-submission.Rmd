@@ -224,8 +224,7 @@ In 67\% of the 477 lineup evaluations, participants correctly identified the tar
 
 Target plot identification was analyzed using the Glimmix Procedure in SAS 9.4. 
 Each lineup plot evaluated was assigned a value based on the participant response (correct = 1, not correct = 0). 
-The binary response was analyzed using generalized linear mixed model following a binomial distribution with a logit link function following a row-column blocking design accounting for the variation due to participant and data set respectively, with a split plot design accounting for the same participant evaluating the same data set on both the linear scale and log scale. 
-See target plot identification model details and estimates in Appendix \ref{app:glmm-model}
+The binary response was analyzed using generalized linear mixed model following a binomial distribution with a logit link function following a row-column blocking design accounting for the variation due to participant and data set respectively. See model details and estimates in Appendix \ref{app:glmm-model}
 
 On both the log and linear scales, the highest accuracy occured in lineup plots where the target model and null model had large curvature differences (e.g. easy-hard and hard-easy). When comparing models that have slight curvature differences (e.g. Medium-Easy), there is a sacrifice in accuracy when displayed on the linear scale.
 It is worth noting that there is a more significant decrease in accuracy on the linear scale when comparing a target plot with a lower rate of change embedded in null plots with higher rates of change (e.g. Medium-Easy and Hard-Medium). 
@@ -242,17 +241,18 @@ Figure \ref{fig:odds-ratio-plot} displays the estimated (log) odds ratio of succ
 <!-- } -->
 
 ```{r odds-ratio-plot, eval = T, fig.width = 5, fig.height = 2, fig.align='center', fig.cap = "Odds Ratio's", message = F, warning = F}
-slice_curvature <- read_csv("results/jsm-student-paper-slice-curvature.csv") %>%
-  extract(Simple.Effect.Level, into = c("Target", "Null"), "curvature t-([MEH])_n-([EMH])", remove = F) %>%
+slice_curvature <- read_csv("results/jsm-student-paper-slicediffs.csv") %>%
+  select(SimpleEffectLevel, test_param,	"_test_param", OddsRatio,	Alpha,	Lower,	Upper,	AdjLower,	AdjUpper,	LowerOR,	UpperOR,	AdjLowerOR,	AdjUpperOR) %>%
+  na.omit() %>%
+  extract(SimpleEffectLevel, into = c("Target", "Null"), "curvature t-([MEH])_n-([EMH])", remove = F) %>%
   mutate(Target = factor(Target, levels = c("E", "M", "H"), labels = c("Easy", "Medium", "Hard")),
          Null = factor(Null, levels = c("E", "M", "H"), labels = c("Easy", "Medium", "Hard")))
 
 dodge <- position_dodge(width=0.9)
 odds_ratio_plot <- slice_curvature %>%
-  mutate(Simple.Effect.Level = substr(Simple.Effect.Level, 11, 17))  %>% 
-  ggplot(aes(x = Odds_Ratio_log_linear, y = Null, color = Target, shape = Target)) + 
+  ggplot(aes(x = OddsRatio, y = Null, color = Target, shape = Target)) + 
   geom_point(position = dodge) + 
-  geom_errorbar(aes(xmin = Lower_Odds_Ratio_log_linear, xmax = Upper_Odds_Ratio_log_linear), position = dodge, width = .1) +
+  geom_errorbar(aes(xmin = LowerOR, xmax = UpperOR), position = dodge, width = .1) +
   geom_vline(xintercept = 1) +
   theme_bw()  +
   theme(axis.title = element_text(size = 8),

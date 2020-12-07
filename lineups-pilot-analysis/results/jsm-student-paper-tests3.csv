@@ -1,0 +1,4 @@
+Effect,NumDF,DenDF,FValue,ProbF
+curvature,5,419,3.66,0.0030
+test_param,1,419,14.89,0.0001
+test_param*curvature,5,419,6.58,<.0001
