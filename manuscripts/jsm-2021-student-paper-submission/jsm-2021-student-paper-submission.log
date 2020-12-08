@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.10) (preloaded format=pdflatex 2020.10.13)  7 DEC 2020 10:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.10) (preloaded format=pdflatex 2020.10.13)  7 DEC 2020 21:14
 entering extended mode
 **./jsm-2021-student-paper-submission.tex
 (jsm-2021-student-paper-submission.tex
@@ -529,18 +529,13 @@ File: ./images/lineup-example-1.pdf Graphic file (type pdf)
 Package pdftex.def Info: ./images/lineup-example-1.pdf  used on input line 176.
 
 (pdftex.def)             Requested size: 415.55148pt x 198.742pt.
-
-Package amsmath Warning: Foreign command \atopwithdelims;
-(amsmath)                \frac or \genfrac should be used instead
-(amsmath)                 on input line 235.
-
 [2]
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 2
 65.
 ("C:\Users\ERobi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\t1cmtt.fd"
 File: t1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 ) [3 <./images/lineup-example-1.pdf>]
-<./images/odds-ratio-plot-1.pdf, id=179, 361.35pt x 144.54pt>
+<./images/odds-ratio-plot-1.pdf, id=178, 361.35pt x 144.54pt>
 File: ./images/odds-ratio-plot-1.pdf Graphic file (type pdf)
 <use ./images/odds-ratio-plot-1.pdf>
 Package pdftex.def Info: ./images/odds-ratio-plot-1.pdf  used on input line 321
@@ -550,9 +545,6 @@ Package pdftex.def Info: ./images/odds-ratio-plot-1.pdf  used on input line 321
 Underfull \hbox (badness 1571) in paragraph at lines 14--29
 \T1/cmr/m/n/10 S. Han, S. A. Haslam, J. Jet-ten, S. Ki-tayama,
  []
-
-
-Underfull \vbox (badness 2680) has occurred while \output is active []
 
 [4]
 Underfull \hbox (badness 3954) in paragraph at lines 42--46
@@ -678,20 +670,20 @@ Underfull \hbox (badness 1286) in paragraph at lines 226--235
  []
 
 ) [6]
-<./images/lof-density-curves-1.pdf, id=273, 361.35pt x 180.675pt>
+<./images/lof-density-curves-1.pdf, id=274, 361.35pt x 180.675pt>
 File: ./images/lof-density-curves-1.pdf Graphic file (type pdf)
 <use ./images/lof-density-curves-1.pdf>
 Package pdftex.def Info: ./images/lof-density-curves-1.pdf  used on input line 
-471.
+470.
 (pdftex.def)             Requested size: 247.94499pt x 123.97389pt.
 [7
 
 
  <./images/lof-density-curves-1.pdf>]
-<./images/lsmeans-plot-1.pdf, id=305, 397.485pt x 180.675pt>
+<./images/lsmeans-plot-1.pdf, id=306, 397.485pt x 180.675pt>
 File: ./images/lsmeans-plot-1.pdf Graphic file (type pdf)
 <use ./images/lsmeans-plot-1.pdf>
-Package pdftex.def Info: ./images/lsmeans-plot-1.pdf  used on input line 527.
+Package pdftex.def Info: ./images/lsmeans-plot-1.pdf  used on input line 526.
 (pdftex.def)             Requested size: 247.94499pt x 112.70654pt.
 [8
 
@@ -703,7 +695,7 @@ ot changed.
 Here is how much of TeX's memory you used:
  7938 strings out of 480202
  121188 string characters out of 2877025
- 444244 words of memory out of 3000000
+ 445264 words of memory out of 3000000
  24270 multiletter control sequences out of 15000+200000
  549841 words of font info for 69 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -720,20 +712,19 @@ ers\ERobi\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.
 pk> <C:\Users\ERobi\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/ec/dpi600
 \ecrm1728.pk><C:/Users/ERobi/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/publ
 ic/amsfonts/cm/cmbx10.pfb><C:/Users/ERobi/AppData/Local/Programs/MiKTeX 2.9/fon
-ts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/ERobi/AppData/Local/Programs/M
-iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/ERobi/AppData/Loc
-al/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Users/ERobi
-/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:
-/Users/ERobi/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/c
-mr10.pfb><C:/Users/ERobi/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/a
-msfonts/cm/cmr5.pfb><C:/Users/ERobi/AppData/Local/Programs/MiKTeX 2.9/fonts/typ
-e1/public/amsfonts/cm/cmr7.pfb><C:/Users/ERobi/AppData/Local/Programs/MiKTeX 2.
-9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/ERobi/AppData/Local/Progr
-ams/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on jsm-2021-student-paper-submission.pdf (8 pages, 414481 bytes)
+ts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/ERobi/AppData/Local/Programs/M
+iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Users/ERobi/AppData/Loca
+l/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/ERobi/
+AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/
+Users/ERobi/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
+r5.pfb><C:/Users/ERobi/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/ams
+fonts/cm/cmr7.pfb><C:/Users/ERobi/AppData/Local/Programs/MiKTeX 2.9/fonts/type1
+/public/amsfonts/cm/cmsy10.pfb><C:/Users/ERobi/AppData/Local/Programs/MiKTeX 2.
+9/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
+Output written on jsm-2021-student-paper-submission.pdf (8 pages, 406905 bytes)
 .
 PDF statistics:
- 695 PDF objects out of 1000 (max. 8388607)
+ 692 PDF objects out of 1000 (max. 8388607)
  77 named destinations out of 1000 (max. 500000)
  101 words of extra memory for PDF output out of 10000 (max. 10000000)
 

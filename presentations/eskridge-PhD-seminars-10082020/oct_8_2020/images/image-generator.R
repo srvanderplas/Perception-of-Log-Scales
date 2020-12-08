@@ -241,13 +241,17 @@ linearPlot <- expData %>%
   # filter(!is.na(y)) %>%
   ggplot(aes(x = x, y = y, group = Curvature, color = Curvature)) + 
   geom_line() +
-  scale_color_brewer(palette = "Paired") +
+  scale_color_manual("Curvature Difficulty", values = c("#004400", "#116611", "#55aa55")) +
   ggtitle("Linear Scale") +
   scale_x_continuous("", limits = c(0,20), breaks = seq(0,20,5)) + 
   ylab("") +
   theme_bw(base_size = 14) +
-  theme(legend.position = "bottom",
-        aspect.ratio = 1)
+  theme(legend.position = "right",
+        aspect.ratio = 1,
+        axis.text    = element_text(size = 10),
+        legend.title = element_text(size = 12),
+        legend.text  = element_text(size = 10),
+        legend.key.size = unit(1, "line"))
 
 logPlot <- expData %>%
   # filter(!is.na(y)) %>%
@@ -271,11 +275,12 @@ ggsave(plot = threeCoefPlot, filename = "three-coef-model.png", path = here::her
 linearPlot_dots_threeParm <- linearPlot + 
   geom_line(aes(x = xLine, y = yLine), color = "gray") +
   geom_point(aes(x = xPoint, y = yPoint), color = "black") +
-  ggtitle("Three Parameter Model")
+  ggtitle("")
+linearPlot_dots_threeParm
 
 # Heuristic Simulation -----------------------------------------------------------------------
 dotsPlot <- grid.arrange(linearPlot_dots_twoParm, linearPlot_dots_threeParm, ncol = 2)
-ggsave(plot = dotsPlot, filename = "heuristic-simulation.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 5, dpi = 600)
+ggsave(plot = linearPlot_dots_threeParm, filename = "heuristic-simulation-3-parm.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 5, height = 5, dpi = 600)
 
 # ----------------------------------------------------------------------------------
 # Difficulty -----------------------------------------------------------------------
