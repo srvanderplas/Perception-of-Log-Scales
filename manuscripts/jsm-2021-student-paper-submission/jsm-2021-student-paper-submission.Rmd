@@ -240,7 +240,7 @@ Figure \ref{fig:odds-ratio-plot} displays the estimated (log) odds ratio of succ
 <!-- Displaying data on a log scale had the largest effect on selecting a target plot with noticeable curvature (Medium) embedded in null plots with obvious curvature (Hard). -->
 <!-- } -->
 
-```{r odds-ratio-plot, eval = T, fig.width = 5, fig.height = 2, fig.align='center', fig.cap = "Odds Ratio's", message = F, warning = F}
+```{r odds-ratio-plot, eval = T, fig.width = 5, fig.height = 2, fig.align='center', fig.cap = "Odds Ratios. \\svp{Add some conclusions here - interpret the graph!}", message = F, warning = F}
 slice_curvature <- read_csv("results/jsm-student-paper-slicediffs.csv") %>%
   select(SimpleEffectLevel, test_param,	"_test_param", OddsRatio,	Alpha,	Lower,	Upper,	AdjLower,	AdjUpper,	LowerOR,	UpperOR,	AdjLowerOR,	AdjUpperOR) %>%
   na.omit() %>%
@@ -251,7 +251,7 @@ slice_curvature <- read_csv("results/jsm-student-paper-slicediffs.csv") %>%
 dodge <- position_dodge(width=0.9)
 odds_ratio_plot <- slice_curvature %>%
   ggplot(aes(x = OddsRatio, y = Null, color = Target, shape = Target)) + 
-  geom_point(position = dodge) + 
+  geom_point(position = dodge, size = 3) + 
   geom_errorbar(aes(xmin = LowerOR, xmax = UpperOR), position = dodge, width = .1) +
   geom_vline(xintercept = 1) +
   theme_bw()  +
