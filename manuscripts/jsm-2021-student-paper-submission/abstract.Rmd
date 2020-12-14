@@ -1,6 +1,6 @@
 ---
 title: |
-  Perception of exponentially increasing data displayed on a log scale
+  Abstract: Perception of exponentially increasing data displayed on a log scale
 type:
   - JSM 2021 Student Paper Competition (ASA sections on Statistical Computing and Statistical Graphics)
 author:
