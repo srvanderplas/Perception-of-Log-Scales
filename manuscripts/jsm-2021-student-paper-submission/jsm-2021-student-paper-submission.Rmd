@@ -193,7 +193,7 @@ The goal of this experimental task is to test an individuals ability to perceptu
 
 # Results
 
-Participant recruitment through Reddit occurred over the course of two weeks during which 58 individuals completed 518 unique test lineup evaluations. 
+Participant recruitment through Reddit occurred over the course of two weeks during which 58 individuals completed 518 unique test lineup evaluations. \svp{Previous studies have found that results do not differ on lineup-related tasks between Reddit and e.g. Amazon Mechanical Turk\cite{vanderplas_clusters_2017}.}
 Participants who completed fewer than 6 lineup evaluations were removed from the study (17 participants, 41 evaluations).
 The final data set included a total of 41 participants and 477 lineup evaluations. 
 Each plot was evaluated by between 18 and 28 individuals (Mean: 21.77, SD: 2.29). 
@@ -205,10 +205,13 @@ The binary response was analyzed using \er{a} generalized linear mixed model fol
 
 On both the log and linear scales, the highest accuracy occured in lineup plots where the target model and null model had large curvature differences \er{(Easy Null - Hard Target; Hard Null - Easy Target)}.
 <!-- When comparing models that have slight curvature differences \er{(e.g. Medium Null - Hard Target, Medium Null - Easy Target, Easy Null - Medium Target)}, there is a sacrifice in accuracy when displayed on the linear scale.  -->
-There is a sacrifice in accuracy on the linear scale when comparing a target plot with less curavture embedded in null plots with more curvature (Hard Null - Medium Target; Medium Null - Hard Target). 
-This agrees with \cite{best_perception_2007} whose results found that accuracy \er{of identifying the correct curve type} was higher when nonlinear trends were presented indicating that it is hard to say something is linear (i.e. something has less curvature), but easy to say that it is not linear (i.e. something has more curvature). 
+There is a \svp{decrease} in accuracy on the linear scale when comparing a target plot with less curavture \svp{to} null plots with more curvature (Hard Null - Medium Target; Medium Null - Hard Target). 
+\citet{best_perception_2007} found that accuracy \er{of identifying the correct curve type} was higher when nonlinear trends were presented indicating that it is hard to say something is linear (i.e. something has less curvature), but easy to say that it is not linear; \svp{our results concur with this observation}.
 Overall, there are no significant differences in accuracy between curvature combinations when data is presented on a log scale indicating participants were consistent in their success of identifying the target panel on the log scale.
-Figure \ref{fig:odds-ratio-plot} displays the estimated (log) odds ratio of successfully identifying the target panel on the log scale compared to the linear scale. We found the choice of scale has no impact if curvature differences are large (Hard Null - Easy Target; Easy Null - Hard Target). However, presenting data on the log scale makes us more sensitive to the the changes when there are only slight changes in curvature (Medium Null - Easy Target; Medium Null - Hard Target; Easy Null - Medium Target). \er{An exception occurs when identifying a plot with curvature embeded in null plots close to a linear trend (Hard Null - Medium Target), supporing the claim that it is easy to identify a curve in a bunch of lines but much harder to identify a line in a bunch of curves \citep{best_perception_2007}.}
+Figure \ref{fig:odds-ratio-plot} displays the estimated (log) odds ratio of successfully identifying the target panel on the log scale compared to the linear scale. 
+The choice of scale has no impact if curvature differences are large (Hard Null - Easy Target; Easy Null - Hard Target). 
+However, presenting data on the log scale makes us more sensitive to \svp{slight} changes in curvature (Medium Null - Easy Target; Medium Null - Hard Target; Easy Null - Medium Target). 
+\er{An exception occurs when identifying a plot with curvature embeded in null plots close to a linear trend (Hard Null - Medium Target), \svp{again} supporing the claim that it is easy to identify a curve in a bunch of lines but much harder to identify a line in a bunch of curves \citep{best_perception_2007}.}
 
 ```{r odds-ratio-plot, eval = T, fig.width = 5, fig.height = 2, fig.align='center', fig.cap = "Estimated (log) odds ratio of successfully identifying the target panel on the log scale compared to the linear scale. The y-axis indicates the the model parameters used to simulate the null plots with the target plot model parameter selection designated by shape and shade of green. The choice of scale has no impact if curvature differences are large (Hard Null - Easy Target; Easy Null - Hard Target).  However, presenting data on the log scale makes us more sensitive to the the changes when there are only slight changes in curvature (Medium Null - Easy Target; Medium Null - Hard Target; Easy Null - Medium Target). An exception occurs when identifying a plot with curvature embeded in null plots close to a linear trend (Hard Null - Medium Target), indicating that it is easy to identify a curve in a bunch of lines but much harder to identify a line in a bunch of curves.", message = F, warning = F}
 slice_curvature <- read_csv("results/jsm-student-paper-slicediffs.csv") %>%
@@ -246,11 +249,13 @@ odds_ratio_plot
 
 \er{The overall goal of this paper is to provide basic research to support the principles used to guide design decisions in scientific visualizations of exponential data. 
 In this study, we explore the use of linear and log scales to determine whether our ability to notice differences in exponentially increasing trends is impacted by the scales choice. 
-Our results indicated that when there were larger curvature difference, the choice of scale has no impact and participants accurately differentiated between the two curves on both the linear and log scale. 
+Our results indicated that when there were larger curvature differences, the choice of scale has no impact and participants accurately differentiated between the two curves on both the linear and log scale. 
 However, displaying exponentially increasing data on a log scale improved the accuracy of differentiating between models with slight curvature differences, particularly when identifying an exponential curve with less curvature than others. 
-An exception occured when identifying a plot with curvature embedded in surrounding plots closely relating to a linear trend, indicating that it is easy to identify a curve in a bunch of lines but much harder to identify a line in a bunch of curves.}
+An exception occurred when identifying a plot with curvature embedded in surrounding plots closely relating to a linear trend, indicating that it is easy to identify a curve in a group of lines but much harder to identify a line in a group of curves.}
+\svp{The use of visual inference to identify these guidelines suggests that there are \emph{perceptual} advantages to log scales when differences are subtle. 
+What remains to be seen is whether there are cognitive disadvantages to log scales: do log scales make it harder to make use of graphical information?}
 
-Further experimentation is necessary to test an individual's ability to make predictions for exponentially increasing data. 
+Further experimentation is necessary to test an individual's ability to \svp{use and} make predictions for exponentially increasing data. 
 Previous literature suggests that we tend to underestimate predictions of exponentially increasing data.\citep{jones_generalized_1979, jones_polynomial_1977, wagenaar_extrapolation_1978}.
 \citep{mosteller_eye_1981} designed and carried out an empirical investigation to explore properties of lines fitted by eye.
 The researchers found that students tended to fit the slope of the first principal component or major axis (the line that minimizes the sum of squares of perpendicular rather than vertical distances) and that students who overestimated the steepness of the slope were consistent in their overestimation throughout the entire study.
