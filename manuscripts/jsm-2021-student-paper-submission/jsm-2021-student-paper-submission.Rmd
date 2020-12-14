@@ -163,9 +163,9 @@ The model generated $N = 50$ points $(x_i, y_i), i = 1,...,N$ where $x$ and $y$ 
 The heuristic data generation procedure is provided in Appendix \ref{app:generation}.
 
 The exponential model provides the base for this graphical experiment. 
-\er{Within the heuristic data generation}, we manipulated the midpoint, $x_{mid}$, and in turn the estimated parameters\er{, $\alpha, \beta,$ and $\theta$,}  to control the amount of curvature present in the data and the error standard deviation, $\sigma$, to control the amount of deviation from the exponential curve.
-We selected three midpoints corresponding to difficulty levels\er{:} easy (obvious curvature), medium (noticeable curvature), and hard (almost linear), along with a sensible choice of standard deviation, $\sigma$. 
-The midpoints and standard deviation combinations were chosen using a method described in \cite{vanderplas_clusters_2017}; additional details and final parameter values are available in Appendix \ref{app:parameters}.
+\er{Parameter combinations of $\alpha, \beta,$ and $\theta$, were coincidentally manipulated to control the amount of curvature present in the data and the error standard deviation, $\sigma$, to control the amount of deviation from the exponential curve.}
+We selected three parameter combinations corresponding to difficulty levels\er{:} easy (obvious curvature), medium (noticeable curvature), and hard (almost linear), along with a sensible choice of standard deviation, $\sigma$. 
+The parameter combinations and corresponding standard deviation values were chosen using a method described in \cite{vanderplas_clusters_2017}; additional details and final parameter values are available in Appendix \ref{app:parameters}.
 
 
 ## Lineup Setup 
