@@ -124,7 +124,7 @@ lsmeans_plot <- lsmeans %>%
 lsmeans_plot
 ```
 
-Type III tests for fixed effects shown in Table \ref{tab:type3-fixed-effects} indicate a significant interaction between the curvature combination and scale. Variance due to participant and data set were estimated to be $\sigma^2_{participant} = 2.13$ (s.e. 0.74) and $\sigma^2_{data set} = 0.92$ (s.e. 0.70).
+Type III tests for fixed effects shown in Table \ref{tab:type3-fixed-effects} indicate a significant interaction between the curvature combination and scale. Variance due to participant and data set were estimated to be $\sigma^2_{\text{participant}} = 2.13$ (s.e. 0.74) and $\sigma^2_{\text{data}} = 0.92$ (s.e. 0.70).
 
 ```{r anova}
 read.csv("results/jsm-student-paper-tests3.csv") %>%
