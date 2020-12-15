@@ -1,4 +1,4 @@
-\documentclass[letterpaper,onecolumn]{article}
+\documentclass[letterpaper,twocolumn]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amssymb,array}
@@ -14,7 +14,7 @@
 \newcommand{\er}[1]{\textcolor{Plum}{#1}}
 \newcommand{\svp}[1]{\textcolor{Green}{#1}}
 \newcommand{\rh}[1]{\textcolor{Orange}{#1}}
-
+\usepackage{doi}
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
@@ -60,7 +60,7 @@ $header-includes$
 $endfor$
 
 \title{$title$}
-\author{by $for(author)$$author.name$$sep$, $endfor$}
+%\author{by $for(author)$$author.name$$sep$, $endfor$}
 
 
 \begin{document}
