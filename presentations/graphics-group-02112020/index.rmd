@@ -1,7 +1,7 @@
 ---
 title: "Graphics Group"
 author: "Emily Robinson, Susan VanderPlas, and Reka Howard"
-date: "February 2, 2020"
+date: "February 2, 2021"
 output:
   xaringan::moon_reader:
     seal: true
