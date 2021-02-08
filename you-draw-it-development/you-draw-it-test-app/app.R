@@ -17,7 +17,7 @@ drawr <- function(data,
                   x_lab = "", 
                   y_lab = "", 
                   drawn_line_color = "orangered",
-                  data_line_color = "steelblue", 
+                  data_tab1_color = "steelblue", 
                   x_axis_buffer = 0.01, 
                   y_axis_buffer = 0.05,
                   # show_finished = F,
@@ -58,7 +58,7 @@ drawr <- function(data,
                             x_range = x_range, 
                             y_range = y_range,
                             line_style = NULL,
-                            data_line_color = data_line_color, 
+                            data_tab1_color = data_tab1_color, 
                             drawn_line_color = drawn_line_color,
                             free_draw = F, 
                             shiny_message_loc = shiny_message_loc)
@@ -107,13 +107,10 @@ server <- function(input, output, session) {
   # ---- Tab 1 ---------------------------------------------------------------
   
   # Provides a line for the data. (no errors)
-  data_line <- tibble(x = 1:30, y = exp((x-15)/5))
-  
-  # Provides dots for the data. (adds errors)
-  data_dots <- tibble(x = seq(1:30), y = exp((x-15)/5) + rnorm(30, 0,0.2))
-  
+  data_tab1 <- tibble(x = 1:30, y = exp((x-15)/5))
+
   # Provides the yrange for the plot (spans the data points + some)
-  y_range <- range(data_line$y) * c(.7, 1.1)
+  y_range <- range(data_tab1$y) * c(.7, 1.1)
 
   # Tells us where the user can start drawing
   draw_start <- 20
@@ -128,14 +125,14 @@ server <- function(input, output, session) {
     # if linear box is checked, then T else F
     islinear <- ifelse(input$drawr_linear_axis, "true", "false")
     # Use redef'd drawr function...r2d3 is built into here.. how do we add points???
-    drawr(data = data_line,
+    drawr(data = data_tab1,
           linear = islinear, # see function above
           draw_start = draw_start, # we define this at the top of the app
           shiny_message_loc = message_loc,
-          x_range = range(data_line$x), # covers the range of the sequence we define
+          x_range = range(data_tab1$x), # covers the range of the sequence we define
           y_range = y_range, # we define this above to span our data + some
           drawn_line_color = "skyblue", # color the user's line is drawn in
-          data_line_color = "blue" # color the original line is drawn in.
+          data_tab1_color = "blue" # color the original line is drawn in.
           )
   })
 
@@ -148,7 +145,7 @@ server <- function(input, output, session) {
   # for the x values >= starting draw point
   # WHAT DOES THE %>% drawn_data() do?? does that rename it so we can reference this?
   shiny::observeEvent(input$drawr_message, { ################################################ HERE
-    data_line %>%
+    data_tab1 %>%
       dplyr::filter(x >= draw_start) %>%
       dplyr::mutate(drawn = input$drawr_message) %>%
       drawn_data()

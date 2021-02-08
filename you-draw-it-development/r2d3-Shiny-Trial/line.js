@@ -1,4 +1,4 @@
-// !preview r2d3 data = tibble(x = seq(1, 25, .5), y = exp((x-15)/30), ydotAll = exp(((x-15)/30)+rnorm(49, 0, 0.125))) %>% mutate(ydot = ifelse(x > 15, NA, ydotAll))
+// !preview r2d3 data = tibble(x = seq(1, 25, .5), y = exp((x-15)/30), ydotAll = exp(((x-15)/30)+rnorm(49, 0, 0.05))) %>% mutate(ydot = ifelse(x > 15, NA, ydotAll))
 
 // 1. ACCESS DATA
 
@@ -86,7 +86,7 @@ bounds
     .enter().append("circle")
     .attr("cx", d => xScale(xAccessor(d)))
     .attr("cy", d => yDotScale(yDotAccessor(d)))
-    .attr("r", 5)
+    .attr("r", 3)
 
 /*
 svg.selectAll('rect')
