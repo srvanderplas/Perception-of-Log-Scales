@@ -1,0 +1,8 @@
+"Linear","Log"
+"All fits on one clean curve","Break in data points"
+"dispersion","less cluster"
+"Fewer data points at high x-values so the evidence of the relationship for high x-values is weakest","No idea"
+"Large variance in y-axis for small neighborhood in x-axis (near large x's)","spread"
+"Least variability about line","up higher than the others"
+"More scattered",
+"Seems almost linear vs exponential",

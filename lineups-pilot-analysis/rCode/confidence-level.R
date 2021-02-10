@@ -32,7 +32,7 @@ conf_data %>%
 
 
 conf_data %>%
-  mutate(test_param = factor(test_param, levels = c("log", "linear"))) %>%
+  mutate(test_param = factor(test_param, levels = c("linear", "log"))) %>%
   mutate(conf_level = factor(conf_level, levels = c("Very Certain", "Certain", "Neutral", "Uncertain", "Very Uncertain"))) %>%
   ggplot(aes(x = conf_level, y = prop, group = test_param, fill = test_param)) +
   geom_bar(stat = "identity", position = position_dodge2()) +
@@ -46,7 +46,7 @@ conf_data %>%
         legend.key.size = unit(1, "line")
   ) +
   theme(strip.text.x = element_text(size = 12)) +
-  scale_fill_manual("Scale", values = c("#116611", "#55aa55"), labels = c("Log", "Linear")) +
-  scale_y_continuous("Proportion within Scale", limits = c(0,1),breaks = seq(0,1,0.1)) +
+  scale_fill_manual("Scale", values = c("#116611", "#55aa55"), labels = c("Linear", "Log")) +
+  scale_y_continuous("Proportion \n (relative to total evaluations per scale)", limits = c(0,1),breaks = seq(0,1,0.1)) +
   scale_x_discrete("Confidence Level")
 

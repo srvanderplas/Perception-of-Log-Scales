@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Graphics Group</title>
+    <title>Do logs work during a pandemic? Perception of exponentially increasing data</title>
     <meta charset="utf-8" />
     <meta name="author" content="Emily Robinson, Susan VanderPlas, and Reka Howard" />
-    <meta name="date" content="2021-02-02" />
+    <meta name="date" content="2021-02-11" />
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/remark-css/rladies.css" rel="stylesheet" />
     <link href="libs/remark-css/rladies-fonts.css" rel="stylesheet" />
@@ -15,9 +15,10 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Graphics Group
+# Do logs work during a pandemic? Perception of exponentially increasing data
+## Graphics Group
 ### Emily Robinson, Susan VanderPlas, and Reka Howard
-### February 2, 2021
+### February 11, 2021
 
 ---
 
@@ -28,15 +29,17 @@ class: center, middle, inverse, title-slide
 class:primary
 ## Motivation
 
-- Graphics have become front and center during the covid pandemic. They have been used to display case counts, transmission rates, and outbreak regions (Charlotte, 2020; Romano, Sotis, Dominioni, and Guidi, 2020; Rost, 2020).
+- Graphics have become front and center during the covid pandemic. They have been used to display case counts, transmission rates, and outbreak regions (Charlotte, 2020; Romano, Sotis, Dominioni, et al., 2020; Rost, 2020).
 
-- These graphics helped guide decision makers and facilitated communication with the public to increase compliance (Bavel, Baicker, Boggio, Capraro, Cichocka, Cikara, Crockett, Crum, Douglas, Druckman, Drury, Dube, Ellemers, Finkel, Fowler, Gelfand, Han, Haslam, Jetten, Kitayama, Mobbs, Napper, Packer, Pennycook, Peters, Petty, Rand, Reicher, Schnall, Shariff, Skitka, Smith, Sunstein, Tabri, Tucker, Linden, Lange, Weeden, Wohl, Zaki, Zion, and Willer, 2020).
+- These graphics helped guide decision makers and facilitated communication with the public to increase compliance (Bavel, Baicker, Boggio, et al., 2020).
 
 - Some graphics have utilized log scales to display case counts (Fagen-Ulmschneider, 2020). There are both benefits and pitfalls to this design decision.
 
 - Influenced our main research question: "Are there benefits to displaying exponentially increasing data on a log scale rather than a linear scale?"
 
 ???
+
+Thank you for coming today. I will be presenting the results from a graphics experiment Susan, Reka, and I conducted regarding the perception of displaying exponentially increasing data on a log scale. This will be familair to someo of you who participated as our guinea pigs for this experiement last fall, but hopefully you find some of the results interesting.
 
 During the covid pandemic, we have seen a large influx of data visualizations displaying case counts, transmission rates, and outbreak regions. With a need for information, the general public began seeking out graphical displays of coronavirus data in mass media providing increased and ongoing exposure to these graphics over time. Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing, as well as facilitated communication with the public to increase compliance.
 
@@ -48,10 +51,10 @@ This influenced our main research question: Are there benefits to displaying exp
 class:primary
 ## Prior Literature
 
-- Log scale transformations are a common solution to displaying data over several orders of magnitude within one graph (Menge, MacPherson, Bytnerowicz, Quebbeman, Schwartz, Taylor, and Wolf, 2018).
+- Log scale transformations are a common solution to displaying data over several orders of magnitude within one graph (Menge, MacPherson, Bytnerowicz, et al., 2018).
 
 - Our perception and mapping of numbers to a number line is logarithmic at first, but transitions to a linear scale later in development, with formal
-mathematics education (Varshney and Sun, 2013; Siegler and Braithwaite, 2017; Dehaene, Izard, Spelke, and Pica, 2008)
+mathematics education (Varshney and Sun, 2013; Siegler and Braithwaite, 2017; Dehaene, Izard, Spelke, et al., 2008)
 
 - Estimation and prediction of exponential growth tends to be underestimated when presented both numerically and graphically (Wagenaar and Sagaria, 1975). This could be addressed by log-transforming the data, however, this introduces new complexities.
 
@@ -82,10 +85,10 @@ Evaluate design choices through the use of graphical tests. Could ask participan
 - use data to make correct real-world decisions.
 - predict the next few observations.
 
-Use visual inference and statistical lineups to test our ability to differentiate between exponentially increasing curves with differing growth rates, using linear and log scales (VanderPlas and Hofmann, 2017; Hofmann, Follett, Majumder, and Cook, 2012; Loy, Follett, and Hofmann, 2016).
+Use visual inference and statistical lineups to test our ability to differentiate between exponentially increasing curves with differing growth rates, using linear and log scales (VanderPlas and Hofmann, 2017; Hofmann, Follett, Majumder, et al., 2012; Loy, Follett, and Hofmann, 2016).
 
 ???
-The overarching goal of our research is to design and carry out experimental taks that provide a set of principles to guide design choices in order to ensure that charts are effective. So far, we will be focusing on this first graphical test and asking participants to identify differences in graphs. This is the most fundamental task and does not require that participants understand exponential growth, identify log scales, or have any mathematical training. Basically, we are testing the change in perceptual sensitivity resulting from visualization choices. To do this, we will be utilizing visual inference and statistical lineups.
+The overarching goal of this research is to design and carry out experimental taks that provide a set of principles to guide design choices in order to ensure that charts are effective. So far, we will be focusing on this first graphical test and asking participants to identify differences in graphs. This is the most fundamental task and does not require that participants understand exponential growth, identify log scales, or have any mathematical training. Basically, we are testing the change in perceptual sensitivity resulting from visualization choices. To do this, we will be utilizing visual inference and statistical lineups.
 
 ---
 class:primary
@@ -249,7 +252,7 @@ The **Lack of Fit** test statistic calculated by the deviation of the data from 
 ]
 
 ???
-After running an initial study where we manipulated both curvature and variability, we decided to design the study to focus on low variability only and manipulate the curvature. Recall, a previous study examined whether discrimination between curvature types is possible and found that accuracy was higher when nonlinear trends were presented and that accuracy was higher with low variability.
+After running an initial study where we manipulated both curvature and variability (as you participated in last fall), we decided to design the study to focus on low variability only and manipulate the curvature. Recall, a previous study examined whether discrimination between curvature types is possible and found that accuracy was higher when nonlinear trends were presented and that accuracy was higher with low variability.
 
 We decided to select 3 levels of curvature. Curvature is controled by that midpoint and in turn the beta parameter. Alpha and Theta are calculated as a result in order to maintain our range and domain constraints. A sensible choice for sigma was then selected. 
 
@@ -361,7 +364,7 @@ An exception occurs when identifying a plot with more curvature than the surroun
 class:primary
 ## Participant Confidence &amp; Reasonings
 .pull-left[
-+ Proportion of default choice reasonings
++ Default Choice Reasoning
 &lt;!-- Trigger the Modal --&gt;
 &lt;img id='imgchoicereasonings' src='images/choice-reasonings.png' alt=' ' width='90%'&gt;
 &lt;!-- The Modal --&gt;
@@ -370,17 +373,6 @@ class:primary
   &lt;img class='modal-content' id='imgmodalchoicereasonings'&gt;
   &lt;!-- Modal Caption (Image Text) --&gt;
   &lt;div id='captionchoicereasonings' class='modal-caption'&gt;&lt;/div&gt;
-&lt;/div&gt;
-
-+ Other provided reasonings
-&lt;!-- Trigger the Modal --&gt;
-&lt;img id='imgotherreasonings' src='images/other-reasonings.png' alt=' ' width='90%'&gt;
-&lt;!-- The Modal --&gt;
-&lt;div id='modalotherreasonings' class='modal'&gt;
-  &lt;!-- Modal Content (The Image) --&gt;
-  &lt;img class='modal-content' id='imgmodalotherreasonings'&gt;
-  &lt;!-- Modal Caption (Image Text) --&gt;
-  &lt;div id='captionotherreasonings' class='modal-caption'&gt;&lt;/div&gt;
 &lt;/div&gt;
 
 ].pull-right[
@@ -395,6 +387,57 @@ class:primary
   &lt;div id='captionconflevels' class='modal-caption'&gt;&lt;/div&gt;
 &lt;/div&gt;
 ]
+
++ Other Choice Reasoning
+
+.center[
+&lt;table class="table" style="font-size: 14px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Linear &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Log &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; All fits on one clean curve &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Break in data points &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; dispersion &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; less cluster &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Fewer data points at high x-values so the evidence of the relationship for high x-values is weakest &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No idea &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Large variance in y-axis for small neighborhood in x-axis (near large x's) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; spread &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Least variability about line &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; up higher than the others &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; More scattered &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Seems almost linear vs exponential &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+???
+Evaluating participants choice reasonings, we see the proportion of reasonings selected relative to the total evaluations for each scale (note, participants could select more than one reason). It appears that the shape was a key indicator in identifying differences - in particular on the log scale while the slope also apppears to be a decent indicator. On the linear scale, we see participants making decisions based on outliers and different ranges. Some participants also used clustering to make their decisions.
+
+Some participants provided other reasonings outside of the default choices. Here we see there seems to be a trend on the linear scale of more variability and spread. Reading these also gives us reason to beleive that our sample from the Reddit pages is not representative to the general population due to the use of words such as "dispersion".
+
+Here we see the proportion of confidence levels relative to the total for each scale. We can see that on the log scale, clients appear to be more confident in their choice than on the linear scale.
+
 ---
 class:primary
 ## Future Experimental Tasks
@@ -414,7 +457,7 @@ We began with the most fundamental task testing the ability to identify differen
 
 2. You Draw It ✏️
     
-    - Tests an individuals ability to make predictions for exponentially increasing data. Similar to Mosteller, Siegel, Trapido, and Youtz (1981).
+    - Tests an individuals ability to make predictions for exponentially increasing data. Similar to Mosteller, Siegel, Trapido, et al. (1981).
     
     - Based off New York Times (2017) "You Draw It" [**EXAMPLE**](https://www.nytimes.com/interactive/2017/01/15/us/politics/you-draw-obama-legacy.html?searchResultPosition=8) 
 
@@ -611,6 +654,13 @@ Output Parameters: `\(N\)` points, in the form of vectors `\(\mathbf{x}\)` and `
 4. Calculate `\(\tilde\alpha = \frac{\hat\alpha}{e^{\sigma^2/2}}.\)` This ensures that the range of simulated values for different standard devaition parameters has an equal expected value for a given rate of change due to the non-constant variance across the domain.
 
 5. Generate `\(y_i = \tilde\alpha\cdot e^{\hat\beta x_i + e_i}+\hat\theta\)` where `\(e_i\sim N(0,\sigma^2).\)`
+
+---
+class:primary
+## Comparison of difficulty level
+.center[
+&lt;img src="images/sim-plot.png" width="150%" /&gt;
+]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
@@ -766,23 +816,6 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
           /* When the user clicks on the modalImg, close it*/
           modalImgchoicereasonings.onclick = function() {
             modalchoicereasonings.style.display = 'none';
-          }
-</script>
-<script>
-        /* Get the modal*/
-          var modalotherreasonings = document.getElementById('modalotherreasonings');
-        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
-          var imgotherreasonings = document.getElementById('imgotherreasonings');
-          var modalImgotherreasonings = document.getElementById('imgmodalotherreasonings');
-          var captionTextotherreasonings = document.getElementById('captionotherreasonings');
-          imgotherreasonings.onclick = function(){
-            modalotherreasonings.style.display = 'block';
-            modalImgotherreasonings.src = this.src;
-            captionTextotherreasonings.innerHTML = this.alt;
-          }
-          /* When the user clicks on the modalImg, close it*/
-          modalImgotherreasonings.onclick = function() {
-            modalotherreasonings.style.display = 'none';
           }
 </script>
 <script>

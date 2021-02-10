@@ -9,7 +9,7 @@ seed_num = 68505
 # sigma_valus <- c(0.25, 0.37, 0.12, 0.2, 0.06, 0.1)
 
 xMid_vals  <- c(14.5, 13, 11.5)
-sigma_vals <- c(0.25, 0.37, 0.12, 0.18, 0.05, 0.07)
+sigma_vals <- c(0.25, 0.12, 0.05)
 
 yRange_vals = c(10,100)
 
@@ -116,7 +116,7 @@ linearPlot <- ggplot(lineupData, aes(x=x, y=y)) +
 
 linearPlot
 
-ggsave(plot = linearPlot, filename = "linear-lineup-example.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 8.3, dpi = 600)
+# ggsave(plot = linearPlot, filename = "linear-lineup-example.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 8.3, dpi = 600)
 
 logPlot <- ggplot(lineupData, aes(x=x, y=y)) +
   facet_wrap(~.sample, ncol=5) +
@@ -131,7 +131,7 @@ logPlot <- ggplot(lineupData, aes(x=x, y=y)) +
   scale_y_continuous(trans = "log10")
 logPlot
 
-ggsave(plot = logPlot, filename = "log-lineup-example.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 8.3, dpi = 600)
+# ggsave(plot = logPlot, filename = "log-lineup-example.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 8.3, dpi = 600)
 
 # ----------------------------------------------------------------------------------
 # Data Generation Models -----------------------------------------------------------
@@ -197,7 +197,7 @@ logPlot <- expData %>%
 
 twoCoefPlot <- grid.arrange(linearPlot, logPlot, ncol = 2)
 
-ggsave(plot = twoCoefPlot, filename = "two-coef-model.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 5, dpi = 600)
+# ggsave(plot = twoCoefPlot, filename = "two-coef-model.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 5, dpi = 600)
 
 linearPlot_dots_twoParm <- linearPlot + 
   geom_line(aes(x = xLine, y = yLine), color = "gray") +
@@ -266,7 +266,7 @@ logPlot <- expData %>%
 
 threeCoefPlot <- grid.arrange(linearPlot, logPlot, ncol = 2)
 
-ggsave(plot = threeCoefPlot, filename = "three-coef-model.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 5, dpi = 600)
+# ggsave(plot = threeCoefPlot, filename = "three-coef-model.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 5, dpi = 600)
 
 linearPlot_dots_threeParm <- linearPlot + 
   geom_line(aes(x = xLine, y = yLine), color = "gray") +
@@ -275,7 +275,7 @@ linearPlot_dots_threeParm <- linearPlot +
 
 # Heuristic Simulation -----------------------------------------------------------------------
 dotsPlot <- grid.arrange(linearPlot_dots_twoParm, linearPlot_dots_threeParm, ncol = 2)
-ggsave(plot = dotsPlot, filename = "heuristic-simulation.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 5, dpi = 600)
+# ggsave(plot = dotsPlot, filename = "heuristic-simulation.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 5, dpi = 600)
 
 # ----------------------------------------------------------------------------------
 # Difficulty -----------------------------------------------------------------------
@@ -381,7 +381,7 @@ lofPlot_variability <- lofData %>%
   theme(legend.position = "bottom",
         aspect.ratio = 1)
 lofPlot_variability
-ggsave(plot = lofPlot_variability, filename = "lof-variability.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 5, dpi = 600)
+# ggsave(plot = lofPlot_variability, filename = "lof-variability.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 5, dpi = 600)
 
 # Compare Curvature within Varability
 lofPlot_curvature <- lofData %>%
@@ -397,7 +397,7 @@ lofPlot_curvature <- lofData %>%
   theme(legend.position = "bottom",
         aspect.ratio = 1)
 lofPlot_curvature
-ggsave(plot = lofPlot_curvature, filename = "lof-curvature.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 5, dpi = 600)
+# ggsave(plot = lofPlot_curvature, filename = "lof-curvature.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 5, dpi = 600)
 
 # ----------------------------------------------------------------------------------
 # Generate Data --------------------------------------------------------------------
@@ -407,9 +407,9 @@ coefData <- tibble(xMid = xMid_vals) %>%
   mutate(coefficients = pmap(list(xMid),coefEst)) %>%
   unnest(coefficients)
 
-simData <- tibble(Curvature   = c("Easy", "Easy", "Medium", "Medium", "Hard", "Hard"),
-                   Variability = c("Low", "High", "Low", "High", "Low", "High"),
-                   xMid        = c(rep(xMid_vals[1],2), rep(xMid_vals[2],2), rep(xMid_vals[3],2)),
+simData <- tibble(Curvature   = c("Easy", "Medium", "Hard"),
+                   Variability = c("Low", "Low", "Low"),
+                   xMid        = c(rep(xMid_vals[1]), rep(xMid_vals[2]), rep(xMid_vals[3])),
                    sigma       = sigma_vals) %>%
             left_join(coefData, by = "xMid") %>%
             mutate(data = pmap(list(alphahat,betahat,thetahat, sigma,nReps = 1),expSim)) %>%
@@ -420,10 +420,10 @@ simPlot_linear <- simData %>%
   mutate(Variability = factor(Variability, levels = c("Low", "High"))) %>%
   ggplot(aes(x = x, y = y, group = Curvature, color = Curvature)) +
   geom_point() +
-  facet_grid(~Variability) +
-  scale_color_brewer(palette = "Paired") +
+  scale_color_viridis_d() +
+  # scale_color_manual("Curvature Difficulty", values = c("#004400", "#116611", "#55aa55")) +
   theme_bw(base_size = 14) +
-  theme(legend.position = "bottom",
+  theme(legend.position = "none",
         aspect.ratio = 1) +
   ggtitle("Linear Scale") +
   labs(x = "", y = "")
@@ -434,16 +434,19 @@ simPlot_log <- simData %>%
   mutate(Variability = factor(Variability, levels = c("Low", "High"))) %>%
   ggplot(aes(x = x, y = y, group = Curvature, color = Curvature)) +
   geom_point() +
-  facet_grid(~Variability) +
+  # facet_grid(~Variability) +
   scale_y_continuous(trans = "log10",
                      breaks = trans_breaks("log10", function(x) 10^x),
                      labels = trans_format("log10", math_format(10^.x))) +
   ggtitle("Log Scale") +
-  scale_color_brewer(palette = "Paired") +
+  scale_color_viridis_d() +
+  # scale_color_manual("Curvature Difficulty", values = c("#004400", "#116611", "#55aa55")) +
   theme_bw(base_size = 14) +
-  theme(legend.position = "bottom",
+  theme(legend.position = "none",
         aspect.ratio = 1) +
   labs(x = "", y = "")
 simPlot_log
 
-ggsave(plot = simPlot_log, filename = "log-sim-plot.png", path = here::here("presentations", "graphics-group", "sept_17_2020", "images"), device = "png", width = 10, height = 5, dpi = 600)
+simPlots <- grid.arrange(simPlot_linear, simPlot_log, ncol = 2)
+
+ggsave(plot = simPlots, filename = "sim-plot.png", path = here::here("presentations", "graphics-group-02112020", "images"), device = "png", width = 10, height = 5, dpi = 600)

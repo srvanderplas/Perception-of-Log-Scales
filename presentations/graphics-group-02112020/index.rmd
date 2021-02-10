@@ -1,7 +1,8 @@
 ---
-title: "Graphics Group"
+title: "Do logs work during a pandemic? Perception of exponentially increasing data"
+subtitle: "Graphics Group"
 author: "Emily Robinson, Susan VanderPlas, and Reka Howard"
-date: "February 2, 2021"
+date: "February 11, 2021"
 output:
   xaringan::moon_reader:
     seal: true
@@ -26,10 +27,10 @@ library(nullabor)
 library(scales)
 library(knitr)
 library(kableExtra)
-
 library(RefManageR)
 bib <- ReadBib("references.bib", check = FALSE)
 ui <- "- "
+options(knitr.kable.NA = '')
 ```
 
 ```{r, include = F, eval = T, cache = F}
@@ -92,6 +93,8 @@ class:primary
 
 ???
 
+Thank you for coming today. I will be presenting the results from a graphics experiment Susan, Reka, and I conducted regarding the perception of displaying exponentially increasing data on a log scale. This will be familair to someo of you who participated as our guinea pigs for this experiement last fall, but hopefully you find some of the results interesting.
+
 During the covid pandemic, we have seen a large influx of data visualizations displaying case counts, transmission rates, and outbreak regions. With a need for information, the general public began seeking out graphical displays of coronavirus data in mass media providing increased and ongoing exposure to these graphics over time. Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing, as well as facilitated communication with the public to increase compliance.
 
 Many graphics such as the Financial Times provided the option of displaying case counts on both the log and linear scale. From this experience we have seen both the benefits and pitfalls of this design choice. For example, during the early stages of the coronavirus pandemic, there was a large magnitude discrepancy at a given time between different geographic regions. During this time, we saw the usefulness of log-scales showing case count curves for areas with few cases and areas with many cases within one chart. As the pandemic has evolved, and the case counts were no longer spreading exponentially, graphs with linear scales seemed more effective at spotting early increases in case counts that signaled more localized outbreaks.
@@ -139,7 +142,7 @@ Evaluate design choices through the use of graphical tests. Could ask participan
 Use visual inference and statistical lineups to test our ability to differentiate between exponentially increasing curves with differing growth rates, using linear and log scales `r Citep(bib[[c("vanderplas_clusters_2017", "hofmann_graphical_2012", "loyVariationsQQPlots2016")]])`.
 
 ???
-The overarching goal of our research is to design and carry out experimental taks that provide a set of principles to guide design choices in order to ensure that charts are effective. So far, we will be focusing on this first graphical test and asking participants to identify differences in graphs. This is the most fundamental task and does not require that participants understand exponential growth, identify log scales, or have any mathematical training. Basically, we are testing the change in perceptual sensitivity resulting from visualization choices. To do this, we will be utilizing visual inference and statistical lineups.
+The overarching goal of this research is to design and carry out experimental taks that provide a set of principles to guide design choices in order to ensure that charts are effective. So far, we will be focusing on this first graphical test and asking participants to identify differences in graphs. This is the most fundamental task and does not require that participants understand exponential growth, identify log scales, or have any mathematical training. Basically, we are testing the change in perceptual sensitivity resulting from visualization choices. To do this, we will be utilizing visual inference and statistical lineups.
 
 ---
 class:primary
@@ -259,7 +262,7 @@ parameter_data %>%
 ]
 
 ???
-After running an initial study where we manipulated both curvature and variability, we decided to design the study to focus on low variability only and manipulate the curvature. Recall, a previous study examined whether discrimination between curvature types is possible and found that accuracy was higher when nonlinear trends were presented and that accuracy was higher with low variability.
+After running an initial study where we manipulated both curvature and variability (as you participated in last fall), we decided to design the study to focus on low variability only and manipulate the curvature. Recall, a previous study examined whether discrimination between curvature types is possible and found that accuracy was higher when nonlinear trends were presented and that accuracy was higher with low variability.
 
 We decided to select 3 levels of curvature. Curvature is controled by that midpoint and in turn the beta parameter. Alpha and Theta are calculated as a result in order to maintain our range and domain constraints. A sensible choice for sigma was then selected. 
 
@@ -371,17 +374,9 @@ An exception occurs when identifying a plot with more curvature than the surroun
 class:primary
 ## Participant Confidence & Reasonings
 .pull-left[
-+ Proportion of default choice reasonings
++ Default Choice Reasoning
 ```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
 i1 <- img_modal(src = "images/choice-reasonings.png", alt = " ", other=list(width="90%"))
-c(str_split(i1, "\\n", simplify = T)[1:2],
-  str_split(i1, "\\n", simplify = T)[3:9]
-  ) %>% paste(collapse = "\n") %>% cat()
-```
-
-+ Other provided reasonings
-```{r results='asis', echo = F, include = T, cache = F, eval = TRUE}
-i1 <- img_modal(src = "images/other-reasonings.png", alt = " ", other=list(width="90%"))
 c(str_split(i1, "\\n", simplify = T)[1:2],
   str_split(i1, "\\n", simplify = T)[3:9]
   ) %>% paste(collapse = "\n") %>% cat()
@@ -396,6 +391,25 @@ c(str_split(i1, "\\n", simplify = T)[1:2],
   ) %>% paste(collapse = "\n") %>% cat()
 ```
 ]
+
++ Other Choice Reasoning
+
+.center[
+```{r other-reasons}
+options(knitr.kable.NA = '')
+read_csv("results/other-reasons.csv") %>%
+  kable() %>%
+  kable_styling(font_size = 14)
+```
+]
+
+???
+Evaluating participants choice reasonings, we see the proportion of reasonings selected relative to the total evaluations for each scale (note, participants could select more than one reason). It appears that the shape was a key indicator in identifying differences - in particular on the log scale while the slope also apppears to be a decent indicator. On the linear scale, we see participants making decisions based on outliers and different ranges. Some participants also used clustering to make their decisions.
+
+Some participants provided other reasonings outside of the default choices. Here we see there seems to be a trend on the linear scale of more variability and spread. Reading these also gives us reason to beleive that our sample from the Reddit pages is not representative to the general population due to the use of words such as "dispersion".
+
+Here we see the proportion of confidence levels relative to the total for each scale. We can see that on the log scale, clients appear to be more confident in their choice than on the linear scale.
+
 ---
 class:primary
 ## Future Experimental Tasks
@@ -509,3 +523,11 @@ Output Parameters: $N$ points, in the form of vectors $\mathbf{x}$ and $\mathbf{
 4. Calculate $\tilde\alpha = \frac{\hat\alpha}{e^{\sigma^2/2}}.$ This ensures that the range of simulated values for different standard devaition parameters has an equal expected value for a given rate of change due to the non-constant variance across the domain.
 
 5. Generate $y_i = \tilde\alpha\cdot e^{\hat\beta x_i + e_i}+\hat\theta$ where $e_i\sim N(0,\sigma^2).$
+
+---
+class:primary
+## Comparison of difficulty level
+.center[
+<img src="images/sim-plot.png" width="150%" />
+]
+
