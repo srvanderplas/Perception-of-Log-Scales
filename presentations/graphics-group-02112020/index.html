@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Do logs work during a pandemic? Perception of exponentially increasing data</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Emily Robinson, Susan VanderPlas, and Reka Howard" />
+    <meta name="date" content="2021-02-11" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/rladies.css" rel="stylesheet" />
+    <link href="libs/remark-css/rladies-fonts.css" rel="stylesheet" />
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link rel="stylesheet" href="css\modal.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Do logs work during a pandemic? Perception of exponentially increasing data
+## Graphics Group
+### Emily Robinson, Susan VanderPlas, and Reka Howard
+### February 11, 2021
+
+---
+
+
+
+
+
+class:primary
+## Motivation
+
+- Graphics have become front and center during the covid pandemic. They have been used to display case counts, transmission rates, and outbreak regions (Charlotte, 2020; Romano, Sotis, Dominioni, et al., 2020; Rost, 2020).
+
+- These graphics helped guide decision makers and facilitated communication with the public to increase compliance (Bavel, Baicker, Boggio, et al., 2020).
+
+- Some graphics have utilized log scales to display case counts (Fagen-Ulmschneider, 2020). There are both benefits and pitfalls to this design decision.
+
+- Influenced our main research question: "Are there benefits to displaying exponentially increasing data on a log scale rather than a linear scale?"
+
+???
+
+Thank you for coming today. I will be presenting the results from a graphics experiment Susan, Reka, and I conducted regarding the perception of displaying exponentially increasing data on a log scale. This will be familair to someo of you who participated as our guinea pigs for this experiement last fall, but hopefully you find some of the results interesting.
+
+During the covid pandemic, we have seen a large influx of data visualizations displaying case counts, transmission rates, and outbreak regions. With a need for information, the general public began seeking out graphical displays of coronavirus data in mass media providing increased and ongoing exposure to these graphics over time. Many of these graphics helped guide decision makers to implement policies such as shut-downs or mandated mask wearing, as well as facilitated communication with the public to increase compliance.
+
+Many graphics such as the Financial Times provided the option of displaying case counts on both the log and linear scale. From this experience we have seen both the benefits and pitfalls of this design choice. For example, during the early stages of the coronavirus pandemic, there was a large magnitude discrepancy at a given time between different geographic regions. During this time, we saw the usefulness of log-scales showing case count curves for areas with few cases and areas with many cases within one chart. As the pandemic has evolved, and the case counts were no longer spreading exponentially, graphs with linear scales seemed more effective at spotting early increases in case counts that signaled more localized outbreaks.
+
+This influenced our main research question: Are there benefits to displaying exponentially increasing data on a log scale rather than a linear scale?
+
+---
+class:primary
+## Prior Literature
+
+- Log scale transformations are a common solution to displaying data over several orders of magnitude within one graph (Menge, MacPherson, Bytnerowicz, et al., 2018).
+
+- Our perception and mapping of numbers to a number line is logarithmic at first, but transitions to a linear scale later in development, with formal
+mathematics education (Varshney and Sun, 2013; Siegler and Braithwaite, 2017; Dehaene, Izard, Spelke, et al., 2008)
+
+- Estimation and prediction of exponential growth tends to be underestimated when presented both numerically and graphically (Wagenaar and Sagaria, 1975). This could be addressed by log-transforming the data, however, this introduces new complexities.
+
+- In Best, Smith, and Stubbs (2007), the authors explored whether discrimination between curve types is possible. They found that accuracy is higher when nonlinear trends presented (e.g. it's hard to say something is linear, but easy to say that it isn't) and that accuracy is higher with low additive variability.
+
+
+???
+
+When data spans several orders of magnitude, a design choice is made to show the data on its original scale (compressing the smaller magnitudes into relatively little area) or to transform the scale and alter the appreance of the data. Log scale transformations are a common solution to this. Logarithms make multiplicative relationships additive showing elasticities and other proportional changes. 
+
+Research suggests our perception and mapping of numbers to a number line is logarithmic at first, but transitions to a linear scale later in development after formal education has taken place. It is a natural assumption that if we percieve logarithmically by default that display information on a log scale should be easy to read and understand/use.
+
+Many early studies have explored the estimation and prediction of expoential groth, finding that growth is underestimated. Log transformations might be a way to address this, however most readers are not familar enough with mathematical concepts to intuitively understand logarithmic math and translate that back into real-world interpretations.
+
+A study that aligns closely with our early findings is Best et. al 2007. This sudy explored whether discrimination between curve types is possible and found that accuracy is higher when nonlinear trends were presented (i.e. it's hard to say something is linear, but easy to say that it isn't) and that accuracy is higher with low additive variability.
+
+---
+## Overarching Goal
+
+Provide a set of principles to guide design choices in order to ensure that charts are effective (Unwin, 2020).
+
+**Big Idea:** Are there benefits to displaying exponentially increasing data on a log scale rather than a linear scale?
+    
+Evaluate design choices through the use of graphical tests. Could ask participants to:
+
+- **identify differences in graphs.**
+- read information off of a chart accurately.
+- use data to make correct real-world decisions.
+- predict the next few observations.
+
+Use visual inference and statistical lineups to test our ability to differentiate between exponentially increasing curves with differing growth rates, using linear and log scales (VanderPlas and Hofmann, 2017; Hofmann, Follett, Majumder, et al., 2012; Loy, Follett, and Hofmann, 2016).
+
+???
+The overarching goal of this research is to design and carry out experimental taks that provide a set of principles to guide design choices in order to ensure that charts are effective. So far, we will be focusing on this first graphical test and asking participants to identify differences in graphs. This is the most fundamental task and does not require that participants understand exponential growth, identify log scales, or have any mathematical training. Basically, we are testing the change in perceptual sensitivity resulting from visualization choices. To do this, we will be utilizing visual inference and statistical lineups.
+
+---
+class:primary
+## Visual Inference with Lineups
+
+- Visual test statistic: A function of a sample that produces a plot
+
+- `\(T(y)\)` maps the actual data to the plot
+
+- `\(T(y_0)\)` maps a sample from the null distribution into the same plot form
+
+A **lineup** usually consists of 19 null plots `\(T(y_0)\)` and 1 data plot (target) `\(T(y)\)`
+
+.center[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imglinearlineupexample' src='images/linear-lineup-example.png' alt=' ' width='45%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgloglineupexample' src='images/log-lineup-example.png' alt=' ' width='45%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modallinearlineupexample' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodallinearlineupexample'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionlinearlineupexample' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalloglineupexample' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalloglineupexample'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionloglineupexample' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]
+&lt;font size="2"&gt;
+.small[
+Material Source: https://srvanderplas.netlify.app/talk/2019-09-05-the-power-of-visual-inference/
+]
+&lt;font&gt;
+
+???
+
+The main idea behind visual inference is that graphs are visual statistics or summaries of the data sets generated by mathematical functions. In a standard statistical analysis, a test statistic is generated from the dataset and compared to the null distribution of that test statistic. Similarly, the visual statistic (target plot) is compared by a human viewer to other plots generated under the assumption of the null.
+
+So what we have is a visual test statistic which is a function that maps a data set to a plot. We have our observed test statistic, T(y), which maps the actual data to the desired plot and our T(y_not) which maps a dataset generated under the null distribution (for example: by a randomization permutation) into that same plot.
+
+Our lineups followed the typical suggestion of consisting of 19 null plots and 1 target plot which comes from a 5% chance of selecting the target plot by random chance.
+
+Here we see a couple examples of lineups used in our current study. Can you pick out the target panel on the left? How about the right?
+
+---
+class:primary
+## Data Generation
+
+.pull-left[
+**Three Parameter Exponential:** `\(y_i=\alpha e^{\beta x_i + \epsilon_i} + \theta\)` with `\(\epsilon_i \sim N(0, \sigma^2)\)`
+
+**Heuristic Simulation Approach**
+- Set 3 points (Min, Max, Midpoint)
+- Select starting values
+  - Obtain linear model coefficients for `\(\log(y_i) = a+bx_i\)`
+	- `\(\alpha_0 = e^a ;\beta_0 = b; \theta_0 = \frac{\min(y)}{2}\)`
+	
+].pull-right[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgheuristicsimulation' src='images/heuristic-simulation.png' alt=' ' width='100%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalheuristicsimulation' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalheuristicsimulation'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionheuristicsimulation' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]
+
+- Using `nls()`, fit selected model to the points and obtain parameter estimates `\(y_i = \hat\alpha e^{\hat\beta x_i} + \hat\theta\)`.
+- Using the parameter estimates, assume `\(\epsilon_i \sim N(0, \sigma^2)\)` and set `\(\tilde \alpha = \frac{\hat\alpha}{e^{\sigma^2/2}}\)`. Simulate data based on `\(y_i = \tilde\alpha e^{\hat\beta x_i + \epsilon_i}+\hat\theta.\)`
+
+???
+
+The final model we selected to simulate an exponentially increasing trend was the three parameter exponential model with multiplicative errors leading to nonconstant variance. 
+
+By doing this, we could implement constraints of the same starting and ending values so that comparisons across models with differing parameters compared. However, this results in some curvature on the log scale as well in comparison to the linear trend we would typically experience from log transforming exponetial data.
+
+The simulation approach we selected to use was what we are calling a heuristic simulation. By this, what I mean is we selected a minimum and maximum value and then a midpoint that falls on a given line.
+
+From there, we obtained starting values and fit a nonlinear model to obtain our final parameter estimates. 
+
+When using the multiplicative error, we will have some nonconstant variance so to gaurantee that the expected value is equal for different error variances, we then scale our final alpha.
+
+Using the final parameters estimates, we simulate data along that increasing exponential curve and deviate it from the curve by including our error in the exponent.
+
+---
+class:primary
+## The 'Goldilocks Zone'
+
+The **Lack of Fit** test statistic calculated by the deviation of the data from a linear regression line was used to determine the curvature and variability combination values.
+
+.pull-left[
+- **Curvature** is controled by the `Midpoint` in the heuristic simulation and in turn affects `\(\hat\beta.\)` Three difficulty levels were selected:
+    - Easy (Obvious curvature)
+    - Medium  (Noticable curvature) 
+    - Hard (Almost linear)
+    
+- `\(\hat\alpha\)` and `\(\hat\theta\)` are adjusted within the heutistic simulation to ensure our range and domain constraints are met.
+
+- A sensible value for `\(\sigma\)` was selected for each curvature difficulty.
+
+].pull-right[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imglofcurvature' src='images/lof-curvature.png' alt=' ' width='100%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modallofcurvature' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodallofcurvature'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionlofcurvature' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;table class="table" style="font-size: 14px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; `\(x_{mid}\)` &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; `\(\hat\alpha\)` &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; `\(\tilde\alpha\)` &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; `\(\hat\beta\)` &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; `\(\hat\theta\)` &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; `\(\hat\sigma\)` &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Easy &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 14.5 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.91 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.88 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.23 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 9.10 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.25 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Medium &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 13.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6.86 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6.82 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.13 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3.14 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.12 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Hard &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 11.5 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 37.26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 37.22 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.06 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -27.26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.05 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+???
+After running an initial study where we manipulated both curvature and variability (as you participated in last fall), we decided to design the study to focus on low variability only and manipulate the curvature. Recall, a previous study examined whether discrimination between curvature types is possible and found that accuracy was higher when nonlinear trends were presented and that accuracy was higher with low variability.
+
+We decided to select 3 levels of curvature. Curvature is controled by that midpoint and in turn the beta parameter. Alpha and Theta are calculated as a result in order to maintain our range and domain constraints. A sensible choice for sigma was then selected. 
+
+In order to determine whether the levels of curvature differ, for each difficulty level, we simulated 1000 data sets where each x value was replicated 10 times. Then, the lack of fit statistic was computed for each simulated dataset by calculating the deviation of the data from a linear line. 
+
+Plotting the density curves of the LOF statistics for each level of difficulty choice allows us to evaluate the ability of differentiating between the difficulty levels and thus detecting the target plot.
+
+The goal is to hit that sweet spot of it not being too easy to pick out the target plot but also not too difficult. 
+
+
+We can see the densities of each of the three difficulty levels here. 
+
+While the lack of fit statistic provides us a numerical value for discriminating between the difficulty levels, we cannot directly relate this to the perceptual discriminability; it serves primarily as an approximation to ensure that we are testing parameters at several distinct levels of difficulty.
+
+---
+class:primary
+## Study Design
+
+**Treatment Design:** Target Panel gets model A and Null Panels get model B
+
+`\(3!\cdot 2!= 6\)` curvature combinations
+
+`\(\times 2\)` lineup data sets per combination `\(=\)` **12 test data sets**
+
+`\(\times 2\)` scales (log &amp; linear) `\(=\)` **24 different lineup plots**
+
+--
+
+&lt;hr&gt;
+
+**Experimental Design:**
+
+`\(6\)` test parameter combinations per participant `\(\times 2\)` scales `\(= 12\)` test lineups
+
+`\(1\)` rorschach parameter combination per participant
+
+`\(=\)` **13 lineup plots per participant**
+
+&lt;hr&gt;
+
+*Note: There are 3 parameter combinations which generate homogeneous "Rorschach" lineups (all null panels from same distribution). These evaluations
+are not used in any current analyses.*
+
+---
+class:primary
+## Data Collection
+
+- Recruitted via Reddit `r/visualization` and `r/SampleSize` pages for a little over two weeks.
+
+- Participants completed the study at https://shiny.srvanderplas.com/log-study/.
+
+- Final dataset included a total of 41 participants and 477 lineup evaluations.
+
+- Each plot was evaluated by between 18 and 28 individuals (Mean: 21.77, SD: 2.29). 
+
+- In 67% of the 477 lineup evaluations, participants correctly identified the target panel.
+
+???
+Starting about mid November, we began recruitting for the current run of this experiment. In total we had 58 individuals completed 518 unique test lineup evaluations, but removed participants who completed fewer than 6 lineup evaluations leaving us with a total of 41 participants and 477 lineup evaluations. Each plot was evaluated by an average of about 22 participants, recall there are 2 sets of each curvature combination so that would be about 44 evaluations per curvature treatment. Overall, we saw a 67% accuracy rate.
+
+---
+class:primary
+## Generalized Linear Mixed Model
+
+Each lineup plot evaluated was assigned a value based on the participant response (correct = 1, not correct = 0). 
+
+The binary response was analyzed using generalized linear mixed model following a binomial distribution with a logit link function (PROC GLIMMIX, SAS 9.4).
+
+Define `\(Y_{ijkl}\)` to be the event that participant `\(l\)` correctly identifies the target plot for data set `\(k\)` with curvature `\(j\)` plotted on scale `\(i\)`.
+
+`$$\text{logit }P(Y_{ijk}) = \eta + \delta_i + \gamma_j + \delta \gamma_{ij} + s_l + d_k$$`
+where
+
+- `\(\eta\)` is the beaseline average probability of selecting the target plot. 
+- `\(\delta_i\)` is the effect of the log/linear scale.
+- `\(\gamma_j\)` is the effect of the curvature combination.
+- `\(\delta\gamma_{ij}\)`is the two-way interaction effect of the scale and curvature.
+- `\(s_l \sim N(0,\sigma^2_\text{participant})\)`, random effect for participant characteristics.
+- `\(d_k \sim N(0,\sigma^2_{\text{data}})\)`, random effect for data specific characteristics. 
+
+We assume that random effects for data set and participant are independent.
+
+???
+The binary response (correct/incorrect) was analyzed using generalized linear mixed model following a binomial distribution with a logit link function following a row-column blocking design accounting for the variation due to participant and data set respectively. Here we see the model with our fixed effects of scale, curvature, and the two way interaction. Considered as random effects, we have variability due to the participant, and variability due to the data set. 
+
+---
+class:primary
+## Results
+
+- The choice of scale has no impact if curvature differences are
+large. 
+
+- Presenting data on the log scale makes us more sensitive to the the changes when there are only slight changes in curvature.
+
+- An exception occurs when identifying a plot with more curvature than the surrounding plots, indicating that it is is more diffcult to say something has less curvature, but easy to say that something has more curvature (Best, Smith, and Stubbs, 2007).
+
+.center[
+&lt;img src="images/odds-ratio.png" width="150%" /&gt;
+]
+
+???
+This graph displays the log odds ratio in accuracy between the log scale and the linear scale. On the y-axis we see the model used for the null plot data generation with the target plot model designated by shade of green.
+
+We can see that the choice of scale has no impact if curvature differences are large (Hard-Easy / Easy-Hard). However, presenting data on the log scale makes us more sensitive to the the changes when there are only slight changes in curvature (Medium-Easy, Medium-Hard, Easy, Medium). 
+
+An exception occurs when identifying a plot with more curvature than the surrounding plots, indicating that it is is more difficult to say something has less curvature, but easy to say that something has more curvature. This supports the previous research of Best et. al 2007.
+
+---
+class:primary
+## Participant Confidence &amp; Reasonings
+.pull-left[
++ Default Choice Reasoning
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgchoicereasoning' src='images/choice-reasoning.png' alt=' ' width='90%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalchoicereasoning' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalchoicereasoning'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionchoicereasoning' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+].pull-right[
++ Confidence Level
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgconflevels' src='images/conf-levels.png' alt=' ' width='90%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalconflevels' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalconflevels'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionconflevels' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]
+
++ Other Choice Reasoning
+
+.center[
+&lt;table class="table" style="font-size: 14px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Linear &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Log &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; All fits on one clean curve &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Break in data points &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; dispersion &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; less cluster &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Fewer data points at high x-values so the evidence of the relationship for high x-values is weakest &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No idea &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Large variance in y-axis for small neighborhood in x-axis (near large x's) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; spread &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Least variability about line &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; up higher than the others &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; More scattered &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Seems almost linear vs exponential &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+???
+Evaluating participants choice reasonings, we see the proportion of reasonings selected relative to the total evaluations for each scale (note, participants could select more than one reason). It appears that the shape was a key indicator in identifying differences - in particular on the log scale while the slope also apppears to be a decent indicator. On the linear scale, we see participants making decisions based on outliers and different ranges. Some participants also used clustering to make their decisions.
+
+Some participants provided other reasonings outside of the default choices. Here we see there seems to be a trend on the linear scale of more variability and spread. Reading these also gives us reason to beleive that our sample from the Reddit pages is not representative to the general population due to the use of words such as "dispersion".
+
+Here we see the proportion of confidence levels relative to the total for each scale. We can see that on the log scale, clients appear to be more confident in their choice than on the linear scale.
+
+---
+class:primary
+## Future Experimental Tasks
+
+**Big Idea:** Are there benefits to displaying exponentially increasing data on a log scale rather than a linear scale?
+
+--
+1. Lineup 📈 📈 📈
+
+    - Test an individuals ability to perceptually differentiate exponentially increasing data with differing rates of change on both the linear and log scale.
+    
+???
+
+We began with the most fundamental task testing the ability to identify differences in charts: this does not require that participants understand exponential growth, identify log scales, or have any mathematical training. Instead, we are simply testing the change in perceptual sensitivity resulting from visualization choices.
+
+--
+
+2. You Draw It ✏️
+    
+    - Tests an individuals ability to make predictions for exponentially increasing data. Similar to Mosteller, Siegel, Trapido, et al. (1981).
+    
+    - Based off New York Times (2017) "You Draw It" [**EXAMPLE**](https://www.nytimes.com/interactive/2017/01/15/us/politics/you-draw-obama-legacy.html?searchResultPosition=8) 
+
+???
+The second task we we are currently working on is what we are calling 'You Draw It'. The goal of this task is to test an individuals ability to make predictions for exponentially increasing data. 
+
+The idea for this task was inspired by the New York Times "You Draw It" page which is fun to check out if you get the chance.
+
+Come back in April to try breaking the java script code I am working on and learn how to use the r2d3 package in R.
+
+--
+3. Estimation 📏
+
+    - Tests an individuals ability to translate a graph of exponentially increasing data into real value quantities.
+
+???
+The last task that is going to be a part of the study is an estimation task. This tests an individuals ability to translate a graph of exponentially increasing data into real value quantities. We then ask individuals to extend their estimates by making comparisons across levels of the independent variable.
+
+--
+&lt;br&gt;
+.center[
+See sample experimental task applet at **https://bit.ly/2E8Zqht**
+]
+???
+Here is an example of each of the experimental tasks as submitted in our IRB.
+
+---
+class:primary
+## References
+&lt;font size="1"&gt;
+.small[
+&lt;p&gt;&lt;cite&gt;&lt;a id='bib-best_perception_2007'&gt;&lt;/a&gt;&lt;a href="#cite-best_perception_2007"&gt;Best, L. A, L. D. Smith, and D. A. Stubbs&lt;/a&gt;
+(2007).
+&amp;ldquo;Perception of Linear and Nonlinear Trends: Using Slope and Curvature Information to Make Trend Discriminations&amp;rdquo;.
+In: &lt;em&gt;Perceptual and Motor Skills&lt;/em&gt; 104.3. Publisher: SAGE Publications Inc, pp. 707&amp;ndash;721.
+ISSN: 0031-5125.
+DOI: &lt;a href="https://doi.org/10.2466/pms.104.3.707-721"&gt;10.2466/pms.104.3.707-721&lt;/a&gt;.
+URL: &lt;a href="https://doi.org/10.2466/pms.104.3.707-721"&gt;https://doi.org/10.2466/pms.104.3.707-721&lt;/a&gt; (visited on Jul. 06, 2020).&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;cite&gt;&lt;a id='bib-buja_statistical_2009'&gt;&lt;/a&gt;&lt;a href="#cite-buja_statistical_2009"&gt;Buja, A, D. Cook, H. Hofmann, et al.&lt;/a&gt;
+(2009).
+&amp;ldquo;Statistical inference for exploratory data analysis and model diagnostics&amp;rdquo;.
+En.
+In: &lt;em&gt;Philosophical Transactions of the Royal Society A: Mathematical, Physical and Engineering Sciences&lt;/em&gt; 367.1906, pp. 4361&amp;ndash;4383.
+ISSN: 1364-503X, 1471-2962.
+DOI: &lt;a href="https://doi.org/10.1098/rsta.2009.0120"&gt;10.1098/rsta.2009.0120&lt;/a&gt;.
+URL: &lt;a href="https://royalsocietypublishing.org/doi/10.1098/rsta.2009.0120"&gt;https://royalsocietypublishing.org/doi/10.1098/rsta.2009.0120&lt;/a&gt; (visited on Oct. 06, 2020).&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;cite&gt;&lt;a id='bib-lisa_charlotte_2020'&gt;&lt;/a&gt;&lt;a href="#cite-lisa_charlotte_2020"&gt;Charlotte, L.&lt;/a&gt;
+(2020).
+&lt;em&gt;You've informed the public with visualizations about the coronavirus. Thank you.&lt;/em&gt;
+URL: &lt;a href="https://blog.datawrapper.de/datawrapper-effect-corona/"&gt;https://blog.datawrapper.de/datawrapper-effect-corona/&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;cite&gt;&lt;a id='bib-dehaeneLogLinearDistinct2008'&gt;&lt;/a&gt;&lt;a href="#cite-dehaeneLogLinearDistinct2008"&gt;Dehaene, S, V. Izard, E. Spelke, et al.&lt;/a&gt;
+(2008).
+&amp;ldquo;Log or Linear? Distinct Intuitions of the Number Scale in Western and Amazonian Indigene Cultures&amp;rdquo;.
+En.
+In: &lt;em&gt;Science&lt;/em&gt; 320.5880. 00651
+Publisher: American Association for the Advancement of Science
+Section: Report, pp. 1217&amp;ndash;1220.
+ISSN: 0036-8075, 1095-9203.
+DOI: &lt;a href="https://doi.org/10.1126/science.1156540"&gt;10.1126/science.1156540&lt;/a&gt;.
+URL: &lt;a href="https://science.sciencemag.org/content/320/5880/1217"&gt;https://science.sciencemag.org/content/320/5880/1217&lt;/a&gt; (visited on May. 19, 2020).&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;cite&gt;&lt;a id='bib-hofmann_graphical_2012'&gt;&lt;/a&gt;&lt;a href="#cite-hofmann_graphical_2012"&gt;Hofmann, H, L. Follett, M. Majumder, et al.&lt;/a&gt;
+(2012).
+&amp;ldquo;Graphical Tests for Power Comparison of Competing Designs&amp;rdquo;.
+En.
+In: &lt;em&gt;IEEE Transactions on Visualization and Computer Graphics&lt;/em&gt; 18.12, pp. 2441&amp;ndash;2448.
+ISSN: 1077-2626.
+DOI: &lt;a href="https://doi.org/10.1109/TVCG.2012.230"&gt;10.1109/TVCG.2012.230&lt;/a&gt;.
+URL: &lt;a href="http://ieeexplore.ieee.org/document/6327249/"&gt;http://ieeexplore.ieee.org/document/6327249/&lt;/a&gt; (visited on Apr. 06, 2020).&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;cite&gt;&lt;a id='bib-loyVariationsQQPlots2016'&gt;&lt;/a&gt;&lt;a href="#cite-loyVariationsQQPlots2016"&gt;Loy, A, L. Follett, and H. Hofmann&lt;/a&gt;
+(2016).
+&amp;ldquo;Variations of Q-Q Plots: The Power of Our Eyes!&amp;rdquo;
+En.
+In: &lt;em&gt;The American Statistician&lt;/em&gt; 70.2. 00000, pp. 202&amp;ndash;214.
+ISSN: 0003-1305, 1537-2731.
+DOI: &lt;a href="https://doi.org/10.1080/00031305.2015.1077728"&gt;10.1080/00031305.2015.1077728&lt;/a&gt;.
+URL: &lt;a href="https://www.tandfonline.com/doi/full/10.1080/00031305.2015.1077728"&gt;https://www.tandfonline.com/doi/full/10.1080/00031305.2015.1077728&lt;/a&gt; (visited on May. 10, 2019).&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;cite&gt;&lt;a id='bib-new_york_times_2017'&gt;&lt;/a&gt;&lt;a href="#cite-new_york_times_2017"&gt;New York Times&lt;/a&gt;
+(2017).
+&lt;em&gt;NY Times You Draw It Charts&lt;/em&gt;.
+URL: &lt;a href="https://presentyourstory.com/ny-times-you-draw-it-charts/"&gt;https://presentyourstory.com/ny-times-you-draw-it-charts/&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;cite&gt;&lt;a id='bib-romano_scale_2020'&gt;&lt;/a&gt;&lt;a href="#cite-romano_scale_2020"&gt;Romano, A., C. Sotis, G. Dominioni, et al.&lt;/a&gt;
+(2020).
+&lt;em&gt;The Scale of COVID-19 Graphs Affects Understanding, Attitudes, and Policy Preferences&lt;/em&gt;.
+En.
+SSRN Scholarly Paper ID 3588511.
+Rochester, NY: Social Science Research Network.
+DOI: &lt;a href="https://doi.org/10.2139/ssrn.3588511"&gt;10.2139/ssrn.3588511&lt;/a&gt;.
+URL: &lt;a href="https://papers.ssrn.com/abstract=3588511"&gt;https://papers.ssrn.com/abstract=3588511&lt;/a&gt; (visited on Nov. 30, 2020).&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;cite&gt;&lt;a id='bib-siegler_numerical_2017'&gt;&lt;/a&gt;&lt;a href="#cite-siegler_numerical_2017"&gt;Siegler, R. S. and D. W. Braithwaite&lt;/a&gt;
+(2017).
+&amp;ldquo;Numerical Development&amp;rdquo;.
+En.
+In: &lt;em&gt;Annual Review of Psychology&lt;/em&gt; 68.1, pp. 187&amp;ndash;213.
+ISSN: 0066-4308, 1545-2085.
+DOI: &lt;a href="https://doi.org/10.1146/annurev-psych-010416-044101"&gt;10.1146/annurev-psych-010416-044101&lt;/a&gt;.
+URL: &lt;a href="http://www.annualreviews.org/doi/10.1146/annurev-psych-010416-044101"&gt;http://www.annualreviews.org/doi/10.1146/annurev-psych-010416-044101&lt;/a&gt; (visited on May. 19, 2020).&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;cite&gt;&lt;a id='bib-unwin_why_2020'&gt;&lt;/a&gt;&lt;a href="#cite-unwin_why_2020"&gt;Unwin, A.&lt;/a&gt;
+(2020).
+&amp;ldquo;Why is Data Visualization Important? What is Important in Data Visualization?&amp;rdquo;
+En.
+In: &lt;em&gt;Harvard Data Science Review&lt;/em&gt;.
+DOI: &lt;a href="https://doi.org/10.1162/99608f92.8ae4d525"&gt;10.1162/99608f92.8ae4d525&lt;/a&gt;.
+URL: &lt;a href="https://hdsr.mitpress.mit.edu/pub/zok97i7p"&gt;https://hdsr.mitpress.mit.edu/pub/zok97i7p&lt;/a&gt; (visited on Apr. 27, 2020).&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;cite&gt;&lt;a id='bib-vanderplas_clusters_2017'&gt;&lt;/a&gt;&lt;a href="#cite-vanderplas_clusters_2017"&gt;VanderPlas, S. and H. Hofmann&lt;/a&gt;
+(2017).
+&amp;ldquo;Clusters Beat Trend!? Testing Feature Hierarchy in Statistical Graphics&amp;rdquo;.
+En.
+In: &lt;em&gt;Journal of Computational and Graphical Statistics&lt;/em&gt; 26.2, pp. 231&amp;ndash;242.
+ISSN: 1061-8600, 1537-2715.
+DOI: &lt;a href="https://doi.org/10.1080/10618600.2016.1209116"&gt;10.1080/10618600.2016.1209116&lt;/a&gt;.
+URL: &lt;a href="https://www.tandfonline.com/doi/full/10.1080/10618600.2016.1209116"&gt;https://www.tandfonline.com/doi/full/10.1080/10618600.2016.1209116&lt;/a&gt; (visited on Feb. 28, 2020).&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;cite&gt;&lt;a id='bib-varshney_why_2013'&gt;&lt;/a&gt;&lt;a href="#cite-varshney_why_2013"&gt;Varshney, L. R. and J. Z. Sun&lt;/a&gt;
+(2013).
+&amp;ldquo;Why do we perceive logarithmically?&amp;rdquo;
+En.
+In: &lt;em&gt;Significance&lt;/em&gt; 10.1, pp. 28&amp;ndash;31.
+ISSN: 17409705.
+DOI: &lt;a href="https://doi.org/10.1111/j.1740-9713.2013.00636.x"&gt;10.1111/j.1740-9713.2013.00636.x&lt;/a&gt;.
+URL: &lt;a href="http://doi.wiley.com/10.1111/j.1740-9713.2013.00636.x"&gt;http://doi.wiley.com/10.1111/j.1740-9713.2013.00636.x&lt;/a&gt; (visited on May. 07, 2020).&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;cite&gt;&lt;a id='bib-wagenaarMisperceptionExponentialGrowth1975'&gt;&lt;/a&gt;&lt;a href="#cite-wagenaarMisperceptionExponentialGrowth1975"&gt;Wagenaar, W. A. and S. D. Sagaria&lt;/a&gt;
+(1975).
+&amp;ldquo;Misperception of exponential growth&amp;rdquo;.
+En.
+In: &lt;em&gt;Perception &amp;amp; Psychophysics&lt;/em&gt; 18.6, pp. 416&amp;ndash;422.
+ISSN: 0031-5117, 1532-5962.
+DOI: &lt;a href="https://doi.org/10.3758/BF03204114"&gt;10.3758/BF03204114&lt;/a&gt;.
+URL: &lt;a href="http://link.springer.com/10.3758/BF03204114"&gt;http://link.springer.com/10.3758/BF03204114&lt;/a&gt; (visited on Jul. 02, 2020).&lt;/cite&gt;&lt;/p&gt;
+]
+&lt;/font&gt;
+
+---
+class:inverse
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.center[
+# Questions // Discussion
+]
+
+---
+class:primary
+## Least Squares Means
+.center[
+&lt;img src="images/lsmeans-plot.png" width="150%" /&gt;
+]
+
+---
+class:primary
+## Data Generation Procedure: Paremeter Estimation
+
+Input Parameters: domain `\(x\in[0,20]\)`, range `\(y\in[10,100]\)`, midpoint `\(x_{mid}\)`.
+
+Output: estimated model parameters `\(\hat\alpha, \hat\beta, \hat\theta\)`
+
+1. Determine the `\(y=-x\)` line scaled to fit the assigned domain and range.
+
+2. Map the values `\(x_{mid} - 0.1\)` and `\(x_{mid} + 0.1\)` to the `\(y=-x\)` line for two additional points.
+
+3. From the set points `\((x_k, y_k)\)` for `\(k = 1,2,3,4\)`, obtain the coefficients from the linear model `\(\ln(y_k) = b_0 +b_1x_k\)` to obtain starting values - `\(\alpha_0 = e^{b_0}, \beta_0 =  b_1, \theta_0 = 0.5\cdot \min(y)\)`
+
+4. Using the `nls()` function from the `stats` package in Rstudio and the starting parameter values - `\(\alpha_0, \beta_0, \theta_0\)` - fit the nonlinear model, `\(y_k = \alpha\cdot e^{\beta\cdot x_k}+\theta\)` to obtain estimated parameter values - `\(\hat\alpha, \hat\beta, \hat\theta.\)`
+
+---
+class:primary
+## Data Generation Procedure: Exponential Simulation
+
+Input Paremeters: sample size `\(N = 50\)`, estimated parameters `\(\hat\alpha\)`, `\(\hat\beta\)`, and `\(\hat\theta\)`, `\(\sigma\)` standard deviation from the exponential curve.
+
+Output Parameters: `\(N\)` points, in the form of vectors `\(\mathbf{x}\)` and `\(\mathbf{y}\)`.
+
+1. Generate `\(\tilde x_j, j = 1,..., N\cdot \frac{3}{4}\)` as a sequence of evenly spaced points in `\([0,20]\)`. This ensures the full domain of `\(x\)` is used, fulfilling the constraints of spanning the same domain and range for each parameter combination.
+
+2. Obtain `\(\tilde x_i, i = 1,...N\)` by sampling `\(N = 50\)` values from the set of `\(\tilde x_j\)` values. This gaurantees some variability and potential clustring in the exponential growth curve disrupting the perception due to continuity of points.
+
+3. Obtain the final `\(x_i\)` values by jittering `\(\tilde x_i\)`.
+
+4. Calculate `\(\tilde\alpha = \frac{\hat\alpha}{e^{\sigma^2/2}}.\)` This ensures that the range of simulated values for different standard devaition parameters has an equal expected value for a given rate of change due to the non-constant variance across the domain.
+
+5. Generate `\(y_i = \tilde\alpha\cdot e^{\hat\beta x_i + e_i}+\hat\theta\)` where `\(e_i\sim N(0,\sigma^2).\)`
+
+---
+class:primary
+## Comparison of difficulty level
+.center[
+&lt;img src="images/sim-plot.png" width="150%" /&gt;
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"countIncrementalSlides": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+        /* Get the modal*/
+          var modallinearlineupexample = document.getElementById('modallinearlineupexample');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imglinearlineupexample = document.getElementById('imglinearlineupexample');
+          var modalImglinearlineupexample = document.getElementById('imgmodallinearlineupexample');
+          var captionTextlinearlineupexample = document.getElementById('captionlinearlineupexample');
+          imglinearlineupexample.onclick = function(){
+            modallinearlineupexample.style.display = 'block';
+            modalImglinearlineupexample.src = this.src;
+            captionTextlinearlineupexample.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImglinearlineupexample.onclick = function() {
+            modallinearlineupexample.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalloglineupexample = document.getElementById('modalloglineupexample');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgloglineupexample = document.getElementById('imgloglineupexample');
+          var modalImgloglineupexample = document.getElementById('imgmodalloglineupexample');
+          var captionTextloglineupexample = document.getElementById('captionloglineupexample');
+          imgloglineupexample.onclick = function(){
+            modalloglineupexample.style.display = 'block';
+            modalImgloglineupexample.src = this.src;
+            captionTextloglineupexample.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgloglineupexample.onclick = function() {
+            modalloglineupexample.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalheuristicsimulation = document.getElementById('modalheuristicsimulation');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgheuristicsimulation = document.getElementById('imgheuristicsimulation');
+          var modalImgheuristicsimulation = document.getElementById('imgmodalheuristicsimulation');
+          var captionTextheuristicsimulation = document.getElementById('captionheuristicsimulation');
+          imgheuristicsimulation.onclick = function(){
+            modalheuristicsimulation.style.display = 'block';
+            modalImgheuristicsimulation.src = this.src;
+            captionTextheuristicsimulation.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgheuristicsimulation.onclick = function() {
+            modalheuristicsimulation.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modallofcurvature = document.getElementById('modallofcurvature');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imglofcurvature = document.getElementById('imglofcurvature');
+          var modalImglofcurvature = document.getElementById('imgmodallofcurvature');
+          var captionTextlofcurvature = document.getElementById('captionlofcurvature');
+          imglofcurvature.onclick = function(){
+            modallofcurvature.style.display = 'block';
+            modalImglofcurvature.src = this.src;
+            captionTextlofcurvature.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImglofcurvature.onclick = function() {
+            modallofcurvature.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalchoicereasoning = document.getElementById('modalchoicereasoning');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgchoicereasoning = document.getElementById('imgchoicereasoning');
+          var modalImgchoicereasoning = document.getElementById('imgmodalchoicereasoning');
+          var captionTextchoicereasoning = document.getElementById('captionchoicereasoning');
+          imgchoicereasoning.onclick = function(){
+            modalchoicereasoning.style.display = 'block';
+            modalImgchoicereasoning.src = this.src;
+            captionTextchoicereasoning.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgchoicereasoning.onclick = function() {
+            modalchoicereasoning.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalconflevels = document.getElementById('modalconflevels');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgconflevels = document.getElementById('imgconflevels');
+          var modalImgconflevels = document.getElementById('imgmodalconflevels');
+          var captionTextconflevels = document.getElementById('captionconflevels');
+          imgconflevels.onclick = function(){
+            modalconflevels.style.display = 'block';
+            modalImgconflevels.src = this.src;
+            captionTextconflevels.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgconflevels.onclick = function() {
+            modalconflevels.style.display = 'none';
+          }
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
