@@ -1,4 +1,4 @@
-// !preview r2d3 data = tibble(x = seq(1, 25, .5), y = exp((x-15)/30)), options = list(free_draw = FALSE, draw_start = 10, pin_start = TRUE, x_range = c(0,28), y_range = c(.5,3), line_style = list(strokeWidth = 4), data_line_color = 'steelblue', drawn_line_color = 'orangered', show_finished = TRUE, shiny_message_loc = 'my_shiny_app', linear = 'true'), dependencies = c('d3-jetpack'),
+// !preview r2d3 data = tibble(x = seq(1, 25, .5), y = exp((x-15)/30), ydots = exp(((x-15)/30) + rnorm(30, 0, 0.05))), options = list(free_draw = FALSE, draw_start = 10, pin_start = TRUE, x_range = c(0,28), y_range = c(.5,3), line_style = list(strokeWidth = 4), data_line_color = 'steelblue', drawn_line_color = 'orangered', show_finished = TRUE, shiny_message_loc = 'my_shiny_app', linear = 'true'), dependencies = c('d3-jetpack'),
 
 // Try adding in points... pass 2 sets of data into r2d3 instead of just one...pass a list???
 
@@ -58,6 +58,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
   state.options = options;
   
   start_drawer(state);
+
 });
 
 // An explicit resize handler
@@ -70,6 +71,7 @@ r2d3.onResize(function(width, height) {
   state.h = height - margin.top - margin.bottom;
   
   start_drawer(state, reset = false);
+
 });
 
 // Main function that draws current state of viz
@@ -80,6 +82,9 @@ function start_drawer(state, reset = true){
   if(!state.free_draw){
     draw_true_line(state, scales, state.draw_start);
   }
+  
+  // draw points for initial portion
+  draw_points(state, scales);
   
   // Cover hidden portion with a rectangle
   // const line_hider = setup_line_hider(state.svg, state.draw_start, scales);
@@ -185,6 +190,23 @@ function draw_true_line({svg, data, draw_start}, scales){
   .at(default_line_attrs)
   .attr("d", scales.line_drawer);
 
+}
+
+function draw_points({svg, data, draw_start}, scales){
+  var df = data.filter(function(d){return d.x<=draw_start})
+
+  const dots = state.svg.selectAll("circle").data(df)
+  
+  dots
+    .enter().append("circle")
+    .merge(dots)
+    .attr("cx", d => scales.x(d.x))
+    .attr("cy", d => scales.y(d.ydots))
+    .attr("r", 3)
+    .style("fill", "black")
+    .style("opacity", 1)
+    .style("stroke", "white")
+    
 }
 
 function draw_user_line(state, scales){

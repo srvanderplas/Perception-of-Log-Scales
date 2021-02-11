@@ -23,7 +23,7 @@ drawr <- function(data,
                   # show_finished = F,
                   shiny_message_loc = NULL) {
   
-  plot_data <- dplyr::select(data, x, y)
+  plot_data <- dplyr::select(data, x, y, ydots)
   x_min <- min(plot_data$x)
   x_max <- max(plot_data$x)
   y_min <- min(plot_data$y)
@@ -107,10 +107,10 @@ server <- function(input, output, session) {
   # ---- Tab 1 ---------------------------------------------------------------
   
   # Provides a line for the data. (no errors)
-  data_tab1 <- tibble(x = 1:30, y = exp((x-15)/5))
-
+  data_tab1 <- tibble(x = seq(1, 25, .5), y = exp((x-15)/30), ydots = exp(((x-15)/30) + rnorm(30, 0, 0.05)))
+  
   # Provides the yrange for the plot (spans the data points + some)
-  y_range <- range(data_tab1$y) * c(.7, 1.1)
+  y_range <- range(data_tab1$ydots) * c(.7, 1.1)
 
   # Tells us where the user can start drawing
   draw_start <- 20

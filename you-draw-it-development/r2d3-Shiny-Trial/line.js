@@ -85,7 +85,7 @@ bounds
     .data(data) /* joining selected elements with our array of data points */
     .enter().append("circle")
     .attr("cx", d => xScale(xAccessor(d)))
-    .attr("cy", d => yDotScale(yDotAccessor(d)))
+    .attr("cy", d => yScale(yDotAccessor(d)))
     .attr("r", 3)
 
 /*

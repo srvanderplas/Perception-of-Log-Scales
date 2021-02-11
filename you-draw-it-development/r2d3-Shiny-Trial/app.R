@@ -18,7 +18,7 @@ server <- function(input, output) {
         ### Nice straight line (no errors)
         tibble(x    = seq(1, 25, .5), 
                y    = exp((x-15)/30),
-               ydotAll = exp(((x-15)/30) + rnorm(49, 0, 0.125))
+               ydotAll = exp(((x-15)/30) + rnorm(49, 0, 0.05))
                ) %>%
             mutate(ydot = ifelse(x > 10, NA, ydotAll))
         
