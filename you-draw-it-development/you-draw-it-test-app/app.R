@@ -13,6 +13,7 @@ drawr <- function(data,
                   draw_start = mean(data$x),
                   free_draw = T,
                   points = "half",
+                  aspect_ratio = 1.5,
                   title = "", 
                   x_range = NULL, 
                   y_range = NULL,
@@ -58,6 +59,7 @@ drawr <- function(data,
                             linear = as.character(linear),
                             free_draw = free_draw, 
                             points = points,
+                            aspect_ratio = aspect_ratio,
                             pin_start = T, 
                             x_range = x_range, 
                             y_range = y_range,
@@ -85,9 +87,7 @@ ui <- navbarPage(
       column(
         width = 9,
         # This is our "wrapper"
-        d3Output("shinydrawr",
-                 width = "900px",
-                 height = "600px"),
+        d3Output("shinydrawr"),
         helpText("What will this line look like for the rest of the x values?
                   Using your mouse, draw on the plot to fill in the values,
                   maintaining the previous trend.")
@@ -98,7 +98,8 @@ ui <- navbarPage(
         checkboxInput("drawr_linear_axis", "Linear Y Axis?", value = T),
         checkboxInput("free_draw_box", "Free Draw?", value = F),
         radioButtons("points_choice", "Points?", choices = c("full", "half", "none"), selected = "full"),
-        sliderInput("draw_start_slider", "Draw Start?", min = 4, max = 20, value = 10, step = 1),
+        #sliderInput("aspect_ratio_slider", "Aspect Ratio:", min = 1, max = 4, value = 1.5, step = 0.1),
+        sliderInput("draw_start_slider", "Draw Start?", min = 4, max = 19, value = 10, step = 1),
         sliderInput("ymag_range", label = "y-range buffer:", min = 0.5, max = 2, value = c(0.7, 1.3)),
         hr(),
         numericInput("by", "Stepby:", min = 0.05, max = 0.5, value = 0.2, step = 0.05),
@@ -152,6 +153,7 @@ server <- function(input, output, session) {
 
     # Use redef'd drawr function...r2d3 is built into here.. how do we add points???
     drawr(data              = data,
+          aspect_ratio      = 1.5,
           linear            = islinear, # see function above
           free_draw         = input$free_draw_box,
           points            = input$points_choice,

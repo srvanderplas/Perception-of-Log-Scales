@@ -1,4 +1,4 @@
-// !preview r2d3 data = tibble(x = seq(1, 25, .5), y = exp((x-15)/30), ypoints = exp(((x-15)/30) + rnorm(30, 0, 0.05))), options = list(free_draw = FALSE, draw_start = 10, pin_start = TRUE, x_range = c(0,28), y_range = c(.5,3), line_style = list(strokeWidth = 4), data_line_color = 'steelblue', drawn_line_color = 'orangered', show_finished = TRUE, shiny_message_loc = 'my_shiny_app', linear = 'false', points = "half"), dependencies = c('d3-jetpack'),
+// !preview r2d3 data = tibble(x = seq(1, 25, .5), y = exp((x-15)/30), ypoints = exp(((x-15)/30) + rnorm(30, 0, 0.05))), options = list(free_draw = FALSE, draw_start = 10, pin_start = TRUE, x_range = c(0,28), y_range = c(.5,3), line_style = list(strokeWidth = 4), data_line_color = 'steelblue', drawn_line_color = 'orangered', show_finished = TRUE, shiny_message_loc = 'my_shiny_app', linear = 'true', points = "half", aspect_ratio = 1.5), dependencies = c('d3-jetpack'),
 
 // Try adding in points... pass 2 sets of data into r2d3 instead of just one...pass a list???
 
@@ -27,6 +27,7 @@ const margin = {left: 55,
                 top: options.title ? 40: 10, 
                 bottom: options.title? 25: 55};
                 
+
 // define variable default line attributes
 // do not fill the line in (default is filled in black beneath the line)
 // stroke provides the color of the line stroke. This is either options.data_line_color (not yet defined) or steelblue
@@ -51,7 +52,7 @@ const default_line_attrs = Object.assign({
 let state = Object.assign({
   data: data,
   svg: svg.append('g').translate([margin.left, margin.top]).attr("class", "wrapper"),
-  w: width - margin.left - margin.right,
+  w: height*options.aspect_ratio - margin.left - margin.right,
   h: height - margin.top - margin.bottom,
 }, options);
 
@@ -80,7 +81,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
 // redraws plot as you resize your browser window 
 // (box has changed size that we did not do on code end)
 r2d3.onResize(function(width, height) {
-  state.w = width - margin.left - margin.right;
+  state.w = height*options.aspect_ratio - margin.left - margin.right;
   state.h = height - margin.top - margin.bottom;
   
   start_drawer(state, reset = false);
@@ -91,6 +92,8 @@ r2d3.onResize(function(width, height) {
 // set up scales & draw true line if we decide to do that.
 function start_drawer(state, reset = true){
   const scales = setup_scales(state);
+  
+  //draw_rectangle(state, scales);
   
   if(!state.free_draw){
     draw_true_line(state, scales, state.draw_start);
@@ -222,11 +225,25 @@ function draw_points({svg, data, draw_start, points}, scales){
     .merge(dots)
     .attr("cx", d => scales.x(d.x))
     .attr("cy", d => scales.y(d.ypoints))
-    .attr("r", 3)
+    .attr("r", 2)
     .style("fill", "black")
-    .style("opacity", 1)
-    .style("stroke", "white")
+    .style("opacity", 0.8)
+    .style("stroke", "black")
     
+}
+
+function draw_rectangle({svg, draw_start, width, height}, scales){
+
+    //Create rectangle covering draw area. Color it light blue.
+    const drawSpace = scales.x(draw_start) /*need to scale it from temp to pixels*/
+    state.svg.selectAppend("rect")
+      .attr("x", drawSpace)
+      .attr("width", state.w - drawSpace)
+      .attr("y", 0)
+      .attr("height", state.h)
+      .style("fill", "#e0f3f3")
+      //.style("fill-opacity" = 0)
+      //.style("fill" = rgba(255,255,0,.8))
 }
 
 function draw_user_line(state, scales){
