@@ -1,4 +1,4 @@
-// !preview r2d3 data = tibble(x = seq(1, 25, .5), y = exp((x-15)/30), ydots = exp(((x-15)/30) + rnorm(30, 0, 0.05))), options = list(free_draw = FALSE, draw_start = 10, pin_start = TRUE, x_range = c(0,28), y_range = c(.5,3), line_style = list(strokeWidth = 4), data_line_color = 'steelblue', drawn_line_color = 'orangered', show_finished = TRUE, shiny_message_loc = 'my_shiny_app', linear = 'true'), dependencies = c('d3-jetpack'),
+// !preview r2d3 data = tibble(x = seq(1, 25, .5), y = exp((x-15)/30), ypoints = exp(((x-15)/30) + rnorm(30, 0, 0.05))), options = list(free_draw = FALSE, draw_start = 10, pin_start = TRUE, x_range = c(0,28), y_range = c(.5,3), line_style = list(strokeWidth = 4), data_line_color = 'steelblue', drawn_line_color = 'orangered', show_finished = TRUE, shiny_message_loc = 'my_shiny_app', linear = 'false', points = "half"), dependencies = c('d3-jetpack'),
 
 // Try adding in points... pass 2 sets of data into r2d3 instead of just one...pass a list???
 
@@ -8,13 +8,25 @@
 // define variable system_font
 // const system_font = `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color // // Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`;
 
+// ---------------------------------------------------------------------------------------------
+// From NYT you draw it
+//<rect class="g-flash-rect" x="545" y="0" height="300" width="60.56555555556202" 
+// fill="rgba(255,255,0,.8)" fill-opacity="0" transform="translate(-60.55555555556202,0)"></rect>
+
+
+// Adds style = "fill:rgba(0,0,0,0)" after being drawn over
+//<rect class="g-flash-rect" x="484.4444444444444" y="0" height="300" width="60.56555555556202" //fill="rgba(255,255,0,.8)" fill-opacity="0" transform="translate(-60.55555555556202,0)" style//="fill: rgba(0, 0, 0, 0);"></rect>
+
+// ---------------------------------------------------------------------------------------------
+
+
 // define variable margins
 // if options.title == T then set top = 50, else top = 15 (see options list at top, currently, no title defined...)
 const margin = {left: 55, 
                 right: 10, 
-                top: options.title ? 50: 15, 
-                bottom: 25};
-
+                top: options.title ? 40: 10, 
+                bottom: options.title? 25: 55};
+                
 // define variable default line attributes
 // do not fill the line in (default is filled in black beneath the line)
 // stroke provides the color of the line stroke. This is either options.data_line_color (not yet defined) or steelblue
@@ -35,6 +47,7 @@ const default_line_attrs = Object.assign({
 // sets the width and height of the plot
 // Since we are using object.assign, the options are passed in as the source, this will "overwrite" any information provided in the options???
 // Is state like our wrapper?
+
 let state = Object.assign({
   data: data,
   svg: svg.append('g').translate([margin.left, margin.top]).attr("class", "wrapper"),
@@ -84,7 +97,9 @@ function start_drawer(state, reset = true){
   }
   
   // draw points for initial portion
-  draw_points(state, scales);
+  if(state.points != "none"){
+    draw_points(state, scales);
+  }
   
   // Cover hidden portion with a rectangle
   // const line_hider = setup_line_hider(state.svg, state.draw_start, scales);
@@ -192,16 +207,21 @@ function draw_true_line({svg, data, draw_start}, scales){
 
 }
 
-function draw_points({svg, data, draw_start}, scales){
-  var df = data.filter(function(d){return d.x<=draw_start})
-
+function draw_points({svg, data, draw_start, points}, scales){
+  
+    if(points == "half"){
+      var df = data.filter(function(d){return (d.x<=draw_start & d.ypoints>0)});
+    } else {
+      var df = data.filter(function(d){return d.ypoints>0});
+    }
+    
   const dots = state.svg.selectAll("circle").data(df)
   
   dots
     .enter().append("circle")
     .merge(dots)
     .attr("cx", d => scales.x(d.x))
-    .attr("cy", d => scales.y(d.ydots))
+    .attr("cy", d => scales.y(d.ypoints))
     .attr("r", 3)
     .style("fill", "black")
     .style("opacity", 1)
@@ -225,7 +245,8 @@ function draw_user_line(state, scales){
       .datum(drawable_points)
       .at(default_line_attrs)
       .attr('stroke', drawn_line_color)
-      .attr("d", scales.line_drawer);
+      .attr("d", scales.line_drawer)
+      .style("stroke-dasharray", ("1, 7"));
 }
 
 // from state we need drawable_points - from setup_drawable_points() function that modifies state (get all x points bigger than or equal to draw_start and set up with a null), pin_start, and free_draw parameters
@@ -335,6 +356,9 @@ function setup_scales(state){
   state.svg.selectAll("g.y_grid").remove()
   // could call axis-grid "fred"
   state.svg.selectAll("g.axis-grid").remove()
+  
+  state.svg.selectAll("path.shown_line").remove()
+  state.svg.selectAll("circle").remove()
   
   state.svg.selectAppend("g.x_grid")
   .attr('class', 'x axis-grid')

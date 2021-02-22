@@ -11,6 +11,8 @@ library(readxl)
 drawr <- function(data, 
                   linear = "true", 
                   draw_start = mean(data$x),
+                  free_draw = T,
+                  points = "half",
                   title = "", 
                   x_range = NULL, 
                   y_range = NULL,
@@ -23,7 +25,7 @@ drawr <- function(data,
                   # show_finished = F,
                   shiny_message_loc = NULL) {
   
-  plot_data <- dplyr::select(data, x, y, ydots)
+  plot_data <- dplyr::select(data, x, y, ypoints)
   x_min <- min(plot_data$x)
   x_max <- max(plot_data$x)
   y_min <- min(plot_data$y)
@@ -54,13 +56,14 @@ drawr <- function(data,
              dependencies = c("d3-jetpack"),
              options = list(draw_start = draw_start, 
                             linear = as.character(linear),
+                            free_draw = free_draw, 
+                            points = points,
                             pin_start = T, 
                             x_range = x_range, 
                             y_range = y_range,
                             line_style = NULL,
                             data_tab1_color = data_tab1_color, 
                             drawn_line_color = drawn_line_color,
-                            free_draw = F, 
                             shiny_message_loc = shiny_message_loc)
              )
   
@@ -82,7 +85,9 @@ ui <- navbarPage(
       column(
         width = 9,
         # This is our "wrapper"
-        d3Output("shinydrawr"),
+        d3Output("shinydrawr",
+                 width = "900px",
+                 height = "600px"),
         helpText("What will this line look like for the rest of the x values?
                   Using your mouse, draw on the plot to fill in the values,
                   maintaining the previous trend.")
@@ -91,6 +96,15 @@ ui <- navbarPage(
         width = 3,
         # drawr_linear_axis is the linear/log checkbox. This has an if statement attached to it. 
         checkboxInput("drawr_linear_axis", "Linear Y Axis?", value = T),
+        checkboxInput("free_draw_box", "Free Draw?", value = F),
+        radioButtons("points_choice", "Points?", choices = c("full", "half", "none"), selected = "full"),
+        sliderInput("draw_start_slider", "Draw Start?", min = 4, max = 20, value = 10, step = 1),
+        sliderInput("ymag_range", label = "y-range buffer:", min = 0.5, max = 2, value = c(0.7, 1.3)),
+        hr(),
+        numericInput("by", "Stepby:", min = 0.05, max = 0.5, value = 0.2, step = 0.05),
+        numericInput("beta", "Beta:", min = 0.01, max = 0.5, value = 0.1, step = 0.01),
+        numericInput("sd", "SD:", min = 0.01, max = 0.25, value = 0.1, step = 0.01),
+        numericInput("Npoints", "N Points:", min = 20, max = 50, value = 30, step = 5),
         hr(),
         p("Recorded Data:"),
         # drawrmessage is the table id for the Recorded data
@@ -104,35 +118,48 @@ ui <- navbarPage(
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
   
-  # ---- Tab 1 ---------------------------------------------------------------
+  # message_loc and drawr_message
+  # Somehow takes the points the user drew and records them.
+  message_loc <- session$ns("drawr_message")
+  drawn_data <- shiny::reactiveVal()
   
   # Provides a line for the data. (no errors)
-  data_tab1 <- tibble(x = seq(1, 25, .5), y = exp((x-15)/30), ydots = exp(((x-15)/30) + rnorm(30, 0, 0.05)))
+  dataInput <- reactive({
+                
+                # generate line data
+                line_data <- tibble(x = seq(1, 20, input$by), 
+                                    y = exp(x*input$beta)
+                                    )
+                
+                # generate point data
+                point_data <- tibble(x = sample(line_data$x, input$Npoints, replace = F),
+                                     ypoints = exp(x*input$beta + rnorm(length(x), 0, input$sd))
+                                     )
+                
+                full_join(line_data, point_data, by = "x") %>%
+                  mutate(ypoints = ifelse(is.na(ypoints), 0, ypoints))
+                
+                })
   
-  # Provides the yrange for the plot (spans the data points + some)
-  y_range <- range(data_tab1$ydots) * c(.7, 1.1)
-
-  # Tells us where the user can start drawing
-  draw_start <- 20
-
-  # Let's talk about message_loc and drawr_message??
-  # Somehow takes the points the user drew and records them.
-  message_loc <- session$ns("drawr_message") ################################################ HERE
-  drawn_data <- shiny::reactiveVal()
-
   # shinydrawer is the id of our "wrapper" this is what draws our line
   output$shinydrawr <- r2d3::renderD3({
+    
+    data <- dataInput()
+    y_range <- range(data$y) * c(as.numeric(input$ymag_range[1]), as.numeric(input$ymag_range[2]))
+    
     # if linear box is checked, then T else F
     islinear <- ifelse(input$drawr_linear_axis, "true", "false")
+
     # Use redef'd drawr function...r2d3 is built into here.. how do we add points???
-    drawr(data = data_tab1,
-          linear = islinear, # see function above
-          draw_start = draw_start, # we define this at the top of the app
+    drawr(data              = data,
+          linear            = islinear, # see function above
+          free_draw         = input$free_draw_box,
+          points            = input$points_choice,
+          draw_start        = input$draw_start_slider, # we define this at the top of the app
           shiny_message_loc = message_loc,
-          x_range = range(data_tab1$x), # covers the range of the sequence we define
-          y_range = y_range, # we define this above to span our data + some
-          drawn_line_color = "skyblue", # color the user's line is drawn in
-          data_tab1_color = "blue" # color the original line is drawn in.
+          x_range           = range(data$x), # covers the range of the sequence we define
+          y_range           = y_range, # we define this above to span our data + some
+          drawn_line_color  = "skyblue" # color the user's line is drawn in
           )
   })
 
@@ -144,9 +171,9 @@ server <- function(input, output, session) {
   # creates data set that contains the x value, actual y value, and drawn y value (drawn = input$drawr_message
   # for the x values >= starting draw point
   # WHAT DOES THE %>% drawn_data() do?? does that rename it so we can reference this?
-  shiny::observeEvent(input$drawr_message, { ################################################ HERE
-    data_tab1 %>%
-      dplyr::filter(x >= draw_start) %>%
+  shiny::observeEvent(input$drawr_message, {
+    dataInput() %>%
+      dplyr::filter(x >= input$draw_start_slider) %>%
       dplyr::mutate(drawn = input$drawr_message) %>%
       drawn_data()
   })
