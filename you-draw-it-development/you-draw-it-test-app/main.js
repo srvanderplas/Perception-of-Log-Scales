@@ -93,7 +93,7 @@ r2d3.onResize(function(width, height) {
 function start_drawer(state, reset = true){
   const scales = setup_scales(state);
   
-  //draw_rectangle(state, scales);
+  draw_rectangle(state, scales);
   
   if(!state.free_draw){
     draw_true_line(state, scales, state.draw_start);
@@ -241,9 +241,9 @@ function draw_rectangle({svg, draw_start, width, height}, scales){
       .attr("width", state.w - drawSpace)
       .attr("y", 0)
       .attr("height", state.h)
-      .style("fill", "#e0f3f3")
-      //.style("fill-opacity" = 0)
-      //.style("fill" = rgba(255,255,0,.8))
+      //.style("fill", "#e0f3f3")
+      .style("fill-opacity", 0.5)
+      .style("fill", "rgba(255,255,0,.8)")
 }
 
 function draw_user_line(state, scales){

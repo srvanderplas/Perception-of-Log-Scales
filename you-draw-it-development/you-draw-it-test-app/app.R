@@ -98,7 +98,7 @@ ui <- navbarPage(
         checkboxInput("drawr_linear_axis", "Linear Y Axis?", value = T),
         checkboxInput("free_draw_box", "Free Draw?", value = F),
         radioButtons("points_choice", "Points?", choices = c("full", "half", "none"), selected = "full"),
-        #sliderInput("aspect_ratio_slider", "Aspect Ratio:", min = 1, max = 4, value = 1.5, step = 0.1),
+        sliderInput("aspect_ratio_slider", "Aspect Ratio:", min = 1, max = 4, value = 1.5, step = 0.1),
         sliderInput("draw_start_slider", "Draw Start?", min = 4, max = 19, value = 10, step = 1),
         sliderInput("ymag_range", label = "y-range buffer:", min = 0.5, max = 2, value = c(0.7, 1.3)),
         hr(),
@@ -153,7 +153,7 @@ server <- function(input, output, session) {
 
     # Use redef'd drawr function...r2d3 is built into here.. how do we add points???
     drawr(data              = data,
-          aspect_ratio      = 1.5,
+          aspect_ratio      = input$aspect_ratio_slider,
           linear            = islinear, # see function above
           free_draw         = input$free_draw_box,
           points            = input$points_choice,
@@ -161,7 +161,7 @@ server <- function(input, output, session) {
           shiny_message_loc = message_loc,
           x_range           = range(data$x), # covers the range of the sequence we define
           y_range           = y_range, # we define this above to span our data + some
-          drawn_line_color  = "skyblue" # color the user's line is drawn in
+          drawn_line_color  = "steelblue" # color the user's line is drawn in
           )
   })
 
