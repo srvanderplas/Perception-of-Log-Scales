@@ -232,10 +232,15 @@ function draw_points({svg, data, draw_start, points}, scales){
     
 }
 
-function draw_rectangle({svg, draw_start, width, height}, scales){
+function draw_rectangle({svg, draw_start, width, height, free_draw}, scales){
 
     //Create rectangle covering draw area. Color it light blue.
-    const drawSpace = scales.x(draw_start) /*need to scale it from temp to pixels*/
+    if(free_draw){
+      var drawSpace = 0 /*need to scale it from temp to pixels*/
+    } else {
+      var drawSpace = scales.x(draw_start)
+    }
+
     state.svg.selectAppend("rect")
       .attr("x", drawSpace)
       .attr("width", state.w - drawSpace)

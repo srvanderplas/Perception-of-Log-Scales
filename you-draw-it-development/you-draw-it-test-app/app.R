@@ -174,10 +174,21 @@ server <- function(input, output, session) {
   # for the x values >= starting draw point
   # WHAT DOES THE %>% drawn_data() do?? does that rename it so we can reference this?
   shiny::observeEvent(input$drawr_message, {
+    
+    if(input$free_draw_box){
     dataInput() %>%
-      dplyr::filter(x >= input$draw_start_slider) %>%
+      # dplyr::filter(x >= input$draw_start_slider) %>%
       dplyr::mutate(drawn = input$drawr_message) %>%
+      dplyr::select(x, y, drawn) %>%
       drawn_data()
+    } else{
+      dataInput() %>%
+        dplyr::filter(x >= input$draw_start_slider) %>%
+        dplyr::mutate(drawn = input$drawr_message) %>%
+        dplyr::select(x, y, drawn) %>%
+        drawn_data()
+    }
+    
   })
 
   # Fills in the Recorded Data table... see id drawrmessage in developer tools on browser.
