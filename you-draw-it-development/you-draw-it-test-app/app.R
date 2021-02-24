@@ -170,6 +170,11 @@ server <- function(input, output, session) {
     drawn_data(NULL)
   })
 
+  # Clears Recorded Data table when you toggle between free draw
+  shiny::observeEvent(input$free_draw_box, {
+    drawn_data(NULL)
+  })
+  
   # creates data set that contains the x value, actual y value, and drawn y value (drawn = input$drawr_message
   # for the x values >= starting draw point
   # WHAT DOES THE %>% drawn_data() do?? does that rename it so we can reference this?
