@@ -6,11 +6,13 @@ library(tidyverse)
 library(gridSVG)
 library(lubridate)
 library(readxl)
+library(DT)
 
 # Redefine drawr function
 drawr <- function(data, 
                   linear = "true", 
                   draw_start = mean(data$x),
+                  x_by = 0.25,
                   free_draw = T,
                   points = "half",
                   aspect_ratio = 1.5,
@@ -23,7 +25,7 @@ drawr <- function(data,
                   data_tab1_color = "steelblue", 
                   x_axis_buffer = 0.01, 
                   y_axis_buffer = 0.05,
-                  # show_finished = F,
+                  show_finished = T,
                   shiny_message_loc = NULL) {
   
   plot_data <- dplyr::select(data, x, y, ypoints)
@@ -61,11 +63,13 @@ drawr <- function(data,
                             points = points,
                             aspect_ratio = aspect_ratio,
                             pin_start = T, 
-                            x_range = x_range, 
+                            x_range = x_range,
+                            x_by = x_by,
                             y_range = y_range,
                             line_style = NULL,
                             data_tab1_color = data_tab1_color, 
                             drawn_line_color = drawn_line_color,
+                            show_finished = show_finished,
                             shiny_message_loc = shiny_message_loc)
              )
   
@@ -85,31 +89,32 @@ ui <- navbarPage(
     ),
     fluidRow(
       column(
-        width = 9,
+        width = 7,
+        helpText("What will this line look like? Using your mouse, draw within the yellow shaded region
+                  to fill in the values: maintaining the previous trend or best fit through points."),
         # This is our "wrapper"
-        d3Output("shinydrawr"),
-        helpText("What will this line look like for the rest of the x values?
-                  Using your mouse, draw on the plot to fill in the values,
-                  maintaining the previous trend.")
+        d3Output("shinydrawr", height = "600px"),
+        # drawrmessage is the table id for the Recorded data
+        p("Recorded Data:"),
+        DT::dataTableOutput("drawrmessage", width = "70%")
       ),
       column(
-        width = 3,
-        # drawr_linear_axis is the linear/log checkbox. This has an if statement attached to it. 
-        checkboxInput("drawr_linear_axis", "Linear Y Axis?", value = T),
-        checkboxInput("free_draw_box", "Free Draw?", value = F),
-        radioButtons("points_choice", "Points?", choices = c("full", "half", "none"), selected = "full"),
-        sliderInput("aspect_ratio_slider", "Aspect Ratio:", min = 1, max = 4, value = 1.5, step = 0.1),
-        sliderInput("draw_start_slider", "Draw Start?", min = 4, max = 19, value = 10, step = 1),
-        sliderInput("ymag_range", label = "y-range buffer:", min = 0.5, max = 2, value = c(0.7, 1.3)),
-        hr(),
-        numericInput("by", "Stepby:", min = 0.05, max = 0.5, value = 0.2, step = 0.05),
+        width = 2,
+        p("Data Simulation Parameters:"),
         numericInput("beta", "Beta:", min = 0.01, max = 0.5, value = 0.1, step = 0.01),
         numericInput("sd", "SD:", min = 0.01, max = 0.25, value = 0.1, step = 0.01),
         numericInput("Npoints", "N Points:", min = 20, max = 50, value = 30, step = 5),
-        hr(),
-        p("Recorded Data:"),
-        # drawrmessage is the table id for the Recorded data
-        tableOutput("drawrmessage")
+        numericInput("by", "Stepby:", min = 0.05, max = 0.5, value = 0.25, step = 0.05)
+      ),
+      column(
+        width = 3,
+        p("Aesthetic Plot Choices:"),
+        checkboxInput("drawr_linear_axis", "Linear Y Axis?", value = T),
+        checkboxInput("free_draw_box", "Free Draw?", value = F),
+        radioButtons("points_choice", "Points?", choices = c("full", "half", "none"), selected = "full"),
+        sliderInput("draw_start_slider", "Draw Start?", min = 4, max = 19, value = 10, step = 1),
+        sliderInput("ymag_range", label = "y-range buffer:", min = 0.5, max = 2, value = c(0.7, 1.3)),
+        sliderInput("aspect_ratio", "Aspect Ratio:", min = 1, max = 4, value = 1, step = 0.1)
       )
     )
   )
@@ -153,10 +158,11 @@ server <- function(input, output, session) {
 
     # Use redef'd drawr function...r2d3 is built into here.. how do we add points???
     drawr(data              = data,
-          aspect_ratio      = input$aspect_ratio_slider,
+          aspect_ratio      = input$aspect_ratio,
           linear            = islinear, # see function above
           free_draw         = input$free_draw_box,
           points            = input$points_choice,
+          x_by              = input$by,
           draw_start        = input$draw_start_slider, # we define this at the top of the app
           shiny_message_loc = message_loc,
           x_range           = range(data$x), # covers the range of the sequence we define
@@ -169,11 +175,31 @@ server <- function(input, output, session) {
   shiny::observeEvent(input$drawr_linear_axis, {
     drawn_data(NULL)
   })
-
-  # Clears Recorded Data table when you toggle between free draw
   shiny::observeEvent(input$free_draw_box, {
     drawn_data(NULL)
   })
+  shiny::observeEvent(input$points_choice, {
+    drawn_data(NULL)
+  })
+  shiny::observeEvent(input$draw_start_slider, {
+    drawn_data(NULL)
+  })
+  shiny::observeEvent(input$ymag_range, {
+    drawn_data(NULL)
+  })
+  shiny::observeEvent(input$by, {
+    drawn_data(NULL)
+  })
+  shiny::observeEvent(input$beta, {
+    drawn_data(NULL)
+  })
+  shiny::observeEvent(input$sd, {
+    drawn_data(NULL)
+  })
+  shiny::observeEvent(input$Npoints, {
+    drawn_data(NULL)
+  })
+  
   
   # creates data set that contains the x value, actual y value, and drawn y value (drawn = input$drawr_message
   # for the x values >= starting draw point
@@ -197,7 +223,7 @@ server <- function(input, output, session) {
   })
 
   # Fills in the Recorded Data table... see id drawrmessage in developer tools on browser.
-  output$drawrmessage <- renderTable({
+  output$drawrmessage <- DT::renderDataTable({
     drawn_data()
   })
 

@@ -1,4 +1,4 @@
-// !preview r2d3 data = tibble(x = seq(1, 25, .5), y = exp((x-15)/30), ypoints = exp(((x-15)/30) + rnorm(30, 0, 0.05))), options = list(free_draw = FALSE, draw_start = 10, pin_start = TRUE, x_range = c(0,28), y_range = c(.5,3), line_style = list(strokeWidth = 4), data_line_color = 'steelblue', drawn_line_color = 'orangered', show_finished = TRUE, shiny_message_loc = 'my_shiny_app', linear = 'true', points = "half", aspect_ratio = 1.5), dependencies = c('d3-jetpack'),
+// !preview r2d3 data = tibble(x = seq(1, 25, .5), y = exp((x-15)/30), ypoints = exp(((x-15)/30) + rnorm(30, 0, 0.05))), options = list(free_draw = FALSE, draw_start = 10, pin_start = TRUE, x_range = c(0,28), y_range = c(.5,3), line_style = list(strokeWidth = 4), data_line_color = 'steelblue', drawn_line_color = 'orangered', show_finished = TRUE, shiny_message_loc = 'my_shiny_app', linear = 'true', points = "half", aspect_ratio = 1.5, x_by = 0.5), dependencies = c('d3-jetpack'),
 
 // Try adding in points... pass 2 sets of data into r2d3 instead of just one...pass a list???
 
@@ -26,7 +26,6 @@ const margin = {left: 55,
                 right: 10, 
                 top: options.title ? 40: 10, 
                 bottom: options.title? 25: 55};
-                
 
 // define variable default line attributes
 // do not fill the line in (default is filled in black beneath the line)
@@ -70,7 +69,8 @@ r2d3.onRender(function(data, svg, width, height, options) {
   
   state = Object.assign(state, options);
   state.options = options;
-  
+  state.w = height*options.aspect_ratio;
+
   start_drawer(state);
 
 });
@@ -80,8 +80,8 @@ r2d3.onRender(function(data, svg, width, height, options) {
 // https://rstudio.github.io/r2d3/articles/advanced_rendering.html
 // redraws plot as you resize your browser window 
 // (box has changed size that we did not do on code end)
-r2d3.onResize(function(width, height) {
-  state.w = height*options.aspect_ratio - margin.left - margin.right;
+r2d3.onResize(function(width, height, options) {
+  state.w = height*state.options.aspect_ratio - margin.left - margin.right;
   state.h = height - margin.top - margin.bottom;
   
   start_drawer(state, reset = false);
@@ -93,8 +93,6 @@ r2d3.onResize(function(width, height) {
 function start_drawer(state, reset = true){
   const scales = setup_scales(state);
   
-  draw_rectangle(state, scales);
-  
   if(!state.free_draw){
     draw_true_line(state, scales, state.draw_start);
   }
@@ -102,6 +100,10 @@ function start_drawer(state, reset = true){
   // draw points for initial portion
   if(state.points != "none"){
     draw_points(state, scales);
+  }
+  
+  if(!state.free_draw){
+    draw_last_point(state, scales, state.draw_start);
   }
   
   // Cover hidden portion with a rectangle
@@ -116,6 +118,7 @@ function start_drawer(state, reset = true){
   
   // if we have points, we draw user's line.
   draw_user_line(state, scales);
+  draw_rectangle(state, scales);
   
   // invert from pixle to data scale when they draw their points
   // THIS IS WHERE WE SET A SPECIFIC NUMBER OF POINTS THAT CAN BE DRAWN CORRESPONDING TO 1/2 UNITS ON DATA SCALE...MAKES IT CLUNKY: CONTROLED BY TIBBLE
@@ -125,6 +128,7 @@ function start_drawer(state, reset = true){
     const drag_y = scales.y.invert(d3.event.y);
     fill_in_closest_point(state, drag_x, drag_y);
     draw_user_line(state, scales);
+    draw_rectangle(state, scales);
   };
   
   // line_status is set by draw watcher - get user status line
@@ -199,15 +203,30 @@ function get_user_line_status({drawable_points, free_draw}){
   }
 }
 
+// Draw visable portion of line
 function draw_true_line({svg, data, draw_start}, scales){
   var df = data.filter(function(d){ return d.x<=draw_start})
-  
-  // Draw visable portion of line
   state.svg.selectAppend("path.shown_line")
   .datum(df)
   .at(default_line_attrs)
   .attr("d", scales.line_drawer);
+}
 
+// Add point to end of true line
+function draw_last_point({svg, data, draw_start}, scales){
+  var df = data.filter(function(d){return d.x === draw_start});
+  
+  const lastdot = state.svg.selectAll("circle").data(df)
+  
+  lastdot
+    .enter().append("circle")
+    .merge(lastdot)
+    .attr("cx", d => scales.x(d.x))
+    .attr("cy", d => scales.y(d.y))
+    .attr("r", 4)
+    .style("fill", "steelblue")
+    .style("opacity", 1)
+    .style("stroke", "steelblue")
 }
 
 function draw_points({svg, data, draw_start, points}, scales){
@@ -232,23 +251,36 @@ function draw_points({svg, data, draw_start, points}, scales){
     
 }
 
-function draw_rectangle({svg, draw_start, width, height, free_draw}, scales){
+function draw_rectangle({svg, drawable_points, draw_start, width, height, free_draw, x_by}, scales){
 
-    //Create rectangle covering draw area. Color it light blue.
-    if(free_draw){
-      var drawSpace = 0 /*need to scale it from temp to pixels*/
+
+    if(get_user_line_status(state) === 'unstarted'){
+      if(free_draw){
+         var drawSpace = 0
+       } else {
+         var drawSpace = scales.x(draw_start)
+       }
     } else {
-      var drawSpace = scales.x(draw_start)
+      if(get_user_line_status(state) === 'done'){
+        drawSpace = scales.x(1000000)
+      } else {
+        var df = drawable_points.filter(function(d){return (d.y === null)});
+        var minx = df[0].x - x_by
+        var drawSpace = scales.x(minx) 
+      }
     }
 
-    state.svg.selectAppend("rect")
+    const draw_region = state.svg.selectAppend("rect");
+
+    draw_region
       .attr("x", drawSpace)
       .attr("width", state.w - drawSpace)
       .attr("y", 0)
       .attr("height", state.h)
       //.style("fill", "#e0f3f3")
-      .style("fill-opacity", 0.5)
+      .style("fill-opacity", 0.4)
       .style("fill", "rgba(255,255,0,.8)")
+  
 }
 
 function draw_user_line(state, scales){
