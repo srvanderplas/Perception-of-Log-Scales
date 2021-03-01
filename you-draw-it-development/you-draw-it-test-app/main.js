@@ -119,6 +119,7 @@ function start_drawer(state, reset = true){
   // if we have points, we draw user's line.
   draw_user_line(state, scales);
   draw_rectangle(state, scales);
+  draw_finished_line(state, scales, state.draw_start);
   
   // invert from pixle to data scale when they draw their points
   // THIS IS WHERE WE SET A SPECIFIC NUMBER OF POINTS THAT CAN BE DRAWN CORRESPONDING TO 1/2 UNITS ON DATA SCALE...MAKES IT CLUNKY: CONTROLED BY TIBBLE
@@ -144,6 +145,9 @@ function start_drawer(state, reset = true){
       // User has completed line drawing
       //if(state.show_finished) line_hider.reveal();
       //if(!state.free_draw)  line_hider.reveal();
+      if(state.show_finished){
+        draw_finished_line(state, scales, state.draw_start);
+      }
       
       if(state.shiny_message_loc){
         // Make sure shiny is available before sending message
@@ -301,6 +305,31 @@ function draw_user_line(state, scales){
       .attr('stroke', drawn_line_color)
       .attr("d", scales.line_drawer)
       .style("stroke-dasharray", ("1, 7"));
+}
+
+function draw_finished_line({svg, data, draw_start, free_draw}, scales){
+  
+  
+  if(!free_draw){
+    var df = data.filter(function(d){ return d.x >= draw_start})
+  } else {
+    var df = data
+  }
+  
+  const finished_line = state.svg.selectAppend("path.finished_line")
+  
+    // Only draw line if there's something to draw.
+  if(get_user_line_status(state) === 'unstarted'){
+    finished_line.remove();
+    return;
+  }
+  
+  finished_line
+  .datum(df)
+  .at(default_line_attrs)
+  .attr("d", scales.line_drawer)
+  .attr("opacity", 0.5)
+  
 }
 
 // from state we need drawable_points - from setup_drawable_points() function that modifies state (get all x points bigger than or equal to draw_start and set up with a null), pin_start, and free_draw parameters

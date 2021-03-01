@@ -93,7 +93,7 @@ ui <- navbarPage(
         helpText("What will this line look like? Using your mouse, draw within the yellow shaded region
                   to fill in the values: maintaining the previous trend or best fit through points."),
         # This is our "wrapper"
-        d3Output("shinydrawr", height = "600px"),
+        d3Output("shinydrawr", height = "500px"),
         # drawrmessage is the table id for the Recorded data
         p("Recorded Data:"),
         DT::dataTableOutput("drawrmessage", width = "70%")
@@ -109,12 +109,13 @@ ui <- navbarPage(
       column(
         width = 3,
         p("Aesthetic Plot Choices:"),
+        checkboxInput("show_finished", "Show Finished?", value = T),
         checkboxInput("drawr_linear_axis", "Linear Y Axis?", value = T),
         checkboxInput("free_draw_box", "Free Draw?", value = F),
         radioButtons("points_choice", "Points?", choices = c("full", "half", "none"), selected = "full"),
         sliderInput("draw_start_slider", "Draw Start?", min = 4, max = 19, value = 10, step = 1),
         sliderInput("ymag_range", label = "y-range buffer:", min = 0.5, max = 2, value = c(0.7, 1.3)),
-        sliderInput("aspect_ratio", "Aspect Ratio:", min = 1, max = 4, value = 1, step = 0.1)
+        sliderInput("aspect_ratio", "Aspect Ratio:", min = 1, max = 2, value = 1, step = 0.25)
       )
     )
   )
@@ -164,6 +165,7 @@ server <- function(input, output, session) {
           points            = input$points_choice,
           x_by              = input$by,
           draw_start        = input$draw_start_slider, # we define this at the top of the app
+          show_finished     = input$show_finished,
           shiny_message_loc = message_loc,
           x_range           = range(data$x), # covers the range of the sequence we define
           y_range           = y_range, # we define this above to span our data + some
@@ -187,6 +189,9 @@ server <- function(input, output, session) {
   shiny::observeEvent(input$ymag_range, {
     drawn_data(NULL)
   })
+  shiny::observeEvent(input$aspect_ratio, {
+    drawn_data(NULL)
+  })
   shiny::observeEvent(input$by, {
     drawn_data(NULL)
   })
@@ -196,7 +201,10 @@ server <- function(input, output, session) {
   shiny::observeEvent(input$sd, {
     drawn_data(NULL)
   })
-  shiny::observeEvent(input$Npoints, {
+  shiny::observeEvent(input$Npoints,{
+    drawn_data(NULL)
+  })
+  shiny::observeEvent(input$show_finished,{
     drawn_data(NULL)
   })
   
