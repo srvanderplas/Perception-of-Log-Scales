@@ -1,4 +1,4 @@
-// !preview r2d3 data = tibble(x = seq(1, 25, .5), y = exp((x-15)/30), ypoints = exp(((x-15)/30) + rnorm(30, 0, 0.05))), options = list(free_draw = FALSE, draw_start = 10, pin_start = TRUE, x_range = c(0,28), y_range = c(.5,3), line_style = list(strokeWidth = 4), data_line_color = 'steelblue', drawn_line_color = 'orangered', show_finished = TRUE, shiny_message_loc = 'my_shiny_app', linear = 'true', points = "half", aspect_ratio = 1.5, x_by = 0.5), dependencies = c('d3-jetpack'),
+// !preview r2d3 data = tibble(x = seq(1, 25, .5), y = exp((x-15)/30), ypoints = exp(((x-15)/30) + rnorm(30, 0, 0.05))), options = list(free_draw = FALSE, draw_start = 10, points_end = 15, pin_start = TRUE, x_range = c(0,28), y_range = c(.5,3), line_style = list(strokeWidth = 4), data_line_color = 'steelblue', drawn_line_color = 'orangered', show_finished = TRUE, shiny_message_loc = 'my_shiny_app', linear = 'true', points = "partial", aspect_ratio = 1.5, x_by = 0.5), dependencies = c('d3-jetpack'),
 
 // Try adding in points... pass 2 sets of data into r2d3 instead of just one...pass a list???
 
@@ -97,11 +97,6 @@ function start_drawer(state, reset = true){
     draw_true_line(state, scales, state.draw_start);
   }
   
-  // draw points for initial portion
-  if(state.points != "none"){
-    draw_points(state, scales);
-  }
-  
   if(!state.free_draw){
     draw_last_point(state, scales, state.draw_start);
   }
@@ -120,6 +115,11 @@ function start_drawer(state, reset = true){
   draw_user_line(state, scales);
   draw_rectangle(state, scales);
   draw_finished_line(state, scales, state.draw_start);
+  
+    // draw points for initial portion
+  if(state.points != "none"){
+    draw_points(state, scales);
+  }
   
   // invert from pixle to data scale when they draw their points
   // THIS IS WHERE WE SET A SPECIFIC NUMBER OF POINTS THAT CAN BE DRAWN CORRESPONDING TO 1/2 UNITS ON DATA SCALE...MAKES IT CLUNKY: CONTROLED BY TIBBLE
@@ -233,10 +233,10 @@ function draw_last_point({svg, data, draw_start}, scales){
     .style("stroke", "steelblue")
 }
 
-function draw_points({svg, data, draw_start, points}, scales){
+function draw_points({svg, data, points_end, points}, scales){
   
-    if(points == "half"){
-      var df = data.filter(function(d){return (d.x<=draw_start & d.ypoints>0)});
+    if(points == "partial"){
+      var df = data.filter(function(d){return (d.x<=points_end & d.ypoints>0)});
     } else {
       var df = data.filter(function(d){return d.ypoints>0});
     }

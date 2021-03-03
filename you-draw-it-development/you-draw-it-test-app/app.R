@@ -12,9 +12,10 @@ library(DT)
 drawr <- function(data, 
                   linear = "true", 
                   draw_start = mean(data$x),
+                  points_end = max(data$x)*(3/4),
                   x_by = 0.25,
                   free_draw = T,
-                  points = "half",
+                  points = "partial",
                   aspect_ratio = 1.5,
                   title = "", 
                   x_range = NULL, 
@@ -58,6 +59,7 @@ drawr <- function(data,
   r2d3::r2d3(plot_data, "main.js",
              dependencies = c("d3-jetpack"),
              options = list(draw_start = draw_start, 
+                            points_end = points_end,
                             linear = as.character(linear),
                             free_draw = free_draw, 
                             points = points,
@@ -101,9 +103,9 @@ ui <- navbarPage(
       column(
         width = 2,
         p("Data Simulation Parameters:"),
-        numericInput("beta", "Beta:", min = 0.01, max = 0.5, value = 0.1, step = 0.01),
-        numericInput("sd", "SD:", min = 0.01, max = 0.25, value = 0.1, step = 0.01),
-        numericInput("Npoints", "N Points:", min = 20, max = 50, value = 30, step = 5),
+        numericInput("beta", "Beta:", min = 0.05, max = 0.5, value = 0.2, step = 0.05),
+        numericInput("sd", "SD:", min = 0.05, max = 0.5, value = 0.2, step = 0.05),
+        numericInput("Npoints", "N Points:", min = 10, max = 50, value = 20, step = 5),
         numericInput("by", "Stepby:", min = 0.05, max = 0.5, value = 0.25, step = 0.05)
       ),
       column(
@@ -112,9 +114,11 @@ ui <- navbarPage(
         checkboxInput("show_finished", "Show Finished?", value = T),
         checkboxInput("drawr_linear_axis", "Linear Y Axis?", value = T),
         checkboxInput("free_draw_box", "Free Draw?", value = F),
-        radioButtons("points_choice", "Points?", choices = c("full", "half", "none"), selected = "full"),
+        radioButtons("points_choice", "Points?", choices = c("full", "partial", "none"), selected = "partial"),
         sliderInput("draw_start_slider", "Draw Start?", min = 4, max = 19, value = 10, step = 1),
-        sliderInput("ymag_range", label = "y-range buffer:", min = 0.5, max = 2, value = c(0.7, 1.3)),
+        sliderInput("points_end", "Points End?", min = 4, max = 19, value = 15, step = 1),
+        sliderInput("yrange_lower", label = "y-range lower buffer:", min = 0.25, max = 1, step = 0.25, value = 0.75),
+        sliderInput("yrange_upper", label = "y-range upper buffer:", min = 1, max = 4, step = 0.25, value = 2),
         sliderInput("aspect_ratio", "Aspect Ratio:", min = 1, max = 2, value = 1, step = 0.25)
       )
     )
@@ -139,8 +143,19 @@ server <- function(input, output, session) {
                                     )
                 
                 # generate point data
-                point_data <- tibble(x = sample(line_data$x, input$Npoints, replace = F),
-                                     ypoints = exp(x*input$beta + rnorm(length(x), 0, input$sd))
+                if(input$points_choice == "full"){
+                  xVals <- sample(line_data$x, input$Npoints, replace = F)
+                } else {
+                  xVals <- sample(line_data$x[line_data$x <= input$points_end], input$Npoints, replace = F)
+                }
+                repeat{
+                  errorVals <- rnorm(length(xVals), 0, input$sd)
+                  if(mean(errorVals[10]) < 2*input$sd & mean(errorVals[10] > -2*input$sd)){
+                    break
+                  }
+                }
+                point_data <- tibble(x = xVals,
+                                     ypoints = exp(x*input$beta + errorVals)
                                      )
                 
                 full_join(line_data, point_data, by = "x") %>%
@@ -152,7 +167,7 @@ server <- function(input, output, session) {
   output$shinydrawr <- r2d3::renderD3({
     
     data <- dataInput()
-    y_range <- range(data$y) * c(as.numeric(input$ymag_range[1]), as.numeric(input$ymag_range[2]))
+    y_range <- range(data$y) * c(as.numeric(input$yrange_lower), as.numeric(input$yrange_upper))
     
     # if linear box is checked, then T else F
     islinear <- ifelse(input$drawr_linear_axis, "true", "false")
@@ -164,7 +179,8 @@ server <- function(input, output, session) {
           free_draw         = input$free_draw_box,
           points            = input$points_choice,
           x_by              = input$by,
-          draw_start        = input$draw_start_slider, # we define this at the top of the app
+          draw_start        = input$draw_start_slider,
+          points_end        = input$points_end,
           show_finished     = input$show_finished,
           shiny_message_loc = message_loc,
           x_range           = range(data$x), # covers the range of the sequence we define
