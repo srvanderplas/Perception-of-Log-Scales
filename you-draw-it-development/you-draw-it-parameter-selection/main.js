@@ -20,8 +20,6 @@
 // ---------------------------------------------------------------------------------------------
 
 
-console.log(data.line_data)
-
 // define variable margins
 // if options.title == T then set top = 50, else top = 15 (see options list at top, currently, no title defined...)
 const margin = {left: 55, 

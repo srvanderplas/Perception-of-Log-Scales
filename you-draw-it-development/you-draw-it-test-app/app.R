@@ -1,7 +1,9 @@
 # Load libraries
 library(shiny)
 library(shinyjs)
-library(r2d3)
+library(r2d3) # ALERT: REQUIRES VERSION 
+# url_r2d3v0.2.3 <- "https://cran.r-project.org/src/contrib/Archive/r2d3/r2d3_0.2.3.tar.gz"
+# install.packages(url_r2d3v0.2.3, repos = NULL, type = 'source')
 library(tidyverse)
 library(gridSVG)
 library(lubridate)
