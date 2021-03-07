@@ -6,16 +6,8 @@
 // library(tibble)
 
 // define variable system_font
-// const system_font = `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color // // Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`;
+ const system_font = `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color // // Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`;
 
-// ---------------------------------------------------------------------------------------------
-// From NYT you draw it
-//<rect class="g-flash-rect" x="545" y="0" height="300" width="60.56555555556202" 
-// fill="rgba(255,255,0,.8)" fill-opacity="0" transform="translate(-60.55555555556202,0)"></rect>
-
-
-// Adds style = "fill:rgba(0,0,0,0)" after being drawn over
-//<rect class="g-flash-rect" x="484.4444444444444" y="0" height="300" width="60.56555555556202" //fill="rgba(255,255,0,.8)" fill-opacity="0" transform="translate(-60.55555555556202,0)" style//="fill: rgba(0, 0, 0, 0);"></rect>
 
 // ---------------------------------------------------------------------------------------------
 
