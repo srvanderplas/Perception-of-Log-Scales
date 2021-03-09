@@ -91,9 +91,10 @@ drawr <- function(data,
 
 ui <- navbarPage(
   "You Draw It Development",
-  
+
+# ----------------------------------------------------------------------------------------------------
   tabPanel(
-    title = "Parameter Selection",
+    title = "Exponential Prediction (Log / Linear)",
     tags$head(
       tags$link(rel = "stylesheet", type = "text/css", href = "d3.css")
     ),
@@ -122,7 +123,35 @@ ui <- navbarPage(
         
       )
     )
+  ),
+# ----------------------------------------------------------------------------------------------------
+  tabPanel(
+    title = "Eye Fitting Straight Lines in the Modern Era",
+    tags$head(
+      tags$link(rel = "stylesheet", type = "text/css", href = "d3.css")
+    ),
+    fluidRow(
+      column(
+        width = 5,
+        # d3Output("eyefitting_1", height = "450px"),
+        # d3Output("eyefitting_2", height = "450px")
+      ),
+      column(
+        width = 5,
+        # d3Output("eyefitting_3", height = "450px"),
+        # d3Output("eyefitting_4", height = "450px")
+      ),
+      column(
+        width = 2,
+        actionButton("eyefitting_reset", "Reset"),
+        checkboxInput("eyefitting_show_finished", "Show Finished?", value = T),
+        numericInput("eyefitting_Npoints", "N Points:", min = 10, max = 50, value = 30, step = 5),
+        sliderInput("eyefitting_ymin_scale", label = "y-range lower buffer:", min = 0.25, max = 1, step = 0.25, value = 0.5),
+        sliderInput("eyefitting_ymax_scale", label = "y-range upper buffer:", min = 1, max = 4, step = 0.25, value = 2),
+      )
+    )
   )
+# ----------------------------------------------------------------------------------------------------
 )
 
 # ----------------------------------------------------------------------------------------------------
@@ -132,7 +161,8 @@ ui <- navbarPage(
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
   
-  
+# ----------------------------------------------------------------------------------------------------
+
   # ---------------------------------------------------------------------------------
   # Parameter Values ----------------------------------------------------------------
   # ---------------------------------------------------------------------------------
@@ -519,6 +549,15 @@ server <- function(input, output, session) {
     )
     
   })
+  
+# ----------------------------------------------------------------------------------------------------
+  # S:
+  
+  # F: 
+  
+  # V:
+  
+  # N: 
   
 }
 
