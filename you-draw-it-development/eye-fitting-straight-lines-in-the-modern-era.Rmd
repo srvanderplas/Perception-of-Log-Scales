@@ -113,11 +113,45 @@ ydi_data %>%
   mutate(dataset = factor(dataset, levels = c("S", "F", "V", "N"))) %>%
   ggplot(aes(x = x, y = y)) +
   geom_line(color = "gray", linetype = 2) +
-  geom_point(data = ydi_data %>% filter(ypoints > 0), aes(x = x, y = ypoints)) +
+  geom_point(data = ydi_data %>% filter(ypoints != -999), aes(x = x, y = ypoints)) +
   theme_bw() +
   theme(aspect.ratio = 1) +
   facet_wrap(~dataset, ncol = 2, 
              labeller = labeller(dataset = label_both)) +
   scale_x_continuous(expand = c(0,0)) +
   scale_y_continuous(limits = c(min(ydi_data$y[ydi_data$dataset == "S"]), max(ydi_data$y[ydi_data$dataset == "S"])))
+```
+
+```{r lm}
+lmFunc <- 
+  function(B, dataset){
+
+    coefs <- tibble()
+    
+    for(i in 1:B){
+      ydi_data <- ydi_parms %>%
+        filter(dataset == dataset) %>%
+      mutate(data = purrr::pmap(list(y_xbar, slope, sigma, xmin, xmax), linearYDI_simFunc)) %>%
+      unnest(data)
+      
+      lm.data <- ydi_data %>% filter(ypoints != -999)
+      lm <- lm(ypoints ~ x, data = lm.data)
+    
+      coefs[i,"Intercept"] <- as.numeric(coef(lm)[1])
+      coefs[i,"y_xbar"]    <- predict(lm, newdata = data.frame(x = mean(lm.data$x)))
+      coefs[i,"Slope"]     <- as.numeric(coef(lm)[2])
+    }
+
+  mean <- apply(coefs, 2, mean)
+  sd   <- apply(coefs, 2, sd)
+  
+  return(rbind(mean, sd))
+  }
+```
+
+```{r lmFunc-eval, echo = F}
+lmFunc(1000, "S") %>% kable(digits = 3, cap = "Dataset: S")
+lmFunc(1000, "F") %>% kable(digits = 3, cap = "Dataset: F")
+lmFunc(1000, "V") %>% kable(digits = 3, cap = "Dataset: V")
+lmFunc(1000, "N") %>% kable(digits = 3, cap = "Dataset: N")
 ```
