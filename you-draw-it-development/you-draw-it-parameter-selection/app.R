@@ -7,12 +7,12 @@ library(shinyjs)
 # url_r2d3v0.2.3 <- "https://cran.r-project.org/src/contrib/Archive/r2d3/r2d3_0.2.3.tar.gz"
 # install.packages(url_r2d3v0.2.3, repos = NULL, type = 'source')
 library(r2d3)
+
 library(tidyverse)
 library(purrr)
 library(gridSVG)
 library(lubridate)
 library(readxl)
-library(DT)
 
 # ----------------------------------------------------------------------------------------------------
 # # Redefine drawr function --------------------------------------------------------------------------
@@ -20,8 +20,8 @@ library(DT)
 
 drawr <- function(data, 
                   linear            = "true", 
-                  draw_start        = mean(data$x),
-                  points_end        = max(data$x)*(3/4),
+                  draw_start        = NULL,
+                  points_end        = NULL,
                   x_by              = 0.25,
                   free_draw         = T,
                   points            = "partial",
