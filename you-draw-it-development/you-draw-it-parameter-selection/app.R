@@ -8,6 +8,7 @@ library(shinyjs)
 # install.packages(url_r2d3v0.2.3, repos = NULL, type = 'source')
 library(r2d3)
 library(tidyverse)
+library(purrr)
 library(gridSVG)
 library(lubridate)
 library(readxl)
@@ -64,7 +65,8 @@ drawr <- function(data,
     stop("Draw start is out of data range.")
   }
 
-  r2d3::r2d3(plot_data, "main.js",
+  r2d3::r2d3(data   = plot_data, 
+             script = "main.js",
              dependencies = c("d3-jetpack"),
              options = list(draw_start        = draw_start, 
                             points_end        = points_end,
@@ -85,6 +87,7 @@ drawr <- function(data,
              )
   
 }
+
 # ----------------------------------------------------------------------------------------------------
 # User Interface -------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------
@@ -133,21 +136,22 @@ ui <- navbarPage(
     fluidRow(
       column(
         width = 5,
-        # d3Output("eyefitting_1", height = "450px"),
-        # d3Output("eyefitting_2", height = "450px")
+        d3Output("shinydrawr_S", height = "450px"),
+        d3Output("shinydrawr_V", height = "450px")
       ),
       column(
         width = 5,
-        # d3Output("eyefitting_3", height = "450px"),
-        # d3Output("eyefitting_4", height = "450px")
+        d3Output("shinydrawr_F", height = "450px"),
+        d3Output("shinydrawr_N", height = "450px")
       ),
       column(
         width = 2,
         actionButton("eyefitting_reset", "Reset"),
         checkboxInput("eyefitting_show_finished", "Show Finished?", value = T),
-        numericInput("eyefitting_Npoints", "N Points:", min = 10, max = 50, value = 30, step = 5),
-        sliderInput("eyefitting_ymin_scale", label = "y-range lower buffer:", min = 0.25, max = 1, step = 0.25, value = 0.5),
-        sliderInput("eyefitting_ymax_scale", label = "y-range upper buffer:", min = 1, max = 4, step = 0.25, value = 2),
+        # numericInput("eyefitting_Npoints", "N Points:", min = 10, max = 50, value = 30, step = 5),
+        # numericInput("eyefitting_by", "By:", min = 0.25, max = 5, value = 0.25, step = 0.25),
+        # sliderInput("eyefitting_ymin_scale", label = "y-range lower buffer:", min = 0.25, max = 1, step = 0.25, value = 0.5),
+        # sliderInput("eyefitting_ymax_scale", label = "y-range upper buffer:", min = 1, max = 4, step = 0.25, value = 2),
       )
     )
   )
@@ -233,7 +237,7 @@ server <- function(input, output, session) {
                 
                 # combine line & point data
                 full_join(line_data, point_data, by = "x") %>%
-                  mutate(ypoints = ifelse(is.na(ypoints), 0, ypoints))
+                  mutate(ypoints = ifelse(is.na(ypoints), -999, ypoints))
                 
       })
   
@@ -320,7 +324,7 @@ server <- function(input, output, session) {
     
     # combine line & point data
     full_join(line_data, point_data, by = "x") %>%
-      mutate(ypoints = ifelse(is.na(ypoints), 0, ypoints))
+      mutate(ypoints = ifelse(is.na(ypoints), -999, ypoints))
     
   })
   
@@ -407,7 +411,7 @@ server <- function(input, output, session) {
     
     # combine line & point data
     full_join(line_data, point_data, by = "x") %>%
-      mutate(ypoints = ifelse(is.na(ypoints), 0, ypoints))
+      mutate(ypoints = ifelse(is.na(ypoints), -999, ypoints))
     
   })
   
@@ -494,7 +498,7 @@ server <- function(input, output, session) {
     
     # combine line & point data
     full_join(line_data, point_data, by = "x") %>%
-      mutate(ypoints = ifelse(is.na(ypoints), 0, ypoints))
+      mutate(ypoints = ifelse(is.na(ypoints), -999, ypoints))
     
   })
   
@@ -551,13 +555,168 @@ server <- function(input, output, session) {
   })
   
 # ----------------------------------------------------------------------------------------------------
-  # S:
+# Eye Fitting Straight Lines Replication Simulation Function -----------------------------------------
+# ----------------------------------------------------------------------------------------------------
   
-  # F: 
   
-  # V:
+  ydi_data <- reactive({
+    
+  input$eyefitting_reset
+    
+  linearYDI_simFunc <- 
+    function(y_xbar, slope, sigma, xmin = 0, xmax = 20, by = 0.25, N = 30, points_end_scale = 1){
+      
+      xLine <- seq(xmin, xmax, by = by)
+      xPoint <- sample(xLine[xLine <= xmax*points_end_scale], size = N, replace = F)
+      # From slope intercept form
+      # y-y_xbar = m(x-xbar)
+      # y = m(x-xbar) + y_xbar = mx - mxbar + y_xbar
+      yintercept = y_xbar - slope*mean(xPoint)
+      
+      line_data <- tibble(x = xLine,
+                          y = yintercept + slope*x)
+      
+      # generate point data
+      repeat{
+        errorVals <- rnorm(N, 0, sigma)
+        if(mean(errorVals[10]) < 2*sigma & mean(errorVals[10] > -2*sigma)){
+          break
+        }
+      }
+      point_data <- tibble(x = xPoint,
+                           ypoints = yintercept + slope*x + errorVals)
+      
+      data <- full_join(line_data, point_data, by = "x")%>%
+        mutate(ypoints = ifelse(is.na(ypoints), -999, ypoints))
+      
+      # return(list(line_data = line_data, point_data = point_data, data = data))
+      return(data)
+      
+    }
   
-  # N: 
+  ydi_parms <- data.frame(
+    dataset = c("S", "F", "V", "N"),
+    y_xbar = c(3.88, 3.9, 3.89, 4.11),
+    slope  = c(0.66, 0.66, 1.98, -0.70),
+    sigma  = c(1.3, 2.8, 1.5, 2.5),
+    xmin   = c(0, 0, 5, 0),
+    xmax   = c(20, 20, 15, 20)
+  )
+
+    ydi_parms %>%
+      mutate(data = purrr::pmap(list(y_xbar, slope, sigma, xmin, xmax), linearYDI_simFunc)) %>%
+      unnest(data)
+  })
+  
+  y_range <- reactive({
+    ydi_data <- ydi_data()
+    range(ydi_data$ypoints[ydi_data$ypoints > -999]) * c(1, 1)
+  })
+  
+  x_range <- reactive({
+    ydi_data <- ydi_data()
+    range(ydi_data$x)
+  })
+  
+  # S ----------------------------------------------------------
+  
+  message_loc_S <- session$ns("drawr_message")
+  output$shinydrawr_S <- r2d3::renderD3({
+    
+    data    <- ydi_data() %>%
+      filter(dataset == "S")
+    
+    drawr(data              = data,
+          aspect_ratio      = 1,
+          linear            = "true",
+          free_draw         = TRUE,
+          points            = "full",
+          x_by              = 0.25,
+          draw_start        = 1,
+          points_end        = 20,
+          show_finished     = input$eyefitting_show_finished,
+          shiny_message_loc = message_loc_S,
+          x_range           = x_range(),
+          y_range           = y_range(),
+          title             = "S"
+    )
+    
+  })
+  
+  # F ----------------------------------------------------------
+  
+  message_loc_F <- session$ns("drawr_message")
+  output$shinydrawr_F <- r2d3::renderD3({
+    
+    data    <- ydi_data() %>%
+      filter(dataset == "F")
+    
+    drawr(data              = data,
+          aspect_ratio      = 1,
+          linear            = "true",
+          free_draw         = TRUE,
+          points            = "full",
+          x_by              = 0.25,
+          draw_start        = 1,
+          points_end        = 20,
+          show_finished     = input$eyefitting_show_finished,
+          shiny_message_loc = message_loc_S,
+          x_range           = x_range(),
+          y_range           = y_range(),
+          title             = "F"
+    )
+    
+  })
+  
+  # V ----------------------------------------------------------
+  
+  message_loc_V <- session$ns("drawr_message")
+  output$shinydrawr_V <- r2d3::renderD3({
+    
+    data    <- ydi_data() %>%
+      filter(dataset == "V")
+    
+    drawr(data              = data,
+          aspect_ratio      = 1,
+          linear            = "true",
+          free_draw         = TRUE,
+          points            = "full",
+          x_by              = 0.25,
+          draw_start        = 5.1,
+          points_end        = 15,
+          show_finished     = input$eyefitting_show_finished,
+          shiny_message_loc = message_loc_S,
+          x_range           = x_range(),
+          y_range           = y_range(),
+          title             = "V"
+    )
+    
+  })
+  
+  # F ----------------------------------------------------------
+  
+  message_loc_N <- session$ns("drawr_message")
+  output$shinydrawr_N <- r2d3::renderD3({
+    
+    data    <- ydi_data() %>%
+      filter(dataset == "N")
+    
+    drawr(data              = data,
+          aspect_ratio      = 1,
+          linear            = "true",
+          free_draw         = TRUE,
+          points            = "full",
+          x_by              = 0.25,
+          draw_start        = 1,
+          points_end        = 20,
+          show_finished     = input$eyefitting_show_finished,
+          shiny_message_loc = message_loc_S,
+          x_range           = x_range(),
+          y_range           = y_range(),
+          title             = "N"
+    )
+    
+  })
   
 }
 

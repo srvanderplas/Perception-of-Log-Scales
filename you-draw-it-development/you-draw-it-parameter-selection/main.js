@@ -228,9 +228,9 @@ function draw_last_point({svg, data, draw_start}, scales){
 function draw_points({svg, data, points_end, points}, scales){
   
     if(points == "partial"){
-      var df = data.filter(function(d){return (d.x<=points_end & d.ypoints>0)});
+      var df = data.filter(function(d){return (d.x<=points_end & d.ypoints>-999)});
     } else {
-      var df = data.filter(function(d){return d.ypoints>0});
+      var df = data.filter(function(d){return d.ypoints>-999});
     }
     
   const dots = state.svg.selectAll("circle").data(df)
