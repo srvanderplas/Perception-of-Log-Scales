@@ -1,9 +1,9 @@
-// !preview r2d3 data = tibble(x = seq(1, 25, .5), y = exp((x-15)/30), ypoints = exp(((x-15)/30) + rnorm(30, 0, 0.05))), options = list(free_draw = FALSE, draw_start = 10, points_end = 15, pin_start = TRUE, x_range = c(0,28), y_range = c(.5,3), line_style = list(strokeWidth = 4), data_line_color = 'steelblue', drawn_line_color = 'orangered', show_finished = TRUE, shiny_message_loc = 'my_shiny_app', linear = 'true', points = "partial", aspect_ratio = 1.5, x_by = 0.5), dependencies = c('d3-jetpack'),
+// !preview r2d3 data = data_to_json(list(line_data = tibble(x = seq(0, 20, .25), y = exp((x-15)/30)), point_data = tibble(x = seq(0, 20, length.out = 30), y = exp((x-15)/30 + rnorm(30, 0, 0.05))))), options = list(free_draw = FALSE, draw_start = 10, points_end = 15, pin_start = TRUE, x_range = c(0,20), y_range = c(.5,2), line_style = list(strokeWidth = 4), data_line_color = 'steelblue', drawn_line_color = 'steelblue', show_finished = TRUE, shiny_message_loc = 'my_shiny_app', linear = 'true', points = "partial", aspect_ratio = 1, x_by = 0.5), dependencies = c('d3-jetpack'),
 
-// Try adding in points... pass 2 sets of data into r2d3 instead of just one...pass a list???
-
-// Make sure R has this library loaded
+// Make sure R has the following loaded
 // library(tibble)
+// data_to_json <- function(data) {jsonlite::toJSON(data, dataframe = "rows", auto_unbox = FALSE, rownames = TRUE)} 
+
 
 // define variable system_font
  const system_font = `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color // // Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`;
@@ -41,7 +41,8 @@ const default_line_attrs = Object.assign({
 // Is state like our wrapper?
 
 let state = Object.assign({
-  data: data,
+  line_data: data.line_data,
+  point_data: data.point_data,
   svg: svg.append('g').translate([margin.left, margin.top]).attr("class", "wrapper"),
   w: height*options.aspect_ratio - margin.left - margin.right,
   h: height - margin.top - margin.bottom,
@@ -54,10 +55,10 @@ let state = Object.assign({
 // code that runs when data changes, organize your code so that the code
 // which responds to data changes is contained within the r2d3.onRender()
 // https://rstudio.github.io/r2d3/articles/advanced_rendering.html
-// you can updated data from shiny in response to
 r2d3.onRender(function(data, svg, width, height, options) {
   
-  state.data = data;
+  state.line_data = data.line_data;
+  state.point_data = data.point_data;
   
   state = Object.assign(state, options);
   state.options = options;
@@ -87,10 +88,6 @@ function start_drawer(state, reset = true){
   
   if(!state.free_draw){
     draw_true_line(state, scales, state.draw_start);
-  }
-  
-  if(!state.free_draw){
-    draw_last_point(state, scales, state.draw_start);
   }
   
   // Cover hidden portion with a rectangle
@@ -171,11 +168,11 @@ function start_drawer(state, reset = true){
     }
 }
 
-function setup_drawable_points({data, free_draw, draw_start}){
+function setup_drawable_points({line_data, free_draw, draw_start}){
   if(free_draw){
-    return data.map(d => ({x: d.x, y: null}));
+    return line_data.map(d => ({x: d.x, y: null}));
   } else {
-    return data
+    return line_data
     .filter(d => d.x >= draw_start)
     .map((d,i) => ({
       x: d.x,
@@ -200,37 +197,20 @@ function get_user_line_status({drawable_points, free_draw}){
 }
 
 // Draw visable portion of line
-function draw_true_line({svg, data, draw_start}, scales){
-  var df = data.filter(function(d){ return d.x<=draw_start})
+function draw_true_line({svg, line_data, draw_start}, scales){
+  var df = line_data.filter(function(d){ return d.x<=draw_start})
   state.svg.selectAppend("path.shown_line")
   .datum(df)
   .at(default_line_attrs)
   .attr("d", scales.line_drawer);
 }
 
-// Add point to end of true line
-function draw_last_point({svg, data, draw_start}, scales){
-  var df = data.filter(function(d){return d.x === draw_start});
-  
-  const lastdot = state.svg.selectAll("circle").data(df)
-  
-  lastdot
-    .enter().append("circle")
-    .merge(lastdot)
-    .attr("cx", d => scales.x(d.x))
-    .attr("cy", d => scales.y(d.y))
-    .attr("r", 4)
-    .style("fill", "steelblue")
-    .style("opacity", 1)
-    .style("stroke", "steelblue")
-}
-
-function draw_points({svg, data, points_end, points}, scales){
+function draw_points({svg, point_data, points_end, points}, scales){
   
     if(points == "partial"){
-      var df = data.filter(function(d){return (d.x<=points_end & d.ypoints>-999)});
+      var df = point_data.filter(function(d){return (d.x<=points_end)});
     } else {
-      var df = data.filter(function(d){return d.ypoints>-999});
+      var df = point_data;
     }
     
   const dots = state.svg.selectAll("circle").data(df)
@@ -239,7 +219,7 @@ function draw_points({svg, data, points_end, points}, scales){
     .enter().append("circle")
     .merge(dots)
     .attr("cx", d => scales.x(d.x))
-    .attr("cy", d => scales.y(d.ypoints))
+    .attr("cy", d => scales.y(d.y))
     .attr("r", 2)
     .style("fill", "black")
     .style("opacity", 0.8)
@@ -299,13 +279,13 @@ function draw_user_line(state, scales){
       .style("stroke-dasharray", ("1, 7"));
 }
 
-function draw_finished_line({svg, data, draw_start, free_draw}, scales){
+function draw_finished_line({svg, line_data, draw_start, free_draw}, scales){
   
   
   if(!free_draw){
-    var df = data.filter(function(d){ return d.x >= draw_start})
+    var df = line_data.filter(function(d){ return d.x >= draw_start})
   } else {
-    var df = data
+    var df = line_data
   }
   
   const finished_line = state.svg.selectAppend("path.finished_line")
@@ -397,11 +377,11 @@ function add_axis_label(label, y_axis = true){
 // Setup scales for visualization
 function setup_scales(state){
   // multi-assign: x_range, etc. coming from options
-  const {w, h, data, x_range, y_range, x_name, y_name, linear} = state;
+  const {w, h, line_data, x_range, y_range, x_name, y_name, linear} = state;
   
   // convert x from data scale to pixle scale
   const x = d3.scaleLinear()
-  .domain(x_range || d3.extent(data, d => d.x))
+  .domain(x_range || d3.extent(line_data, d => d.x))
   .range([0, w]);
   
   //console.log(linear);
@@ -409,13 +389,13 @@ function setup_scales(state){
     //console.log('in linear block');
     // converts from data linear scale to pixle scale
     var y = d3.scaleLinear()
-    .domain(y_range || d3.extent(data, d => d.y))
+    .domain(y_range || d3.extent(line_data, d => d.y))
     .range([h, 0]);
   } else {
     //console.log('in log block');
     // converts from data log scale to pixle scale
     var y = d3.scaleLog()
-    .domain(y_range || d3.extent(data, d => d.y))
+    .domain(y_range || d3.extent(line_data, d => d.y))
     .range([h, 0]).base(10);
   }
   

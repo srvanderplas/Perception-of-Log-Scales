@@ -7,7 +7,6 @@ library(shinyjs)
 # url_r2d3v0.2.3 <- "https://cran.r-project.org/src/contrib/Archive/r2d3/r2d3_0.2.3.tar.gz"
 # install.packages(url_r2d3v0.2.3, repos = NULL, type = 'source')
 library(r2d3)
-
 library(tidyverse)
 library(purrr)
 library(gridSVG)
@@ -15,7 +14,18 @@ library(lubridate)
 library(readxl)
 
 # ----------------------------------------------------------------------------------------------------
-# # Redefine drawr function --------------------------------------------------------------------------
+# Turn a list of data into a json file ---------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+
+data_to_json <- function(data) {
+  jsonlite::toJSON(data, 
+                   dataframe = "rows", 
+                   auto_unbox = FALSE, 
+                   rownames = TRUE)
+} 
+
+# ----------------------------------------------------------------------------------------------------
+# Redefine drawr function --------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------
 
 drawr <- function(data, 
@@ -38,11 +48,14 @@ drawr <- function(data,
                   show_finished     = T,
                   shiny_message_loc = NULL) {
   
-  plot_data <- dplyr::select(data, x, y, ypoints)
-  x_min <- min(plot_data$x)
-  x_max <- max(plot_data$x)
-  y_min <- min(plot_data$y)
-  y_max <- max(plot_data$y)
+  line_data  <- data$line_data
+  point_data <- data$point_data
+  
+  x_min <- min(line_data$x)
+  x_max <- max(line_data$x)
+  y_min <- min(line_data$y)
+  y_max <- max(line_data$y)
+  
   if (is.null(x_range)) {
     x_buffer <- (x_max - x_min) * x_axis_buffer
     x_range <- c(x_min - x_buffer, x_max + x_buffer)
@@ -65,7 +78,7 @@ drawr <- function(data,
     stop("Draw start is out of data range.")
   }
 
-  r2d3::r2d3(data   = plot_data, 
+  r2d3::r2d3(data   = data_to_json(data), 
              script = "main.js",
              dependencies = c("d3-jetpack"),
              options = list(draw_start        = draw_start, 
@@ -89,6 +102,121 @@ drawr <- function(data,
 }
 
 # ----------------------------------------------------------------------------------------------------
+# Exponential Data Simulation ------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+
+expDataGen <- 
+  function(beta, 
+           sd, 
+           points_choice = "partial", 
+           points_end_scale = 0.5,
+           N = 30,
+           aspect_ratio = 1,
+           free_draw = "false",
+           x_min = 0,
+           x_max = 20,
+           x_by  = 0.25){
+    
+    points_end_scale <- ifelse(points_choice == "full", 1, points_end_scale)
+    
+    # Set up x values
+    xVals <- seq(x_min, x_max*points_end_scale, length.out = floor(N*3/4))
+    xVals <- sample(xVals, N, replace = TRUE)
+    xVals <- jitter(xVals)
+    xVals <- ifelse(xVals < 0, 0, xVals)
+    xVals <- ifelse(xVals > 20, 20, xVals)
+    
+    # Generate "good" errors
+    repeat{
+      errorVals <- rnorm(length(xVals), 0, sd)
+      if(mean(errorVals[floor(N/3)]) < 2*sd & mean(errorVals[floor(N/3)] > -2*sd)){
+        break
+      }
+    }
+    
+    # Simulate point data
+    point_data <- tibble(x = xVals,
+                         y = exp(x*beta + errorVals)) %>%
+      arrange(x)
+    
+    # Obtain starting value for beta
+    lm.fit <- lm(log(y) ~ x, data = point_data)
+    beta.0 <- coef(lm.fit)[1] %>% as.numeric()
+    # Use NLS to fit a better line to the data
+    start <- list(beta = beta.0)
+    nonlinear.fit <- nls(y ~ exp(x*beta),
+                         data = point_data, 
+                         start = start)
+    betahat <- coef(nonlinear.fit)[1] %>% as.numeric()
+    
+    # Simulate best fit line data
+    line_data <- tibble(x = seq(x_min, x_max, x_by), 
+                        y = exp(x*betahat))
+    
+    data <- list(point_data = point_data, line_data = line_data)
+    
+    return(data)
+  }
+
+# ----------------------------------------------------------------------------------------------------
+# Linear Data Simulation -----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+
+linearDataGen <- 
+  function(y_xbar, 
+           slope, 
+           sigma, 
+           points_choice = "full", 
+           points_end_scale = 1,
+           N = 30,
+           x_min = 0,
+           x_max = 20,
+           x_by  = 0.25){
+    
+    points_end_scale <- ifelse(points_choice == "full", 1, points_end_scale)
+    
+    # Set up x values
+    xVals <- seq(x_min, x_max*points_end_scale, length.out = floor(N*3/4))
+    xVals <- sample(xVals, N, replace = TRUE)
+    xVals <- jitter(xVals)
+    xVals <- ifelse(xVals < x_min, x_min, xVals)
+    xVals <- ifelse(xVals > x_max, x_max, xVals)
+    
+    # From slope intercept form
+    # y-y_xbar = m(x-xbar)
+    # y = m(x-xbar) + y_xbar = mx - mxbar + y_xbar
+    yintercept = y_xbar - slope*mean(xVals)
+    
+    # Generate "good" errors
+    repeat{
+      errorVals <- rnorm(N, 0, sigma)
+      if(mean(errorVals[floor(N/3)]) < 2*sigma & mean(errorVals[floor(N/3)] > -2*sigma)){
+        break
+      }
+    }
+    
+    # Simulate point data
+    point_data <- tibble(data = "point_data",
+                         x = xVals,
+                         y = yintercept + slope*x + errorVals) %>%
+      arrange(x)
+    
+    # Obtain least squares regression coefficients
+    lm.fit <- lm(y ~ x, data = point_data)
+    yintercepthat <- coef(lm.fit)[1] %>% as.numeric()
+    slopehat <- coef(lm.fit)[2] %>% as.numeric()
+    
+    # Simulate best fit line data
+    line_data <- tibble(data = "line_data", 
+                        x = seq(x_min, x_max, x_by), 
+                        y = yintercepthat + slopehat*x)
+    
+    data <- list(point_data = point_data, line_data = line_data)
+    
+    return(data)
+  }
+
+# ----------------------------------------------------------------------------------------------------
 # User Interface -------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------
 
@@ -104,23 +232,23 @@ ui <- navbarPage(
     fluidRow(
       column(
         width = 5,
-        d3Output("shinydrawr_1.linear", height = "450px"),
-        d3Output("shinydrawr_2.linear", height = "450px"),
-        d3Output("shinydrawr_3.linear", height = "450px"),
-        d3Output("shinydrawr_4.linear", height = "450px")
+        d3Output("shinydrawr_exp1.linear", height = "450px"),
+        d3Output("shinydrawr_exp2.linear", height = "450px"),
+        d3Output("shinydrawr_exp3.linear", height = "450px"),
+        d3Output("shinydrawr_exp4.linear", height = "450px")
       ),
       column(
         width = 5,
-        d3Output("shinydrawr_1.log", height = "450px"),
-        d3Output("shinydrawr_2.log", height = "450px"),
-        d3Output("shinydrawr_3.log", height = "450px"),
-        d3Output("shinydrawr_4.log", height = "450px")
+        d3Output("shinydrawr_exp1.log", height = "450px"),
+        d3Output("shinydrawr_exp2.log", height = "450px"),
+        d3Output("shinydrawr_exp3.log", height = "450px"),
+        d3Output("shinydrawr_exp4.log", height = "450px")
       ),
       column(
         width = 2,
         actionButton("reset", "Reset"),
         checkboxInput("show_finished", "Show Finished?", value = T),
-        numericInput("Npoints", "N Points:", min = 10, max = 50, value = 30, step = 5),
+        numericInput("N", "N Points:", min = 10, max = 50, value = 30, step = 5),
         sliderInput("ymin_scale", label = "y-range lower buffer:", min = 0.25, max = 1, step = 0.25, value = 0.5),
         sliderInput("ymax_scale", label = "y-range upper buffer:", min = 1, max = 4, step = 0.25, value = 2),
         
@@ -148,10 +276,8 @@ ui <- navbarPage(
         width = 2,
         actionButton("eyefitting_reset", "Reset"),
         checkboxInput("eyefitting_show_finished", "Show Finished?", value = T),
-        # numericInput("eyefitting_Npoints", "N Points:", min = 10, max = 50, value = 30, step = 5),
-        # numericInput("eyefitting_by", "By:", min = 0.25, max = 5, value = 0.25, step = 0.25),
-        # sliderInput("eyefitting_ymin_scale", label = "y-range lower buffer:", min = 0.25, max = 1, step = 0.25, value = 0.5),
-        # sliderInput("eyefitting_ymax_scale", label = "y-range upper buffer:", min = 1, max = 4, step = 0.25, value = 2),
+        numericInput("eyefitting_N", "N Points:", min = 20, max = 50, value = 30, step = 5),
+        numericInput("eyefitting_by", "By:", min = 0.25, max = 20, value = 0.5, step = 0.25),
       )
     )
   )
@@ -163,46 +289,28 @@ ui <- navbarPage(
 # ----------------------------------------------------------------------------------------------------
 
 # Define server logic required to draw a histogram
-server <- function(input, output, session) {
+server <- function(input, output, session){
   
 # ----------------------------------------------------------------------------------------------------
 
-  # ---------------------------------------------------------------------------------
-  # Parameter Values ----------------------------------------------------------------
-  # ---------------------------------------------------------------------------------
-  
-  parameterVals <- reactive({
+  # Exponential Simulation Parameter Values --------------------------------------
+  exp_parameters <- reactive({
     
     input$reset
-    
-    beta             = c(0.1, 0.23)
-    sd               = c(0.09, 0.25)
-    Npoints          = input$Npoints
-    points_choice    = "partial"
-    aspect_ratio     = 1
-    linear           = c("true", "false")
-    free_draw        = FALSE
-    x_min            = 0
-    x_max            = 20
-    x_by             = 0.25
-    ymin_scale       = input$ymin_scale
-    ymax_scale       = input$ymax_scale
-    draw_start_scale = 0.5
-    points_end_scale = c(0.5, 0.75)
-    
-    data.frame(beta = beta, sd = sd) %>%
-    expand_grid(points_end_scale, 
-                points_choice, 
-                Npoints, 
-                aspect_ratio, 
-                free_draw, 
-                x_min,
-                x_max,
-                x_by,
-                ymin_scale,
-                ymax_scale,
-                draw_start_scale,
-                linear)
+ 
+    data.frame(beta = c(0.1, 0.23), sd = c(0.09, 0.25)) %>%
+    expand_grid(points_end_scale = c(0.5, 0.75), 
+                points_choice = "partial", 
+                N = input$N, 
+                aspect_ratio = 1, 
+                free_draw = FALSE, 
+                x_min = 0,
+                x_max = 20,
+                x_by = 0.25,
+                ymin_scale = input$ymin_scale,
+                ymax_scale = input$ymax_scale,
+                draw_start_scale = 0.5,
+                linear = c("true", "false"))
     
   })
   
@@ -210,45 +318,29 @@ server <- function(input, output, session) {
   # Data set 1 ----------------------------------------------------------------------
   # ---------------------------------------------------------------------------------
   
-  data_1 <- reactive({
+  exp_data1 <- reactive({
     
-    parms <- parameterVals()[1,]
+    parms <- exp_parameters()[1,]
     
-                # generate line data
-                line_data <- tibble(x = seq(parms$x_min, parms$x_max, parms$x_by), 
-                                    y = exp(x*parms$beta)
-                                    )
-                
-                # generate point data
-                if(parms$points_choice == "full"){
-                  xVals <- sample(line_data$x, parms$Npoints, replace = F)
-                } else {
-                  xVals <- sample(line_data$x[line_data$x <= max(line_data$x)*parms$points_end_scale], parms$Npoints, replace = F)
-                }
-                repeat{
-                  errorVals <- rnorm(length(xVals), 0, parms$sd)
-                  if(mean(errorVals[10]) < 2*parms$sd & mean(errorVals[10] > -2*parms$sd)){
-                    break
-                  }
-                }
-                point_data <- tibble(x = xVals,
-                                     ypoints = exp(x*parms$beta + errorVals)
-                                     )
-                
-                # combine line & point data
-                full_join(line_data, point_data, by = "x") %>%
-                  mutate(ypoints = ifelse(is.na(ypoints), -999, ypoints))
-                
-      })
+    expDataGen(beta  = parms$beta, 
+               sd    = parms$sd, 
+               points_choice    = parms$points_choice, 
+               points_end_scale = parms$points_end_scale,
+               N     = parms$N, 
+               x_min = parms$x_min, 
+               x_max = parms$x_max, 
+               x_by  = parms$x_by)
+    })
   
-  # Linear Scale --------------------------------------------------------------------
+  # Linear Scale (1) ------------------------------------------------------------------
   
-  message_loc_1.linear <- session$ns("drawr_message")
-  output$shinydrawr_1.linear <- r2d3::renderD3({
+  message_loc_exp1.linear <- session$ns("drawr_message")
+  output$shinydrawr_exp1.linear <- r2d3::renderD3({
     
-    parms   <- parameterVals()[1,]
-    data    <- data_1()
-    y_range <- range(data$y) * c(parms$ymin_scale, parms$ymax_scale)
+    parms   <- exp_parameters()[1,]
+    data    <- exp_data1()
+    y_range <- range(data$line_data[,"y"]) * c(parms$ymin_scale, parms$ymax_scale)
+    x_range <- range(data$line_data[,"x"])
     
     drawr(data              = data,
           aspect_ratio      = parms$aspect_ratio,
@@ -259,22 +351,23 @@ server <- function(input, output, session) {
           draw_start        = parms$x_max*parms$draw_start_scale,
           points_end        = parms$x_max*parms$points_end_scale,
           show_finished     = input$show_finished,
-          shiny_message_loc = message_loc_1.log,
-          x_range           = range(data$x),
+          shiny_message_loc = message_loc_exp1.linear,
+          x_range           = x_range,
           y_range           = y_range,
           title             = paste("Beta: ", parms$beta, "; sd: ", parms$sd, "; Points End: ", parms$points_end_scale, "; Linear: ", parms$linear, sep = "")
     )
     
   })
   
-  # Log Scale -----------------------------------------------------------------------
+  # Log Scale (1) ---------------------------------------------------------------------
   
-  message_loc_1.log <- session$ns("drawr_message")
-  output$shinydrawr_1.log <- r2d3::renderD3({
-    
-    parms   <- parameterVals()[2,]
-    data    <- data_1()
-    y_range <- range(data$y) * c(parms$ymin_scale, parms$ymax_scale)
+  message_loc_exp1.log <- session$ns("drawr_message")
+  output$shinydrawr_exp1.log <- r2d3::renderD3({
+
+    parms   <- exp_parameters()[2,]
+    data    <- exp_data1()
+    y_range <- range(data$line_data[,"y"]) * c(parms$ymin_scale, parms$ymax_scale)
+    x_range <- range(data$line_data[,"x"])
     
     drawr(data              = data,
           aspect_ratio      = parms$aspect_ratio,
@@ -285,57 +378,41 @@ server <- function(input, output, session) {
           draw_start        = parms$x_max*parms$draw_start_scale,
           points_end        = parms$x_max*parms$points_end_scale,
           show_finished     = input$show_finished,
-          shiny_message_loc = message_loc_1.log,
-          x_range           = range(data$x),
+          shiny_message_loc = message_loc_exp1.log,
+          x_range           = x_range,
           y_range           = y_range,
           title             = paste("Beta: ", parms$beta, "; sd: ", parms$sd, "; Points End: ", parms$points_end_scale, "; Linear: ", parms$linear, sep = "")
     )
-    
+
   })
-  
+
   # ---------------------------------------------------------------------------------
   # Data set 2 ----------------------------------------------------------------------
   # ---------------------------------------------------------------------------------
-  
-  data_2 <- reactive({
+
+  exp_data2 <- reactive({
     
-    parms <- parameterVals()[3,]
+    parms <- exp_parameters()[3,]
     
-    # generate line data
-    line_data <- tibble(x = seq(parms$x_min, parms$x_max, parms$x_by), 
-                        y = exp(x*parms$beta)
-    )
-    
-    # generate point data
-    if(parms$points_choice == "full"){
-      xVals <- sample(line_data$x, parms$Npoints, replace = F)
-    } else {
-      xVals <- sample(line_data$x[line_data$x <= max(line_data$x)*parms$points_end_scale], parms$Npoints, replace = F)
-    }
-    repeat{
-      errorVals <- rnorm(length(xVals), 0, parms$sd)
-      if(mean(errorVals[10]) < 2*parms$sd & mean(errorVals[10] > -2*parms$sd)){
-        break
-      }
-    }
-    point_data <- tibble(x = xVals,
-                         ypoints = exp(x*parms$beta + errorVals)
-    )
-    
-    # combine line & point data
-    full_join(line_data, point_data, by = "x") %>%
-      mutate(ypoints = ifelse(is.na(ypoints), -999, ypoints))
-    
+    expDataGen(beta  = parms$beta, 
+               sd    = parms$sd, 
+               points_choice    = parms$points_choice, 
+               points_end_scale = parms$points_end_scale,
+               N     = parms$N, 
+               x_min = parms$x_min, 
+               x_max = parms$x_max, 
+               x_by  = parms$x_by)
   })
+
+  # Linear Scale (2) ------------------------------------------------------------------
   
-  # Linear Scale --------------------------------------------------------------------
-  
-  message_loc_2.linear <- session$ns("drawr_message")
-  output$shinydrawr_2.linear <- r2d3::renderD3({
+  message_loc_exp2.linear <- session$ns("drawr_message")
+  output$shinydrawr_exp2.linear <- r2d3::renderD3({
     
-    parms   <- parameterVals()[3,]
-    data    <- data_2()
-    y_range <- range(data$y) * c(parms$ymin_scale, parms$ymax_scale)
+    parms   <- exp_parameters()[3,]
+    data    <- exp_data2()
+    y_range <- range(data$line_data[,"y"]) * c(parms$ymin_scale, parms$ymax_scale)
+    x_range <- range(data$line_data[,"x"])
     
     drawr(data              = data,
           aspect_ratio      = parms$aspect_ratio,
@@ -346,22 +423,23 @@ server <- function(input, output, session) {
           draw_start        = parms$x_max*parms$draw_start_scale,
           points_end        = parms$x_max*parms$points_end_scale,
           show_finished     = input$show_finished,
-          shiny_message_loc = message_loc_1.log,
-          x_range           = range(data$x),
+          shiny_message_loc = message_loc_exp1.linear,
+          x_range           = x_range,
           y_range           = y_range,
           title             = paste("Beta: ", parms$beta, "; sd: ", parms$sd, "; Points End: ", parms$points_end_scale, "; Linear: ", parms$linear, sep = "")
     )
     
   })
   
-  # Log Scale -----------------------------------------------------------------------
+  # Log Scale (2) ---------------------------------------------------------------------
   
-  message_loc_2.log <- session$ns("drawr_message")
-  output$shinydrawr_2.log <- r2d3::renderD3({
+  message_loc_exp2.log <- session$ns("drawr_message")
+  output$shinydrawr_exp2.log <- r2d3::renderD3({
     
-    parms   <- parameterVals()[4,]
-    data    <- data_2()
-    y_range <- range(data$y) * c(parms$ymin_scale, parms$ymax_scale)
+    parms   <- exp_parameters()[4,]
+    data    <- exp_data2()
+    y_range <- range(data$line_data[,"y"]) * c(parms$ymin_scale, parms$ymax_scale)
+    x_range <- range(data$line_data[,"x"])
     
     drawr(data              = data,
           aspect_ratio      = parms$aspect_ratio,
@@ -372,57 +450,41 @@ server <- function(input, output, session) {
           draw_start        = parms$x_max*parms$draw_start_scale,
           points_end        = parms$x_max*parms$points_end_scale,
           show_finished     = input$show_finished,
-          shiny_message_loc = message_loc_1.log,
-          x_range           = range(data$x),
+          shiny_message_loc = message_loc_exp1.log,
+          x_range           = x_range,
           y_range           = y_range,
           title             = paste("Beta: ", parms$beta, "; sd: ", parms$sd, "; Points End: ", parms$points_end_scale, "; Linear: ", parms$linear, sep = "")
     )
     
   })
-  
+
   # ---------------------------------------------------------------------------------
   # Data set 3 ----------------------------------------------------------------------
   # ---------------------------------------------------------------------------------
   
-  data_3 <- reactive({
+  exp_data3 <- reactive({
     
-    parms <- parameterVals()[5,]
+    parms <- exp_parameters()[5,]
     
-    # generate line data
-    line_data <- tibble(x = seq(parms$x_min, parms$x_max, parms$x_by), 
-                        y = exp(x*parms$beta)
-    )
-    
-    # generate point data
-    if(parms$points_choice == "full"){
-      xVals <- sample(line_data$x, parms$Npoints, replace = F)
-    } else {
-      xVals <- sample(line_data$x[line_data$x <= max(line_data$x)*parms$points_end_scale], parms$Npoints, replace = F)
-    }
-    repeat{
-      errorVals <- rnorm(length(xVals), 0, parms$sd)
-      if(mean(errorVals[10]) < 2*parms$sd & mean(errorVals[10] > -2*parms$sd)){
-        break
-      }
-    }
-    point_data <- tibble(x = xVals,
-                         ypoints = exp(x*parms$beta + errorVals)
-    )
-    
-    # combine line & point data
-    full_join(line_data, point_data, by = "x") %>%
-      mutate(ypoints = ifelse(is.na(ypoints), -999, ypoints))
-    
+    expDataGen(beta  = parms$beta, 
+               sd    = parms$sd, 
+               points_choice    = parms$points_choice, 
+               points_end_scale = parms$points_end_scale,
+               N     = parms$N, 
+               x_min = parms$x_min, 
+               x_max = parms$x_max, 
+               x_by  = parms$x_by)
   })
   
-  # Linear Scale --------------------------------------------------------------------
+  # Linear Scale (3) ------------------------------------------------------------------
   
-  message_loc_3.linear <- session$ns("drawr_message")
-  output$shinydrawr_3.linear <- r2d3::renderD3({
+  message_loc_exp3.linear <- session$ns("drawr_message")
+  output$shinydrawr_exp3.linear <- r2d3::renderD3({
     
-    parms   <- parameterVals()[5,]
-    data    <- data_3()
-    y_range <- range(data$y) * c(parms$ymin_scale, parms$ymax_scale)
+    parms   <- exp_parameters()[5,]
+    data    <- exp_data3()
+    y_range <- range(data$line_data[,"y"]) * c(parms$ymin_scale, parms$ymax_scale)
+    x_range <- range(data$line_data[,"x"])
     
     drawr(data              = data,
           aspect_ratio      = parms$aspect_ratio,
@@ -433,22 +495,23 @@ server <- function(input, output, session) {
           draw_start        = parms$x_max*parms$draw_start_scale,
           points_end        = parms$x_max*parms$points_end_scale,
           show_finished     = input$show_finished,
-          shiny_message_loc = message_loc_1.log,
-          x_range           = range(data$x),
+          shiny_message_loc = message_loc_exp1.linear,
+          x_range           = x_range,
           y_range           = y_range,
           title             = paste("Beta: ", parms$beta, "; sd: ", parms$sd, "; Points End: ", parms$points_end_scale, "; Linear: ", parms$linear, sep = "")
     )
     
   })
   
-  # Log Scale -----------------------------------------------------------------------
+  # Log Scale (3) ---------------------------------------------------------------------
   
-  message_loc_3.log <- session$ns("drawr_message")
-  output$shinydrawr_3.log <- r2d3::renderD3({
+  message_loc_exp3.log <- session$ns("drawr_message")
+  output$shinydrawr_exp3.log <- r2d3::renderD3({
     
-    parms   <- parameterVals()[6,]
-    data    <- data_3()
-    y_range <- range(data$y) * c(parms$ymin_scale, parms$ymax_scale)
+    parms   <- exp_parameters()[6,]
+    data    <- exp_data3()
+    y_range <- range(data$line_data[,"y"]) * c(parms$ymin_scale, parms$ymax_scale)
+    x_range <- range(data$line_data[,"x"])
     
     drawr(data              = data,
           aspect_ratio      = parms$aspect_ratio,
@@ -459,57 +522,41 @@ server <- function(input, output, session) {
           draw_start        = parms$x_max*parms$draw_start_scale,
           points_end        = parms$x_max*parms$points_end_scale,
           show_finished     = input$show_finished,
-          shiny_message_loc = message_loc_1.log,
-          x_range           = range(data$x),
+          shiny_message_loc = message_loc_exp1.log,
+          x_range           = x_range,
           y_range           = y_range,
           title             = paste("Beta: ", parms$beta, "; sd: ", parms$sd, "; Points End: ", parms$points_end_scale, "; Linear: ", parms$linear, sep = "")
     )
     
   })
-  
+
   # ---------------------------------------------------------------------------------
   # Data set 4 ----------------------------------------------------------------------
   # ---------------------------------------------------------------------------------
   
-  data_4 <- reactive({
+  exp_data4 <- reactive({
     
-    parms <- parameterVals()[7,]
+    parms <- exp_parameters()[7,]
     
-    # generate line data
-    line_data <- tibble(x = seq(parms$x_min, parms$x_max, parms$x_by), 
-                        y = exp(x*parms$beta)
-    )
-    
-    # generate point data
-    if(parms$points_choice == "full"){
-      xVals <- sample(line_data$x, parms$Npoints, replace = F)
-    } else {
-      xVals <- sample(line_data$x[line_data$x <= max(line_data$x)*parms$points_end_scale], parms$Npoints, replace = F)
-    }
-    repeat{
-      errorVals <- rnorm(length(xVals), 0, parms$sd)
-      if(mean(errorVals[10]) < 2*parms$sd & mean(errorVals[10] > -2*parms$sd)){
-        break
-      }
-    }
-    point_data <- tibble(x = xVals,
-                         ypoints = exp(x*parms$beta + errorVals)
-    )
-    
-    # combine line & point data
-    full_join(line_data, point_data, by = "x") %>%
-      mutate(ypoints = ifelse(is.na(ypoints), -999, ypoints))
-    
+    expDataGen(beta  = parms$beta, 
+               sd    = parms$sd, 
+               points_choice    = parms$points_choice, 
+               points_end_scale = parms$points_end_scale,
+               N     = parms$N, 
+               x_min = parms$x_min, 
+               x_max = parms$x_max, 
+               x_by  = parms$x_by)
   })
   
-  # Linear Scale --------------------------------------------------------------------
+  # Linear Scale (4) ------------------------------------------------------------------
   
-  message_loc_4.linear <- session$ns("drawr_message")
-  output$shinydrawr_4.linear <- r2d3::renderD3({
+  message_loc_exp4.linear <- session$ns("drawr_message")
+  output$shinydrawr_exp4.linear <- r2d3::renderD3({
     
-    parms   <- parameterVals()[7,]
-    data    <- data_4()
-    y_range <- range(data$y) * c(parms$ymin_scale, parms$ymax_scale)
+    parms   <- exp_parameters()[7,]
+    data    <- exp_data4()
+    y_range <- range(data$line_data[,"y"]) * c(parms$ymin_scale, parms$ymax_scale)
+    x_range <- range(data$line_data[,"x"])
     
     drawr(data              = data,
           aspect_ratio      = parms$aspect_ratio,
@@ -520,22 +567,23 @@ server <- function(input, output, session) {
           draw_start        = parms$x_max*parms$draw_start_scale,
           points_end        = parms$x_max*parms$points_end_scale,
           show_finished     = input$show_finished,
-          shiny_message_loc = message_loc_1.log,
-          x_range           = range(data$x),
+          shiny_message_loc = message_loc_exp1.linear,
+          x_range           = x_range,
           y_range           = y_range,
           title             = paste("Beta: ", parms$beta, "; sd: ", parms$sd, "; Points End: ", parms$points_end_scale, "; Linear: ", parms$linear, sep = "")
     )
     
   })
   
-  # Log Scale -----------------------------------------------------------------------
+  # Log Scale (4) ---------------------------------------------------------------------
   
-  message_loc_4.log <- session$ns("drawr_message")
-  output$shinydrawr_4.log <- r2d3::renderD3({
+  message_loc_exp4.log <- session$ns("drawr_message")
+  output$shinydrawr_exp4.log <- r2d3::renderD3({
     
-    parms   <- parameterVals()[8,]
-    data    <- data_4()
-    y_range <- range(data$y) * c(parms$ymin_scale, parms$ymax_scale)
+    parms   <- exp_parameters()[8,]
+    data    <- exp_data4()
+    y_range <- range(data$line_data[,"y"]) * c(parms$ymin_scale, parms$ymax_scale)
+    x_range <- range(data$line_data[,"x"])
     
     drawr(data              = data,
           aspect_ratio      = parms$aspect_ratio,
@@ -546,86 +594,62 @@ server <- function(input, output, session) {
           draw_start        = parms$x_max*parms$draw_start_scale,
           points_end        = parms$x_max*parms$points_end_scale,
           show_finished     = input$show_finished,
-          shiny_message_loc = message_loc_1.log,
-          x_range           = range(data$x),
+          shiny_message_loc = message_loc_exp1.log,
+          x_range           = x_range,
           y_range           = y_range,
           title             = paste("Beta: ", parms$beta, "; sd: ", parms$sd, "; Points End: ", parms$points_end_scale, "; Linear: ", parms$linear, sep = "")
     )
     
   })
-  
+
 # ----------------------------------------------------------------------------------------------------
 # Eye Fitting Straight Lines Replication Simulation Function -----------------------------------------
 # ----------------------------------------------------------------------------------------------------
-  
-  
-  ydi_data <- reactive({
-    
-  input$eyefitting_reset
-    
-  linearYDI_simFunc <- 
-    function(y_xbar, slope, sigma, xmin = 0, xmax = 20, by = 0.25, N = 30, points_end_scale = 1){
-      
-      xLine <- seq(xmin, xmax, by = by)
-      xPoint <- sample(xLine[xLine <= xmax*points_end_scale], size = N, replace = F)
-      # From slope intercept form
-      # y-y_xbar = m(x-xbar)
-      # y = m(x-xbar) + y_xbar = mx - mxbar + y_xbar
-      yintercept = y_xbar - slope*mean(xPoint)
-      
-      line_data <- tibble(x = xLine,
-                          y = yintercept + slope*x)
-      
-      # generate point data
-      repeat{
-        errorVals <- rnorm(N, 0, sigma)
-        if(mean(errorVals[10]) < 2*sigma & mean(errorVals[10] > -2*sigma)){
-          break
-        }
-      }
-      point_data <- tibble(x = xPoint,
-                           ypoints = yintercept + slope*x + errorVals)
-      
-      data <- full_join(line_data, point_data, by = "x")%>%
-        mutate(ypoints = ifelse(is.na(ypoints), -999, ypoints))
-      
-      # return(list(line_data = line_data, point_data = point_data, data = data))
-      return(data)
-      
-    }
-  
-  ydi_parms <- data.frame(
-    dataset = c("S", "F", "V", "N"),
-    y_xbar = c(3.88, 3.9, 3.89, 4.11),
-    slope  = c(0.66, 0.66, 1.98, -0.70),
-    sigma  = c(1.3, 2.8, 1.5, 2.5),
-    xmin   = c(0, 0, 5, 0),
-    xmax   = c(20, 20, 15, 20)
-  )
 
-    ydi_parms %>%
-      mutate(data = purrr::pmap(list(y_xbar, slope, sigma, xmin, xmax), linearYDI_simFunc)) %>%
+
+  linear_data <- reactive({
+
+    input$eyefitting_reset
+      
+    tibble(
+      dataset = c("S", "F", "V", "N"),
+      y_xbar = c(3.88, 3.9, 3.89, 4.11),
+      slope  = c(0.66, 0.66, 1.98, -0.70),
+      sigma  = c(1.3, 2.8, 1.5, 2.5),
+      x_min   = c(0, 0, 4, 0),
+      x_max   = c(20, 20, 16, 20),
+      N       = input$eyefitting_N,
+      x_by    = input$eyefitting_by) %>%
+      mutate(data = purrr::pmap(list(y_xbar = y_xbar, slope = slope, sigma = sigma, x_min = x_min, x_max = x_max, x_by = x_by, N = N), linearDataGen)) %>%
+      unnest(data) %>%
       unnest(data)
   })
-  
-  y_range <- reactive({
-    ydi_data <- ydi_data()
-    range(ydi_data$ypoints[ydi_data$ypoints > -999]) * c(1, 1)
+
+  linear_y_range <- reactive({
+    linear_data <- linear_data()
+    range(linear_data$y) * c(1.2, 1.2)
   })
-  
-  x_range <- reactive({
-    ydi_data <- ydi_data()
-    range(ydi_data$x)
+
+  linear_x_range <- reactive({
+    linear_data <- linear_data()
+    c(min(linear_data$x) - 1, max(linear_data$x) + 1)
   })
-  
+
   # S ----------------------------------------------------------
-  
+
   message_loc_S <- session$ns("drawr_message")
   output$shinydrawr_S <- r2d3::renderD3({
+
+    line_data_S <- linear_data() %>%
+      filter(dataset == "S") %>%
+      filter(data == "line_data")
     
-    data    <- ydi_data() %>%
-      filter(dataset == "S")
+    point_data_S <- linear_data() %>%
+      filter(dataset == "S") %>%
+      filter(data == "point_data")
     
+    data <- list(line_data = line_data_S, point_data = point_data_S)
+
     drawr(data              = data,
           aspect_ratio      = 1,
           linear            = "true",
@@ -636,20 +660,27 @@ server <- function(input, output, session) {
           points_end        = 20,
           show_finished     = input$eyefitting_show_finished,
           shiny_message_loc = message_loc_S,
-          x_range           = x_range(),
-          y_range           = y_range(),
+          x_range           = linear_x_range(),
+          y_range           = linear_y_range(),
           title             = "S"
     )
-    
+
   })
-  
+
   # F ----------------------------------------------------------
   
   message_loc_F <- session$ns("drawr_message")
   output$shinydrawr_F <- r2d3::renderD3({
     
-    data    <- ydi_data() %>%
-      filter(dataset == "F")
+    line_data_F <- linear_data() %>%
+      filter(dataset == "F") %>%
+      filter(data == "line_data")
+    
+    point_data_F <- linear_data() %>%
+      filter(dataset == "F") %>%
+      filter(data == "point_data")
+    
+    data <- list(line_data = line_data_F, point_data = point_data_F)
     
     drawr(data              = data,
           aspect_ratio      = 1,
@@ -661,20 +692,27 @@ server <- function(input, output, session) {
           points_end        = 20,
           show_finished     = input$eyefitting_show_finished,
           shiny_message_loc = message_loc_S,
-          x_range           = x_range(),
-          y_range           = y_range(),
+          x_range           = linear_x_range(),
+          y_range           = linear_y_range(),
           title             = "F"
     )
     
   })
-  
+
   # V ----------------------------------------------------------
   
   message_loc_V <- session$ns("drawr_message")
   output$shinydrawr_V <- r2d3::renderD3({
     
-    data    <- ydi_data() %>%
-      filter(dataset == "V")
+    line_data_V <- linear_data() %>%
+      filter(dataset == "V") %>%
+      filter(data == "line_data")
+    
+    point_data_V <- linear_data() %>%
+      filter(dataset == "V") %>%
+      filter(data == "point_data")
+    
+    data <- list(line_data = line_data_V, point_data = point_data_V)
     
     drawr(data              = data,
           aspect_ratio      = 1,
@@ -683,23 +721,30 @@ server <- function(input, output, session) {
           points            = "full",
           x_by              = 0.25,
           draw_start        = 5.1,
-          points_end        = 15,
+          points_end        = 20,
           show_finished     = input$eyefitting_show_finished,
           shiny_message_loc = message_loc_S,
-          x_range           = x_range(),
-          y_range           = y_range(),
+          x_range           = linear_x_range(),
+          y_range           = linear_y_range(),
           title             = "V"
     )
     
   })
-  
-  # F ----------------------------------------------------------
+   
+  # N ----------------------------------------------------------
   
   message_loc_N <- session$ns("drawr_message")
   output$shinydrawr_N <- r2d3::renderD3({
     
-    data    <- ydi_data() %>%
-      filter(dataset == "N")
+    line_data_N <- linear_data() %>%
+      filter(dataset == "N") %>%
+      filter(data == "line_data")
+    
+    point_data_N <- linear_data() %>%
+      filter(dataset == "N") %>%
+      filter(data == "point_data")
+    
+    data <- list(line_data = line_data_N, point_data = point_data_N)
     
     drawr(data              = data,
           aspect_ratio      = 1,
@@ -711,8 +756,8 @@ server <- function(input, output, session) {
           points_end        = 20,
           show_finished     = input$eyefitting_show_finished,
           shiny_message_loc = message_loc_S,
-          x_range           = x_range(),
-          y_range           = y_range(),
+          x_range           = linear_x_range(),
+          y_range           = linear_y_range(),
           title             = "N"
     )
     
