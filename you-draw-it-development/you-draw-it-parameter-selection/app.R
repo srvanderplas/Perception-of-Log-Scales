@@ -602,10 +602,9 @@ server <- function(input, output, session){
     
   })
 
-# ----------------------------------------------------------------------------------------------------
-# Eye Fitting Straight Lines Replication Simulation Function -----------------------------------------
-# ----------------------------------------------------------------------------------------------------
-
+  # ----------------------------------------------------------------------------------------------------
+  # Eye Fitting Straight Lines Replication -------------------------------------------------------------
+  # ----------------------------------------------------------------------------------------------------
 
   linear_data <- reactive({
 
@@ -620,7 +619,14 @@ server <- function(input, output, session){
       x_max   = c(20, 20, 16, 20),
       N       = input$eyefitting_N,
       x_by    = input$eyefitting_by) %>%
-      mutate(data = purrr::pmap(list(y_xbar = y_xbar, slope = slope, sigma = sigma, x_min = x_min, x_max = x_max, x_by = x_by, N = N), linearDataGen)) %>%
+      mutate(data = purrr::pmap(list(y_xbar = y_xbar, 
+                                     slope  = slope, 
+                                     sigma  = sigma, 
+                                     x_min  = x_min, 
+                                     x_max  = x_max, 
+                                     x_by   = x_by, 
+                                     N      = N), 
+                                linearDataGen)) %>%
       unnest(data) %>%
       unnest(data)
   })
@@ -641,12 +647,10 @@ server <- function(input, output, session){
   output$shinydrawr_S <- r2d3::renderD3({
 
     line_data_S <- linear_data() %>%
-      filter(dataset == "S") %>%
-      filter(data == "line_data")
+      filter(dataset == "S", data == "line_data")
     
     point_data_S <- linear_data() %>%
-      filter(dataset == "S") %>%
-      filter(data == "point_data")
+      filter(dataset == "S", data == "point_data")
     
     data <- list(line_data = line_data_S, point_data = point_data_S)
 
@@ -673,12 +677,10 @@ server <- function(input, output, session){
   output$shinydrawr_F <- r2d3::renderD3({
     
     line_data_F <- linear_data() %>%
-      filter(dataset == "F") %>%
-      filter(data == "line_data")
+      filter(dataset == "F", data == "line_data")
     
     point_data_F <- linear_data() %>%
-      filter(dataset == "F") %>%
-      filter(data == "point_data")
+      filter(dataset == "F", data == "point_data")
     
     data <- list(line_data = line_data_F, point_data = point_data_F)
     
@@ -705,12 +707,10 @@ server <- function(input, output, session){
   output$shinydrawr_V <- r2d3::renderD3({
     
     line_data_V <- linear_data() %>%
-      filter(dataset == "V") %>%
-      filter(data == "line_data")
+      filter(dataset == "V", data == "line_data")
     
     point_data_V <- linear_data() %>%
-      filter(dataset == "V") %>%
-      filter(data == "point_data")
+      filter(dataset == "V", data == "point_data")
     
     data <- list(line_data = line_data_V, point_data = point_data_V)
     
@@ -737,12 +737,10 @@ server <- function(input, output, session){
   output$shinydrawr_N <- r2d3::renderD3({
     
     line_data_N <- linear_data() %>%
-      filter(dataset == "N") %>%
-      filter(data == "line_data")
+      filter(dataset == "N", data == "line_data")
     
     point_data_N <- linear_data() %>%
-      filter(dataset == "N") %>%
-      filter(data == "point_data")
+      filter(dataset == "N", data == "point_data")
     
     data <- list(line_data = line_data_N, point_data = point_data_N)
     
@@ -763,6 +761,7 @@ server <- function(input, output, session){
     
   })
   
+  # END OF SERVER ------------------------------------------------------------------------------------------
 }
 
 # Run the application
