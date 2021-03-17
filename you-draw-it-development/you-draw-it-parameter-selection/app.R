@@ -1,11 +1,15 @@
 # ----------------------------------------------------------------------------------------------------
 # Load libraries -------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------
+# https://rstudio.github.io/renv/articles/renv.html
+# renv::snapshot()
+# renv::restore()
 library(shiny)
 library(shinyjs)
 # ALERT: REQUIRES VERSION 0.2.3
 # url_r2d3v0.2.3 <- "https://cran.r-project.org/src/contrib/Archive/r2d3/r2d3_0.2.3.tar.gz"
 # install.packages(url_r2d3v0.2.3, repos = NULL, type = 'source')
+# install.packages("r2d3")
 library(r2d3)
 library(tidyverse)
 library(purrr)
@@ -79,7 +83,7 @@ drawr <- function(data,
   }
 
   r2d3::r2d3(data   = data_to_json(data), 
-             script = "main.js",
+             script = "main-r2d3v0.2.3.js",
              dependencies = c("d3-jetpack"),
              options = list(draw_start        = draw_start, 
                             points_end        = points_end,
