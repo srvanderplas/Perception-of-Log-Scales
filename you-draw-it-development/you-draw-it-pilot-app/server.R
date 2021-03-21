@@ -8,8 +8,11 @@ library(ggplot2)
 library(lubridate)
 library(dplyr)
 library(RSQLite)
+library(DBI)
+sqlite.driver <- dbDriver("SQLite")
 library(here)
 library(tidyverse)
+library(purrr)
 # ALERT: REQUIRES VERSION 0.2.3
 # url_r2d3v0.2.3 <- "https://cran.r-project.org/src/contrib/Archive/r2d3/r2d3_0.2.3.tar.gz"
 # install.packages(url_r2d3v0.2.3, repos = NULL, type = 'source')
@@ -109,62 +112,8 @@ drawr <- function(data,
 }
 
 # ----------------------------------------------------------------------------------------------------
-# Exponential Data Simulation ------------------------------------------------------------------------
+# Set up Experiment -----------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------
-
-expDataGen <- 
-    function(beta, 
-             sd, 
-             points_choice = "partial", 
-             points_end_scale = 0.5,
-             N = 30,
-             aspect_ratio = 1,
-             free_draw = "false",
-             x_min = 0,
-             x_max = 20,
-             x_by  = 0.25){
-        
-        points_end_scale <- ifelse(points_choice == "full", 1, points_end_scale)
-        
-        # Set up x values
-        xVals <- seq(x_min, x_max*points_end_scale, length.out = floor(N*3/4))
-        xVals <- sample(xVals, N, replace = TRUE)
-        xVals <- jitter(xVals)
-        xVals <- ifelse(xVals < 0, 0, xVals)
-        xVals <- ifelse(xVals > 20, 20, xVals)
-        
-        # Generate "good" errors
-        repeat{
-            errorVals <- rnorm(length(xVals), 0, sd)
-            if(mean(errorVals[floor(N/3)]) < 2*sd & mean(errorVals[floor(N/3)] > -2*sd)){
-                break
-            }
-        }
-        
-        # Simulate point data
-        point_data <- tibble(x = xVals,
-                             y = exp(x*beta + errorVals)) %>%
-            arrange(x)
-        
-        # Obtain starting value for beta
-        lm.fit <- lm(log(y) ~ x, data = point_data)
-        beta.0 <- coef(lm.fit)[1] %>% as.numeric()
-        # Use NLS to fit a better line to the data
-        start <- list(beta = beta.0)
-        nonlinear.fit <- nls(y ~ exp(x*beta),
-                             data = point_data, 
-                             start = start)
-        betahat <- coef(nonlinear.fit)[1] %>% as.numeric()
-        
-        # Simulate best fit line data
-        line_data <- tibble(x = seq(x_min, x_max, x_by), 
-                            y = exp(x*betahat))
-        
-        data <- list(point_data = point_data, line_data = line_data)
-        
-        return(data)
-    }
-
 
 experiment_name <- "emily-log-you-draw-it-pilot-app"
 
@@ -174,13 +123,13 @@ addResourcePath("parameter_details", "parameter_details")
 addResourcePath("examples", "examples")
 
 # define folders
-parameters_folder <- "parameter_details" # subfolders for data, pdf, png, svg. picture_details.csv in this folder
+# parameters_folder <- "parameter_details" # subfolders for data, pdf, png, svg. picture_details.csv in this folder
 # trials_folder <- "trials" # subfolders for svg. picture_details_trial.csv in this folder
 
 
 window_dim_min <- 400 #c(800, 600) # width, height
 
-con <- dbConnect(SQLite(), dbname = "you_draw_it_exp_data.db")
+con <- dbConnect(sqlite.driver, dbname = "you_draw_it_exp_data.db")
 experiment <- dbReadTable(con, "experiment_details")
 if (nrow(experiment) > 1) {
     experiment <- experiment[nrow(experiment),]
@@ -192,6 +141,7 @@ dbDisconnect(con)
 shinyServer(function(input, output, session) {
 # This needs to be run every connection, not just once.
     source("code/randomization.R")
+    source("code/data-generation.R")
 
     # reactive values to control the trials
     values <- reactiveValues(
@@ -207,6 +157,7 @@ shinyServer(function(input, output, session) {
         ydippleft = experiment$ydi_pp,
         parms = 0,
         parm_id = 1,
+        linear  = NULL,
         result = "")
 
     output$debug <- renderText({experiment$question})
@@ -290,7 +241,7 @@ shinyServer(function(input, output, session) {
     # add demographic information to the database
     observeEvent(input$submitdemo, {
         if (!is.null(input$nickname) && nchar(input$nickname) > 0 && !any(input$dimension < window_dim_min)) {
-            con <- dbConnect(SQLite(), dbname = "you_draw_it_exp_data.db")
+            con <- dbConnect(sqlite.driver, dbname = "you_draw_it_exp_data.db")
 
             age <- ifelse(is.null(input$age), "", input$age)
             gender <- ifelse(is.null(input$gender), "", input$gender)
@@ -359,14 +310,12 @@ shinyServer(function(input, output, session) {
                 # This applies to the lineups, not to the trials
                 values$result <- "Submitted!"
 
-                test <- data.frame(ip_address = input$ipid, 
+                test <- drawn_data() %>%
+                            mutate(ip_address = input$ipid, 
                                    nick_name = input$nickname,
                                    start_time = values$starttime, 
                                    end_time = now(),
-                                   parm_id = values$parm_id,
-                                   x = 0,
-                                   y = 0,
-                                   ydrawn = 0
+                                   parm_id = values$parm_id
                                    # response_no = values$choice,
                                    # conf_level = input$certain,
                                    # choice_reason = reason,
@@ -374,7 +323,7 @@ shinyServer(function(input, output, session) {
                                    )
 
                 # Write results to database
-                con <- dbConnect(SQLite(), dbname = "you_draw_it_exp_data.db")
+                con <- dbConnect(sqlite.driver, dbname = "you_draw_it_exp_data.db")
                 dbWriteTable(con, "feedback", test, append = TRUE, row.names = FALSE)
                 dbDisconnect(con)
 
@@ -412,8 +361,11 @@ shinyServer(function(input, output, session) {
         }
     })
 
+    # Create storage for response values
     message_loc <- session$ns("drawr_message")
     drawn_data <- shiny::reactiveVal()
+    line_data_storage <- shiny::reactiveVal()
+    
     # This renders the you draw it graph
     output$shinydrawr <- r2d3::renderD3({
         if (values$ydippleft == 0 || !input$ready || any(input$dimension < window_dim_min)) return(NULL)
@@ -431,81 +383,28 @@ shinyServer(function(input, output, session) {
             values$starttime <- now()
             trial <- as.numeric(values$trialsleft > 0)
 
-            # plotpath <- ifelse(values$trialsleft > 0, "trials", "plots")
-
-            con <- dbConnect(SQLite(), dbname = "you_draw_it_exp_data.db")
-            # dbListTables(db_con)
-            exp_parameter_details <- dbReadTable(con,"exp_parameter_details")
-
-            # I suspect this logic could be improved with dbplyr...
-            # if (trial == 0 && is.null(values$parms)) {
-            #     # Create order of trials
-            #     orderby <- paste0("ORDER BY CASE parm_id ",
-            #                       paste("WHEN", parm_ids, "THEN", 0:(values$ydipp - 1), collapse = " "),
-            #                       " END")
-            #     # Get picture details
-            #     values$pics <- dbGetQuery(
-            #         con, paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment,
-            #                     "' AND trial = ", trial, " AND parm_id IN (", paste(parm_ids, collapse = ","), ") ",
-            #                     orderby))
-            # 
-            #     nextplot <- values$parms[1,]
-            # } else if (trial == 0 && !is.null(values$parms)) {
-                # nextplot <- values$parms[values$ydipp - values$ydippleft + 1,]
-            # } else if (trial == 1 && is.null(values$trial_pics)) {
-            #     # Get trial pictures
-            #     orderby <- paste0("ORDER BY CASE parm_id ",
-            #                       paste("WHEN", trial_parm_ids, "THEN", 0:(length(trial_parm_ids) - 1), collapse = " "),
-            #                       " END")
-            #     values$trial_pics <- dbGetQuery(
-            #         con, paste0("SELECT * FROM picture_details WHERE experiment = '", values$experiment,
-            #                     "' AND trial = ", trial, " AND parm_id IN (", paste(trial_parm_ids, collapse = ","), ") ",
-            #                     orderby))
-            #     nextplot <- values$trial_pics[1,]
-            # } else if (trial == 1 && !is.null(values$trial_pics)) {
-            #     nextplot <- values$trial_pics[values$trialsreq - values$trialsleft + 1,]
-            # }
-
-            dbDisconnect(con)
-
             # Update reactive values
-            values$parm_id <- parm_ids[values$ydipp - values$ydippleft + 1]
-            # values$correct <- strsplit(as.character(nextplot$obs_plot_location), ",")[[1]]
+            values$parm_id <- randomization_dataset$parm_id[parm_ids[values$ydipp - values$ydippleft + 1]]
+            values$linear  <- randomization_dataset$linear[parm_ids[values$ydipp - values$ydippleft + 1]]
 
             # Reset UI selections
             values$submitted <- FALSE
-
-            # updateSelectizeInput(
-            #     session, "certain",
-            #     choices = c("", "Very Uncertain", "Uncertain", "Neutral", "Certain", "Very Certain"),
-            #     selected = NULL)
-            # updateTextInput(session, "response_no", value = "")
-            # updateTextInput(session, "other", value = "")
-            # updateCheckboxGroupInput(session, "reasoning", selected = NA)
-
-            # if (is.null(nextplot$pic_name)) return(NULL)
-
-            # Read svg and remove width/height
-            # tmp <- readLines(file.path(plotpath, "svg", basename(nextplot$pic_name)))
-            # tmp[2] <- str_replace(tmp[2], "width=.*? height=.*? viewBox", "viewBox")
-
-            # Include the picture
-            # div(
-            #     class="full-lineup-container",
-            #     HTML(tmp)
-            # )
             
-            parms   <- exp_parameters_details[values$parm_id,]
+            # Determine Parameters
+            parms   <- exp_parameters[values$parm_id,]
             
-            # Generate Data
-            data <- expDataGen(beta  = parms$beta, 
-                       sd    = parms$sd, 
-                       points_choice    = parms$points_choice, 
-                       points_end_scale = parms$points_end_scale,
-                       N     = parms$N, 
-                       x_min = parms$x_min, 
-                       x_max = parms$x_max, 
-                       x_by  = parms$x_by)
+            # Obtain Data
+            point_data <- exp_data %>%
+              filter(dataset == "point_data", parm_id == values$parm_id)
+            line_data <- exp_data %>%
+              filter(dataset == "line_data", parm_id == values$parm_id)
+            data <- list(point_data = point_data, line_data = line_data)
+            
+            # Store data for feedback
+            line_data %>%
+                select(parm_id, x, y) %>%
+                filter(x >= parms$x_max*parms$draw_start_scale) %>%
+                line_data_storage()
             
             y_range <- range(data$line_data[,"y"]) * c(parms$ymin_scale, parms$ymax_scale)
             x_range <- range(data$line_data[,"x"])
@@ -513,7 +412,7 @@ shinyServer(function(input, output, session) {
             # Include the you draw it graph
             drawr(data              = data,
                   aspect_ratio      = parms$aspect_ratio,
-                  linear            = parms$linear,
+                  linear            = values$linear,
                   free_draw         = parms$free_draw,
                   points            = parms$points_choice,
                   x_by              = parms$x_by,
@@ -529,7 +428,10 @@ shinyServer(function(input, output, session) {
     
     shiny::observeEvent(input$drawr_message, {
         
-            tibble(drawn = input$drawr_message) %>%
+            line_data <- line_data_storage()
+        
+            line_data %>%
+            mutate(drawn = input$drawr_message) %>%
                 drawn_data()
         
     })

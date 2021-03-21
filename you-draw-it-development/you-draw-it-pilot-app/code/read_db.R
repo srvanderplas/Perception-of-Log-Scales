@@ -20,7 +20,7 @@ experiment_details <- data.frame(experiment = "emily-log-you-draw-it-pilot-app",
 experiment_details
 
 exp_parameter_details <- dbReadTable(db_con,"exp_parameter_details")
-exp_parameters <- data.frame(beta = c(0.1, 0.23), sd = c(0.09, 0.25)) %>%
+exp_parameters_details <- data.frame(beta = c(0.1, 0.23), sd = c(0.09, 0.25)) %>%
   expand_grid(points_end_scale = c(0.5, 0.75), 
               points_choice = "partial", 
               N = 30, 
@@ -37,8 +37,8 @@ exp_parameters <- data.frame(beta = c(0.1, 0.23), sd = c(0.09, 0.25)) %>%
   rownames_to_column(var = "parm_id")
 # dbRemoveTable(db_con, "exp_parameter_details")
 dbWriteTable(db_con,  "exp_parameter_details", exp_parameters)
-exp_parameters_details <- dbReadTable(db_con,"exp_parameter_details")
-exp_parameters_details
+exp_parameter_details <- dbReadTable(db_con,"exp_parameter_details")
+exp_parameter_details
 
 feedback <- dbReadTable(db_con,"feedback")
 # feedback <- feedback[0,]
@@ -63,4 +63,4 @@ dbWriteTable(db_con, "users", users)
 users <- dbReadTable(db_con,"users")
 users
 
-dbDisconnect(db_con)
+# dbDisconnect(db_con)
