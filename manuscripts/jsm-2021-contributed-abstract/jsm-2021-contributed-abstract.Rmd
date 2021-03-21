@@ -26,6 +26,7 @@ output:
 knitr::opts_chunk$set(echo = F, eval = T, fig.path="./images/", fig.env="figure*")
 ```
 
+#### Submit [Here](https://ww2.amstat.org/meetings/jsm/2021/submissions.cfm?utm_source=informz&utm_medium=email&utm_campaign=asa&_zs=CPwgg1&_zl=xP1U7)
 
 #### Session Type
 
