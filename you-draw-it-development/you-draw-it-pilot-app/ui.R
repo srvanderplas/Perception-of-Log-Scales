@@ -165,16 +165,18 @@ fluidPage(
                      uiOutput("welcome_text"),
 
                      h4(textOutput("example1_q")),
-                     div(
-                       class = "ex-lineup-container",
-                       imageOutput("example1_plot", height = "auto")
-                     ),
+                     # div(
+                       # class = "ex-lineup-container",
+                       # imageOutput("example1_plot", height = "auto")
+                       img(src="examples/exponential.gif", align = "center", width = 350),
+                     # ),
 
                      h4(textOutput("example2_q")),
-                     div(
-                       class = "ex-lineup-container",
-                       imageOutput("example2_plot", height = "auto")
-                     )
+                     # div(
+                       # class = "ex-lineup-container",
+                       # imageOutput("example2_plot", height = "auto")
+                       img(src="examples/linear1.gif", align = "center", width = 350)
+                     # )
     ),
     conditionalPanel(condition = "input.welcome && !input.ready",
                      h4(textOutput("demo_text"))
