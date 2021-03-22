@@ -118,7 +118,7 @@ drawr <- function(data,
 experiment_name <- "emily-log-you-draw-it-pilot-app"
 
 # add resource paths so Shiny can see them
-addResourcePath("parameter_details", "parameter_details")
+# addResourcePath("parameter_details", "parameter_details")
 # addResourcePath("trials", "trials")
 addResourcePath("examples", "examples")
 
@@ -135,6 +135,7 @@ if (nrow(experiment) > 1) {
     experiment <- experiment[nrow(experiment),]
     warning("Multiple rows in the experiment_details table. Only the last row will be used.")
 }
+# exp_parameter_details <- dbReadTable(con, "exp_parameter_details")
 dbDisconnect(con)
 
 
@@ -251,7 +252,9 @@ shinyServer(function(input, output, session) {
                                    age = age,
                                    gender = gender,
                                    academic_study = academic_study,
-                                   ip_address = "")
+                                   ip_address = "",
+                                   time = now()
+                                   )
 
             dbWriteTable(con, "users", demoinfo, append = TRUE, row.names = FALSE)
             dbDisconnect(con)
@@ -285,7 +288,7 @@ shinyServer(function(input, output, session) {
     })
 
     observeEvent(input$submit, {
-        response <- as.character(input$response_no)
+        # response <- as.character(input$response_no)
 
         if (
             # nchar(response) > 0 &&
@@ -311,15 +314,12 @@ shinyServer(function(input, output, session) {
                 values$result <- "Submitted!"
 
                 test <- drawn_data() %>%
-                            mutate(ip_address = input$ipid, 
+                            mutate(parm_id = values$parm_id,
+                                   linear  = values$linear,
+                                   ip_address = input$ipid, 
                                    nick_name = input$nickname,
                                    start_time = values$starttime, 
-                                   end_time = now(),
-                                   parm_id = values$parm_id
-                                   # response_no = values$choice,
-                                   # conf_level = input$certain,
-                                   # choice_reason = reason,
-                                   # description = values$experiment
+                                   end_time = now()
                                    )
 
                 # Write results to database
@@ -391,7 +391,7 @@ shinyServer(function(input, output, session) {
             values$submitted <- FALSE
             
             # Determine Parameters
-            parms   <- exp_parameters[values$parm_id,]
+            parms   <- exp_parameter_details[values$parm_id,]
             
             # Obtain Data
             point_data <- exp_data %>%
@@ -431,13 +431,13 @@ shinyServer(function(input, output, session) {
             line_data <- line_data_storage()
         
             line_data %>%
-            mutate(drawn = input$drawr_message) %>%
+            mutate(ydrawn = input$drawr_message) %>%
                 drawn_data()
         
     })
     
-    output$drawrmessage <- DT::renderDataTable({
-        drawn_data()
-    })
+    # output$drawrmessage <- DT::renderDataTable({
+    #     drawn_data()
+    # })
     
 }) # End app definition

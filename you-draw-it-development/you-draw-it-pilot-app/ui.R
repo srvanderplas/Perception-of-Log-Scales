@@ -116,19 +116,19 @@ fluidPage(
     ),
 
     # These panels are to determine what stage the experiment is at
-    conditionalPanel(condition = "input.response_no == null",
+    conditionalPanel(condition = "input.submit == null",
                      checkboxInput("welcome", "Welcome", value = FALSE)
     ),
 
-    # conditionalPanel(condition = "input.response_no == null",
+    # conditionalPanel(condition = "input.submit == null",
                      # checkboxInput("otheronly", "", value = FALSE)
     # ),
 
-    conditionalPanel(condition = "input.response_no == null",
+    conditionalPanel(condition = "input.submit == null",
                      checkboxInput("ready", "Ready", value = FALSE)
     ),
 
-    conditionalPanel(condition = "input.response_no == null",
+    conditionalPanel(condition = "input.submit == null",
                      checkboxInput("done", "Done", value = FALSE)
     ),
 
@@ -136,8 +136,8 @@ fluidPage(
     conditionalPanel(
       condition = "input.ready && !input.done",
       # h4("Selection"),
-      # textInput("response_no", "Choice", value = "", placeholder = "Click the plot to select"),
-      selectizeInput("response_no", "Choice", choices = 1:20, selected = NULL, multiple = T),
+      # textInput("response_no", "Choice", value = NULL, placeholder = "Click the plot to select"),
+      # selectizeInput("response_no", "", choices = 1:20, selected = NULL, multiple = T),
       checkboxInput("show_finished", "Show Finished?", value = T),
 
       # Handle other reasoning logic
@@ -188,11 +188,11 @@ fluidPage(
     ),
     hr(),
     d3Output("shinydrawr", 
-             height = "500px"),
-    hr(),
-    p("Recorded Data:"),
-    DT::dataTableOutput("drawrmessage", width = "70%")
-  ),
+             height = "500px") #,
+    # hr(),
+    # p("Recorded Data:"),
+    # DT::dataTableOutput("drawrmessage", width = "70%")
+  )
   # Javascript action script for lineups -- may not be necessary
   # includeScript("www/js/action.js")
 )
