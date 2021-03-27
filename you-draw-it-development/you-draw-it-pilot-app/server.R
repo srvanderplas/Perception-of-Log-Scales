@@ -407,12 +407,16 @@ shinyServer(function(input, output, session) {
             values$done_drawing <- FALSE
             
             # Determine Parameters
-            parms   <- exp_parameter_details[values$parm_id,]
+            if(values$parm_id %in% c(1,2,3,4)){
+                parms   <- exp_parameter_details[values$parm_id,]
+            } else {
+                parms   <- eyefitting_parameter_details[values$parm_id,]
+            }
             
             # Obtain Data
-            point_data <- exp_data %>%
+            point_data <- simulated_data %>%
               filter(dataset == "point_data", parm_id == values$parm_id)
-            line_data <- exp_data %>%
+            line_data <- simulated_data %>%
               filter(dataset == "line_data", parm_id == values$parm_id)
             data <- list(point_data = point_data, line_data = line_data)
             

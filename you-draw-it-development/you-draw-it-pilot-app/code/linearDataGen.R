@@ -38,7 +38,7 @@ linearDataGen <-
     }
     
     # Simulate point data
-    point_data <- tibble(data = "point_data",
+    point_data <- tibble(dataset = "point_data",
                          x = xVals,
                          y = yintercept + slope*x + errorVals) %>%
                   arrange(x)
@@ -49,7 +49,7 @@ linearDataGen <-
     slopehat <- coef(lm.fit)[2] %>% as.numeric()
     
     # Simulate best fit line data
-    line_data <- tibble(data = "line_data", 
+    line_data <- tibble(dataset = "line_data", 
                         x = seq(x_min, x_max, x_by), 
                         y = yintercepthat + slopehat*x)
     
