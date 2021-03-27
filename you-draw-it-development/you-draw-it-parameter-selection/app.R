@@ -6,7 +6,7 @@
 # renv::restore()
 library(shiny)
 library(shinyjs)
-# ALERT: REQUIRES VERSION 0.2.3
+# Make sure to use d3_version = 5, version of r2d3 doesn't matter....
 # url_r2d3v0.2.3 <- "https://cran.r-project.org/src/contrib/Archive/r2d3/r2d3_0.2.3.tar.gz"
 # install.packages(url_r2d3v0.2.3, repos = NULL, type = 'source')
 # install.packages("r2d3")
@@ -83,7 +83,8 @@ drawr <- function(data,
   }
 
   r2d3::r2d3(data   = data_to_json(data), 
-             script = "main-r2d3v0.2.3.js",
+             script = "main-d3v5.js",
+             d3_version = "5",
              dependencies = c("d3-jetpack"),
              options = list(draw_start        = draw_start, 
                             points_end        = points_end,
@@ -642,7 +643,7 @@ server <- function(input, output, session){
 
   linear_x_range <- reactive({
     linear_data <- linear_data()
-    c(min(linear_data$x) - 1, max(linear_data$x) + 1)
+    c(min(linear_data$x), max(linear_data$x))
   })
 
   # S ----------------------------------------------------------

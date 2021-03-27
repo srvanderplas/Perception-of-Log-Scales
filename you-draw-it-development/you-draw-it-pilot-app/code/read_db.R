@@ -14,10 +14,10 @@ dbListTables(db_con)
 experiment_details <- dbReadTable(db_con,"experiment_details")
 # experiment_details <- experiment_details[0,]
 # experiment_details <- data.frame(experiment = "emily-you-draw-it-pilot-app",
-                                 # question   = "Use your mouse to fill in the trend in the yellow box region.",
-                                 # ydi_pp     = 8,
-                                 # trials_req = 0
-                                 # )
+# question   = "Use your mouse to fill in the trend in the yellow box region.",
+# ydi_pp     = 12,
+# trials_req = 0
+# )
 # dbRemoveTable(db_con, "experiment_details")
 # dbWriteTable(db_con, "experiment_details", experiment_details)
 # experiment_details <- dbReadTable(db_con,"experiment_details")
@@ -54,8 +54,8 @@ eyefitting_parameter_details <- dbReadTable(db_con,"eyefitting_parameter_details
 #                                   y_xbar = c(3.88, 3.9, 3.89, 4.11),
 #                                   slope  = c(0.66, 0.66, 1.98, -0.70),
 #                                   sigma  = c(1.3, 2.8, 1.5, 2.5),
-#                                   x_min   = c(0, 0, 0, 0),
-#                                   x_max   = c(20, 20, 20, 20))
+#                                   x_min   = c(0, 0, 4, 0),
+#                                   x_max   = c(20, 20, 18, 20))
 # dbRemoveTable(db_con, "eyefitting_parameter_details")
 # dbWriteTable(db_con,  "eyefitting_parameter_details", eyefitting_parameter_details)
 # eyefitting_parameter_details <- dbReadTable(db_con,"eyefitting_parameter_details")
@@ -78,7 +78,7 @@ feedback <- dbReadTable(db_con,"feedback")
 # feedback <- feedback[0,]
 # dbRemoveTable(db_con, "feedback")
 # dbWriteTable(db_con, "feedback", feedback)
-feedback <- dbReadTable(db_con, "feedback")
+# feedback <- dbReadTable(db_con, "feedback")
 feedback
 
 # Simulated Data ---------------------------------------------------
@@ -114,4 +114,4 @@ users <- dbReadTable(db_con,"users")
 # users <- dbReadTable(db_con,"users")
 users
 
-dbDisconnect(db_con)
+# dbDisconnect(db_con)

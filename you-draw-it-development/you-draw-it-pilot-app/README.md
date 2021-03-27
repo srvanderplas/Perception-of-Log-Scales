@@ -1,4 +1,4 @@
-lineupgen-shiny
+you-draw-it-shiny
 ===============
 
-Shiny front-end/testing framework for lineupgen package
+Shiny front-end/testing framework for you draw it with r2d3 package

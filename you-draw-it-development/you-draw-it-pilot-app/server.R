@@ -13,7 +13,7 @@ sqlite.driver <- dbDriver("SQLite")
 library(here)
 library(tidyverse)
 library(purrr)
-# ALERT: REQUIRES VERSION 0.2.3
+# Make sure to use d3_version = 5, version of r2d3 doesn't matter....
 # url_r2d3v0.2.3 <- "https://cran.r-project.org/src/contrib/Archive/r2d3/r2d3_0.2.3.tar.gz"
 # install.packages(url_r2d3v0.2.3, repos = NULL, type = 'source')
 # install.packages("r2d3")
@@ -89,8 +89,9 @@ drawr <- function(data,
     }
     
     r2d3::r2d3(data   = data_to_json(data), 
-               script = "www/js/shinydrawr-r2d3v0.2.3.js",
+               script = "www/js/shinydrawr-d3v5.js",
                dependencies = c("d3-jetpack"),
+               d3_version = "5",
                options = list(draw_start        = draw_start, 
                               points_end        = points_end,
                               linear            = as.character(linear),
@@ -406,42 +407,81 @@ shinyServer(function(input, output, session) {
             values$submitted    <- FALSE
             values$done_drawing <- FALSE
             
-            # Determine Parameters
+            # Separate r2d3 part for exponential log study and eyefitting study
             if(values$parm_id %in% c(1,2,3,4)){
+                
+                # Access Parameters
                 parms   <- exp_parameter_details[values$parm_id,]
+                
+                # Obtain Data
+                point_data <- simulated_data %>%
+                    filter(dataset == "point_data", parm_id == values$parm_id)
+                line_data <- simulated_data %>%
+                    filter(dataset == "line_data", parm_id == values$parm_id)
+                data <- list(point_data = point_data, line_data = line_data)
+                
+                # Store data for feedback later
+                line_data %>%
+                    select(parm_id, x, y) %>%
+                    filter(x >= parms$x_max*parms$draw_start_scale) %>%
+                    line_data_storage()
+                
+                # Set up ranges
+                y_range <- range(data$line_data[,"y"]) * c(parms$ymin_scale, parms$ymax_scale)
+                x_range <- range(data$line_data[,"x"])
+                
+                # Include the you draw it graph
+                drawr(data              = data,
+                      aspect_ratio      = parms$aspect_ratio,
+                      linear            = values$linear,
+                      free_draw         = parms$free_draw,
+                      points            = parms$points_choice,
+                      x_by              = parms$x_by,
+                      draw_start        = parms$x_max*parms$draw_start_scale,
+                      points_end        = parms$x_max*parms$points_end_scale,
+                      show_finished     = input$show_finished,
+                      shiny_message_loc = message_loc,
+                      x_range           = x_range,
+                      y_range           = y_range)
+                
             } else {
+                
+                # Access Parameters
                 parms   <- eyefitting_parameter_details[values$parm_id,]
+                
+                # Obtain Data
+                point_data <- simulated_data %>%
+                    filter(dataset == "point_data", parm_id == values$parm_id)
+                line_data <- simulated_data %>%
+                    filter(dataset == "line_data", parm_id == values$parm_id)
+                data <- list(point_data = point_data, line_data = line_data)
+                
+                # Store data for feedback later
+                line_data %>%
+                    select(parm_id, x, y) %>%
+                    line_data_storage()
+                
+                # Set up ranges
+                eyefitting_all_data <- simulated_data %>%
+                    filter(parm_id %in% c("S","F","V","N"))
+                y_range <- range(eyefitting_all_data$y) * c(1.1, 1.1)
+                x_range <- c(min(eyefitting_all_data$x), max(eyefitting_all_data$x))
+                
+                # Include the you draw it graph
+                drawr(data              = data,
+                      aspect_ratio      = 1,
+                      linear            = "true",
+                      free_draw         = TRUE,
+                      points            = ,
+                      x_by              = parms$x_by,
+                      draw_start        = 5,
+                      points_end        = 20,
+                      show_finished     = input$show_finished,
+                      shiny_message_loc = message_loc,
+                      x_range           = x_range,
+                      y_range           = y_range)
             }
             
-            # Obtain Data
-            point_data <- simulated_data %>%
-              filter(dataset == "point_data", parm_id == values$parm_id)
-            line_data <- simulated_data %>%
-              filter(dataset == "line_data", parm_id == values$parm_id)
-            data <- list(point_data = point_data, line_data = line_data)
-            
-            # Store data for feedback
-            line_data %>%
-                select(parm_id, x, y) %>%
-                filter(x >= parms$x_max*parms$draw_start_scale) %>%
-                line_data_storage()
-            
-            y_range <- range(data$line_data[,"y"]) * c(parms$ymin_scale, parms$ymax_scale)
-            x_range <- range(data$line_data[,"x"])
-            
-            # Include the you draw it graph
-            drawr(data              = data,
-                  aspect_ratio      = parms$aspect_ratio,
-                  linear            = values$linear,
-                  free_draw         = parms$free_draw,
-                  points            = parms$points_choice,
-                  x_by              = parms$x_by,
-                  draw_start        = parms$x_max*parms$draw_start_scale,
-                  points_end        = parms$x_max*parms$points_end_scale,
-                  show_finished     = input$show_finished,
-                  shiny_message_loc = message_loc,
-                  x_range           = x_range,
-                  y_range           = y_range)
 
             }) # end WithProgress
     }) # end renderD3

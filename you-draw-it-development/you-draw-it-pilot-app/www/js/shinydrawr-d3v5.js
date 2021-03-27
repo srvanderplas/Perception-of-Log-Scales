@@ -227,30 +227,38 @@ function draw_points({svg, point_data, points_end, points}, scales){
     
 }
 
-function draw_rectangle({svg, drawable_points, draw_start, width, height, free_draw, x_by}, scales){
+function draw_rectangle({svg, drawable_points, line_data, draw_start, width, height, free_draw, x_by}, scales){
 
 
     if(get_user_line_status(state) === 'unstarted'){
       if(free_draw){
-         var drawSpace = 0
+         var xmin = line_data[0].x
+         var len  = line_data.length - 1
+         var xmax = line_data[len].x
+         var drawSpace_start = scales.x(xmin)
+         var drawSpace_end   = scales.x(xmax)
        } else {
-         var drawSpace = scales.x(draw_start)
+         var drawSpace_start = scales.x(draw_start)
+         var drawSpace_end   = state.w
        }
     } else {
       if(get_user_line_status(state) === 'done'){
-        drawSpace = scales.x(1000000)
+        var drawSpace_start = scales.x(1000000)
       } else {
         var df = drawable_points.filter(function(d){return (d.y === null)});
-        var minx = df[0].x - x_by
-        var drawSpace = scales.x(minx) 
+        var xmin = df[0].x - x_by
+        var len  = line_data.length - 1
+        var xmax = line_data[len].x
+        var drawSpace_start = scales.x(xmin)
+        var drawSpace_end   = scales.x(xmax)
       }
     }
 
     const draw_region = state.svg.selectAppend("rect");
 
     draw_region
-      .attr("x", drawSpace)
-      .attr("width", state.w - drawSpace)
+      .attr("x", drawSpace_start)
+      .attr("width",drawSpace_end - drawSpace_start)
       .attr("y", 0)
       .attr("height", state.h)
       //.style("fill", "#e0f3f3")
