@@ -111,6 +111,14 @@ fluidPage(
                                  "Some Graduate Courses",
                                  "Graduate Degree",
                                  "Prefer not to answer")),
+      selectizeInput("recruitment",
+                     "How were you recruited for participation in this study?",
+                     choices = c("", "Reddit",
+                                 "Prolific",
+                                 "Graphics Group",
+                                 "Direct Email",
+                                 "I am the researcher",
+                                 "Other")),
 
       actionButton("submitdemo", "Submit Demographics", class = "btn btn-info")
     ),

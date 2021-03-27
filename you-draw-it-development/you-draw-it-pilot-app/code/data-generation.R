@@ -57,25 +57,11 @@ expDataGen <-
   }
 
 # Simulate Data ------------------------------------------------------
-# exp_parameter_details <- data.frame(beta = c(0.1, 0.23), sd = c(0.09, 0.25)) %>%
-#                   expand_grid(points_end_scale = c(0.5, 0.75), 
-#                               points_choice = "partial", 
-#                               N = 30, 
-#                               aspect_ratio = 1, 
-#                               free_draw = FALSE, 
-#                               x_min = 0,
-#                               x_max = 20,
-#                               x_by = 0.25,
-#                               ymin_scale = 0.5,
-#                               ymax_scale = 2,
-#                               draw_start_scale = 0.5,
-#                               #linear = c("true", "false")
-#                               ) %>%
-#                   rownames_to_column("parm_id")
 
 library(RSQLite)
 library(DBI)
 sqlite.driver <- dbDriver("SQLite")
+
 con <- dbConnect(sqlite.driver, dbname = "you_draw_it_exp_data.db")
   exp_parameter_details <- dbReadTable(con, "exp_parameter_details")
 dbDisconnect(con)
@@ -91,14 +77,6 @@ exp_data <- exp_parameter_details %>%
                                  x_by  = x_by), expDataGen)) %>%
   unnest(data) %>%
   unnest(data)
-
-
-# point_data <- exp_data %>%
-#   filter(dataset == "point_data", parm_id == 1)
-# line_data <- exp_data %>%
-#   filter(dataset == "line_data", parm_id == 1)
-# data <- list(point_data = point_data, line_data = line_data)
-# data_to_json(data)
 
 
 

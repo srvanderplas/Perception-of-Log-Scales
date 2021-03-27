@@ -141,6 +141,7 @@ dbDisconnect(con)
 
 shinyServer(function(input, output, session) {
 # This needs to be run every connection, not just once.
+    study_starttime = now()
     source("code/randomization.R")
     source("code/data-generation.R")
 
@@ -247,16 +248,28 @@ shinyServer(function(input, output, session) {
             age <- ifelse(is.null(input$age), "", input$age)
             gender <- ifelse(is.null(input$gender), "", input$gender)
             academic_study <- ifelse(is.null(input$education), "", input$education)
+            recruitment <- ifelse(is.null(input$recruitment), "", input$recruitment)
 
             demoinfo <- data.frame(nick_name = input$nickname,
+                                   study_starttime = study_starttime,
                                    age = age,
                                    gender = gender,
                                    academic_study = academic_study,
-                                   ip_address = "",
-                                   time = now()
+                                   recruitment = recruitment,
+                                   ip_address = ""
                                    )
 
             dbWriteTable(con, "users", demoinfo, append = TRUE, row.names = FALSE)
+            
+            simulated_data <- exp_data %>%
+                dplyr::select(parm_id, dataset, x, y) %>%
+                mutate(ip_address = input$ipid,
+                       nick_name = input$nickname,
+                       study_starttime = study_starttime
+                )
+            
+            dbWriteTable(con, "simulated_data", simulated_data, append = TRUE, row.names = FALSE)
+            
             dbDisconnect(con)
 
             updateCheckboxInput(session, "ready", value = TRUE)
@@ -314,10 +327,10 @@ shinyServer(function(input, output, session) {
                 values$result <- "Submitted!"
 
                 test <- drawn_data() %>%
-                            mutate(parm_id = values$parm_id,
-                                   linear  = values$linear,
+                            mutate(linear  = values$linear,
                                    ip_address = input$ipid, 
                                    nick_name = input$nickname,
+                                   study_starttime = study_starttime,
                                    start_time = values$starttime, 
                                    end_time = now()
                                    )
