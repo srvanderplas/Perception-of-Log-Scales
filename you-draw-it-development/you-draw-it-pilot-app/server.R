@@ -151,6 +151,7 @@ shinyServer(function(input, output, session) {
         question = experiment$question,
         pics = NULL,
         submitted = FALSE, 
+        done_drawing = FALSE,
         choice = NULL,
         starttime = NULL,
         trialsreq  = experiment$trials_req,
@@ -295,9 +296,9 @@ shinyServer(function(input, output, session) {
 
     # Enable submit button if the experiment progresses to ___ stage
     observe({
-        # if (is.null(input$response_no) || input$response_no == "") {
+        if (!(values$done_drawing)) {
             enable("submit")
-        # }
+        }
     })
 
     observeEvent(input$submit, {
@@ -308,11 +309,11 @@ shinyServer(function(input, output, session) {
             # all(strsplit(response, ",")[[1]] %in% 1:20) &&
             values$ydippleft > 0 &&
             # (length(input$reasoning) > 0 || (nchar(input$other) > 0)) &&
-            # nchar(input$certain) > 0 &&
+            values$done_drawing &&
             !any(input$dimension < window_dim_min)) {
 
             # Things to do when responses are all filled in and submitted
-            # disable("submit")
+            disable("submit")
 
             # reason <- input$reasoning
             # if ("Other" %in% reason || input$otheronly) {
@@ -370,7 +371,7 @@ shinyServer(function(input, output, session) {
             values$submitted <- TRUE
         } else {
             # Don't let them move ahead without doing the trial
-            showNotification("Please fill in all of the boxes.")
+            showNotification("Please finish drawing the trend for the entire yellow box region.")
         }
     })
 
@@ -378,6 +379,7 @@ shinyServer(function(input, output, session) {
     message_loc <- session$ns("drawr_message")
     drawn_data <- shiny::reactiveVal()
     line_data_storage <- shiny::reactiveVal()
+    done_drawing  <- shiny::reactiveVal()
     
     # This renders the you draw it graph
     output$shinydrawr <- r2d3::renderD3({
@@ -401,7 +403,8 @@ shinyServer(function(input, output, session) {
             values$linear  <- randomization_dataset$linear[parm_ids[values$ydipp - values$ydippleft + 1]]
 
             # Reset UI selections
-            values$submitted <- FALSE
+            values$submitted    <- FALSE
+            values$done_drawing <- FALSE
             
             # Determine Parameters
             parms   <- exp_parameter_details[values$parm_id,]
@@ -446,11 +449,9 @@ shinyServer(function(input, output, session) {
             line_data %>%
             mutate(ydrawn = input$drawr_message) %>%
                 drawn_data()
+            
+            values$done_drawing <- TRUE
         
     })
-    
-    # output$drawrmessage <- DT::renderDataTable({
-    #     drawn_data()
-    # })
     
 }) # End app definition
