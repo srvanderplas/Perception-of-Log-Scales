@@ -28,7 +28,7 @@ See `code/randomization.R`.
 
 # Data Files
 + See `you_draw_it_data.db`.
-+ Data file and field descriptions can be found in `data/data-manifest.md`.
++ Data file and field descriptions can be found in `data/README.md`.
 
 # Results
 + [Github Repo](https://github.com/srvanderplas/Perception-of-Log-Scales/tree/master/you-draw-it-development/you-draw-it-pilot-app)
