@@ -33,7 +33,7 @@
         + **sigma:**
         + **x_min:**
         + **x_max:**
-    + simulated_data (NEED TO ADD USER INFORMATION HERE!!!)
+    + simulated_data
         + **dataset:**
         + **parm_id:**
         + **x:**
