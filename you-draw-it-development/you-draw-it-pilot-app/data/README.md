@@ -41,8 +41,6 @@
         + **ip_address:**
         + **nick_name:**
         + **study_starttime:**
-        + **start_time:**
-        + **end_time:**
     + feedback
         + **parm_id:**
         + **x:**

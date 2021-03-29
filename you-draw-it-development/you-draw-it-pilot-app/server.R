@@ -263,14 +263,14 @@ shinyServer(function(input, output, session) {
 
             dbWriteTable(con, "users", demoinfo, append = TRUE, row.names = FALSE)
             
-            simulated_data <- exp_data %>%
+            simulated_data_db <- simulated_data %>%
                 dplyr::select(parm_id, dataset, x, y) %>%
                 mutate(ip_address = input$ipid,
                        nick_name = input$nickname,
                        study_starttime = study_starttime
                 )
             
-            dbWriteTable(con, "simulated_data", simulated_data, append = TRUE, row.names = FALSE)
+            dbWriteTable(con, "simulated_data", simulated_data_db, append = TRUE, row.names = FALSE)
             
             dbDisconnect(con)
 

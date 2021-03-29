@@ -82,7 +82,7 @@ feedback <- dbReadTable(db_con,"feedback")
 feedback
 
 # Simulated Data ---------------------------------------------------
-simulated_data <- dbReadTable(db_con,"simulated_line_data")
+simulated_data <- dbReadTable(db_con,"simulated_data")
 # simulated_data <- tibble(parm_id    = NA,
 #                          dataset    = NA,
 #                          x          = NA,
@@ -114,4 +114,4 @@ users <- dbReadTable(db_con,"users")
 # users <- dbReadTable(db_con,"users")
 users
 
-# dbDisconnect(db_con)
+dbDisconnect(db_con)
