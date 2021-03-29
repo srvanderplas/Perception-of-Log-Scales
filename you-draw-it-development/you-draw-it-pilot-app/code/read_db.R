@@ -4,7 +4,7 @@ library(tidyverse)
 
 # Connect to data base ---------------------------------------------
 
-filename <- "you-draw-it-development/you-draw-it-pilot-app/you_draw_it_exp_data.db"
+filename <- "you-draw-it-development/you-draw-it-pilot-app/you_draw_it_data.db"
 sqlite.driver <- dbDriver("SQLite")
 db_con <- dbConnect(sqlite.driver, dbname = filename)
 dbListTables(db_con)

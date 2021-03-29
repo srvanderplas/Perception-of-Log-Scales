@@ -130,7 +130,7 @@ addResourcePath("examples", "examples")
 
 window_dim_min <- 400 #c(800, 600) # width, height
 
-con <- dbConnect(sqlite.driver, dbname = "you_draw_it_exp_data.db")
+con <- dbConnect(sqlite.driver, dbname = "you_draw_it_data.db")
 experiment <- dbReadTable(con, "experiment_details")
 if (nrow(experiment) > 1) {
     experiment <- experiment[nrow(experiment),]
@@ -245,7 +245,7 @@ shinyServer(function(input, output, session) {
     # add demographic information to the database
     observeEvent(input$submitdemo, {
         if (!is.null(input$nickname) && nchar(input$nickname) > 0 && !any(input$dimension < window_dim_min)) {
-            con <- dbConnect(sqlite.driver, dbname = "you_draw_it_exp_data.db")
+            con <- dbConnect(sqlite.driver, dbname = "you_draw_it_data.db")
 
             age <- ifelse(is.null(input$age), "", input$age)
             gender <- ifelse(is.null(input$gender), "", input$gender)
@@ -338,7 +338,7 @@ shinyServer(function(input, output, session) {
                                    )
 
                 # Write results to database
-                con <- dbConnect(sqlite.driver, dbname = "you_draw_it_exp_data.db")
+                con <- dbConnect(sqlite.driver, dbname = "you_draw_it_data.db")
                 dbWriteTable(con, "feedback", test, append = TRUE, row.names = FALSE)
                 dbDisconnect(con)
 

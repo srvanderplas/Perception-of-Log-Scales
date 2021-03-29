@@ -125,7 +125,7 @@ library(RSQLite)
 library(DBI)
 sqlite.driver <- dbDriver("SQLite")
 
-con <- dbConnect(sqlite.driver, dbname = "you_draw_it_exp_data.db")
+con <- dbConnect(sqlite.driver, dbname = "you_draw_it_data.db")
   exp_parameter_details        <- dbReadTable(con, "exp_parameter_details")
   eyefitting_parameter_details <- dbReadTable(con, "eyefitting_parameter_details")
 dbDisconnect(con)
