@@ -1072,10 +1072,10 @@
     },
     "r2d3": {
       "Package": "r2d3",
-      "Version": "0.2.3",
+      "Version": "0.2.5",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "967952f9dcb9a201925d583e73b4e927"
+      "Hash": "d9e9c20a829a25d2bdc6706dbc437b7d"
     },
     "rappdirs": {
       "Package": "rappdirs",
