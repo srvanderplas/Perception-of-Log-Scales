@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>You Draw It with r2d3</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Emily Robinson, Susan VanderPlas, and Reka Howard" />
+    <meta name="date" content="2021-04-08" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/metropolis-fonts.css" rel="stylesheet" />
+    <link href="libs/remark-css/metropolis.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/modal.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# You Draw It with r2d3
+## Graphics Group
+### Emily Robinson, Susan VanderPlas, and Reka Howard
+### April 8, 2021
+
+---
+
+
+
+
+
+class:primary
+## Outline
+
++ History of fitting lines by eye
+
++ You Draw It (NYTimes / with r2d3)
+
++ Getting Started with D3.js
+
++ r2d3 + R Shiny
+
++ Let's see how you do!
+
+---
+class:primary
+## Subjective Judgment in Statistical Analysis: An Experimental Study (1951)
+(D. J. Finney; *Journal of the Royal Statistical Society*)
+
++ **Big Idea:** Determine the effect of stopping iterative maximum likelihood calculations after one iteration. Judge by eye the positions for a pair of parallel probit regression lines in a biological assay.
++ **Method:** 
++ **Sample: 21 scientists** 
++ **Experimental Design:** 
++ **Findings:** 
+
+???
++ The subjects for this study were deliberately chosen as. having no' experience of probit methods.
+
+---
+class:primary
+## Eye Fitting Straight Lines (1981)
+(Frederick Mosteller, Andrew F. Siegel, Edward Trapido &amp; Cleo Youtz; *The American Statistician*)
+
+.pull-left[
++ **Big Idea:** Students fitted lines by eye to four sets of points.
++ **Method:** 8.5 x 11 inch transparency with a straight line etched completely across the
+middle.
++ **Sample:** 153 graduate students and post docs in Introductory Biostatistics.
++ **Experimental Design:** Latin square with packets stapled in four different orders.
++ **Findings:** Students tended to fit the slope of the first principal component.
+].pull-right[
+&lt;img src="images/eye-fitting-straight-lines-plots.png" width="85%"/&gt;
+]
+
+???
++ Method involves maneuvering a string, black thread, or ruler until the fit seems satisfactory, and then drawing the line.
++ Sample - most had not studied statistics before
++ Method proposed by Tukey
++ Students tended to fit the slope of the first principal component or major axis (the line that minimizes the sum of squares of perpendicular rather than vertical distances).
++ Students had a slight tendency to choose consistently either steeper or shallower slopes for all sets of data.
++ Individual-to-individual variability in slope and in intercept was near the standard error provided by least squares for the four data sets (no theory encourages us to believe in such relations).
++ Found no trend in the differences due to order.
+
+---
+class:primary
+## NYTimes You Draw It
+.pull-left[
+&lt;img src="images/NYTimesYouDrawIt.png" width="100%"/&gt;
+&lt;font size="2"&gt;https://presentyourstory.com/ny-times-you-draw-it-charts/ &lt;/font&gt;
+].pull-right[
++ [Family Income affects college chances](https://www.nytimes.com/interactive/2015/05/28/upshot/you-draw-it-how-family-income-affects-childrens-college-chances.html)
++ [Just How Bad Is the Drug Overdose Epidemic?](https://www.nytimes.com/interactive/2017/04/14/upshot/drug-overdose-epidemic-you-draw-it.html)
++ [What Got Better or Worse During Obama’s Presidency](https://www.nytimes.com/interactive/2017/01/15/us/politics/you-draw-obama-legacy.html?_r=0)
+]
+
+---
+class:primary
+## You Draw It with `r2d3`
+.pull-left[
+&lt;img src="images/exponential_example.gif" width="100%"/&gt;
+].pull-right[
+&lt;img src="images/eyefitting_example.gif" width="100%"/&gt;
+]
+
+See [GitHub repository](https://github.com/srvanderplas/Perception-of-Log-Scales/tree/master/you-draw-it-development/you-draw-it-pilot-app) for shinydrawr-d3v5.js and R Shiny code.
+
+---
+class:primary
+## Getting Started with D3.js
+
+`D3.js` is to JavaScript as `ggplot2` is to R
+
+1. [Codecademy: Introduction to JavaScript](https://www.codecademy.com/learn/introduction-to-javascript)
+2. Understand [SVG](http://tutorials.jenkov.com/svg/g-element.html) elements: inspect elements in web browser!
+3. Amelia Wattenberger's Full Stack D3 and Data Visualization Book
+4. Build a basic graphic using [r2d3](https://rstudio.github.io/r2d3/articles/introduction.html)
+5. Modify `D3.js` code until it does what you want!
+
+Resources:
++ [How to learn D3 with no coding experience](https://www.heshameissa.com/blog/learn-d3)
++ [Kiegan's ISU Graphics Group Presentation from Mar 25, 2021](https://kiegan.github.io/talks/graphics-group-r2d3/graphics-group-r2d3.html#1)
+
+---
+class:primary
+## r2d3 ➕ R Shiny
+
+
+```r
+data_to_json &lt;- function(data) {
+    jsonlite::toJSON(data, 
+                     dataframe = "rows", 
+                     auto_unbox = FALSE, 
+                     rownames = TRUE)
+} 
+```
+
+
+```r
+data &lt;- list(line_data, point_data) # Create a list of simulated point and line data
+  r2d3(
+    data = data_to_json(data), # Convert data list to a JSON file
+    script = "shinydrawr-d3v5.js", # Provide the D3.js code file
+    dependencies = c("d3-jetpack"),
+    d3_version= "5", # Specify D3 version
+    options = list(message_loc,
+                   ...) # Communciate parameters from R Shiny to D3.js
+  )
+```
+
+---
+class:primary
+## r2d3 ➕ R Shiny
+
+.center[
+&lt;img src="images/r2d3+shiny.png" width="85%"/&gt;
+]
+???
+To distinguish between code that runs at initialization-time only and code that runs when data changes, organize your code so that the code which responds to data changes is contained within the r2d3.onRender()
+
+An explicit resize handler redraws plot as you resize your browser window 
+
+---
+class:primary
+## Let's see how you do!
+
++ Visit https://emily-robinson.shinyapps.io/you-draw-it-pilot-app/ to participate.
+
++ Share your opinions and feedback as you're drawing!
+
+.center[
+&lt;img src="images/drawing.gif" width="60%"/&gt;
+]
+---
+class:primary
+## References
+&lt;font size="4"&gt;
+.small[
++ Finney, D. J. (1951). Subjective judgment in statistical analysis: An experimental study. Journal of the Royal Statistical Society: Series B (Methodological), 13(2), 284-297.
+
++ Frederick Mosteller , Andrew F. Siegel , Edward Trapido &amp; Cleo Youtz (1981) Eye Fitting Straight Lines, The American Statistician, 35:3, 150-152
+]
+&lt;/font&gt;
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"countIncrementalSlides": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
