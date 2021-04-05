@@ -40,7 +40,9 @@ exp_parameter_details <- dbReadTable(db_con,"exp_parameter_details")
 #                                       draw_start_scale = 0.5,
 #                                       #linear = c("true", "false")
 #                           ) %>%
-#                           rownames_to_column("parm_id")
+#                           rownames_to_column("parm_id") %>%
+#                           mutate(parm_id = paste("exp_", parm_id, sep = "")) %>%
+#                           mutate(parm_id = as.character(parm_id))
 # dbRemoveTable(db_con, "exp_parameter_details")
 # dbWriteTable(db_con,  "exp_parameter_details", exp_parameters_details)
 # exp_parameter_details <- dbReadTable(db_con,"exp_parameter_details")
@@ -55,7 +57,8 @@ eyefitting_parameter_details <- dbReadTable(db_con,"eyefitting_parameter_details
 #                                   slope  = c(0.66, 0.66, 1.98, -0.70),
 #                                   sigma  = c(1.3, 2.8, 1.5, 2.5),
 #                                   x_min   = c(0, 0, 4, 0),
-#                                   x_max   = c(20, 20, 18, 20))
+#                                   x_max   = c(20, 20, 18, 20))  %>%
+#                                   mutate(parm_id = as.character(parm_id))
 # dbRemoveTable(db_con, "eyefitting_parameter_details")
 # dbWriteTable(db_con,  "eyefitting_parameter_details", eyefitting_parameter_details)
 # eyefitting_parameter_details <- dbReadTable(db_con,"eyefitting_parameter_details")
@@ -64,7 +67,8 @@ eyefitting_parameter_details
 # Feedback Drawn Data ---------------------------------------------------
 
 feedback <- dbReadTable(db_con,"feedback")
-# feedback <- tibble(parm_id    = NA,
+unique(feedback$parm_id)
+# feedback <- tibble(parm_id    = "test",
 #                    x          = NA,
 #                    y          = NA,
 #                    ydrawn     = NA,
@@ -80,10 +84,14 @@ feedback <- dbReadTable(db_con,"feedback")
 # dbWriteTable(db_con, "feedback", feedback)
 # feedback <- dbReadTable(db_con, "feedback")
 feedback
+feedback %>%
+  select(parm_id, linear) %>%
+  unique() %>%
+  arrange(parm_id, linear)
 
 # Simulated Data ---------------------------------------------------
 simulated_data <- dbReadTable(db_con,"simulated_data")
-# simulated_data <- tibble(parm_id    = NA,
+# simulated_data <- tibble(parm_id    = "test",
 #                          dataset    = NA,
 #                          x          = NA,
 #                          y          = NA,
@@ -96,6 +104,10 @@ simulated_data <- dbReadTable(db_con,"simulated_data")
 # dbWriteTable(db_con, "simulated_data", simulated_data)
 # simulated_data <- dbReadTable(db_con, "simulated_data")
 simulated_data
+simulated_data %>%
+  select(parm_id) %>%
+  unique() %>%
+  arrange(parm_id)
 
 # Users Data ---------------------------------------------------
 

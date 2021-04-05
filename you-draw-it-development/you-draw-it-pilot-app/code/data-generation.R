@@ -156,6 +156,3 @@ eyefitting_data <- eyefitting_parameter_details %>%
   dplyr::select(dataset, parm_id, x, y)
 
 simulated_data <- rbind(exp_data, eyefitting_data)
-
-
-

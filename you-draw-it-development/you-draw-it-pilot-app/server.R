@@ -160,7 +160,7 @@ shinyServer(function(input, output, session) {
         ydipp   = experiment$ydi_pp,
         ydippleft = experiment$ydi_pp,
         parms = 0,
-        parm_id = 1,
+        parm_id = "exp_1",
         linear  = NULL,
         result = "")
 
@@ -267,7 +267,8 @@ shinyServer(function(input, output, session) {
                 dplyr::select(parm_id, dataset, x, y) %>%
                 mutate(ip_address = input$ipid,
                        nick_name = input$nickname,
-                       study_starttime = study_starttime
+                       study_starttime = study_starttime,
+                       parm_id = as.character(parm_id)
                 )
             
             dbWriteTable(con, "simulated_data", simulated_data_db, append = TRUE, row.names = FALSE)
@@ -334,7 +335,8 @@ shinyServer(function(input, output, session) {
                                    nick_name = input$nickname,
                                    study_starttime = study_starttime,
                                    start_time = values$starttime, 
-                                   end_time = now()
+                                   end_time = now(),
+                                   parm_id = as.character(parm_id)
                                    )
 
                 # Write results to database
@@ -408,10 +410,11 @@ shinyServer(function(input, output, session) {
             values$done_drawing <- FALSE
             
             # Separate r2d3 part for exponential log study and eyefitting study
-            if(values$parm_id %in% c(1,2,3,4)){
+            if(values$parm_id %in% c("exp_1","exp_2","exp_3","exp_4")){
                 
                 # Access Parameters
-                parms   <- exp_parameter_details[values$parm_id,]
+                parms   <- exp_parameter_details %>% 
+                    filter(parm_id == values$parm_id)
                 
                 # Obtain Data
                 point_data <- simulated_data %>%
@@ -447,7 +450,8 @@ shinyServer(function(input, output, session) {
             } else {
                 
                 # Access Parameters
-                parms   <- eyefitting_parameter_details[values$parm_id,]
+                parms   <- eyefitting_parameter_details %>%
+                    filter(parm_id == values$parm_id)
                 
                 # Obtain Data
                 point_data <- simulated_data %>%
