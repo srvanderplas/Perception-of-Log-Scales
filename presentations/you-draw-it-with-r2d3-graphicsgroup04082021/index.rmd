@@ -205,6 +205,7 @@ data_to_json <- function(data) {
 
 ```{r r2d3, include = T, echo = T, eval = F}
 data <- list(line_data, point_data) # Create a list of simulated point and line data
+message_loc <- session$ns("drawr_message") # Create storage for data from d3.js
   r2d3(
     data = data_to_json(data), # Convert data list to a JSON file
     script = "shinydrawr-d3v5.js", # Provide the D3.js code file
