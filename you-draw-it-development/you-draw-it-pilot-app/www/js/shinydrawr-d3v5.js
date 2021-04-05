@@ -111,8 +111,6 @@ function start_drawer(state, reset = true){
   }
   
   // invert from pixle to data scale when they draw their points
-  // THIS IS WHERE WE SET A SPECIFIC NUMBER OF POINTS THAT CAN BE DRAWN CORRESPONDING TO 1/2 UNITS ON DATA SCALE...MAKES IT CLUNKY: CONTROLED BY TIBBLE
-  // ISSUES HERE!!!
   const on_drag = function(){
     const drag_x = scales.x.invert(d3.event.x);
     const drag_y = scales.y.invert(d3.event.y);
