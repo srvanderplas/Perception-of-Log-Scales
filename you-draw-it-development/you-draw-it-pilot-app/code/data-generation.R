@@ -122,7 +122,7 @@ linearDataGen <-
 # ------------------------------------------------------------------------------
 
 # library(RSQLite)
-library(DBI)
+# library(DBI)
 # sqlite.driver <- dbDriver("SQLite")
 
 # con <- dbConnect(sqlite.driver, dbname = "you_draw_it_data.db")
@@ -131,6 +131,7 @@ library(DBI)
 # dbDisconnect(con)
   
 library(RMySQL)
+library(DBI)
 conn <- DBI::dbConnect(RMySQL::MySQL(),
                        host = "srvanderplas.com",
                        dbname = "log_scales",

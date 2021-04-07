@@ -153,6 +153,7 @@ feedback2 <- dbReadTable(conn, "feedback", row.names = NULL)
 eyefitting_parameter_details2 <- dbReadTable(conn, "eyefitting_parameter_details", row.names = NULL)
 exp_parameter_details2 <- dbReadTable(conn, "exp_parameter_details", row.names = NULL)
 experiment_details2 <- dbReadTable(conn, "experiment_details", row.names = NULL)
+
 dbDisconnect(conn)
 
 # dbRemoveTable(conn, "users")
