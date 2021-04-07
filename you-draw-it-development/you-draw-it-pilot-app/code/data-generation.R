@@ -18,7 +18,7 @@ expDataGen <-
     points_end_scale <- ifelse(points_choice == "full", 1, points_end_scale)
     
     # Set up x values
-    xVals <- seq(0, x_max*points_end_scale, length.out = floor(N*3/4))
+    xVals <- seq(0, x_max*points_end_scale, length.out = floor(N*1))
     xVals <- sample(xVals, N, replace = TRUE)
     xVals <- jitter(xVals)
     xVals <- ifelse(xVals < x_min, x_min, xVals)
@@ -76,7 +76,7 @@ linearDataGen <-
     points_end_scale <- ifelse(points_choice == "full", 1, points_end_scale)
     
     # Set up x values
-    xVals <- seq(0, x_max*points_end_scale, length.out = floor(N*3/4))
+    xVals <- seq(0, x_max*points_end_scale, length.out = floor(N*1))
     xVals <- sample(xVals, N, replace = TRUE)
     xVals <- jitter(xVals)
     xVals <- ifelse(xVals < x_min, x_min, xVals)

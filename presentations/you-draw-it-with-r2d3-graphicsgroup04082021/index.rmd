@@ -273,9 +273,11 @@ const on_end = function(){
         ...
   };
 ```
+
 ---
 class:primary
 ## r2d3 `r emo::ji("plus")` R Shiny
+
 ```{r r2d3-draw-watcher, include = T, echo = T, eval = F}
 function setup_draw_watcher(svg, scales, on_drag, on_end){
   ...
@@ -286,11 +288,16 @@ function setup_draw_watcher(svg, scales, on_drag, on_end){
   );
 }
 ```
+
+
 ---
 class:primary
 ## Let's see how you do!
+
 + Visit https://emily-robinson.shinyapps.io/you-draw-it-pilot-app/ to participate.
+
 + Share your opinions and feedback as you're drawing!
+
 .center[
 <img src="images/drawing.gif" width="60%"/>
 ]
@@ -300,7 +307,10 @@ class:primary
 <font size="4">
 .small[
 + Finney, D. J. (1951). Subjective judgment in statistical analysis: An experimental study. Journal of the Royal Statistical Society: Series B (Methodological), 13(2), 284-297.
+
 + Frederick Mosteller , Andrew F. Siegel , Edward Trapido & Cleo Youtz (1981) Eye Fitting Straight Lines, The American Statistician, 35:3, 150-152
+
 + NYTimes you draw it charts. (2017, January 16). Retrieved April 05, 2021, from https://presentyourstory.com/ny-times-you-draw-it-charts/
 ]
 </font>
+
