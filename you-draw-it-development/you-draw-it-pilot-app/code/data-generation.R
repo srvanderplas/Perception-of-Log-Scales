@@ -121,15 +121,26 @@ linearDataGen <-
 # Simulate Data ----------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
-library(RSQLite)
+# library(RSQLite)
 library(DBI)
-sqlite.driver <- dbDriver("SQLite")
+# sqlite.driver <- dbDriver("SQLite")
 
-con <- dbConnect(sqlite.driver, dbname = "you_draw_it_data.db")
-  exp_parameter_details        <- dbReadTable(con, "exp_parameter_details")
-  eyefitting_parameter_details <- dbReadTable(con, "eyefitting_parameter_details")
-dbDisconnect(con)
+# con <- dbConnect(sqlite.driver, dbname = "you_draw_it_data.db")
+#   exp_parameter_details        <- dbReadTable(con, "exp_parameter_details")
+#   eyefitting_parameter_details <- dbReadTable(con, "eyefitting_parameter_details")
+# dbDisconnect(con)
   
+library(RMySQL)
+conn <- DBI::dbConnect(RMySQL::MySQL(),
+                       host = "srvanderplas.com",
+                       dbname = "log_scales",
+                       user = "emily",
+                       password = "unl-statistics")
+exp_parameter_details <- dbReadTable(conn, "exp_parameter_details", row.names = NULL)
+eyefitting_parameter_details <- dbReadTable(conn, "eyefitting_parameter_details", row.names = NULL)
+dbDisconnect(conn)
+
+
 exp_data <- exp_parameter_details %>%
   mutate(data = purrr::pmap(list(beta  = beta, 
                                  sd    = sd, 
