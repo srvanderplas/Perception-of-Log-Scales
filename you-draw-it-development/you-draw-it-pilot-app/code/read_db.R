@@ -124,13 +124,23 @@ conn <- DBI::dbConnect(RMySQL::MySQL(),
                        user = "emily",
                        password = "unl-statistics")
 
-dbWriteTable(conn, "users", users, overwrite = T, append = F)
-dbWriteTable(conn, "simulated_data", simulated_data, overwrite = T, append = F)
-dbWriteTable(conn, "feedback", feedback, overwrite = T, append = F)
-dbWriteTable(conn,  "eyefitting_parameter_details", eyefitting_parameter_details, overwrite = T, append = F)
-dbWriteTable(conn,  "exp_parameter_details", exp_parameter_details, overwrite = T, append = F)
-dbWriteTable(conn, "experiment_details", experiment_details, overwrite = T, append = F)
+# users <- tibble(nick_name = "needatleast32charactersherexxxxxxx", study_starttime = as.character(lubridate::now()),
+#                 age = 31, gender = 0, academic_study = 0, recruitment = 0, ip_address = "127.0.0.1")
+# dbWriteTable(conn, "users", users, overwrite = T, append = F)
+# simulated_data <- tibble(parm_id= "exp_0", dataset = "point_data", x = 0.000, y = 1.000, ip_address = "127.0.0.1", nick_name = "needatleast32charactersherexxxxxxx", study_starttime = as.character(lubridate::now()))
+# dbWriteTable(conn, "simulated_data", simulated_data, overwrite = T, append = F)
+# feedback <- tibble(parm_id = "exp_0", x = 0.000, y = 0.000, ydrawn = 0.000, linear = T, ip_address = "127.0.0.1", nick_name = "needatleast32charactersherexxxxxxx", study_starttime = as.character(lubridate::now()), start_time = as.character(lubridate::now()), end_time = as.character(lubridate::now()))
+# dbWriteTable(conn, "feedback", feedback, overwrite = T, append = F)
+# dbWriteTable(conn,  "eyefitting_parameter_details", eyefitting_parameter_details, overwrite = T, append = F)
+# dbWriteTable(conn,  "exp_parameter_details", exp_parameter_details, overwrite = T, append = F)
+# dbWriteTable(conn, "experiment_details", experiment_details, overwrite = T, append = F)
 
+users2 <- dbReadTable(conn, "users", row.names = NULL)
+simulated_data2 <- dbReadTable(conn, "simulated_data", row.names = NULL)
+feedback2 <- dbReadTable(conn, "feedback", row.names = NULL)
+eyefitting_parameter_details2 <- dbReadTable(conn, "eyefitting_parameter_details", row.names = NULL)
+exp_parameter_details2 <- dbReadTable(conn, "exp_parameter_details", row.names = NULL)
+experiment_details2 <- dbReadTable(conn, "experiment_details", row.names = NULL)
 dbDisconnect(conn)
 
 # dbRemoveTable(conn, "users")

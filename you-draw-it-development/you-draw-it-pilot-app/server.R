@@ -149,7 +149,7 @@ dbDisconnect(con)
 
 shinyServer(function(input, output, session) {
 # This needs to be run every connection, not just once.
-    study_starttime = now()
+    study_starttime = as.character(now())
     source("code/randomization.R")
     source("code/data-generation.R")
 
@@ -348,7 +348,7 @@ shinyServer(function(input, output, session) {
                                    nick_name = input$nickname,
                                    study_starttime = study_starttime,
                                    start_time = values$starttime,
-                                   end_time = now()
+                                   end_time = as.character(now())
                                    )
 
                 # Write results to database
@@ -417,7 +417,7 @@ shinyServer(function(input, output, session) {
             expr = {
             values$submitted
 
-            values$starttime <- now()
+            values$starttime <- as.character(now())
             trial <- as.numeric(values$trialsleft > 0)
 
             # Update reactive values
