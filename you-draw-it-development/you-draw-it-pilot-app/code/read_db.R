@@ -115,3 +115,34 @@ users <- dbReadTable(db_con,"users")
 users
 
 dbDisconnect(db_con)
+
+
+library(RMySQL)
+conn <- DBI::dbConnect(RMySQL::MySQL(),
+                       host = "srvanderplas.com",
+                       dbname = "log_scales",
+                       user = "emily",
+                       password = "unl-statistics")
+
+dbWriteTable(conn, "users", users, overwrite = T, append = F)
+dbWriteTable(conn, "simulated_data", simulated_data, overwrite = T, append = F)
+dbWriteTable(conn, "feedback", feedback, overwrite = T, append = F)
+dbWriteTable(conn,  "eyefitting_parameter_details", eyefitting_parameter_details, overwrite = T, append = F)
+dbWriteTable(conn,  "exp_parameter_details", exp_parameter_details, overwrite = T, append = F)
+dbWriteTable(conn, "experiment_details", experiment_details, overwrite = T, append = F)
+
+dbDisconnect(conn)
+
+# dbRemoveTable(conn, "users")
+# dbWriteTable(conn, "users", users, append = T)
+# users2 <- dbReadTable(conn,"users")
+
+
+devtools::install_github("r-lib/keyring")
+keyring::key_set(service = "my-database", username = "emily") # password is one sent to you by email.
+
+# gets username
+keyring::key_list("my-database")[1,2]
+# gets password
+keyring::key_get("my-database", keyring::key_list("my-database")[1,2])
+
