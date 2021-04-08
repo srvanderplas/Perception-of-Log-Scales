@@ -197,7 +197,7 @@ fluidPage(
                      #)
     ),
     hr(),
-    d3Output("shinydrawr", 
+    d3Output("shinydrawr",
              height = "500px") #,
     # hr(),
     # p("Recorded Data:"),
