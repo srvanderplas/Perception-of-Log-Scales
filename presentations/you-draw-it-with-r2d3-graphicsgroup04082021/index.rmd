@@ -318,13 +318,17 @@ function setup_draw_watcher(svg, scales, on_drag, on_end){
 class:primary
 ## Let's see how you do!
 
-+ Visit https://emily-robinson.shinyapps.io/you-draw-it-pilot-app/ to participate.
++ Visit https://shiny.srvanderplas.com/eye-fitting/ to participate.
 
 + Share your opinions and feedback as you're drawing!
 
 .center[
 <img src="images/drawing.gif" width="60%"/>
 ]
+
+???
+https://emily-robinson.shinyapps.io/you-draw-it-pilot-app/
+
 ---
 class:primary
 ## References
