@@ -146,7 +146,7 @@ middle.
 + **Experimental Design:** Latin square with packets stapled in four different orders.
 + **Findings:** Students tended to fit the slope of the first principal component.
 ].pull-right[
-<img src="images/eye-fitting-straight-lines-plots.png" width="85%"/>
+<img src="images/eyefitting-straight-lines-plots.png" width="85%"/>
 ]
 
 ???
