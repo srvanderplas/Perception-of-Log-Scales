@@ -13,12 +13,19 @@ httr::POST("https://hc-ping.com/00fb59c2-a334-44ad-899a-1927e3d18023/start")
 # Check repo status
 status <- git2r::status()
 
+tmp <- status$unstaged
+modified <- names(tmp) == "modified"
+modified <- unlist(tmp[modified])
+
 # If db has been modified
-if ("lineups-pilot-app/exp_data.db" %in% status$unstaged$modified) {
+if ("lineups-pilot-app/exp_data.db" %in% modified |
+    "you-draw-it-development/you-draw-it-pilot-app/you_draw_it_data.db" %in% modified) {
 
   # Add changed db to commit and commit
   git2r::add(repo = '.', "lineups-pilot-app/exp_data.db")
-  git2r::commit("lineups-pilot-app/exp_data.db", message = "Update data")
+  try(git2r::commit("lineups-pilot-app/exp_data.db", message = "Update lineup data"))
+  git2r::add(repo = '.', "you-draw-it-development/you-draw-it-pilot-app/you_draw_it_data.db")
+  try(git2r::commit("you-draw-it-development/you-draw-it-pilot-app/you_draw_it_data.db", message = "Update you-draw-it data"))
 
   # Update
   git2r::pull(repo = repo, credentials = cred)
