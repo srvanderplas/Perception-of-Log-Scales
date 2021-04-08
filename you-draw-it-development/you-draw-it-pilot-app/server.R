@@ -28,44 +28,44 @@ library(gridSVG)
 # ----------------------------------------------------------------------------------------------------
 
 data_to_json <- function(data) {
-    jsonlite::toJSON(data, 
-                     dataframe = "rows", 
-                     auto_unbox = FALSE, 
+    jsonlite::toJSON(data,
+                     dataframe = "rows",
+                     auto_unbox = FALSE,
                      rownames = TRUE)
-} 
+}
 
 # ----------------------------------------------------------------------------------------------------
 # Redefine drawr function --------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------
 
-drawr <- function(data, 
-                  linear            = "true", 
+drawr <- function(data,
+                  linear            = "true",
                   draw_start        = NULL,
                   points_end        = NULL,
                   x_by              = 0.25,
                   free_draw         = T,
                   points            = "partial",
                   aspect_ratio      = 1.5,
-                  title             = "", 
-                  x_range           = NULL, 
+                  title             = "",
+                  x_range           = NULL,
                   y_range           = NULL,
-                  x_lab             = "", 
-                  y_lab             = "", 
+                  x_lab             = "",
+                  y_lab             = "",
                   drawn_line_color  = "steelblue",
-                  data_tab1_color   = "steelblue", 
-                  x_axis_buffer     = 0.01, 
+                  data_tab1_color   = "steelblue",
+                  x_axis_buffer     = 0.01,
                   y_axis_buffer     = 0.05,
                   show_finished     = T,
                   shiny_message_loc = NULL) {
-    
+
     line_data  <- data$line_data
     point_data <- data$point_data
-    
+
     x_min <- min(line_data$x)
     x_max <- max(line_data$x)
     y_min <- min(line_data$y)
     y_max <- max(line_data$y)
-    
+
     if (is.null(x_range)) {
         x_buffer <- (x_max - x_min) * x_axis_buffer
         x_range <- c(x_min - x_buffer, x_max + x_buffer)
@@ -83,33 +83,33 @@ drawr <- function(data,
             stop("Supplied y range doesn't cover data fully.")
         }
     }
-    
+
     if ((draw_start <= x_min) | (draw_start >= x_max)) {
         stop("Draw start is out of data range.")
     }
-    
-    r2d3::r2d3(data   = data_to_json(data), 
+
+    r2d3::r2d3(data   = data_to_json(data),
                script = "www/js/shinydrawr-d3v5.js",
                dependencies = c("d3-jetpack"),
                d3_version = "5",
-               options = list(draw_start        = draw_start, 
+               options = list(draw_start        = draw_start,
                               points_end        = points_end,
                               linear            = as.character(linear),
-                              free_draw         = free_draw, 
+                              free_draw         = free_draw,
                               points            = points,
                               aspect_ratio      = aspect_ratio,
-                              pin_start         = T, 
+                              pin_start         = T,
                               x_range           = x_range,
                               x_by              = x_by,
                               y_range           = y_range,
                               line_style        = NULL,
-                              data_tab1_color   = data_tab1_color, 
+                              data_tab1_color   = data_tab1_color,
                               drawn_line_color  = drawn_line_color,
                               show_finished     = show_finished,
                               shiny_message_loc = shiny_message_loc,
                               title             = title)
     )
-    
+
 }
 
 # ----------------------------------------------------------------------------------------------------
@@ -151,7 +151,7 @@ shinyServer(function(input, output, session) {
         experiment = experiment$experiment,
         question = experiment$question,
         pics = NULL,
-        submitted = FALSE, 
+        submitted = FALSE,
         done_drawing = FALSE,
         choice = NULL,
         starttime = NULL,
@@ -216,26 +216,10 @@ shinyServer(function(input, output, session) {
         return(paste0("Example 1: ", values$question))
     })
 
-    # output$example1_plot <- renderImage({
-    #     if (is.null(values$experiment)) return(NULL)
-    # 
-    #     list(src = file.path("examples", "example1.png"),
-    #          contentType = 'image/png',
-    #          style = "max-width:100%; max-height:100%"
-    #          )
-    # }, deleteFile = FALSE)
 
     output$example2_q <- renderText({
         return(paste0("Example 2: ", values$question))
     })
-
-    # output$example2_plot <- renderImage({
-    #     if (is.null(values$experiment)) return(NULL)
-    # 
-    #     list(src = file.path("examples", "example2.png"),
-    #          contentType = 'image/png',
-    #          style = "max-width:100%; max-height: 100%")
-    # }, deleteFile = FALSE)
 
     # ---- Demographic information ---------------------------------------------
     output$demo_text <- renderText({
@@ -262,7 +246,7 @@ shinyServer(function(input, output, session) {
                                    )
 
             dbWriteTable(con, "users", demoinfo, append = TRUE, row.names = FALSE)
-            
+
             simulated_data_db <- simulated_data %>%
                 dplyr::select(parm_id, dataset, x, y) %>%
                 mutate(ip_address = input$ipid,
@@ -270,9 +254,9 @@ shinyServer(function(input, output, session) {
                        study_starttime = study_starttime,
                        parm_id = as.character(parm_id)
                 )
-            
+
             dbWriteTable(con, "simulated_data", simulated_data_db, append = TRUE, row.names = FALSE)
-            
+
             dbDisconnect(con)
 
             updateCheckboxInput(session, "ready", value = TRUE)
@@ -331,10 +315,10 @@ shinyServer(function(input, output, session) {
 
                 test <- drawn_data() %>%
                             mutate(linear  = values$linear,
-                                   ip_address = input$ipid, 
+                                   ip_address = input$ipid,
                                    nick_name = input$nickname,
                                    study_starttime = study_starttime,
-                                   start_time = values$starttime, 
+                                   start_time = values$starttime,
                                    end_time = now(),
                                    parm_id = as.character(parm_id)
                                    )
@@ -383,7 +367,7 @@ shinyServer(function(input, output, session) {
     drawn_data <- shiny::reactiveVal()
     line_data_storage <- shiny::reactiveVal()
     done_drawing  <- shiny::reactiveVal()
-    
+
     # This renders the you draw it graph
     output$shinydrawr <- r2d3::renderD3({
         if (values$ydippleft == 0 || !input$ready || any(input$dimension < window_dim_min)) return(NULL)
@@ -408,31 +392,31 @@ shinyServer(function(input, output, session) {
             # Reset UI selections
             values$submitted    <- FALSE
             values$done_drawing <- FALSE
-            
+
             # Separate r2d3 part for exponential log study and eyefitting study
             if(values$parm_id %in% c("exp_1","exp_2","exp_3","exp_4")){
-                
+
                 # Access Parameters
-                parms   <- exp_parameter_details %>% 
+                parms   <- exp_parameter_details %>%
                     filter(parm_id == values$parm_id)
-                
+
                 # Obtain Data
                 point_data <- simulated_data %>%
                     filter(dataset == "point_data", parm_id == values$parm_id)
                 line_data <- simulated_data %>%
                     filter(dataset == "line_data", parm_id == values$parm_id)
                 data <- list(point_data = point_data, line_data = line_data)
-                
+
                 # Store data for feedback later
                 line_data %>%
                     select(parm_id, x, y) %>%
                     filter(x >= parms$x_max*parms$draw_start_scale) %>%
                     line_data_storage()
-                
+
                 # Set up ranges
                 y_range <- range(data$line_data[,"y"]) * c(parms$ymin_scale, parms$ymax_scale)
                 x_range <- range(data$line_data[,"x"])
-                
+
                 # Include the you draw it graph
                 drawr(data              = data,
                       aspect_ratio      = parms$aspect_ratio,
@@ -446,31 +430,31 @@ shinyServer(function(input, output, session) {
                       shiny_message_loc = message_loc,
                       x_range           = x_range,
                       y_range           = y_range)
-                
+
             } else {
-                
+
                 # Access Parameters
                 parms   <- eyefitting_parameter_details %>%
                     filter(parm_id == values$parm_id)
-                
+
                 # Obtain Data
                 point_data <- simulated_data %>%
                     filter(dataset == "point_data", parm_id == values$parm_id)
                 line_data <- simulated_data %>%
                     filter(dataset == "line_data", parm_id == values$parm_id)
                 data <- list(point_data = point_data, line_data = line_data)
-                
+
                 # Store data for feedback later
                 line_data %>%
                     select(parm_id, x, y) %>%
                     line_data_storage()
-                
+
                 # Set up ranges
                 eyefitting_all_data <- simulated_data %>%
                     filter(parm_id %in% c("S","F","V","N"))
                 y_range <- range(eyefitting_all_data$y) * c(1.1, 1.1)
                 x_range <- c(min(eyefitting_all_data$x), max(eyefitting_all_data$x))
-                
+
                 # Include the you draw it graph
                 drawr(data              = data,
                       aspect_ratio      = 1,
@@ -485,21 +469,21 @@ shinyServer(function(input, output, session) {
                       x_range           = x_range,
                       y_range           = y_range)
             }
-            
+
 
             }) # end WithProgress
     }) # end renderD3
-    
+
     shiny::observeEvent(input$drawr_message, {
-        
+
             line_data <- line_data_storage()
-        
+
             line_data %>%
             mutate(ydrawn = input$drawr_message) %>%
                 drawn_data()
-            
+
             values$done_drawing <- TRUE
-        
+
     })
-    
+
 }) # End app definition
