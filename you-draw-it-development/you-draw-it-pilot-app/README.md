@@ -25,8 +25,11 @@ Emily Robinson, Susan VanderPlas, Reka Howard
 + Parameter combinations were selected to simulate data that replicates the data sets (S, F, V, N) in [Eye Fitting Straight Lines (1981)](https://www.tandfonline.com/doi/abs/10.1080/00031305.1981.10479335).
 + Visit [Eye Fitting Straight Lines in the Modern Era](https://emily-robinson.shinyapps.io/you-draw-it-parameter-selection/) for examples.
 
-In parameters: y_xbar, slope, sigma, N = 30, xmin, xmax, xby
-Out: data list of point data and line data
+*Algorithm: Linear Data Generation* `linearDataGen()`
+
+**In parameters:** y_xbar, slope, sigma, N = 30, xmin, xmax, xby
+
+**Out:** data list of point data and line data
 
 1. Randomly select and jitter N = 30 x-values along the domain.
 2. Determine y-intercept at x = 0 from the provided slope and y-intercept at the mean of x (y_xbar).
