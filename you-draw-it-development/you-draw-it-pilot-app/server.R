@@ -460,7 +460,7 @@ shinyServer(function(input, output, session) {
                       aspect_ratio      = 1,
                       linear            = "true",
                       free_draw         = TRUE,
-                      points            = ,
+                      points            = "full",
                       x_by              = parms$x_by,
                       draw_start        = 5,
                       points_end        = 20,
