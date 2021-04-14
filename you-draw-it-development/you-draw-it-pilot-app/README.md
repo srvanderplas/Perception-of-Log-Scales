@@ -40,7 +40,7 @@ Emily Robinson, Susan VanderPlas, Reka Howard
 
 + Specific r2d3 options:
     + aspect ratio = 1
-    + **linear = **
+    + **linear =**
     + free_draw = FALSE
     + points = "partial",
     + x_by = 0.25
