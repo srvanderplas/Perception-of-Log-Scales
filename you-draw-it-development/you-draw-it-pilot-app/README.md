@@ -83,6 +83,9 @@ Emily Robinson, Susan VanderPlas, Reka Howard
     + x_range = c(0,20)
     + y_range = range(all eye fitting data)*c(1.1, 1.1)
 
+# Plot Generation
++ See `www/js/shinydrawr-d3v5.js` for D3.js code.
+
 # Experimental Design
 
 ## Treatment Design
