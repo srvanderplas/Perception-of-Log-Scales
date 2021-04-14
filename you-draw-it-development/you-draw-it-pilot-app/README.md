@@ -107,8 +107,8 @@ Emily Robinson, Susan VanderPlas, Reka Howard
 + The order of each of the 12 plots was randomly assigned for each individual in a CRD.
 
 # Data Files
-+ See `you_draw_it_data.db`.
-+ Data file and field descriptions can be found in `data/README.md`.
++ Data file can be found in `you_draw_it_data.db`.
++ Field descriptions can be found in [data-manifest.md](https://github.com/srvanderplas/Perception-of-Log-Scales/blob/master/you-draw-it-development/you-draw-it-pilot-app/data-manifest.md).
 
 # Results
 + [Github Repo](https://github.com/srvanderplas/Perception-of-Log-Scales/tree/master/you-draw-it-development/you-draw-it-pilot-app)
