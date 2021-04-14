@@ -18,30 +18,58 @@ Emily Robinson, Susan VanderPlas, Reka Howard
 + See `code/data-generation.R` for data simulation functions.
 
 ## Exponential Data
-+ Visit [Exponential Prediction (Log/Linear)](https://emily-robinson.shinyapps.io/you-draw-it-parameter-selection/) for examples.
+
+*Algorithm: Exponential Data Generation* `expDataGen()`
+
+**In parameters:** ***beta***, ***sd***, points_choice = "partial", ***points_end_scale***, N = 30, xmin = 20, xmax = 20, xby = 0.25
+
+**Out:** data list of point data and line data
+
+1. Randomly select and jitter N = 30 x-values along the domain.
+2. Generate "good" errors based on N(0,sd). 
+    + Set constraint of the mean of the first N/3 = 10 errors less than |2*sd|
+3. Simulate point data based on
+    + `y = exp(x*beta + errorVals)`
+4. Obtain starting value for beta
+    + `lm(log(y) ~ x, data = point_data)`
+5. Use NLS to fit a better line to the point data
+    + `nls(y ~ exp(x*beta), data = point_data, ...)`
+6. Simulate nonlinear least squares line data
+    + `y = exp(x*betahat)`
+7. Output data list of point data and line data
+
++ Specific r2d3 options:
+    + aspect ratio = 1
+    + **linear = **
+    + free_draw = FALSE
+    + points = "partial",
+    + x_by = 0.25
+    + draw_start_scale = 0.5 (start drawing at x = 10)
+    + show_finished = T - graphics group / F
+    + x_range = c(0,20)
+    + y_range = range(y-points)*c(0.5, 2)
 
 ## Linear Data
 
 + Parameter combinations were selected to simulate data that replicates the data sets (S, F, V, N) in [Eye Fitting Straight Lines (1981)](https://www.tandfonline.com/doi/abs/10.1080/00031305.1981.10479335).
-+ Visit [Eye Fitting Straight Lines in the Modern Era](https://emily-robinson.shinyapps.io/you-draw-it-parameter-selection/) for examples.
 
 *Algorithm: Linear Data Generation* `linearDataGen()`
 
-**In parameters:** y_xbar, slope, sigma, N = 30, xmin, xmax, xby
+**In parameters:** `y_xbar, slope, sigma, N = 30, xmin, xmax, xby = 0.25`
 
 **Out:** data list of point data and line data
 
 1. Randomly select and jitter N = 30 x-values along the domain.
 2. Determine y-intercept at x = 0 from the provided slope and y-intercept at the mean of x (y_xbar).
-    + Slope-intercept form: y - y_xbar = m(x-xbar)
+    + Slope-intercept form: `y - y_xbar = m(x-xbar)`
 3. Generate "good" errors based on N(0,sigma). 
-    + Set constraint of the mean of the first N/3 = 10 errors less than |2 x sigma|
+    + Set constraint of the mean of the first N/3 = 10 errors less than |2*sigma|
 4. Simulate point data based on
-    + y = yintercept + slope*x + error
+    + `y = yintercept + slope*x + error`
 5. Obtain least squares regression coefficients
-    + lm(y ~ x, data = point_data)
+    + `lm(y ~ x, data = point_data)`
 6. Simulate least squares regression line data
-    + y = yintercepthat + slopehat*x
+    + `y = yintercepthat + slopehat*x`
 7. Output data list of point data and line data
 
 + Specific r2d3 options:
@@ -58,7 +86,7 @@ Emily Robinson, Susan VanderPlas, Reka Howard
 # Experimental Design
 
 ## Treatment Design
-+ Linear (Eye fitting straight lines): 1-way ANOVA with 4 treatments
++ Linear ([Eye fitting straight lines](https://srvanderplas.github.io/Perception-of-Log-Scales/you-draw-it-development/eye-fitting-straight-lines-in-the-modern-era/eye-fitting-straight-lines-in-the-modern-era.html)): 1-way ANOVA with 4 treatments
     + 4 Treatments
       + **S**: positive slope, low variance (y_xbar = 3.88, slope = 0.66, sigma = 1.3, xrange = (0,20))
       + **F**: positive slope, high variance (y_xbar = 3.9, slope = 0.66, sigma = 1.98, xrange = (0,20))
@@ -69,6 +97,8 @@ Emily Robinson, Susan VanderPlas, Reka Howard
     + Beta: 0.1 (sd. 0.09); 0.23 (0.25)
     + Points End: 0.5; 0.75
     + Scale: Linear; Log
+    
++ Visit [You Draw It Development - parameter selection](https://emily-robinson.shinyapps.io/you-draw-it-parameter-selection/) for examples.
 
 ## Experimental Design
 + See `code/randomization.R`.
