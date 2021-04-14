@@ -21,7 +21,7 @@ Emily Robinson, Susan VanderPlas, Reka Howard
 
 *Algorithm: Exponential Data Generation* `expDataGen()`
 
-**In parameters:** ***beta***, ***sd***, points_choice = "partial", ***points_end_scale***, N = 30, xmin = 20, xmax = 20, xby = 0.25
+**In parameters:** `beta, sd, points_choice = "partial", points_end_scale, N = 30, xmin = 20, xmax = 20, xby = 0.25`
 
 **Out:** data list of point data and line data
 
