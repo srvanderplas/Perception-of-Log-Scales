@@ -3,7 +3,7 @@
 + See `you_draw_it_data.db`.
 
 + Completed studies:
-    + xxx (mm/dd/yyyy)
+    + ISU Graphics Group (04-08-2021 at 4:00pm)
 
 + Tables
     + experiment_details
