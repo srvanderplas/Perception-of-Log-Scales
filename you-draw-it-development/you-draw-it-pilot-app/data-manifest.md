@@ -3,7 +3,7 @@
 + See `you_draw_it_data.db`.
 
 + Completed studies:
-  + ISU Graphics Group (04-08-2021 at 4:00pm)
+  + ISU Graphics Group (04-08-2021 at 4:00pm) [Exponential Prediction](https://srvanderplas.github.io/Perception-of-Log-Scales/you-draw-it-development/you-draw-it-pilot-app/analyses/you-draw-it-exponential-prediction-graphics-group-04.08.2021.html), [Eye Fitting Straight Lines]()
 
 + Tables
     + experiment_details

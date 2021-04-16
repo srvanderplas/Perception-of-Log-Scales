@@ -118,4 +118,6 @@ Emily Robinson, Susan VanderPlas, Reka Howard
 + Presentations: 
     + [You Draw It with r2d3 - ISU Graphics Group 04-08-2021](https://srvanderplas.github.io/Perception-of-Log-Scales/presentations/you-draw-it-with-r2d3-graphicsgroup04082021/index.html#1)
 + Manuscripts: 
++ Preliminary Analyses:
+    + ISU Graphics Group (04/08/2021): [Exponential Prediction](https://srvanderplas.github.io/Perception-of-Log-Scales/you-draw-it-development/you-draw-it-pilot-app/analyses/you-draw-it-exponential-prediction-graphics-group-04.08.2021.html), [Eye Fitting Straight Lines]()
 
