@@ -1,0 +1,405 @@
+---
+title: "You Draw It: Exponential Prediction"  
+subtitle: "ISU Graphics Group"
+author: "Emily Robinson"
+date: "April 8, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE,
+	options(knitr.kable.NA = ''), 
+	fig.height = 12, 
+	fig.width = 12,
+	fig.align = 'center'
+)
+library(RSQLite)
+library(DBI)
+library(tidyverse)
+library(lme4)
+library(lmerTest)
+library(emmeans)
+```
+
+## Discussion Points
++ Fix randomization? Not sure what is going on here but some people saw some plots twice and others never.
++ Simulate data across entire domain to fit line through. Seems like 0.5 and 0.75 differ in their estimated lines from `nls()`
+    + Do we want the same data but truncated at different x-values? (e.g. x = 10 and x = 15).
++ How would we compare Sums of Squares over two different curvature levels (i.e. very different domains)?
++ What distribution should Sums of Squares follow? (*log transformation*, Gaussian with a log link, Gamma, Lognormal?)
++ Need a way to measure over / under estimation.
+
+## Data
+
+```{r obtain-data}
+# Connect to database
+filename <- "../you_draw_it_data.db"
+sqlite.driver <- dbDriver("SQLite")
+db_con <- dbConnect(sqlite.driver, dbname = filename)
+# dbListTables(db_con)
+
+# Import exponential prediction parameter details
+exp_parameter_details <- dbReadTable(db_con,"exp_parameter_details") %>%
+  select(parm_id, beta, sd, points_end_scale) %>%
+  mutate(parm_id = as.factor(as.character(parm_id)),
+         beta = as.factor(as.character(beta)),
+         sd = as.factor(as.character(sd)),
+         points_end_scale = as.factor(as.character(points_end_scale)))
+
+# Import user data
+users <- dbReadTable(db_con,"users") %>%
+  select(-ip_address) %>%
+  mutate(participantID = as.factor(as.character(as.numeric(as.factor(paste(nick_name, "_", study_starttime, sep = ""))))))
+
+# Import exponential prediction feedback data
+exp_feedback <- dbReadTable(db_con,"feedback") %>%
+  filter(parm_id %in% c("exp_1", "exp_2", "exp_3", "exp_4")) %>%
+  left_join(exp_parameter_details, by = "parm_id") %>%
+  mutate(scale = ifelse(linear == "true", "Linear", "Log"),
+         residual.drawn = ydrawn - y) %>%
+  left_join(users, by = c("nick_name", "study_starttime")) %>%
+  filter(recruitment == "Graphics Group")  %>%
+  mutate(plotID = as.factor(as.character(as.numeric(as.factor(paste(nick_name, "_", start_time, "_", end_time, sep = ""))))),
+         parm_id = as.factor(as.character(parm_id)),
+         beta = as.factor(as.character(beta)),
+         sd = as.factor(as.character(sd)),
+         points_end_scale = as.factor(as.character(points_end_scale)))
+
+# Import exponential prediction simulated data
+exp_simulated_data <- dbReadTable(db_con,"simulated_data") %>%
+  filter(parm_id %in% c("exp_1", "exp_2", "exp_3", "exp_4")) %>%
+  left_join(exp_parameter_details, by = "parm_id") %>%
+  left_join(users, by = c("nick_name", "study_starttime")) %>%
+  filter(recruitment == "Graphics Group") %>%
+  mutate(parm_id = as.factor(as.character(parm_id)),
+         beta = as.factor(as.character(beta)),
+         sd = as.factor(as.character(sd)),
+         points_end_scale = as.factor(as.character(points_end_scale)))
+
+# Disconnect from database
+dbDisconnect(db_con)
+```
+
+### Feedback Data Summary
+
+It appears some users saw some exponential parameter ID's twice and others never.
+
+```{r feedback-summary}
+exp_feedback %>%
+  select(parm_id, beta, sd, points_end_scale, scale, participantID, plotID) %>%
+  unique() %>%
+  group_by(parm_id, beta, sd, points_end_scale, scale, participantID) %>%
+  summarise(count = n()) %>%
+  ungroup() %>%
+  group_by(participantID) %>%
+  mutate(total = sum(count)) %>%
+  ungroup() %>%
+  mutate(plot = paste(parm_id, scale, sep = "; ")) %>%
+  arrange(plot) %>%
+  pivot_wider(id_cols = c("participantID", "total"),
+              names_from = "plot",
+              values_from = "count") %>%
+  arrange(as.numeric(as.character(participantID))) %>%
+  knitr::kable()
+```
+
+### Simulated Data Summary
+
+But the data were simulated properly.
+
+```{r simulated-summary}
+exp_simulated_data %>%
+  filter(dataset == "line_data", x == 20.00) %>%
+  group_by(parm_id, beta, sd, points_end_scale, participantID) %>%
+  summarise(count = n()) %>%
+  ungroup() %>%
+  group_by(participantID) %>%
+  mutate(total = sum(count)) %>%
+  ungroup() %>%
+  pivot_wider(id_cols = c("participantID", "total"),
+              names_from = "parm_id",
+              values_from = "count") %>%
+  arrange(as.numeric(as.character(participantID))) %>%
+  knitr::kable()
+```
+
+### Randomization Script
+
+And I believe the randomization technique is correct.
+
+```{r randomization-script, echo = T}
+randomization_dataset <- tibble(parm_id = c(c("exp_1","exp_2","exp_3","exp_4"),c("exp_1","exp_2","exp_3","exp_4"), c("S","F","V","N")),
+                                linear  = c(rep("true",4), rep("false",4), rep("true",4))
+                                )
+parm_ids <- sample(seq(1,12), 12, replace = F)
+
+randomization_dataset %>% knitr::kable() 
+parm_ids %>% t() %>% knitr::kable()
+```
+
+## Loess Smoother
+
+```{r loess-smoother, echo = T}
+
+# Fit Loess Smoother
+loess.models <- exp_feedback %>%
+        tidyr::nest(-plotID) %>%
+        dplyr::mutate(
+                # Perform loess calculation on each plotID
+                loess.fit = purrr::map(data, loess,
+                               formula = ydrawn ~ x),
+                # Retrieve the fitted values from each model
+                yloess = purrr::map(loess.fit, `[[`, "fitted")
+        )
+
+# Apply fitted y's as a new column
+exp_feedback.smooth <- loess.models %>%
+        dplyr::select(-loess.fit) %>%
+        tidyr::unnest() %>%
+  mutate(residual.loess = yloess - y) %>%
+  select(participantID, age, gender, academic_study, recruitment, plotID, parm_id, scale, beta, sd, points_end_scale, x, y, ydrawn, yloess, residual.drawn, residual.loess, nick_name, study_starttime, start_time, end_time)
+
+factorCols <- c("plotID", "parm_id", "nick_name", "study_starttime", "beta", "sd", "points_end_scale", "scale", "age", "gender", "academic_study", "recruitment", "participantID")
+exp_feedback.smooth[,factorCols] <- lapply(exp_feedback.smooth[,factorCols], factor)
+
+summary(exp_feedback.smooth)
+```
+
+## Spaghetti Plots
+
+### Simulated Data
+
+```{r spaghetti-simulated}
+exp_simulated_data %>%
+  filter(dataset == "line_data") %>%
+  arrange(participantID, x) %>%
+  ggplot(aes(x = x, y = y, group = participantID)) +
+  geom_line(alpha = 0.3) +
+  facet_grid(beta ~ points_end_scale, scales = "free", labeller = labeller(beta = label_both, points_end_scale = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 1)
+```
+
+### All Overlaid (No Smoother)
+
+```{r spaghetti-all-overlaid-no-smoother}
+exp_simulated_data %>%
+  filter(dataset == "line_data") %>%
+  arrange(participantID, x) %>%
+  ggplot(aes(x = x)) +
+  geom_line(data = exp_feedback.smooth, aes(y = ydrawn, group = plotID, color = scale), alpha = 0.7) +
+  geom_line(alpha = 0.7, aes(y = y, group = participantID)) +
+  facet_grid(beta ~ points_end_scale, scales = "free", labeller = labeller(beta = label_both, points_end_scale = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_color_manual("Scale", values = c("steelblue", "orange")) +
+  scale_x_continuous(limits = c(10, 20))
+```
+
+### All Overlaid (Loess Smoother)
+
+```{r spaghetti-all-overlaid-loess-smoother}
+exp_simulated_data %>%
+  filter(dataset == "line_data") %>%
+  arrange(participantID, x) %>%
+  ggplot(aes(x = x)) +
+  geom_line(data = exp_feedback.smooth, aes(y = yloess, group = plotID, color = scale), alpha = 0.7) +
+  geom_line(alpha = 0.2, aes(y = y, group = participantID)) +
+  facet_grid(beta ~ points_end_scale, scales = "free", labeller = labeller(beta = label_both, points_end_scale = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_color_manual("Scale", values = c("steelblue", "orange")) +
+  scale_x_continuous(limits = c(10, 20))
+```
+
+<hr>
+### Residuals (No Smoother)
+
+```{r residuals-no-smoother}
+exp.spaghetti.plot.raw <- exp_feedback.smooth %>%
+  arrange(participantID, parm_id, scale, x) %>%
+  ggplot(aes(x = x, y = residual.drawn, group = plotID, color = scale)) +
+  geom_line(alpha = 0.7) +
+  geom_hline(yintercept = 0, color = "black", linetype = "dashed", alpha = 0.5) +
+  facet_grid(beta ~ points_end_scale, scales = "free", labeller = labeller(beta = label_both, points_end_scale = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_color_manual("Scale", values = c("steelblue", "orange"))
+exp.spaghetti.plot.raw 
+```
+
+### Residual (Loess Smoother)
+
+```{r residuals-loess-smoother}
+exp.spaghetti.plot.smooth <- exp_feedback.smooth %>%
+  arrange(participantID, parm_id, scale, x) %>%
+  ggplot(aes(x = x, y = residual.loess, group = plotID, color = scale)) +
+  geom_line(alpha = 0.7) +
+  geom_hline(yintercept = 0, color = "black", linetype = "dashed", alpha = 0.5) +
+  facet_grid(beta ~ points_end_scale, scales = "free", labeller = labeller(beta = label_both, points_end_scale = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_color_manual("Scale", values = c("steelblue", "orange"))
+exp.spaghetti.plot.smooth
+```
+
+## Sum of Squares
+
+```{r SS-summary}
+exp_SSdata <- exp_feedback.smooth %>%
+  group_by(participantID, age, gender, academic_study, recruitment, plotID, parm_id, scale, beta, sd, points_end_scale) %>%
+  summarise(SSdrawn = sum(residual.drawn^2),
+            SSloess= sum((residual.loess)^2),
+            count = n()) %>%
+  ungroup()
+
+exp_SSdata %>%
+  ggplot(aes(x = scale, y = SSdrawn, color = participantID)) +
+  geom_jitter(height = 0, width = 0.2, size = 2) +
+  facet_grid(beta ~ points_end_scale, scales = "free", labeller = labeller(beta = label_both, points_end_scale = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_color_brewer(palette = "Paired") +
+  scale_y_continuous("Sum of Squared \n Residuals (Drawn)") +
+  scale_x_discrete("Scale")
+```
+
+### Beta = 0.1 (less curvature) (LMM with a log(SS) transformation)
+
+<hr>
+#### Drawn
+
+```{r SS-drawn-01-lmm, fig.height = 6, fig.width = 12}
+# SSdrawn.fit.01 <- glmer(log(SSdrawn) ~ scale*points_end_scale + (1|participantID),
+                    # data = exp_SSdata %>% filter(beta == "0.1"),
+                    # family = gaussian(link = "log"))
+SSdrawn.fit.01 <- lmer(log(SSdrawn) ~ scale*points_end_scale + (1|participantID),
+                    data = exp_SSdata %>% filter(beta == "0.1"))
+anova(SSdrawn.fit.01) %>% knitr::kable(digits = 4)
+
+SSdrawn.emmeans.01 <- emmeans(SSdrawn.fit.01, ~ scale:points_end_scale, type = "response")
+
+SSdrawn.emmeans.01 %>% 
+  as_tibble() %>%
+  ggplot(aes(x = scale, y = response, fill = scale)) +
+  geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL), width = 0.2) +
+  # geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL), width = 0.2) +
+  facet_grid(~points_end_scale, labeller = labeller(points_end_scale = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 0.75) +
+  scale_fill_manual("Scale", values = c("steelblue", "orange")) 
+
+
+SSdrawn.scale.01   <- emmeans(SSdrawn.fit.01, ~ scale | points_end_scale, type = "response")
+pairs(SSdrawn.scale.01) %>% knitr::kable(digits = 4)
+
+
+SSdrawn.points.01   <- emmeans(SSdrawn.fit.01, ~ points_end_scale | scale, type = "response")
+pairs(SSdrawn.points.01) %>% knitr::kable(digits = 4)
+```
+
+<hr>
+#### Smooth
+
+```{r SS-smooth-01-lmm, fig.height = 6, fig.width = 12}
+# SSloess.fit.01 <- glmer(log(SSloess) ~ scale*points_end_scale + (1|participantID),
+                    # data = exp_SSdata %>% filter(beta == "0.1"),
+                    # family = gaussian(link = "log"))
+SSloess.fit.01 <- lmer(log(SSloess) ~ scale*points_end_scale + (1|participantID),
+                    data = exp_SSdata %>% filter(beta == "0.1"))
+anova(SSloess.fit.01) %>% knitr::kable(digits = 4)
+
+SSloess.emmeans.01 <- emmeans(SSloess.fit.01, ~ scale:points_end_scale, type = "response")
+
+SSloess.emmeans.01 %>% 
+  as_tibble() %>%
+  ggplot(aes(x = scale, y = response, fill = scale)) +
+  geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL), width = 0.2) +
+  # geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL), width = 0.2) +
+  facet_grid(~points_end_scale, labeller = labeller(points_end_scale = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 0.75) +
+  scale_fill_manual("Scale", values = c("steelblue", "orange")) 
+
+
+SSloess.scale.01   <- emmeans(SSloess.fit.01, ~ scale | points_end_scale, type = "response")
+pairs(SSloess.scale.01) %>% knitr::kable(digits = 4)
+
+
+SSloess.points.01   <- emmeans(SSloess.fit.01, ~ points_end_scale | scale, type = "response")
+pairs(SSloess.points.01) %>% knitr::kable(digits = 4)
+```
+
+### Beta = 0.23 more curvature) (LMM with a log(SS) transformation)
+
+<hr>
+#### Drawn
+
+```{r SS-drawn-23-glmm, fig.height = 6, fig.width = 12}
+# SSdrawn.fit.23 <- glmer(log(SSdrawn) ~ scale*points_end_scale + (1|participantID),
+#                     data = exp_SSdata %>% filter(beta == "0.23"),
+#                     family = gaussian(link = "log"))
+SSdrawn.fit.23 <- lmer(log(SSdrawn) ~ scale*points_end_scale + (1|participantID),
+                    data = exp_SSdata %>% filter(beta == "0.23"))
+anova(SSdrawn.fit.23) %>% knitr::kable(digits = 4)
+
+SSdrawn.emmeans.23 <- emmeans(SSdrawn.fit.23, ~ scale:points_end_scale, type = "response")
+
+SSdrawn.emmeans.23 %>% 
+  as_tibble() %>%
+  ggplot(aes(x = scale, y = response, fill = scale)) +
+  geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL), width = 0.2) +
+  # geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL), width = 0.2) +
+  facet_grid(~points_end_scale, labeller = labeller(points_end_scale = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 0.75) +
+  scale_fill_manual("Scale", values = c("steelblue", "orange")) 
+
+
+SSdrawn.scale.23   <- emmeans(SSdrawn.fit.23, ~ scale | points_end_scale, type = "response")
+pairs(SSdrawn.scale.23) %>% knitr::kable(digits = 4)
+
+
+SSdrawn.points.23   <- emmeans(SSdrawn.fit.23, ~ points_end_scale | scale, type = "response")
+pairs(SSdrawn.points.23) %>% knitr::kable(digits = 4)
+```
+
+<hr>
+#### Smooth
+
+```{r SS-loess-23-glmm, fig.height = 6, fig.width = 12}
+# SSloess.fit.23 <- glmer(log(SSloess) ~ scale*points_end_scale + (1|participantID),
+#                     data = exp_SSdata %>% filter(beta == "0.23"),
+#                     family = gaussian(link = "log"))
+SSloess.fit.23 <- lmer(log(SSloess) ~ scale*points_end_scale + (1|participantID),
+                    data = exp_SSdata %>% filter(beta == "0.23"))
+anova(SSloess.fit.23) %>% knitr::kable(digits = 4)
+
+SSloess.emmeans.23 <- emmeans(SSloess.fit.23, ~ scale:points_end_scale, type = "response")
+
+SSloess.emmeans.23 %>% 
+  as_tibble() %>%
+  ggplot(aes(x = scale, y = response, fill = scale)) +
+  geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL), width = 0.2) +
+  # geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL), width = 0.2) +
+  facet_grid(~points_end_scale, labeller = labeller(points_end_scale = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 0.75) +
+  scale_fill_manual("Scale", values = c("steelblue", "orange")) 
+
+
+SSloess.scale.23   <- emmeans(SSloess.fit.23, ~ scale | points_end_scale, type = "response")
+pairs(SSloess.scale.23) %>% knitr::kable(digits = 4)
+
+
+SSloess.points.23   <- emmeans(SSloess.fit.23, ~ points_end_scale | scale, type = "response")
+pairs(SSloess.points.23) %>% knitr::kable(digits = 4)
+```
+
