@@ -335,7 +335,7 @@ SSloess.points.01   <- emmeans(SSloess.fit.01, ~ points_end_scale | scale, type 
 pairs(SSloess.points.01) %>% knitr::kable(digits = 4)
 ```
 
-### Beta = 0.23 more curvature) (LMM with a log(SS) transformation)
+### Beta = 0.23 (more curvature) (LMM with a log(SS) transformation)
 
 <hr>
 #### Drawn
