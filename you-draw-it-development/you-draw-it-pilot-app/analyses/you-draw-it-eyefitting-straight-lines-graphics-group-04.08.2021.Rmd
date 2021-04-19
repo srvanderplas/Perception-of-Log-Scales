@@ -1,0 +1,320 @@
+---
+title: "You Draw It: Eye Fitting Straight Lines in the Modern Era"  
+subtitle: "ISU Graphics Group"
+author: "Emily Robinson"
+date: "April 8, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE,
+	options(knitr.kable.NA = ''), 
+	fig.height = 12, 
+	fig.width = 12,
+	fig.align = 'center'
+)
+library(RSQLite)
+library(DBI)
+library(tidyverse)
+library(lme4)
+library(lmerTest)
+library(emmeans)
+```
+
+## Discussion Points
+
+
+## Data
+
+```{r obtain-data}
+# Connect to database
+filename <- "../you_draw_it_data.db"
+sqlite.driver <- dbDriver("SQLite")
+db_con <- dbConnect(sqlite.driver, dbname = filename)
+# dbListTables(db_con)
+
+# Import eyefitting parameter details
+eyefitting_parameter_details <- dbReadTable(db_con,"eyefitting_parameter_details") %>%
+  mutate(parm_id = as.factor(as.character(parm_id)))
+
+# Import user data
+users <- dbReadTable(db_con,"users") %>%
+  select(-ip_address) %>%
+  mutate(participantID = as.factor(as.character(as.numeric(as.factor(paste(nick_name, "_", study_starttime, sep = ""))))))
+
+# Import exponential prediction feedback data
+eyefitting_feedback <- dbReadTable(db_con,"feedback") %>%
+  filter(parm_id %in% c("S", "F", "V", "N")) %>%
+  left_join(eyefitting_parameter_details, by = "parm_id") %>%
+  mutate(residual.drawn = ydrawn - y) %>%
+  left_join(users, by = c("nick_name", "study_starttime")) %>%
+  filter(recruitment == "Graphics Group")  %>%
+  mutate(plotID = as.factor(as.character(as.numeric(as.factor(paste(nick_name, "_", start_time, "_", end_time, sep = ""))))),
+         parm_id = as.factor(as.character(parm_id)))
+
+# Import exponential prediction simulated data
+eyefitting_simulated_data <- dbReadTable(db_con,"simulated_data") %>%
+  filter(parm_id %in% c("S", "F", "V", "N")) %>%
+  left_join(eyefitting_parameter_details, by = "parm_id") %>%
+  left_join(users, by = c("nick_name", "study_starttime")) %>%
+  filter(recruitment == "Graphics Group") %>%
+  mutate(parm_id = as.factor(as.character(parm_id)))
+
+# Disconnect from database
+dbDisconnect(db_con)
+```
+
+### Feedback Data Summary
+
+It appears some users saw some parameter ID's twice and others never.
+
+```{r feedback-summary}
+eyefitting_feedback %>%
+  select(parm_id, participantID, plotID) %>%
+  unique() %>%
+  group_by(parm_id, participantID) %>%
+  summarise(count = n()) %>%
+  ungroup() %>%
+  group_by(participantID) %>%
+  mutate(total = sum(count)) %>%
+  ungroup() %>%
+  pivot_wider(id_cols = c("participantID", "total"),
+              names_from = "parm_id",
+              values_from = "count") %>%
+  arrange(as.numeric(as.character(participantID))) %>%
+  knitr::kable()
+```
+
+### Simulated Data Summary
+
+But the data were simulated properly.
+
+```{r simulated-summary}
+eyefitting_simulated_data %>%
+  filter(dataset == "line_data", x == 10.00) %>%
+  group_by(parm_id, participantID) %>%
+  summarise(count = n()) %>%
+  ungroup() %>%
+  group_by(participantID) %>%
+  mutate(total = sum(count)) %>%
+  ungroup() %>%
+  pivot_wider(id_cols = c("participantID", "total"),
+              names_from = "parm_id",
+              values_from = "count") %>%
+  arrange(as.numeric(as.character(participantID))) %>%
+  knitr::kable()
+```
+
+### Randomization Script
+
+And I believe the randomization technique is correct.
+
+```{r randomization-script, echo = T}
+randomization_dataset <- tibble(parm_id = c(c("exp_1","exp_2","exp_3","exp_4"),c("exp_1","exp_2","exp_3","exp_4"), c("S","F","V","N")),
+                                linear  = c(rep("true",4), rep("false",4), rep("true",4))
+                                )
+parm_ids <- sample(seq(1,12), 12, replace = F)
+
+randomization_dataset %>% knitr::kable() 
+parm_ids %>% t() %>% knitr::kable()
+```
+
+## Loess Smoother
+
+```{r loess-smoother, echo = T}
+
+# Fit Loess Smoother
+loess.models <- eyefitting_feedback %>%
+        tidyr::nest(-plotID) %>%
+        dplyr::mutate(
+                # Perform loess calculation on each plotID
+                loess.fit = purrr::map(data, loess,
+                               formula = ydrawn ~ x),
+                # Retrieve the fitted values from each model
+                yloess = purrr::map(loess.fit, `[[`, "fitted")
+        )
+
+# Apply fitted y's as a new column
+eyefitting_feedback.smooth <- loess.models %>%
+        dplyr::select(-loess.fit) %>%
+        tidyr::unnest(cols = c(data, yloess)) %>%
+  mutate(residual.loess = yloess - y) %>%
+  select(participantID, age, gender, academic_study, recruitment, plotID, parm_id, x, y, ydrawn, yloess, residual.drawn, residual.loess, nick_name, study_starttime, start_time, end_time)
+
+factorCols <- c("plotID", "parm_id", "nick_name", "study_starttime", "age", "gender", "academic_study", "recruitment", "participantID")
+eyefitting_feedback.smooth[,factorCols] <- lapply(eyefitting_feedback.smooth[,factorCols], factor)
+
+summary(eyefitting_feedback.smooth)
+```
+
+
+```{r pca-calculation, echo = T, include = F}
+require(pls)
+# Fit First PCA
+pca.models <- eyefitting_simulated_data %>%
+        filter(dataset == "point_data") %>%
+        mutate(dataID = as.factor(paste(participantID, parm_id, sep = ""))) %>%
+        tidyr::nest(-dataID) %>%
+        dplyr::mutate(
+                # Perform pc1 calculation on each plotID
+                pc.fit = purrr::map(data, loess,
+                               formula = y ~ x),
+                # Retrieve the fitted values from each model
+                yPC1 = purrr::map(pc.fit, `[[`, "fitted")
+        )
+
+# Apply fitted y's as a new column
+eyefitting_simulated_data.pca <- pca.models %>%
+        dplyr::select(-pc.fit) %>%
+        tidyr::unnest(cols = c(data, yPC1)) %>%
+  select(participantID, age, gender, academic_study, recruitment, parm_id, x, y, yPC1, nick_name, study_starttime)
+
+factorCols <- c("parm_id", "nick_name", "study_starttime", "age", "gender", "academic_study", "recruitment", "participantID")
+eyefitting_simulated_data.pca[,factorCols] <- lapply(eyefitting_simulated_data.pca[,factorCols], factor)
+
+summary(eyefitting_simulated_data.pca)
+```
+
+## Spaghetti Plots
+
+### Simulated Data
+
+```{r spaghetti-simulated}
+eyefitting_simulated_data %>%
+  filter(dataset == "line_data") %>%
+  arrange(participantID, x) %>%
+  ggplot(aes(x = x, y = y, group = participantID)) +
+  geom_line(alpha = 0.3) +
+  facet_wrap(~parm_id, ncol = 2) +
+  theme_bw() +
+  theme(aspect.ratio = 1)
+```
+
+### All Overlaid (No Smoother)
+
+```{r spaghetti-all-overlaid-no-smoother}
+eyefitting_simulated_data %>%
+  filter(dataset == "line_data") %>%
+  arrange(participantID, x) %>%
+  ggplot(aes(x = x)) +
+  geom_line(data = eyefitting_feedback.smooth, aes(y = ydrawn, group = plotID), color = "steelblue", alpha = 0.5) +
+  geom_line(alpha = 0.5, aes(y = y, group = participantID)) +
+  facet_wrap(~parm_id, ncol = 2) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_x_continuous(limits = c(0, 20))
+```
+
+### All Overlaid (Loess Smoother)
+
+```{r spaghetti-all-overlaid-loess-smoother}
+eyefitting_simulated_data %>%
+  filter(dataset == "line_data") %>%
+  arrange(participantID, x) %>%
+  ggplot(aes(x = x)) +
+  geom_line(data = eyefitting_feedback.smooth, aes(y = yloess, group = plotID), color = "steelblue", alpha = 0.7) +
+  geom_line(alpha = 0.2, aes(y = y, group = participantID)) +
+  facet_wrap(~parm_id, ncol = 2) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_x_continuous(limits = c(0, 20))
+```
+
+<hr>
+### Residuals (No Smoother)
+
+```{r residuals-no-smoother}
+eyefitting.spaghetti.plot.raw <- eyefitting_feedback.smooth %>%
+  arrange(participantID, parm_id, x) %>%
+  ggplot(aes(x = x, y = residual.drawn, group = plotID)) +
+  geom_line(alpha = 0.7, color = "steelblue") +
+  geom_hline(yintercept = 0, color = "black", linetype = "dashed", alpha = 0.5) +
+  facet_wrap(~parm_id, ncol = 2) +
+  theme_bw() +
+  theme(aspect.ratio = 1)
+eyefitting.spaghetti.plot.raw 
+```
+
+### Residual (Loess Smoother)
+
+```{r residuals-loess-smoother}
+eyefitting.spaghetti.plot.smooth <- eyefitting_feedback.smooth %>%
+  arrange(participantID, parm_id, x) %>%
+  ggplot(aes(x = x, y = residual.loess, group = plotID)) +
+  geom_line(alpha = 0.7, color = "steelblue") +
+  geom_hline(yintercept = 0, color = "black", linetype = "dashed", alpha = 0.5) +
+  facet_wrap(~parm_id, ncol = 2) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_color_manual("Scale", values = c("steelblue", "orange"))
+eyefitting.spaghetti.plot.smooth
+```
+
+## Sum of Squares
+
+```{r SS-summary}
+eyefitting_SSdata <- eyefitting_feedback.smooth %>%
+  group_by(participantID, age, gender, academic_study, recruitment, plotID, parm_id) %>%
+  summarise(SSdrawn = sum(residual.drawn^2),
+            SSloess= sum((residual.loess)^2),
+            count = n()) %>%
+  ungroup()
+
+eyefitting_SSdata %>%
+  ggplot(aes(x = parm_id, y = SSdrawn, color = participantID)) +
+  geom_jitter(height = 0, width = 0.2, size = 2) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_color_brewer(palette = "Paired") +
+  scale_y_continuous("Sum of Squared \n Residuals (Drawn)") +
+  scale_x_discrete("Data set")
+```
+#### Drawn (LMM with a log(SS) transformation)
+
+```{r SS-drawn-lmm, fig.height = 6, fig.width = 12}
+SSdrawn.fit <- lmer(log(SSdrawn) ~ parm_id + (1|participantID),
+                    data = eyefitting_SSdata)
+anova(SSdrawn.fit) %>% knitr::kable(digits = 4)
+
+SSdrawn.emmeans <- emmeans(SSdrawn.fit, ~ parm_id, type = "response")
+
+SSdrawn.emmeans %>% 
+  as_tibble() %>%
+  ggplot(aes(x = parm_id, y = response)) +
+  geom_bar(stat = "identity", fill = "gray") +
+  geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL), width = 0.2) +
+  # geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL), width = 0.2) +
+  theme_bw() +
+  theme(aspect.ratio = 0.75)
+
+
+SSdrawn.scale   <- emmeans(SSdrawn.fit, ~ parm_id, type = "response")
+pairs(SSdrawn.scale) %>% knitr::kable(digits = 4)
+```
+
+#### Smooth (LMM with a log(SS) transformation)
+
+```{r SS-loess-lmm, fig.height = 6, fig.width = 12}
+SSloess.fit <- lmer(log(SSloess) ~ parm_id + (1|participantID),
+                    data = eyefitting_SSdata)
+anova(SSloess.fit) %>% knitr::kable(digits = 4)
+
+SSloess.emmeans <- emmeans(SSloess.fit, ~ parm_id, type = "response")
+
+SSloess.emmeans %>% 
+  as_tibble() %>%
+  ggplot(aes(x = parm_id, y = response)) +
+  geom_bar(stat = "identity", fill = "gray") +
+  geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL), width = 0.2) +
+  # geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL), width = 0.2) +
+  theme_bw() +
+  theme(aspect.ratio = 0.75)
+
+
+SSloess.scale   <- emmeans(SSloess.fit, ~ parm_id, type = "response")
+pairs(SSloess.scale) %>% knitr::kable(digits = 4)
+```
+
