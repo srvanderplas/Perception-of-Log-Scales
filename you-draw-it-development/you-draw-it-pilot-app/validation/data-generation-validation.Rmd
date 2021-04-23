@@ -73,7 +73,7 @@ expDataGen <-
 ```
 
 ### Parameter Details
-```{r expParms}
+```{r expParms, echo = F}
 exp_parameter_details <- data.frame(parm_id = c("exp_low", "exp_high"),
                                      beta = c(0.1, 0.23), 
                                      sd = c(0.09, 0.25)) %>%
@@ -166,17 +166,13 @@ linearDataGen <-
   function(y_xbar,
            slope,
            sigma,
-           points_choice = "full",
-           points_end_scale = 1,
            N = 30,
            x_min = 0,
            x_max = 20,
            x_by  = 0.25){
 
-    points_end_scale <- ifelse(points_choice == "full", 1, points_end_scale)
-
     # Set up x values
-    xVals <- seq(0, x_max*points_end_scale, length.out = floor(N*1))
+    xVals <- seq(0, x_max, length.out = floor(N*1))
     xVals <- sample(xVals, N, replace = FALSE)
     xVals <- jitter(xVals)
     xVals <- ifelse(xVals < x_min, x_min, xVals)
@@ -218,14 +214,15 @@ linearDataGen <-
 ```
 
 ### Parameter Details
-```{r eyefitting-Parms}
+```{r eyefitting-Parms, echo = F}
 eyefitting_parameter_details <- tibble(
                                   parm_id = c("S", "F", "V", "N"),
                                   y_xbar = c(3.88, 3.9, 3.89, 4.11),
                                   slope  = c(0.66, 0.66, 1.98, -0.70),
                                   sigma  = c(1.3, 2.8, 1.5, 2.5),
                                   x_min   = c(0, 0, 4, 0),
-                                  x_max   = c(20, 20, 18, 20))
+                                  x_max   = c(20, 20, 18, 20)) %>%
+                                expand_grid(x_by = 0.25)
 eyefitting_parameter_details %>% knitr::kable()
 ```
 
@@ -237,7 +234,8 @@ eyefitting_data <- eyefitting_parameter_details %>%
                                  slope = slope,
                                  sigma = sigma,
                                  x_min = x_min,
-                                 x_max = x_max), linearDataGen)) %>%
+                                 x_max = x_max,
+                                 x_by = x_by), linearDataGen)) %>%
   unnest(data) %>%
   unnest(data) %>%
   dplyr::select(B, dataset, parm_id, x, y)
