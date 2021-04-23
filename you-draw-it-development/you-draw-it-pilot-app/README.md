@@ -16,6 +16,7 @@ Emily Robinson, Susan VanderPlas, Reka Howard
 # Data Simulation
 + Data was simulated for each individual upon start of experiment.
 + See `code/data-generation.R` for data simulation functions.
++ See [Data Validation](https://srvanderplas.github.io/Perception-of-Log-Scales/you-draw-it-development/you-draw-it-pilot-app/validation/data-generation-validation.html) for 100 simulation reps.
 
 ## Exponential Data
 
