@@ -100,7 +100,6 @@ drawr <- function(data,
                               aspect_ratio      = aspect_ratio,
                               pin_start         = T,
                               x_range           = x_range,
-                              x_by              = x_by,
                               y_range           = y_range,
                               line_style        = NULL,
                               data_tab1_color   = data_tab1_color,
@@ -160,7 +159,7 @@ shinyServer(function(input, output, session) {
         ydipp   = experiment$ydi_pp,
         ydippleft = experiment$ydi_pp,
         parms = 0,
-        parm_id = "exp_1",
+        taskNum = NA,
         linear  = NULL,
         result = "")
 
@@ -248,6 +247,7 @@ shinyServer(function(input, output, session) {
             dbWriteTable(con, "users", demoinfo, append = TRUE, row.names = FALSE)
 
             simulated_data_db <- simulated_data %>%
+                unnest(data) %>%
                 dplyr::select(parm_id, dataset, x, y) %>%
                 mutate(ip_address = input$ipid,
                        nick_name = input$nickname,
@@ -386,92 +386,69 @@ shinyServer(function(input, output, session) {
             trial <- as.numeric(values$trialsleft > 0)
 
             # Update reactive values
-            values$parm_id <- randomization_dataset$parm_id[parm_ids[values$ydipp - values$ydippleft + 1]]
-            values$linear  <- randomization_dataset$linear[parm_ids[values$ydipp - values$ydippleft + 1]]
+            taskID <- (values$ydipp - values$ydippleft + 1)
 
             # Reset UI selections
             values$submitted    <- FALSE
             values$done_drawing <- FALSE
 
             # Separate r2d3 part for exponential log study and eyefitting study
-            if(values$parm_id %in% c("exp_1","exp_2","exp_3","exp_4")){
-
-                # Access Parameters
-                parms   <- exp_parameter_details %>%
-                    filter(parm_id == values$parm_id)
 
                 # Obtain Data
-                point_data <- simulated_data %>%
-                    filter(dataset == "point_data", parm_id == values$parm_id)
-                line_data <- simulated_data %>%
-                    filter(dataset == "line_data", parm_id == values$parm_id)
+                
+                isLinear   <- simulated_data[taskID, "linear"]
+                isLinear   <- simulated_data[taskID, "linear"] %>% as.character()
+                isFreeDraw <- simulated_data[taskID, "free_draw"] %>% as.logical()
+                drawStart  <- simulated_data[taskID, "draw_start"] %>% as.numeric()
+                
+                point_data <- simulated_data[taskID,] %>%
+                    unnest(data) %>%
+                    filter(dataset == "point_data")
+                
+                line_data <- simulated_data[taskID,] %>%
+                    unnest(data) %>%
+                    filter(dataset == "line_data")
+                
                 data <- list(point_data = point_data, line_data = line_data)
 
-                # Store data for feedback later
-                line_data %>%
-                    select(parm_id, x, y) %>%
-                    filter(x >= parms$x_max*parms$draw_start_scale) %>%
-                    line_data_storage()
-
-                # Set up ranges
-                y_range <- range(data$line_data[,"y"]) * c(parms$ymin_scale, parms$ymax_scale)
-                x_range <- range(data$line_data[,"x"])
-
-                # Include the you draw it graph
-                drawr(data              = data,
-                      aspect_ratio      = parms$aspect_ratio,
-                      linear            = values$linear,
-                      free_draw         = parms$free_draw,
-                      points            = parms$points_choice,
-                      x_by              = parms$x_by,
-                      draw_start        = parms$x_max*parms$draw_start_scale,
-                      points_end        = parms$x_max*parms$points_end_scale,
-                      show_finished     = input$show_finished,
-                      shiny_message_loc = message_loc,
-                      x_range           = x_range,
-                      y_range           = y_range)
-
-            } else {
-
-                # Access Parameters
-                parms   <- eyefitting_parameter_details %>%
-                    filter(parm_id == values$parm_id)
-
-                # Obtain Data
-                point_data <- simulated_data %>%
-                    filter(dataset == "point_data", parm_id == values$parm_id)
-                line_data <- simulated_data %>%
-                    filter(dataset == "line_data", parm_id == values$parm_id)
-                data <- list(point_data = point_data, line_data = line_data)
-
-                # Store data for feedback later
-                line_data %>%
-                    select(parm_id, x, y) %>%
-                    line_data_storage()
-
-                # Set up ranges
-                eyefitting_all_data <- simulated_data %>%
-                    filter(parm_id %in% c("S","F","V","N"))
-                y_range <- range(eyefitting_all_data$y) * c(1.1, 1.1)
-                x_range <- c(min(eyefitting_all_data$x), max(eyefitting_all_data$x))
+                if(isFreeDraw){
+                    
+                    # Store data for feedback later
+                    line_data %>%
+                        select(parm_id, linear, x, y) %>%
+                        line_data_storage()
+                    
+                    # Set up ranges
+                    y_range <- range(data$line_data[,"y"]) * c(1.1, 1.1)
+                    x_range <- range(data$line_data[,"x"])
+                    
+                } else {
+                    
+                    # Store data for feedback later
+                    line_data %>%
+                        select(parm_id, linear, x, y) %>%
+                        filter(x >= drawStart) %>%
+                        line_data_storage()
+                    
+                    # Set up ranges
+                    y_range <- range(data$line_data[,"y"]) * c(0.5, 2)
+                    x_range <- c(0,20)
+                }
 
                 # Include the you draw it graph
                 drawr(data              = data,
                       aspect_ratio      = 1,
-                      linear            = "true",
-                      free_draw         = TRUE,
-                      points            = "full",
-                      x_by              = parms$x_by,
-                      draw_start        = 5,
-                      points_end        = 20,
+                      linear            = isLinear,
+                      free_draw         = isFreeDraw,
+                      points            = NA,
+                      # x_by              = x_by,
+                      draw_start        = drawStart,
+                      points_end        = NA,
                       show_finished     = input$show_finished,
                       shiny_message_loc = message_loc,
                       x_range           = x_range,
                       y_range           = y_range)
-            }
-
-
-            }) # end WithProgress
+                
     }) # end renderD3
 
     shiny::observeEvent(input$drawr_message, {

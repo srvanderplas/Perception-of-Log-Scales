@@ -26,39 +26,28 @@ experiment_details
 # Exponential Scale Study Parameter Details ------------------------
 
 exp_parameter_details <- dbReadTable(db_con,"exp_parameter_details")
-# exp_parameters_details <- data.frame(beta = c(0.1, 0.23), sd = c(0.09, 0.25)) %>%
-#                           expand_grid(points_end_scale = c(0.5, 0.75),
-#                                       points_choice = "partial",
-#                                       N = 30,
-#                                       aspect_ratio = 1,
-#                                       free_draw = FALSE,
-#                                       x_min = 0,
-#                                       x_max = 20,
-#                                       x_by = 0.25,
-#                                       ymin_scale = 0.5,
-#                                       ymax_scale = 2,
-#                                       draw_start_scale = 0.5,
-#                                       #linear = c("true", "false")
-#                           ) %>%
-#                           rownames_to_column("parm_id") %>%
-#                           mutate(parm_id = paste("exp_", parm_id, sep = "")) %>%
-#                           mutate(parm_id = as.character(parm_id))
+exp_parameter_details <- data.frame(beta = c(0.1, 0.23), 
+                                    sd = c(0.09, 0.25)) %>%
+                          expand_grid(N = 30,
+                                      x_min = 0,
+                                      x_max = 20,
+                                      x_by = 0.25
+                          )
 # dbRemoveTable(db_con, "exp_parameter_details")
-# dbWriteTable(db_con,  "exp_parameter_details", exp_parameters_details)
+# dbWriteTable(db_con,  "exp_parameter_details", exp_parameter_details)
 # exp_parameter_details <- dbReadTable(db_con,"exp_parameter_details")
-exp_parameter_details
+# exp_parameter_details
 
 # Eye Fitting Parameter Details -----------------------------------
 
 eyefitting_parameter_details <- dbReadTable(db_con,"eyefitting_parameter_details")
-# eyefitting_parameter_details <- tibble(
-#                                   parm_id = c("S", "F", "V", "N"),
-#                                   y_xbar = c(3.88, 3.9, 3.89, 4.11),
-#                                   slope  = c(0.66, 0.66, 1.98, -0.70),
-#                                   sigma  = c(1.3, 2.8, 1.5, 2.5),
-#                                   x_min   = c(0, 0, 4, 0),
-#                                   x_max   = c(20, 20, 18, 20))  %>%
-#                                   mutate(parm_id = as.character(parm_id))
+# eyefitting_parameter_details <- tibble(parm_id = c("S", "F", "V", "N"),
+#                                        y_xbar = c(3.88, 3.9, 3.89, 4.11),
+#                                        slope  = c(0.66, 0.66, 1.98, -0.70),
+#                                        sigma  = c(1.3, 2.8, 1.5, 2.5),
+#                                        x_min   = c(0, 0, 4, 0),
+#                                        x_max   = c(20, 20, 18, 20)) %>%
+#                                 expand_grid(x_by = 0.25)
 # dbRemoveTable(db_con, "eyefitting_parameter_details")
 # dbWriteTable(db_con,  "eyefitting_parameter_details", eyefitting_parameter_details)
 # eyefitting_parameter_details <- dbReadTable(db_con,"eyefitting_parameter_details")
