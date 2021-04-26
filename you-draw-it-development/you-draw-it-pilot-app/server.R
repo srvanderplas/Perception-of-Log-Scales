@@ -142,7 +142,6 @@ dbDisconnect(con)
 shinyServer(function(input, output, session) {
 # This needs to be run every connection, not just once.
     study_starttime = now()
-    source("code/randomization.R")
     source("code/data-generation.R")
 
     # reactive values to control the trials
@@ -430,7 +429,7 @@ shinyServer(function(input, output, session) {
                     
                     # Set up ranges
                     y_range <- range(data$line_data[,"y"]) * c(0.5, 2)
-                    x_range <- c(0,20)
+                    x_range <- range(data$line_data[,"x"])
                 }
 
                 # Include the you draw it graph
@@ -438,10 +437,10 @@ shinyServer(function(input, output, session) {
                       aspect_ratio      = 1,
                       linear            = isLinear,
                       free_draw         = isFreeDraw,
-                      points            = NA,
-                      # x_by              = x_by,
+                      points            = "full",
+                      # x_by              = 0.25,
                       draw_start        = drawStart,
-                      points_end        = NA,
+                      # points_end        = 0.5,
                       show_finished     = input$show_finished,
                       shiny_message_loc = message_loc,
                       x_range           = x_range,

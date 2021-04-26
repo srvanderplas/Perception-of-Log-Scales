@@ -241,7 +241,8 @@ function draw_rectangle({svg, drawable_points, line_data, draw_start, width, hei
        }
     } else {
       if(get_user_line_status(state) === 'done'){
-        var drawSpace_start = scales.x(1000000)
+        var drawSpace_start = scales.x(100)
+        var drawSpace_end = scales.x(110)
       } else {
         var df = drawable_points.filter(function(d){return (d.y === null)});
         var xmin = df[0].x - x_by
