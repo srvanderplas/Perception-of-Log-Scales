@@ -39,7 +39,7 @@ data_to_json <- function(data) {
 # ----------------------------------------------------------------------------------------------------
 
 drawr <- function(data,
-                  linear            = "true",
+                  linear           = "true",
                   draw_start        = NULL,
                   points_end        = NULL,
                   x_by              = 0.25,
@@ -314,8 +314,7 @@ shinyServer(function(input, output, session) {
                 values$result <- "Submitted!"
 
                 test <- drawn_data() %>%
-                            mutate(linear  = values$linear,
-                                   ip_address = input$ipid,
+                            mutate(ip_address = input$ipid,
                                    nick_name = input$nickname,
                                    study_starttime = study_starttime,
                                    start_time = values$starttime,
@@ -396,7 +395,6 @@ shinyServer(function(input, output, session) {
 
                 # Obtain Data
                 
-                isLinear   <- simulated_data[taskID, "linear"]
                 isLinear   <- simulated_data[taskID, "linear"] %>% as.character()
                 isFreeDraw <- simulated_data[taskID, "free_draw"] %>% as.logical()
                 drawStart  <- simulated_data[taskID, "draw_start"] %>% as.numeric()
@@ -419,8 +417,8 @@ shinyServer(function(input, output, session) {
                         line_data_storage()
                     
                     # Set up ranges
-                    y_range <- range(data$line_data[,"y"]) * c(1.1, 1.1)
-                    x_range <- range(data$line_data[,"x"])
+                    y_range <- range(data$point_data[,"y"]) * c(1.1, 1.1)
+                    x_range <- c(0,20)
                     
                 } else {
                     
@@ -448,7 +446,7 @@ shinyServer(function(input, output, session) {
                       shiny_message_loc = message_loc,
                       x_range           = x_range,
                       y_range           = y_range)
-                
+        })
     }) # end renderD3
 
     shiny::observeEvent(input$drawr_message, {
@@ -457,6 +455,7 @@ shinyServer(function(input, output, session) {
 
             line_data %>%
             mutate(ydrawn = input$drawr_message) %>%
+                select(parm_id, x, y, ydrawn, linear) %>%
                 drawn_data()
 
             values$done_drawing <- TRUE

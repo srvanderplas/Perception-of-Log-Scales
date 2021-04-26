@@ -151,7 +151,7 @@ eyefitting_data <- eyefitting_parameter_details %>%
                                  x_max = x_max,
                                  x_by = x_by), linearDataGen)) %>%
   expand_grid(linear = "true",
-              draw_start = NA,
+              draw_start = 5,
               free_draw = TRUE) %>%
   unnest(data) %>%
   unnest(data) %>%

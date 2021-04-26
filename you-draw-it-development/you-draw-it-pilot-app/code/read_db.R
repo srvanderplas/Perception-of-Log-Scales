@@ -74,9 +74,9 @@ unique(feedback$parm_id)
 # feedback <- dbReadTable(db_con, "feedback")
 feedback
 feedback %>%
+  dplyr::filter(study_starttime == max(users$study_starttime)) %>%
   select(parm_id, linear) %>%
-  unique() %>%
-  arrange(parm_id, linear)
+  unique()
 
 # Simulated Data ---------------------------------------------------
 simulated_data <- dbReadTable(db_con,"simulated_data")
@@ -94,9 +94,9 @@ simulated_data <- dbReadTable(db_con,"simulated_data")
 # simulated_data <- dbReadTable(db_con, "simulated_data")
 simulated_data
 simulated_data %>%
+  dplyr::filter(study_starttime == max(users$study_starttime)) %>%
   select(parm_id) %>%
-  unique() %>%
-  arrange(parm_id)
+  unique()
 
 # Users Data ---------------------------------------------------
 
