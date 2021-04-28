@@ -245,7 +245,7 @@ function draw_rectangle({svg, drawable_points, line_data, draw_start, width, hei
         var drawSpace_end = scales.x(110)
       } else {
         var df = drawable_points.filter(function(d){return (d.y === null)});
-        var xmin = df[0].x - x_by
+        var xmin = df[0].x - x_by;
         var len  = line_data.length - 1
         var xmax = line_data[len].x
         var drawSpace_start = scales.x(xmin)
