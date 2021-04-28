@@ -354,6 +354,7 @@ shinyServer(function(input, output, session) {
     # This renders the you draw it graph
     output$shinydrawr <- r2d3::renderD3({
         if (values$ydippleft == 0 || !input$ready || any(input$dimension < window_dim_min)) return(NULL)
+        input$reset
 
         withProgress(
             # Message: Loading (trial) plot i of n
@@ -379,32 +380,24 @@ shinyServer(function(input, output, session) {
                 
                 # Obtain Parameters & Data
                 
-                isLinear   <- simulated_data[practiceID, "linear"] %>% as.character()
-                isFreeDraw <- simulated_data[practiceID, "free_draw"] %>% as.logical()
-                drawStart  <- simulated_data[practiceID, "draw_start"] %>% as.numeric()
+                isLinear     <- practice_data[practiceID, "linear"] %>% as.character()
+                isFreeDraw   <- practice_data[practiceID, "free_draw"] %>% as.logical()
+                drawStart    <- practice_data[practiceID, "draw_start"] %>% as.numeric()
+                showFinished <- practice_data[practiceID, "show_finished"] %>% as.logical()
                 
-                point_data <- simulated_data[practiceID,] %>%
+                point_data <- practice_data[practiceID,] %>%
                     unnest(data) %>%
                     filter(dataset == "point_data")
                 
-                line_data <- simulated_data[practiceID,] %>%
+                line_data <- practice_data[practiceID,] %>%
                     unnest(data) %>%
                     filter(dataset == "line_data")
                 
                 data <- list(point_data = point_data, line_data = line_data)
-                
-                if(isFreeDraw){
-  
+
                     # Set up ranges
-                    y_range <- range(data$point_data[,"y"]) * c(1.1, 1.1)
+                    y_range <- range(data$point_data[,"y"]) * c(0.5, 1.1)
                     x_range <- c(0,20)
-                    
-                } else {
-  
-                    # Set up ranges
-                    y_range <- range(data$line_data[,"y"]) * c(0.5, 2)
-                    x_range <- range(data$line_data[,"x"])
-                }
                 
                 # Include the you draw it graph
                 drawr(data              = data,
@@ -415,7 +408,7 @@ shinyServer(function(input, output, session) {
                       x_by              = 0.25,
                       draw_start        = drawStart,
                       # points_end        = 0.5,
-                      show_finished     = input$show_finished,
+                      show_finished     = showFinished,
                       shiny_message_loc = message_loc,
                       x_range           = x_range,
                       y_range           = y_range)
@@ -475,7 +468,7 @@ shinyServer(function(input, output, session) {
                       x_by              = 0.25,
                       draw_start        = drawStart,
                       # points_end        = 0.5,
-                      show_finished     = input$show_finished,
+                      show_finished     = FALSE,
                       shiny_message_loc = message_loc,
                       x_range           = x_range,
                       y_range           = y_range)

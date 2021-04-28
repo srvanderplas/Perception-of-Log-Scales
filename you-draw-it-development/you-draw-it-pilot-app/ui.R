@@ -70,9 +70,6 @@ fluidPage(
       helpText(
         "In this survey points following a trend will be shown.",
         "We would like you to finish drawing the trend for the light yellow box using your mouse."),
-      # helpText("1. Pick the plot based on the survey question"),
-      # helpText("2. Provide reasons for choice"),
-      # helpText("3. How certain are you?"),
       helpText(
         "Finally we would like to collect some information about you.",
         "(age category, education and gender)"),
@@ -128,10 +125,6 @@ fluidPage(
                      checkboxInput("welcome", "Welcome", value = FALSE)
     ),
 
-    # conditionalPanel(condition = "input.submit == null",
-                     # checkboxInput("otheronly", "", value = FALSE)
-    # ),
-
     conditionalPanel(condition = "input.submit == null",
                      checkboxInput("ready", "Ready", value = FALSE)
     ),
@@ -143,22 +136,10 @@ fluidPage(
     # This panel is for lineup questions
     conditionalPanel(
       condition = "input.ready && !input.done",
-      # h4("Selection"),
-      # textInput("response_no", "Choice", value = NULL, placeholder = "Click the plot to select"),
-      # selectizeInput("response_no", "", choices = 1:20, selected = NULL, multiple = T),
-      checkboxInput("show_finished", "Show Finished?", value = T),
-
-      # Handle other reasoning logic
-      # conditionalPanel(condition = "!input.otheronly",
-                       # checkboxGroupInput("reasoning", "Reasoning", choices = "")
-      # ),
-      # conditionalPanel(condition = "input.reasoning.indexOf('Other') > -1 || input.otheronly",
-                       # textInput("other", "Other Reason")
-      # ),
-
-      # selectizeInput("certain", "How certain are you?",
-                     # choices = c("", "Very Uncertain", "Uncertain",
-                                 # "Neutral", "Certain", "Very Certain")),
+      # checkboxInput("show_finished", "Show Finished?", value = T),
+      hr(),
+      actionButton("reset", "Reset"),
+      hr(),
       actionButton("submit", "Submit", icon = icon("caret-right"), class = "btn btn-info"),
       hr(),
       h4("Status"),
@@ -173,37 +154,19 @@ fluidPage(
                      uiOutput("welcome_text"),
 
                      h4(textOutput("example1_q")),
-                     # div(
-                       # class = "ex-lineup-container",
-                       # imageOutput("example1_plot", height = "auto")
                        img(src="examples/exponential.gif", align = "center", width = 350),
-                     # ),
-
                      h4(textOutput("example2_q")),
-                     # div(
-                       # class = "ex-lineup-container",
-                       # imageOutput("example2_plot", height = "auto")
                        img(src="examples/linear1.gif", align = "center", width = 350)
-                     # )
     ),
     conditionalPanel(condition = "input.welcome && !input.ready",
                      h4(textOutput("demo_text"))
     ),
 
-    conditionalPanel(condition = "input.ready",
-                     h3(textOutput("question"))
-                     #conditionalPanel(condition = "input.done",
-                     #    HTML("<a href='https://prolificacademic.co.uk/submissions/56293369c8ffc200055132fd/complete?cc=XYA822O3'>https://prolificacademic.co.uk/submissions/56293369c8ffc200055132fd/complete?cc=XYA822O3</a>")
-                     #)
-    ),
-    hr(),
-    d3Output("shinydrawr",
-             height = "500px") #,
-    # hr(),
-    # p("Recorded Data:"),
-    # DT::dataTableOutput("drawrmessage", width = "70%")
+      conditionalPanel(condition = "input.ready",
+                       h3(textOutput("question"))
+      ),
+      hr(),
+      d3Output("shinydrawr", height = "500px")
+    )
   )
-  # Javascript action script for lineups -- may not be necessary
-  # includeScript("www/js/action.js")
-)
 )

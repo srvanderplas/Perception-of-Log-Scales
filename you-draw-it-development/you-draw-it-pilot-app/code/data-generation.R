@@ -2,6 +2,86 @@
 # library(purrr)
 
 # ------------------------------------------------------------------------------
+# Practice Data Generation -----------------------------------------------------
+# ------------------------------------------------------------------------------
+
+practiceDataGen <-
+  function(a,
+           b,
+           c,
+           sigma,
+           N = 30,
+           x_min = 0,
+           x_max = 20,
+           x_by  = 0.25){
+    
+    # Set up x values
+    xVals <- seq(0, x_max, length.out = floor(N*1))
+    xVals <- sample(xVals, N, replace = FALSE)
+    xVals <- jitter(xVals)
+    xVals <- ifelse(xVals < x_min, x_min, xVals) 
+    xVals <- ifelse(xVals > x_max, x_max, xVals)
+    
+    # Generate "good" errors
+    repeat{
+      errorVals <- rnorm(length(xVals), 0, sigma)
+      if(mean(errorVals[floor(N/3)]) < 2*sigma & mean(errorVals[floor(N/3)] > -2*sigma)){
+        break
+      }
+    }
+    
+    # Simulate point data
+    point_data <- tibble(x = xVals,
+                         y = a*x^2 + b*x + c + errorVals,
+                         dataset = "point_data") %>%
+      arrange(x)
+    
+    # Obtain least squares regression coefficients
+    lm.fit <- lm(y ~ I(x^2) + x, data = point_data)
+    ahat <- coef(lm.fit)[2] %>% as.numeric()
+    bhat <- coef(lm.fit)[3] %>% as.numeric()
+    chat <- coef(lm.fit)[1] %>% as.numeric()
+    
+    # Simulate best fit line data
+    line_data <- tibble(dataset = "line_data",
+                        x = seq(x_min, x_max, x_by),
+                        y = ahat*x^2 + bhat*x + chat)
+    
+    data <- list(point_data = point_data, line_data = line_data)
+    
+    return(data)
+  }
+
+practice_data <- expand_grid(practiceID = seq(1,2),
+                             a = 0.25,
+                             b = -3,
+                             c = 15,
+                             sigma = 2,
+                             )%>%
+  mutate(data = purrr::pmap(list(a = a,
+                                 b = b,
+                                 c = c,
+                                 sigma = sigma), practiceDataGen)) %>%
+  expand_grid(linear = "true",
+              draw_start = 5,
+              free_draw = TRUE,
+              show_finished = TRUE) %>%
+  mutate(parm_id = paste("practice", practiceID, "-linear",linear, "-ds", draw_start, "-fd", free_draw, sep = "")) %>%
+  unnest(data) %>%
+  unnest(data) %>%
+  nest(data = c("dataset", "x", "y")) %>%
+  dplyr::select(parm_id, data, linear, free_draw, draw_start, show_finished)
+
+# practice_data %>%
+#   unnest(data) %>%
+#   filter(dataset == "point_data") %>%
+#   ggplot(aes(x = x, y = y)) +
+#   geom_point() +
+#   facet_grid(~parm_id) +
+#   theme_bw() +
+#   theme(aspect.ratio = 1)
+
+# ------------------------------------------------------------------------------
 # Exponential Data Generation --------------------------------------------------
 # ------------------------------------------------------------------------------
 
@@ -68,7 +148,7 @@ linearDataGen <-
            x_by  = 0.25){
     
     # Set up x values
-    xVals <- seq(0, x_max, length.out = floor(N*1))
+    xVals <- seq(x_min, x_max, length.out = floor(N*1))
     xVals <- sample(xVals, N, replace = FALSE)
     xVals <- jitter(xVals)
     xVals <- ifelse(xVals < x_min, x_min, xVals)
