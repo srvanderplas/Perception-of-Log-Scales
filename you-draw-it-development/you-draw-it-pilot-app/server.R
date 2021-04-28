@@ -154,8 +154,10 @@ shinyServer(function(input, output, session) {
         done_drawing = FALSE,
         choice = NULL,
         starttime = NULL,
-        trialsreq  = experiment$trials_req,
-        trialsleft = experiment$trials_req,
+        # practicereq  = experiment$trials_req,
+        # practiceleft = experiment$trials_req,
+        practicereq  = 2,
+        practiceleft = 2,
         ydipp   = experiment$ydi_pp,
         ydippleft = experiment$ydi_pp,
         parms = 0,
@@ -270,13 +272,13 @@ shinyServer(function(input, output, session) {
         return(values$question)
     })
 
-    # Output info on how many trials/lineups left
+    # Output info on how many practices/lineups left
     output$status <- renderText({
         paste(
-            ifelse(values$trialsleft > 0, "Trial", ""),
+            ifelse(values$practiceleft > 0, "Practice Round", ""),
             "Plot",
-            ifelse(values$trialsleft > 0,
-                   paste(values$trialsreq - values$trialsleft + 1, "of", values$trialsreq),
+            ifelse(values$practiceleft > 0,
+                   paste(values$practicereq - values$practiceleft + 1, "of", values$practicereq),
                    paste(values$ydipp - values$ydippleft + 1, "of", values$ydipp)))
     })
 
@@ -298,19 +300,11 @@ shinyServer(function(input, output, session) {
             values$done_drawing &&
             !any(input$dimension < window_dim_min)) {
 
-            # Things to do when responses are all filled in and submitted
+            # Things to do when you draw it line is finished and submitted
             disable("submit")
 
-            # reason <- input$reasoning
-            # if ("Other" %in% reason || input$otheronly) {
-            #     reason <- c(reason, input$other)
-            # }
-            # reason <- paste(reason, collapse = ", ")
-
-            # values$choice <- response
-
-            if (values$trialsleft == 0 && values$ydippleft > 0) {
-                # This applies to the lineups, not to the trials
+            if (values$practiceleft == 0 && values$ydippleft > 0) {
+                # This applies to the you draw it plots, not to the practices
                 values$result <- "Submitted!"
 
                 test <- drawn_data() %>%
@@ -333,11 +327,6 @@ shinyServer(function(input, output, session) {
 
                 # Generate completion code
                 if (values$ydippleft == 0) {
-                    # rand1 <- sample(letters, 3, replace = TRUE)
-                    # rand2 <- sample(LETTERS, 3, replace = TRUE)
-                    # rand3 <- sample(1:9, 3, replace = TRUE)
-                    #
-                    # code <- paste(sample(c(rand1, rand2, rand3)), collapse = "")
 
                     values$question <- "All done! Congratulations!"
                     #values$question <- paste("All done! Congratulations! Please click the URL to complete the study:")
@@ -345,13 +334,8 @@ shinyServer(function(input, output, session) {
                 }
 
             } else {
-                # This applies to the trials, not the lineups
-                if (any(strsplit(values$choice, ",")[[1]] %in% values$correct)) {
-                    values$trialsleft <- values$trialsleft - 1
-                    values$result <- "Correct! :)"
-                } else {
-                    values$result <- "Incorrect :("
-                }
+                # This applies to the practices, not the you draw it's
+                values$practiceleft <- values$practiceleft - 1
             }
 
             values$submitted <- TRUE
@@ -374,26 +358,75 @@ shinyServer(function(input, output, session) {
         withProgress(
             # Message: Loading (trial) plot i of n
             message = paste(values$result, "Loading",
-                            ifelse(values$trialsleft > 0, "trial", ""), "plot",
-                            ifelse(values$trialsleft > 0,
-                                   paste(values$trialsreq - values$trialsleft + 1, "of", values$trialsreq),
+                            ifelse(values$practiceleft > 0, "trial", ""), "plot",
+                            ifelse(values$practiceleft > 0,
+                                   paste(values$practicereq - values$practiceleft + 1, "of", values$practicereq),
                                    paste(values$ydipp - values$ydippleft + 1, "of", values$ydipp))),
             expr = {
             values$submitted
 
             values$starttime <- now()
-            trial <- as.numeric(values$trialsleft > 0)
-
-            # Update reactive values
-            taskID <- (values$ydipp - values$ydippleft + 1)
-
+            trial <- as.numeric(values$practiceleft > 0)
+            
             # Reset UI selections
             values$submitted    <- FALSE
             values$done_drawing <- FALSE
+            
+            # This part applies to only the practice rounds 
+            if(values$practiceleft > 0){
+                # Update reactive values
+                practiceID <- (values$practicereq - values$practiceleft + 1)
+                
+                # Obtain Parameters & Data
+                
+                isLinear   <- simulated_data[practiceID, "linear"] %>% as.character()
+                isFreeDraw <- simulated_data[practiceID, "free_draw"] %>% as.logical()
+                drawStart  <- simulated_data[practiceID, "draw_start"] %>% as.numeric()
+                
+                point_data <- simulated_data[practiceID,] %>%
+                    unnest(data) %>%
+                    filter(dataset == "point_data")
+                
+                line_data <- simulated_data[practiceID,] %>%
+                    unnest(data) %>%
+                    filter(dataset == "line_data")
+                
+                data <- list(point_data = point_data, line_data = line_data)
+                
+                if(isFreeDraw){
+  
+                    # Set up ranges
+                    y_range <- range(data$point_data[,"y"]) * c(1.1, 1.1)
+                    x_range <- c(0,20)
+                    
+                } else {
+  
+                    # Set up ranges
+                    y_range <- range(data$line_data[,"y"]) * c(0.5, 2)
+                    x_range <- range(data$line_data[,"x"])
+                }
+                
+                # Include the you draw it graph
+                drawr(data              = data,
+                      aspect_ratio      = 1,
+                      linear            = isLinear,
+                      free_draw         = isFreeDraw,
+                      points            = "full",
+                      x_by              = 0.25,
+                      draw_start        = drawStart,
+                      # points_end        = 0.5,
+                      show_finished     = input$show_finished,
+                      shiny_message_loc = message_loc,
+                      x_range           = x_range,
+                      y_range           = y_range)
+            
+            } else { 
+            # This part applies to only the you draw it's, not the practice rounds     
+            
+                # Update reactive values
+                taskID <- (values$ydipp - values$ydippleft + 1)
 
-            # Separate r2d3 part for exponential log study and eyefitting study
-
-                # Obtain Data
+                # Obtain Parameters & Data
                 
                 isLinear   <- simulated_data[taskID, "linear"] %>% as.character()
                 isFreeDraw <- simulated_data[taskID, "free_draw"] %>% as.logical()
@@ -446,19 +479,22 @@ shinyServer(function(input, output, session) {
                       shiny_message_loc = message_loc,
                       x_range           = x_range,
                       y_range           = y_range)
+            }
         })
     }) # end renderD3
 
     shiny::observeEvent(input$drawr_message, {
 
+        values$done_drawing <- TRUE
+        
+        if(values$practiceleft == 0){
             line_data <- line_data_storage()
 
             line_data %>%
             mutate(ydrawn = input$drawr_message) %>%
                 select(parm_id, x, y, ydrawn, linear) %>%
                 drawn_data()
-
-            values$done_drawing <- TRUE
+        }
 
     })
 
