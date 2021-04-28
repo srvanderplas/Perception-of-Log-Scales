@@ -148,16 +148,14 @@ shinyServer(function(input, output, session) {
     # reactive values to control the trials
     values <- reactiveValues(
         experiment = experiment$experiment,
-        question = experiment$question,
+        question = "",
         pics = NULL,
         submitted = FALSE,
         done_drawing = FALSE,
         choice = NULL,
         starttime = NULL,
-        # practicereq  = experiment$trials_req,
-        # practiceleft = experiment$trials_req,
-        practicereq  = 2,
-        practiceleft = 2,
+        practicereq  = nrow(practice_data),
+        practiceleft = nrow(practice_data),
         ydipp   = experiment$ydi_pp,
         ydippleft = experiment$ydi_pp,
         parms = 0,
@@ -275,7 +273,7 @@ shinyServer(function(input, output, session) {
     # Output info on how many practices/lineups left
     output$status <- renderText({
         paste(
-            ifelse(values$practiceleft > 0, "Practice Round", ""),
+            ifelse(values$practiceleft > 0, "Practice", ""),
             "Plot",
             ifelse(values$practiceleft > 0,
                    paste(values$practicereq - values$practiceleft + 1, "of", values$practicereq),
@@ -377,13 +375,13 @@ shinyServer(function(input, output, session) {
             if(values$practiceleft > 0){
                 # Update reactive values
                 practiceID <- (values$practicereq - values$practiceleft + 1)
-                
+    
                 # Obtain Parameters & Data
-                
-                isLinear     <- practice_data[practiceID, "linear"] %>% as.character()
-                isFreeDraw   <- practice_data[practiceID, "free_draw"] %>% as.logical()
-                drawStart    <- practice_data[practiceID, "draw_start"] %>% as.numeric()
-                showFinished <- practice_data[practiceID, "show_finished"] %>% as.logical()
+                values$question <- practice_questions[practiceID] %>% as.character()
+                isLinear        <- practice_data[practiceID, "linear"] %>% as.character()
+                isFreeDraw      <- practice_data[practiceID, "free_draw"] %>% as.logical()
+                drawStart       <- practice_data[practiceID, "draw_start"] %>% as.numeric()
+                showFinished    <- practice_data[practiceID, "show_finished"] %>% as.logical()
                 
                 point_data <- practice_data[practiceID,] %>%
                     unnest(data) %>%
@@ -396,7 +394,7 @@ shinyServer(function(input, output, session) {
                 data <- list(point_data = point_data, line_data = line_data)
 
                     # Set up ranges
-                    y_range <- range(data$point_data[,"y"]) * c(0.5, 1.1)
+                    y_range <- c(min(data$point_data[,"y"]), max(max(data$point_data[,"y"]), max(data$line_data[,"y"]))) * c(0.5, 1.5)
                     x_range <- c(0,20)
                 
                 # Include the you draw it graph
@@ -415,9 +413,9 @@ shinyServer(function(input, output, session) {
             
             } else { 
             # This part applies to only the you draw it's, not the practice rounds     
-            
                 # Update reactive values
                 taskID <- (values$ydipp - values$ydippleft + 1)
+                values$question <- experiment$question 
 
                 # Obtain Parameters & Data
                 
@@ -443,7 +441,7 @@ shinyServer(function(input, output, session) {
                         line_data_storage()
                     
                     # Set up ranges
-                    y_range <- range(data$point_data[,"y"]) * c(1.1, 1.1)
+                    y_range <- eyefitting_yrange * c(1.1, 1.1)
                     x_range <- c(0,20)
                     
                 } else {

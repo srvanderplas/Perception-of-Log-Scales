@@ -52,34 +52,45 @@ practiceDataGen <-
     return(data)
   }
 
-practice_data <- expand_grid(practiceID = seq(1,2),
-                             a = 0.25,
+practice_questions <- c("Make sure the yellow box disappears. Start on the left edge of the yellow box, it will then move along with your mouse as you draw.",
+                        "The yellow box might not start on the far left side of the plot, it may ask you to begin drawing in the middle.",
+                        "You can draw over your already drawn line.",
+                        "You can also use the reset button to clear your drawing and start over.",
+                        "If you resize your browser window, your plot will reset and you will need to start over.",
+                        "You will actually not see a finished line."
+)
+practice_data <- tibble(practiceID = seq(1,6),
+                        points_end = c(20, 10, 20, 20, 15, 20),
+                        free_draw = c(TRUE, FALSE, TRUE, TRUE, FALSE, TRUE),
+                        show_finished = c(TRUE, TRUE, TRUE, TRUE, TRUE, FALSE)
+                        ) %>%
+                 expand_grid(a = 0.25,
                              b = -3,
                              c = 15,
                              sigma = 2,
+                             linear = "true",
+                             draw_start = 10
                              )%>%
-  mutate(data = purrr::pmap(list(a = a,
-                                 b = b,
-                                 c = c,
-                                 sigma = sigma), practiceDataGen)) %>%
-  expand_grid(linear = "true",
-              draw_start = 5,
-              free_draw = TRUE,
-              show_finished = TRUE) %>%
+                 mutate(data = purrr::pmap(list(a = a,
+                                                b = b,
+                                                c = c,
+                                                sigma = sigma), practiceDataGen)) %>%
   mutate(parm_id = paste("practice", practiceID, "-linear",linear, "-ds", draw_start, "-fd", free_draw, sep = "")) %>%
   unnest(data) %>%
   unnest(data) %>%
+  mutate(y = ifelse(dataset == "point_data" & x > points_end, NA, y)) %>%
+  na.omit() %>%
   nest(data = c("dataset", "x", "y")) %>%
   dplyr::select(parm_id, data, linear, free_draw, draw_start, show_finished)
 
-# practice_data %>%
-#   unnest(data) %>%
-#   filter(dataset == "point_data") %>%
-#   ggplot(aes(x = x, y = y)) +
-#   geom_point() +
-#   facet_grid(~parm_id) +
-#   theme_bw() +
-#   theme(aspect.ratio = 1)
+practice_data %>%
+  unnest(data) %>%
+  filter(dataset == "point_data") %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  facet_wrap(~parm_id) +
+  theme_bw() +
+  theme(aspect.ratio = 1)
 
 # ------------------------------------------------------------------------------
 # Exponential Data Generation --------------------------------------------------
@@ -234,7 +245,11 @@ eyefitting_data <- eyefitting_parameter_details %>%
               draw_start = 5,
               free_draw = TRUE) %>%
   unnest(data) %>%
-  unnest(data) %>%
+  unnest(data)
+
+eyefitting_yrange <- range(eyefitting_data$y)
+
+eyefitting_data <- eyefitting_data  %>%
   nest(data = c("dataset", "x", "y")) %>%
   dplyr::select(parm_id, data, linear, free_draw, draw_start)
 

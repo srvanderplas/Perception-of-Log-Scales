@@ -26,13 +26,13 @@ experiment_details
 # Exponential Scale Study Parameter Details ------------------------
 
 exp_parameter_details <- dbReadTable(db_con,"exp_parameter_details")
-exp_parameter_details <- data.frame(beta = c(0.1, 0.23), 
-                                    sd = c(0.09, 0.25)) %>%
-                          expand_grid(N = 30,
-                                      x_min = 0,
-                                      x_max = 20,
-                                      x_by = 0.25
-                          )
+# exp_parameter_details <- data.frame(beta = c(0.1, 0.23), 
+#                                     sd = c(0.09, 0.25)) %>%
+#                           expand_grid(N = 30,
+#                                       x_min = 0,
+#                                       x_max = 20,
+#                                       x_by = 0.25
+#                           )
 # dbRemoveTable(db_con, "exp_parameter_details")
 # dbWriteTable(db_con,  "exp_parameter_details", exp_parameter_details)
 # exp_parameter_details <- dbReadTable(db_con,"exp_parameter_details")
@@ -46,7 +46,7 @@ eyefitting_parameter_details <- dbReadTable(db_con,"eyefitting_parameter_details
 #                                        slope  = c(0.66, 0.66, 1.98, -0.70),
 #                                        sigma  = c(1.3, 2.8, 1.5, 2.5),
 #                                        x_min   = c(0, 0, 4, 0),
-#                                        x_max   = c(20, 20, 18, 20)) %>%
+#                                        x_max   = c(20, 20, 16, 20)) %>%
 #                                 expand_grid(x_by = 0.25)
 # dbRemoveTable(db_con, "eyefitting_parameter_details")
 # dbWriteTable(db_con,  "eyefitting_parameter_details", eyefitting_parameter_details)
