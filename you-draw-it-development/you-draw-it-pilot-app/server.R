@@ -148,7 +148,9 @@ shinyServer(function(input, output, session) {
     # reactive values to control the trials
     values <- reactiveValues(
         experiment = experiment$experiment,
-        question = "",
+        question = experiment$question,
+        practicetext = "",
+        practicegif_file = "",
         pics = NULL,
         submitted = FALSE,
         done_drawing = FALSE,
@@ -269,7 +271,22 @@ shinyServer(function(input, output, session) {
     output$question <- renderText({
         return(values$question)
     })
+    
+    output$isPractice <- reactive({
+        values$practiceleft > 0
+    })
+    outputOptions(output, 'isPractice', suspendWhenHidden = FALSE)
+    
+    output$practicetext <- renderText({
+        return(values$practicetext)
+    })
 
+    output$practicegif <- renderImage({
+        # Return a list
+        list(src = values$practicegif_file,
+             alt = "")
+    }, deleteFile = FALSE)
+        
     # Output info on how many practices/lineups left
     output$status <- renderText({
         paste(
@@ -377,11 +394,12 @@ shinyServer(function(input, output, session) {
                 practiceID <- (values$practicereq - values$practiceleft + 1)
     
                 # Obtain Parameters & Data
-                values$question <- practice_questions[practiceID] %>% as.character()
-                isLinear        <- practice_data[practiceID, "linear"] %>% as.character()
-                isFreeDraw      <- practice_data[practiceID, "free_draw"] %>% as.logical()
-                drawStart       <- practice_data[practiceID, "draw_start"] %>% as.numeric()
-                showFinished    <- practice_data[practiceID, "show_finished"] %>% as.logical()
+                values$practicetext  <- practice_text[practiceID] %>% as.character()
+                values$practicegif_file  <- practicegif_files[practiceID] %>% as.character()
+                isLinear     <- practice_data[practiceID, "linear"] %>% as.character()
+                isFreeDraw   <- practice_data[practiceID, "free_draw"] %>% as.logical()
+                drawStart    <- practice_data[practiceID, "draw_start"] %>% as.numeric()
+                showFinished <- practice_data[practiceID, "show_finished"] %>% as.logical()
                 
                 point_data <- practice_data[practiceID,] %>%
                     unnest(data) %>%
@@ -415,10 +433,8 @@ shinyServer(function(input, output, session) {
             # This part applies to only the you draw it's, not the practice rounds     
                 # Update reactive values
                 taskID <- (values$ydipp - values$ydippleft + 1)
-                values$question <- experiment$question 
-
-                # Obtain Parameters & Data
                 
+                # Obtain Parameters & Data
                 isLinear   <- simulated_data[taskID, "linear"] %>% as.character()
                 isFreeDraw <- simulated_data[taskID, "free_draw"] %>% as.logical()
                 drawStart  <- simulated_data[taskID, "draw_start"] %>% as.numeric()

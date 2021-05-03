@@ -132,7 +132,7 @@ fluidPage(
     conditionalPanel(condition = "input.submit == null",
                      checkboxInput("done", "Done", value = FALSE)
     ),
-
+  
     # This panel is for lineup questions
     conditionalPanel(
       condition = "input.ready && !input.done",
@@ -163,10 +163,18 @@ fluidPage(
     ),
 
       conditionalPanel(condition = "input.ready",
-                       h3(textOutput("question"))
-      ),
-      hr(),
-      d3Output("shinydrawr", height = "500px")
+        h3(textOutput("question")),
+        conditionalPanel(condition = "output.isPractice",
+          h5(textOutput("practicetext"))
+        ),
+        hr(),
+        fluidRow(
+            conditionalPanel(condition = "output.isPractice",
+              column(width = 6, plotOutput("practicegif")),
+            ),
+            column(width = 6, d3Output("shinydrawr", height = "450px"))
+        )
+      )
     )
   )
 )
