@@ -53,6 +53,24 @@ eyefitting_parameter_details <- dbReadTable(db_con,"eyefitting_parameter_details
 # eyefitting_parameter_details <- dbReadTable(db_con,"eyefitting_parameter_details")
 eyefitting_parameter_details
 
+# Users Data ---------------------------------------------------
+
+users <- dbReadTable(db_con,"users")
+# users <- tibble(nick_name       = "test",
+#                 study_starttime = NA,
+#                 age             = NA,
+#                 gender          = NA,
+#                 academic_study  = NA,
+#                 recruitment     = NA,
+#                 ip_address      = NA
+#                 )
+# users <- users[0,]
+# dbRemoveTable(db_con, "users")
+# dbWriteTable(db_con, "users", users)
+# users <- dbReadTable(db_con,"users")
+users
+
+
 # Feedback Drawn Data ---------------------------------------------------
 
 feedback <- dbReadTable(db_con,"feedback")
@@ -97,22 +115,5 @@ simulated_data %>%
   dplyr::filter(study_starttime == max(users$study_starttime)) %>%
   select(parm_id) %>%
   unique()
-
-# Users Data ---------------------------------------------------
-
-users <- dbReadTable(db_con,"users")
-# users <- tibble(nick_name       = "test",
-#                 study_starttime = NA,
-#                 age             = NA,
-#                 gender          = NA,
-#                 academic_study  = NA,
-#                 recruitment     = NA,
-#                 ip_address      = NA
-#                 )
-# users <- users[0,]
-# dbRemoveTable(db_con, "users")
-# dbWriteTable(db_con, "users", users)
-# users <- dbReadTable(db_con,"users")
-users
 
 dbDisconnect(db_con)
