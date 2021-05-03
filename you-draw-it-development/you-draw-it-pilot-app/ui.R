@@ -170,9 +170,9 @@ fluidPage(
         hr(),
         fluidRow(
             conditionalPanel(condition = "output.isPractice",
-              column(width = 6, plotOutput("practicegif")),
+              column(width = 4, imageOutput("practicegif")),
             ),
-            column(width = 6, d3Output("shinydrawr", height = "450px"))
+            column(width = 8, d3Output("shinydrawr", height = "500px"))
         )
       )
     )

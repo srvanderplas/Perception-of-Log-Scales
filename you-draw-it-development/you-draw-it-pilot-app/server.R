@@ -284,7 +284,8 @@ shinyServer(function(input, output, session) {
     output$practicegif <- renderImage({
         # Return a list
         list(src = values$practicegif_file,
-             alt = "")
+             alt = "",
+             width = 350)
     }, deleteFile = FALSE)
         
     # Output info on how many practices/lineups left

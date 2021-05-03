@@ -56,7 +56,7 @@ practice_text <- c("Make sure the yellow box disappears. Start on the left edge 
                    "The plot will clear your drawing and start over by (1) clicking the reset button (2) resizing your browser window",
                    "The yellow box might not start on the far left side of the plot, it may ask you to begin drawing in the middle. You will not actually see a finished line."
 )
-practicegif_files <- c("examples/exponential.gif", "examples/linear1.gif", "examples/exponential.gif")
+practicegif_files <- c("examples/practice1.gif", "examples/practice2.gif", "examples/practice3.gif")
 practice_data <- tibble(practiceID = seq(1,3),
                         points_end = c(20, 20, 15),
                         free_draw = c(TRUE, TRUE, FALSE),
