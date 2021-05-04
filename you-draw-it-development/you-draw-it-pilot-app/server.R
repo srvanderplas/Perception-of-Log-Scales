@@ -271,12 +271,12 @@ shinyServer(function(input, output, session) {
     output$question <- renderText({
         return(values$question)
     })
-    
+
     output$isPractice <- reactive({
         values$practiceleft > 0
     })
     outputOptions(output, 'isPractice', suspendWhenHidden = FALSE)
-    
+
     output$practicetext <- renderText({
         return(values$practicetext)
     })
@@ -287,7 +287,7 @@ shinyServer(function(input, output, session) {
              alt = "",
              width = 350)
     }, deleteFile = FALSE)
-        
+
     # Output info on how many practices/lineups left
     output$status <- renderText({
         paste(
@@ -384,16 +384,16 @@ shinyServer(function(input, output, session) {
 
             values$starttime <- now()
             trial <- as.numeric(values$practiceleft > 0)
-            
+
             # Reset UI selections
             values$submitted    <- FALSE
             values$done_drawing <- FALSE
-            
-            # This part applies to only the practice rounds 
+
+            # This part applies to only the practice rounds
             if(values$practiceleft > 0){
                 # Update reactive values
                 practiceID <- (values$practicereq - values$practiceleft + 1)
-    
+
                 # Obtain Parameters & Data
                 values$practicetext  <- practice_text[practiceID] %>% as.character()
                 values$practicegif_file  <- practicegif_files[practiceID] %>% as.character()
@@ -401,21 +401,21 @@ shinyServer(function(input, output, session) {
                 isFreeDraw   <- practice_data[practiceID, "free_draw"] %>% as.logical()
                 drawStart    <- practice_data[practiceID, "draw_start"] %>% as.numeric()
                 showFinished <- practice_data[practiceID, "show_finished"] %>% as.logical()
-                
+
                 point_data <- practice_data[practiceID,] %>%
                     unnest(data) %>%
                     filter(dataset == "point_data")
-                
+
                 line_data <- practice_data[practiceID,] %>%
                     unnest(data) %>%
                     filter(dataset == "line_data")
-                
+
                 data <- list(point_data = point_data, line_data = line_data)
 
                     # Set up ranges
                     y_range <- c(min(data$point_data[,"y"]), max(max(data$point_data[,"y"]), max(data$line_data[,"y"]))) * c(0.5, 1.5)
                     x_range <- c(0,20)
-                
+
                 # Include the you draw it graph
                 drawr(data              = data,
                       aspect_ratio      = 1,
@@ -429,46 +429,46 @@ shinyServer(function(input, output, session) {
                       shiny_message_loc = message_loc,
                       x_range           = x_range,
                       y_range           = y_range)
-            
-            } else { 
-            # This part applies to only the you draw it's, not the practice rounds     
+
+            } else {
+            # This part applies to only the you draw it's, not the practice rounds
                 # Update reactive values
                 taskID <- (values$ydipp - values$ydippleft + 1)
-                
+
                 # Obtain Parameters & Data
                 isLinear   <- simulated_data[taskID, "linear"] %>% as.character()
                 isFreeDraw <- simulated_data[taskID, "free_draw"] %>% as.logical()
                 drawStart  <- simulated_data[taskID, "draw_start"] %>% as.numeric()
-                
+
                 point_data <- simulated_data[taskID,] %>%
                     unnest(data) %>%
                     filter(dataset == "point_data")
-                
+
                 line_data <- simulated_data[taskID,] %>%
                     unnest(data) %>%
                     filter(dataset == "line_data")
-                
+
                 data <- list(point_data = point_data, line_data = line_data)
 
                 if(isFreeDraw){
-                    
+
                     # Store data for feedback later
                     line_data %>%
                         select(parm_id, linear, x, y) %>%
                         line_data_storage()
-                    
+
                     # Set up ranges
                     y_range <- eyefitting_yrange * c(1.1, 1.1)
                     x_range <- c(0,20)
-                    
+
                 } else {
-                    
+
                     # Store data for feedback later
                     line_data %>%
                         select(parm_id, linear, x, y) %>%
                         filter(x >= drawStart) %>%
                         line_data_storage()
-                    
+
                     # Set up ranges
                     y_range <- range(data$line_data[,"y"]) * c(0.5, 2)
                     x_range <- range(data$line_data[,"x"])
@@ -494,7 +494,7 @@ shinyServer(function(input, output, session) {
     shiny::observeEvent(input$drawr_message, {
 
         values$done_drawing <- TRUE
-        
+
         if(values$practiceleft == 0){
             line_data <- line_data_storage()
 
