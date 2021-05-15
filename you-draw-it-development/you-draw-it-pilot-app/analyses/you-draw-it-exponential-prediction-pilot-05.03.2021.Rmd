@@ -1,0 +1,232 @@
+---
+title: "You Draw It: Exponential Prediction"  
+subtitle: "Pilot Data (Twitter / Reddit / Direct Email)"
+author: "Emily Robinson"
+date: "May 3, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE,
+	options(knitr.kable.NA = ''), 
+	fig.height = 12, 
+	fig.width = 12,
+	fig.align = 'center'
+)
+library(RSQLite)
+library(DBI)
+library(tidyverse)
+library(lme4)
+library(lmerTest)
+library(emmeans)
+```
+
+## Data
+
+```{r obtain-data}
+# Connect to database
+filename <- "../you_draw_it_data.db"
+sqlite.driver <- dbDriver("SQLite")
+db_con <- dbConnect(sqlite.driver, dbname = filename)
+# dbListTables(db_con)
+
+# Import exponential prediction parameter details
+exp_parameter_details <- dbReadTable(db_con,"exp_parameter_details") %>%
+  mutate(beta = as.factor(as.character(beta)),
+         sd = as.factor(as.character(sd)))
+
+# Import user data
+users <- dbReadTable(db_con,"users") %>%
+  filter(study_starttime > 1620152231) %>%
+  select(-ip_address) %>%
+  mutate(participantID = as.factor(as.character(as.numeric(as.factor(paste(nick_name, "_", study_starttime, sep = ""))))))
+
+# Import exponential prediction feedback data
+exp_feedback <- dbReadTable(db_con,"feedback") %>%
+  filter(study_starttime > 1620152231) %>%
+  filter(parm_id %in% c("beta0.1-10-true",  "beta0.1-10-false", 
+                        "beta0.1-15-true",  "beta0.1-15-false", 
+                        "beta0.23-10-true", "beta0.23-10-false",
+                        "beta0.23-15-true", "beta0.23-15-false")) %>%
+  separate(parm_id, into = c("beta", "points_end", "linear"), sep = "-") %>%
+  mutate(beta = substr(beta, 5, 8)) %>%
+  left_join(exp_parameter_details, by = "beta") %>%
+  mutate(scale = ifelse(linear == "true", "Linear", "Log"),
+         residual.drawn = ydrawn - y) %>%
+  left_join(users, by = c("nick_name", "study_starttime")) %>%
+  mutate(plotID = as.factor(as.character(as.numeric(as.factor(paste(nick_name, "_", start_time, "_", end_time, sep = ""))))),
+         beta = as.factor(as.character(beta)),
+         sd = as.factor(as.character(sd)),
+         points_end = as.factor(as.character(points_end)))
+
+# Import exponential prediction simulated data
+exp_simulated_data <- dbReadTable(db_con,"simulated_data") %>%
+  filter(study_starttime > 1620152231) %>%
+  filter(parm_id %in% c("beta0.1-10-true",  "beta0.1-10-false", 
+                        "beta0.1-15-true",  "beta0.1-15-false", 
+                        "beta0.23-10-true", "beta0.23-10-false",
+                        "beta0.23-15-true", "beta0.23-15-false")) %>%
+  separate(parm_id, into = c("beta", "points_end", "linear"), sep = "-") %>%
+  mutate(beta = substr(beta, 5, 8),
+         scale = ifelse(linear == "true", "Linear", "Log")) %>%
+  left_join(exp_parameter_details, by = "beta") %>%
+  left_join(users, by = c("nick_name", "study_starttime")) %>%
+  mutate(beta = as.factor(as.character(beta)),
+         sd = as.factor(as.character(sd)),
+         points_end = as.factor(as.character(points_end)))
+
+# Disconnect from database
+dbDisconnect(db_con)
+```
+
+### Feedback Data Summary
+
+```{r feedback-summary}
+exp_feedback %>%
+  select(beta, sd, points_end, scale, participantID, plotID) %>%
+  unique() %>%
+  group_by(beta, sd, points_end, scale, participantID) %>%
+  summarise(count = n()) %>%
+  ungroup() %>%
+  group_by(participantID) %>%
+  mutate(total = sum(count)) %>%
+  ungroup() %>%
+  mutate(parm_id = paste("beta", beta, "-", points_end, "-", scale, sep = "")) %>%
+  pivot_wider(id_cols = c("participantID", "total"),
+              names_from = "parm_id",
+              values_from = "count") %>%
+  arrange(as.numeric(as.character(participantID))) %>%
+  knitr::kable()
+```
+
+### Simulated Data Summary
+
+```{r simulated-summary}
+exp_simulated_data %>%
+  filter(dataset == "line_data", x == 20.00) %>%
+  group_by(beta, sd, points_end, scale, participantID) %>%
+  summarise(count = n()) %>%
+  ungroup() %>%
+  group_by(participantID) %>%
+  mutate(total = sum(count),
+         parm_id = paste("beta", beta, "-", points_end, "-", scale, sep = "")) %>%
+  ungroup() %>%
+  pivot_wider(id_cols = c("participantID", "total"),
+              names_from = "parm_id",
+              values_from = "count") %>%
+  arrange(as.numeric(as.character(participantID))) %>%
+  knitr::kable()
+```
+
+## Users
+
+```{r users}
+users %>% select(participantID, age, gender, academic_study, recruitment) %>% knitr::kable()
+```
+
+```{r loess-smoother, echo = F}
+
+# Fit Loess Smoother
+loess.models <- exp_feedback %>%
+        tidyr::nest(-plotID) %>%
+        dplyr::mutate(
+                # Perform loess calculation on each plotID
+                loess.fit = purrr::map(data, loess,
+                               formula = ydrawn ~ x),
+                # Retrieve the fitted values from each model
+                yloess = purrr::map(loess.fit, `[[`, "fitted")
+        )
+
+# Apply fitted y's as a new column
+exp_feedback.smooth <- loess.models %>%
+        dplyr::select(-loess.fit) %>%
+        tidyr::unnest(cols = c(data, yloess)) %>%
+  mutate(residual.loess = yloess - y) %>%
+  select(participantID, age, gender, academic_study, recruitment, plotID, scale, beta, sd, points_end, x, y, ydrawn, yloess, residual.drawn, residual.loess, nick_name, study_starttime, start_time, end_time)
+
+factorCols <- c("plotID", "nick_name", "study_starttime", "beta", "sd", "points_end", "scale", "age", "gender", "academic_study", "recruitment", "participantID")
+exp_feedback.smooth[,factorCols] <- lapply(exp_feedback.smooth[,factorCols], factor)
+
+# summary(exp_feedback.smooth)
+```
+
+## Spaghetti Plots
+
+### Simulated Data
+
+```{r spaghetti-simulated}
+exp_simulated_data %>%
+  filter(dataset == "line_data") %>%
+  arrange(participantID, x) %>%
+  ggplot(aes(x = x, y = y, group = participantID)) +
+  geom_line(alpha = 0.3) +
+  facet_grid(beta ~ points_end, scales = "free", labeller = labeller(beta = label_both, points_end = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 1)
+```
+
+### All Overlaid (No Smoother)
+
+```{r spaghetti-all-overlaid-no-smoother}
+exp_simulated_data %>%
+  filter(dataset == "line_data") %>%
+  arrange(participantID, x) %>%
+  ggplot(aes(x = x)) +
+  geom_line(data = exp_feedback.smooth, aes(y = ydrawn, group = interaction(participantID, scale), color = scale), alpha = 0.7) +
+  geom_line(alpha = 0.7, aes(y = y, group = participantID)) +
+  facet_grid(beta ~ points_end, scales = "free", labeller = labeller(beta = label_both, points_end = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_color_manual("Scale", values = c("steelblue", "orange")) +
+  scale_x_continuous(limits = c(10, 20))
+```
+
+### All Overlaid (Loess Smoother)
+
+```{r spaghetti-all-overlaid-loess-smoother}
+exp_simulated_data %>%
+  filter(dataset == "line_data") %>%
+  arrange(participantID, x) %>%
+  ggplot(aes(x = x)) +
+  geom_line(data = exp_feedback.smooth, aes(y = yloess, group = interaction(participantID, scale), color = scale), alpha = 0.7) +
+  geom_line(alpha = 0.2, aes(y = y, group = participantID)) +
+  facet_grid(beta ~ points_end, scales = "free", labeller = labeller(beta = label_both, points_end = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_color_manual("Scale", values = c("steelblue", "orange")) +
+  scale_x_continuous(limits = c(10, 20))
+```
+
+<hr>
+### Residuals (No Smoother)
+
+```{r residuals-no-smoother}
+exp.spaghetti.plot.raw <- exp_feedback.smooth %>%
+  arrange(participantID, scale, x) %>%
+  ggplot(aes(x = x, y = residual.drawn, group = interaction(participantID, scale), color = scale)) +
+  geom_line(alpha = 0.7) +
+  geom_hline(yintercept = 0, color = "black", linetype = "dashed", alpha = 0.5) +
+  facet_grid(beta ~ points_end, scales = "free", labeller = labeller(beta = label_both, points_end = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_color_manual("Scale", values = c("steelblue", "orange"))
+exp.spaghetti.plot.raw 
+```
+
+### Residual (Loess Smoother)
+
+```{r residuals-loess-smoother}
+exp.spaghetti.plot.smooth <- exp_feedback.smooth %>%
+  arrange(participantID, scale, x) %>%
+  ggplot(aes(x = x, y = residual.loess, group = interaction(participantID, scale), color = scale)) +
+  geom_line(alpha = 0.7) +
+  geom_hline(yintercept = 0, color = "black", linetype = "dashed", alpha = 0.5) +
+  facet_grid(beta ~ points_end, scales = "free", labeller = labeller(beta = label_both, points_end = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_color_manual("Scale", values = c("steelblue", "orange"))
+exp.spaghetti.plot.smooth
+```
