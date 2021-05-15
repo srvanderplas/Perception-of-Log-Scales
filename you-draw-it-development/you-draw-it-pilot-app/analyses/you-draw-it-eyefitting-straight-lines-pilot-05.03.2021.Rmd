@@ -2,7 +2,7 @@
 title: "You Draw It: Eye Fitting Straight Lines in the Modern Era"  
 subtitle: "Pilot Data (Twitter / Reddit / Direct Email)"
 author: "Emily Robinson"
-date: "May 3 - 15, 2021"
+date: "May 3, 2021"
 output: html_document
 ---
 
