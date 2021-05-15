@@ -121,7 +121,11 @@ exp_simulated_data %>%
   knitr::kable()
 ```
 
-## Loess Smoother
+## Users
+
+```{r users}
+users %>% select(participantID, age, gender, academic_study, recruitment) %>% knitr::kable()
+```
 
 ```{r loess-smoother, echo = F}
 
