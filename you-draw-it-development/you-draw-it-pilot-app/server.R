@@ -209,7 +209,8 @@ shinyServer(function(input, output, session) {
     # Welcome text and instructions
     output$welcome_text <- renderUI({
         HTML("This web site is designed to conduct a survey on graphical inference which will help us understand human perception of graphics for use in communicating statistics.<br/><br/>
-               The following examples illustrate the types of questions you may encounter during this experiment.")
+               The following examples illustrate the types of questions you may encounter during this experiment.<br/>
+             <b>If the gifs do not show up, refresh the page and they should appear.</b>")
     })
 
     # ---- Example -------------------------------------------------------------
