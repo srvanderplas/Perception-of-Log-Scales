@@ -2,7 +2,7 @@
 title: "You Draw It: Exponential Prediction"  
 subtitle: "Pilot Data (Twitter / Reddit / Direct Email)"
 author: "Emily Robinson"
-date: "May 3, 2021"
+date: "May 21, 2021"
 output: html_document
 ---
 
@@ -57,6 +57,7 @@ exp_feedback <- dbReadTable(db_con,"feedback") %>%
   mutate(scale = ifelse(linear == "true", "Linear", "Log"),
          residual.drawn = ydrawn - y) %>%
   left_join(users, by = c("nick_name", "study_starttime")) %>%
+  filter(recruitment != "I am the researcher") %>%
   mutate(plotID = as.factor(as.character(as.numeric(as.factor(paste(nick_name, "_", start_time, "_", end_time, sep = ""))))),
          beta = as.factor(as.character(beta)),
          sd = as.factor(as.character(sd)),
@@ -74,6 +75,7 @@ exp_simulated_data <- dbReadTable(db_con,"simulated_data") %>%
          scale = ifelse(linear == "true", "Linear", "Log")) %>%
   left_join(exp_parameter_details, by = "beta") %>%
   left_join(users, by = c("nick_name", "study_starttime")) %>%
+  filter(recruitment != "I am the researcher") %>%
   mutate(beta = as.factor(as.character(beta)),
          sd = as.factor(as.character(sd)),
          points_end = as.factor(as.character(points_end)))
@@ -175,7 +177,7 @@ exp_simulated_data %>%
   filter(dataset == "line_data") %>%
   arrange(participantID, x) %>%
   ggplot(aes(x = x)) +
-  geom_line(data = exp_feedback.smooth, aes(y = ydrawn, group = interaction(participantID, scale), color = scale), alpha = 0.7) +
+  geom_line(data = exp_feedback.smooth, aes(y = ydrawn, group = plotID, color = scale), alpha = 0.7) +
   geom_line(alpha = 0.7, aes(y = y, group = participantID)) +
   facet_grid(beta ~ points_end, scales = "free", labeller = labeller(beta = label_both, points_end = label_both)) +
   theme_bw() +
@@ -191,7 +193,7 @@ exp_simulated_data %>%
   filter(dataset == "line_data") %>%
   arrange(participantID, x) %>%
   ggplot(aes(x = x)) +
-  geom_line(data = exp_feedback.smooth, aes(y = yloess, group = interaction(participantID, scale), color = scale), alpha = 0.7) +
+  geom_line(data = exp_feedback.smooth, aes(y = yloess, group = plotID, color = scale), alpha = 0.7) +
   geom_line(alpha = 0.2, aes(y = y, group = participantID)) +
   facet_grid(beta ~ points_end, scales = "free", labeller = labeller(beta = label_both, points_end = label_both)) +
   theme_bw() +
@@ -206,7 +208,7 @@ exp_simulated_data %>%
 ```{r residuals-no-smoother}
 exp.spaghetti.plot.raw <- exp_feedback.smooth %>%
   arrange(participantID, scale, x) %>%
-  ggplot(aes(x = x, y = residual.drawn, group = interaction(participantID, scale), color = scale)) +
+  ggplot(aes(x = x, y = residual.drawn, group = plotID, color = scale)) +
   geom_line(alpha = 0.7) +
   geom_hline(yintercept = 0, color = "black", linetype = "dashed", alpha = 0.5) +
   facet_grid(beta ~ points_end, scales = "free", labeller = labeller(beta = label_both, points_end = label_both)) +
@@ -221,7 +223,7 @@ exp.spaghetti.plot.raw
 ```{r residuals-loess-smoother}
 exp.spaghetti.plot.smooth <- exp_feedback.smooth %>%
   arrange(participantID, scale, x) %>%
-  ggplot(aes(x = x, y = residual.loess, group = interaction(participantID, scale), color = scale)) +
+  ggplot(aes(x = x, y = residual.loess, group = plotID, color = scale)) +
   geom_line(alpha = 0.7) +
   geom_hline(yintercept = 0, color = "black", linetype = "dashed", alpha = 0.5) +
   facet_grid(beta ~ points_end, scales = "free", labeller = labeller(beta = label_both, points_end = label_both)) +
