@@ -2,7 +2,7 @@
 title: "You Draw It: Eye Fitting Straight Lines in the Modern Era"  
 subtitle: "Pilot Data (Twitter / Reddit / Direct Email)"
 author: "Emily Robinson"
-date: "May 3, 2021"
+date: "May 21, 2021"
 output: html_document
 ---
 
@@ -50,6 +50,7 @@ eyefitting_feedback <- dbReadTable(db_con,"feedback") %>%
   left_join(eyefitting_parameter_details, by = "parm_id") %>%
   mutate(residual.drawn = ydrawn - y) %>%
   left_join(users, by = c("nick_name", "study_starttime")) %>%
+  filter(recruitment != "I am the researcher") %>%
   mutate(plotID = as.factor(as.character(as.numeric(as.factor(paste(nick_name, "_", start_time, "_", end_time, sep = ""))))),
          parm_id = as.factor(as.character(parm_id)))
 
@@ -59,6 +60,7 @@ eyefitting_simulated_data <- dbReadTable(db_con,"simulated_data") %>%
   filter(parm_id %in% c("S", "F", "V", "N")) %>%
   left_join(eyefitting_parameter_details, by = "parm_id") %>%
   left_join(users, by = c("nick_name", "study_starttime")) %>%
+  filter(recruitment != "I am the researcher") %>%
   mutate(parm_id = as.factor(as.character(parm_id)))
 
 # Disconnect from database
@@ -200,8 +202,8 @@ eyefitting_simulated_data %>%
   filter(dataset == "line_data") %>%
   arrange(participantID, x) %>%
   ggplot(aes(x = x)) +
-  geom_line(data = eyefitting_feedback.smooth, aes(y = yloess, group = plotID), color = "steelblue", alpha = 0.7) +
-  geom_line(alpha = 0.2, aes(y = y, group = participantID)) +
+  geom_line(alpha = 0.3, aes(y = y, group = participantID)) +
+  geom_line(data = eyefitting_feedback.smooth, aes(y = yloess, group = plotID), color = "steelblue", alpha = 0.3) +
   facet_wrap(~parm_id, ncol = 2) +
   theme_bw() +
   theme(aspect.ratio = 1) +

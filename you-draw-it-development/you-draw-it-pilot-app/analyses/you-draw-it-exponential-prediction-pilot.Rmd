@@ -2,7 +2,7 @@
 title: "You Draw It: Exponential Prediction"  
 subtitle: "Pilot Data (Twitter / Reddit / Direct Email)"
 author: "Emily Robinson"
-date: "May 3, 2021"
+date: "May 21, 2021"
 output: html_document
 ---
 
@@ -40,7 +40,7 @@ exp_parameter_details <- dbReadTable(db_con,"exp_parameter_details") %>%
 
 # Import user data
 users <- dbReadTable(db_con,"users") %>%
-  filter(study_starttime > 1620152231, recruitment != "I am the researcher") %>%
+  filter(study_starttime > 1620152231) %>%
   select(-ip_address) %>%
   mutate(participantID = as.factor(as.character(as.numeric(as.factor(paste(nick_name, "_", study_starttime, sep = ""))))))
 
@@ -57,6 +57,7 @@ exp_feedback <- dbReadTable(db_con,"feedback") %>%
   mutate(scale = ifelse(linear == "true", "Linear", "Log"),
          residual.drawn = ydrawn - y) %>%
   left_join(users, by = c("nick_name", "study_starttime")) %>%
+  filter(recruitment != "I am the researcher") %>%
   mutate(plotID = as.factor(as.character(as.numeric(as.factor(paste(nick_name, "_", start_time, "_", end_time, sep = ""))))),
          beta = as.factor(as.character(beta)),
          sd = as.factor(as.character(sd)),
@@ -74,6 +75,7 @@ exp_simulated_data <- dbReadTable(db_con,"simulated_data") %>%
          scale = ifelse(linear == "true", "Linear", "Log")) %>%
   left_join(exp_parameter_details, by = "beta") %>%
   left_join(users, by = c("nick_name", "study_starttime")) %>%
+  filter(recruitment != "I am the researcher") %>%
   mutate(beta = as.factor(as.character(beta)),
          sd = as.factor(as.character(sd)),
          points_end = as.factor(as.character(points_end)))
