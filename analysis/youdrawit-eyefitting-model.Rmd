@@ -1,5 +1,6 @@
 ---
-title: "Eyefitting Pilot Analysis"
+title: "Eye Fitting Straight Lines in the Modern Era"
+subtitle: "Pilot Analysis"
 author: "Emily Robinson"
 date: "June 2021"
 output: html_document
@@ -33,6 +34,9 @@ source("gamm-predict-function.R")
 ```
 
 ## EYEFITTING DATA
+
++ Note that we have both the feedback data (includes x, y-aka yols, and ydrawn) and the simulated points (we need to use this to calculate the ypca values). 
+
 ```{r data}
 
 # FEEDBACK DATA
@@ -60,7 +64,19 @@ simulated_data[,factorCols] <- lapply(simulated_data[,factorCols], factor)
 
 ## FIRST PRINCIPAL COMPONENT
 
+To calculate the first principal component fit:
+
+1. Subset the simulated point data for a particular participant and parameter (S, F, V, N).
+2. Fit a principal component over the x and y vectors from the point data (note these are the points show in the plot below). Use `prcomp`. Call this `pca.mod` 
+3. Obtain the slope and intercept:
+    + Using the pca.mod rotations we obatin the slope as: $\text{pca.slope} = \frac{\text{pca.mod rotation}[y,PC1]}{\text{pca.mod rotation}[x,PC1]}$
+    + Using point-slope form we obtain the intercept as: $\text{pca.intercept} = \bar y_{\text{point_data}} - \text{pca.slope} \cdot \bar x_{\text{point_data}}$
+4. Obtain ypca values by: $y_{pca} = \text{pca.slope} \cdot x_{\text{feedback data}} + \text{pca.intercept}$
+
 ### Trial
+
++ Grabbing one particular participant ID and parameter value, we test out the PCA code/calculation. The plot below shows the OLS fit, PCA fit, User drawn line, and simulated points.
+
 ```{r pca-trail}
 # Trial Data
 participantIDs <- levels(eyefitting_data$participantID)
@@ -71,10 +87,10 @@ trial.feedback <- eyefitting_data %>%
 
 # PCA
 trial.pca <- prcomp(trial.sim[,c("x","y")])
-trial.sim$PC1 <- predict(trial.pca)[,1]
-trial.feedback$PC1 <- predict(trial.pca, newdata = trial.feedback)[,1]
-pca.lm <- lm(y ~ PC1, data = trial.sim)
-trial.feedback$ypca <- predict(pca.lm, newdata = trial.feedback)
+trial.pca$rotation
+pca.slope <- trial.pca$rotation[2,1]/trial.pca$rotation[1,1]
+pca.intercept <- mean(trial.sim$y) - pca.slope*(mean(trial.sim$x))
+trial.feedback$ypca <- pca.slope*trial.feedback$x + pca.intercept
 
 trial.feedback %>%
   ggplot(aes(x = x)) +
@@ -96,11 +112,11 @@ pcaCalc <- function(data){
     mutate(participantID = as.character(participantID),
            parm_id = as.character(parm_id)) %>%
     filter(dataset == "point_data", participantID == as.character(data[1,"participantID"]), parm_id == as.character(data[1, 'parm_id']))
-  pca.mod <- prcomp(point.data[,c("x","y")])
-  point.data$PC1 <- predict(pca.mod)[,1]
-  data$PC1 <- predict(pca.mod, newdata = data)[,1]
-  pca.lm.mod <- lm(y ~ PC1, data = point.data)
-  predict(pca.lm.mod, newdata = data)
+  
+  pca.mod   <- prcomp(point.data[,c("x","y")])
+  pca.slope <- pca.mod$rotation[2,1]/pca.mod$rotation[1,1]
+  pca.intercept <- mean(point.data$y) - pca.slope*(mean(point.data$x))
+  return(pca.slope*data$x + pca.intercept)
 }
 
 eyefitting_model_data <- eyefitting_data %>% 
@@ -118,7 +134,7 @@ eyefitting_model_data <- eyefitting_data %>%
          residualols.loess = residualloess) %>%
   dplyr::select(participantID, nick_name, study_starttime, age, gender, academic_study, recruitment, plotID, start_time, end_time, parm_id, x, yols, ypca, ydrawn, yloess, residualols, residualols.loess, residualpca, residualpca.loess)
 
-head(eyefitting_model_data) %>% kable()
+# head(eyefitting_model_data)
 ```
 
 ## RAW DATA PLOTS
@@ -137,7 +153,7 @@ eyefitting_model_data %>%
   ggtitle("OLS")
 ```
 
-### yloess (pca)
+### yloess (PCA)
 ```{r yloess-pca-plot}
 eyefitting_model_data %>%
   ggplot(aes(x = x)) +
@@ -167,36 +183,63 @@ eyefitting_model_data %>%
 
 ## GAMM MODELS
 
-+ Fit to raw residuals
-    + ydrawn - yols
-    + ydrawn - ypca
+**Treatments:**
 
-```{r gamm}
++ parm_ID (S, F, V, N)
++ x (0, 20)
+
+**Response:** raw residuals
++ residualols = ydrawn - yols, denoted $e_{ols}$
++ residualpca = ydrawn - ypca, denoted $e_{pca}$
+
+**Experimental Design:**    
++ Each participant saw each of the 4 plots (new simulated data for each)
+    
+**ANOVA Table:**
+
+```{r, anova-gamm}
+sv <- c("participantID", "parm_id", "x", "x:parm_id", "residual")
+df <- c("(50 - 1) = 49", "(4 - 1) = 3", "1", "(4 - 1) = 3", "143 - by subtraction")
+data.frame("SV" = sv, "DF" = df) %>% kable()
+```
+
+**OLS GAMM Model:**
+
+$$y_{drawn} - y_{ols} = e_{ij,ols} = \left(\beta_0 + \delta_i\right) + \left(\beta_1 s(x_{ij}) + \beta_2 s(x_{ij}) \cdot \delta_i\right) + p_{ij} + \epsilon_{ij}$$
+where $p_{ij} \sim N(0, \sigma^2_{participant})$ and $\epsilon_{ij} \sim N(0, \sigma^2)$.
+
+**PCA GAMM Model:**
+
+$$y_{drawn} - y_{pca} = e_{ij,pca} = \left(\beta_0 + \delta_i\right) + \left(\beta_1 s(x_{ij}) + \beta_2 s(x_{ij}) \cdot \delta_i\right) + p_{ij} + \epsilon_{ij}$$
+where $p_{ij} \sim N(0, \sigma^2_{participant})$ and $\epsilon_{ij} \sim N(0, \sigma^2)$.
+
+*Question: do we need a x by participant spline? think autocorrelation.* 
+
+```{r gamm, fig.height = 9}
 # Fit GAMM
 
 # OLS
 # tic()
-eyefitting.ols.gamm <- bam(residualols ~ -1 + parm_id + 
-              s(x, by = parm_id) +
-              s(participantID, bs = "re") +
-              s(x,participantID, bs = "re"),
+eyefitting.ols.gamm <- bam(residualols ~ parm_id + s(x) + s(x, by = parm_id) + s(participantID, bs = "re"),
             method = "REML",
             data = eyefitting_model_data)
 # toc()
 # summary(eyefitting.ols.gamm)
 # anova(eyefitting.ols.gamm)
+plot(eyefitting.ols.gamm, pages = 1, all.terms=TRUE)
 
 # pca
 # tic()
-eyefitting.pca.gamm <- bam(residualpca ~ -1 + parm_id + 
+eyefitting.pca.gamm <- bam(residualpca ~ -1 + parm_id + s(x) +
                              s(x, by = parm_id) +
-                             s(participantID, bs = "re") +
-                             s(x,participantID, bs = "re"),
+                             s(participantID, bs = "re"),
+                             # s(x,participantID, bs = "re")
                            method = "REML",
                            data = eyefitting_model_data)
 # toc()
 # summary(eyefitting.pca.gamm)
 # anova(eyefitting.pca.gamm)
+plot(eyefitting.pca.gamm, pages = 1,all.terms=TRUE)
 
 # Obtain Predictions
 eyefitting.grid.gamm <- expand_grid(parm_id = c("S", "V", "F", "N"),
@@ -235,11 +278,37 @@ eyefitting.grid.gamm %>%
   ggtitle("Eyefitting GAMM")
 ```
 
-## LMER MODEL
+## LMER MODELS
 
-+ Fit to raw residuals
-    + ydrawn - yols
-    + ydrawn - ypca
+**Treatments:**
+
++ parm_ID (S, F, V, N)
++ x (0, 20)
+
+**Response:** raw residuals
++ residualols = ydrawn - yols, denoted $e_{ols}$
++ residualpca = ydrawn - ypca, denoted $e_{pca}$
+
+**Experimental Design:**    
++ Each participant saw each of the 4 plots (new simulated data for each)
+    
+**ANOVA Table:**
+
+```{r, anova-lmer}
+sv <- c("participantID", "parm_id", "x", "x:parm_id", "residual")
+df <- c("(50 - 1) = 49", "(4 - 1) = 3", "1", "(4 - 1) = 3", "143 - by subtraction")
+data.frame("SV" = sv, "DF" = df) %>% kable()
+```
+
+**OLS LMER Model:**
+
+$$y_{drawn} - y_{ols} = e_{ij,ols} = \left(\beta_0 + \delta_i\right) + \left(\beta_1 x_{ij} + \beta_2 x_{ij} \cdot \delta_i\right) + p_{ij} + \epsilon_{ij}$$
+where $p_{ij} \sim N(0, \sigma^2_{participant})$ and $\epsilon_{ij} \sim N(0, \sigma^2)$.
+
+**PCA LMER Model:**
+
+$$y_{drawn} - y_{pca} = e_{ij,pca} = \left(\beta_0 + \delta_i\right) + \left(\beta_1 x_{ij} + \beta_2 x_{ij} \cdot \delta_i\right) + p_{ij} + \epsilon_{ij}$$
+where $p_{ij} \sim N(0, \sigma^2_{participant})$ and $\epsilon_{ij} \sim N(0, \sigma^2)$.
 
 ```{r lmer}
 # Fit LMER
@@ -294,6 +363,29 @@ eyefitting.preds.lmer %>%
 
 ## Compare Sum of Squares (OLS VS PCA)
 
+**Treatments:** 
+
++ parm_id (S, V, N, F)
++ Fit (OLS, PCA)
+
+**Response:**
++ Sum of Squares (Ordinary)
+    + $SS_{OLS} = \sum_{x\in[0,20]}(e^2_{ij,OLS})=\sum_{x\in[0,20]}\left((y_{ij,drawn} - y_{ij,OLS})^2\right)$
+    + $SS_{PCA} = \sum_{x\in[0,20]}(e^2_{ij,PCA})=\sum_{x\in[0,20]}\left((y_{ij,drawn} - y_{ij,PCA})^2\right)$
+
+**ANOVA Table:**
+
+```{r, anova-SS}
+sv <- c("participantID", "parm_id", "fit", "parm_id:fit", "participantID:parm_id:fit - aka residual")
+df <- c("(50 - 1) = 49", "(4 - 1) = 3", "(2 - 1) = 1", "(4 - 1)(2 - 1) = 3", "143 - by subtraction")
+data.frame("SV" = sv, "DF" = df) %>% kable()
+```
+
+**Model:**
+
+$$\log\left(SS_{ijk}\right) = \delta_i + \gamma_j + \delta\gamma_{ij} + p_{ij} + \epsilon_{ij}$$
+where $p_{ij} \sim N(0, \sigma^2_{participant})$ and $\epsilon_{ij} \sim N(0, \sigma^2)$.
+
 ```{r ss-analysis}
 ss_data <- eyefitting_model_data %>%
   group_by(participantID, nick_name, study_starttime, age, gender, academic_study, recruitment, plotID, parm_id, start_time, end_time) %>%
@@ -333,6 +425,6 @@ ss.slicediffs %>%
   geom_vline(xintercept = 1, linetype = "dashed") +
   theme_bw() +
   theme(aspect.ratio = 0.5) +
-  scale_x_continuous("Sum of Squares Odds Ratio \n (OLS vs PCA)", limits = c(0,2), breaks = seq(0,2,0.5)) +
+  scale_x_continuous("Sum of Squares Odds Ratio \n (OLS vs PCA)", limits = c(0,2.5), breaks = seq(0,2.5,0.5)) +
   scale_y_discrete("Data Set")
 ```
