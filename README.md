@@ -7,14 +7,13 @@
 ## 2. Prediction with you draw it
 
 + Participate [here](https://shiny.srvanderplas.com/you-draw-it/)
-+ Reddit/Twitter/Email (Fall 2020): 
 
 ### Eye fitting straight lines in the modern era
 
 + Reddit/Twitter/Email (Spring 2021) [analysis](https://srvanderplas.github.io/Perception-of-Log-Scales/analysis/youdrawit-eyefitting-model.html)
 
 ### Underestimation of exponential growth
-+ Reddit/Twitter/Email (Spring 2021):
++ Reddit/Twitter/Email (Spring 2021) [analysis](https://srvanderplas.github.io/Perception-of-Log-Scales/analysis/youdrawit-exponential-model.html)
 
 ## 3. Numerical Translation and Estimation
 

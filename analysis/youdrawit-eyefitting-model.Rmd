@@ -104,7 +104,7 @@ trial.feedback %>%
   scale_x_continuous(limits = c(0,20))
 ```
 
-### Calculate all PCR
+### Calculate all PCA
 ```{r pcaCalc}
 # Fit PCA
 pcaCalc <- function(data){
@@ -205,13 +205,25 @@ data.frame("SV" = sv, "DF" = df) %>% kable()
 
 **OLS GAMM Model:**
 
-$$y_{drawn} - y_{ols} = e_{ij,ols} = \left(\beta_0 + \delta_i\right) + \left(\beta_1 s(x_{ij}) + \beta_2 s(x_{ij}) \cdot \delta_i\right) + p_{ij} + \epsilon_{ij}$$
-where $p_{ij} \sim N(0, \sigma^2_{participant})$ and $\epsilon_{ij} \sim N(0, \sigma^2)$.
+$$y_{drawn} - y_{ols} = e_{ij,ols} = \left[\gamma_0 + \alpha_i\right] + \left[s_1(x_{ij}) + s_{2i}(x_{ij}) \right] + p_{j} + \epsilon_{ij}$$
+
++ $\gamma_0$ is the overall intercept
++ $\alpha_i$ is the effect of the parameter combination on the intercept (i.e. how much the intercept adjusts for each parameter combo)
++ $s_1$ is the overall spline equation for x
++ $s_{2i}$ is the adjustment to the spline equation for each parameter combination (think unequal slopes)
++ $p_{j} \sim N(0, \sigma^2_{participant})$ is the participant error due to participant variation
++ $\epsilon_{ij} \sim N(0, \sigma^2)$ is the residual error.
 
 **PCA GAMM Model:**
 
-$$y_{drawn} - y_{pca} = e_{ij,pca} = \left(\beta_0 + \delta_i\right) + \left(\beta_1 s(x_{ij}) + \beta_2 s(x_{ij}) \cdot \delta_i\right) + p_{ij} + \epsilon_{ij}$$
-where $p_{ij} \sim N(0, \sigma^2_{participant})$ and $\epsilon_{ij} \sim N(0, \sigma^2)$.
+$$y_{drawn} - y_{pca} = e_{ij,pca} = \left[\gamma_0 + \alpha_i\right] + \left[s_1(x_{ij}) + s_{2i}(x_{ij}) \right] + p_{j} + \epsilon_{ij}$$
+
++ $\gamma_0$ is the overall intercept
++ $\alpha_i$ is the effect of the parameter combination on the intercept (i.e. how much the intercept adjusts for each parameter combo)
++ $s_1$ is the overall spline equation for x
++ $s_{2i}$ is the adjustment to the spline equation for each parameter combination (think unequal slopes)
++ $p_{j} \sim N(0, \sigma^2_{participant})$ is the participant error due to participant variation
++ $\epsilon_{ij} \sim N(0, \sigma^2)$ is the residual error.
 
 *Question: do we need a x by participant spline? think autocorrelation.* 
 
@@ -302,13 +314,25 @@ data.frame("SV" = sv, "DF" = df) %>% kable()
 
 **OLS LMER Model:**
 
-$$y_{drawn} - y_{ols} = e_{ij,ols} = \left(\beta_0 + \delta_i\right) + \left(\beta_1 x_{ij} + \beta_2 x_{ij} \cdot \delta_i\right) + p_{ij} + \epsilon_{ij}$$
-where $p_{ij} \sim N(0, \sigma^2_{participant})$ and $\epsilon_{ij} \sim N(0, \sigma^2)$.
+$$y_{drawn} - y_{ols} = e_{ij,ols} = \left[\gamma_0 + \alpha_i\right] + \left[\gamma_{1} x_{ij} + \gamma_{2i} x_{ij}\right] + p_{j} + \epsilon_{ij}$$
+
++ $\gamma_0$ is the overall intercept
++ $\alpha_i$ is the effect of the parameter combination on the intercept (i.e. how much the intercept adjusts for each parameter combo)
++ $\gamma_1$ is the overall slope for x
++ $\gamma_{2i}$ is the effect of the parameter combination on the slope (i.e. think unequal slopes)
++ $p_{j} \sim N(0, \sigma^2_{participant})$ is the participant error due to participant variation
++ $\epsilon_{ij} \sim N(0, \sigma^2)$ is the residual error.
 
 **PCA LMER Model:**
 
-$$y_{drawn} - y_{pca} = e_{ij,pca} = \left(\beta_0 + \delta_i\right) + \left(\beta_1 x_{ij} + \beta_2 x_{ij} \cdot \delta_i\right) + p_{ij} + \epsilon_{ij}$$
-where $p_{ij} \sim N(0, \sigma^2_{participant})$ and $\epsilon_{ij} \sim N(0, \sigma^2)$.
+$$y_{drawn} - y_{pca} = e_{ij,pca} = \left[\gamma_0 + \alpha_i\right] + \left[\gamma_{1} x_{ij} + \gamma_{2i} x_{ij}\right] + p_{j} + \epsilon_{ij}$$
+
++ $\gamma_0$ is the overall intercept
++ $\alpha_i$ is the effect of the parameter combination on the intercept (i.e. how much the intercept adjusts for each parameter combo)
++ $\gamma_1$ is the overall slope for x
++ $\gamma_{2i}$ is the effect of the parameter combination on the slope (i.e. think unequal slopes)
++ $p_{j} \sim N(0, \sigma^2_{participant})$ is the participant error due to participant variation
++ $\epsilon_{ij} \sim N(0, \sigma^2)$ is the residual error.
 
 ```{r lmer}
 # Fit LMER
@@ -383,8 +407,13 @@ data.frame("SV" = sv, "DF" = df) %>% kable()
 
 **Model:**
 
-$$\log\left(SS_{ijk}\right) = \delta_i + \gamma_j + \delta\gamma_{ij} + p_{ij} + \epsilon_{ij}$$
-where $p_{ij} \sim N(0, \sigma^2_{participant})$ and $\epsilon_{ij} \sim N(0, \sigma^2)$.
+$$\log\left(SS_{ijk}\right) = \alpha_i + \beta_j + \alpha\beta_{ij} + p_{j} + \epsilon_{ij}$$
+
++ $\alpha_i$ denotes the effect of the $i^{th}$ parameter (S, F, V, N)
++ $\beta_j$ denotes the effect of the $j^{th}$ fit (OLS, PCA)
++ $\alpha\beta_{ij}$ denotes the interaction between the parameter combination and fit
++ $p_{j} \sim N(0, \sigma^2_{participant})$ is the error due to participant variation
++ $\epsilon_{ij} \sim N(0, \sigma^2)$ is the residual error.
 
 ```{r ss-analysis}
 ss_data <- eyefitting_model_data %>%
