@@ -96,7 +96,7 @@ exp_data %>%
     
 **ANOVA Table:**
 
-```{r, anova-gamm}
+```{r, anova-gamm, echo = F}
 sv <- c("participantID", 
         "beta", 
         "beta:participantID", 
@@ -180,7 +180,7 @@ exp.gamm.full <- bam(residualdrawn ~ beta*points_end*scale +
                      data = exp_data)
 plot(exp.gamm.full, pages = 8, all.terms=TRUE)
 # toc()
-summary(exp.gamm.full)
+# summary(exp.gamm.full)
 # anova(exp.gamm.full)
 
 # Obtain Predictions
@@ -238,7 +238,7 @@ exp.gamm.reduced <- bam(residualdrawn ~ -1 + beta:points_end:scale +
                         data = exp_data)
 plot(exp.gamm.reduced, pages = 2,all.terms=TRUE)
 # toc()
-summary(exp.gamm.reduced)
+# summary(exp.gamm.reduced)
 # anova(exp.gamm.reduced)
 
 # Obtain Predictions

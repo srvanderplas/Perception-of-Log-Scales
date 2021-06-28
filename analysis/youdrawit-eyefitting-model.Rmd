@@ -92,16 +92,22 @@ pca.slope <- trial.pca$rotation[2,1]/trial.pca$rotation[1,1]
 pca.intercept <- mean(trial.sim$y) - pca.slope*(mean(trial.sim$x))
 trial.feedback$ypca <- pca.slope*trial.feedback$x + pca.intercept
 
+write.csv(trial.feedback, file = "results/youdrawit-eyefitting-example-feedback.csv", row.names = F, na = "")
+write.csv(trial.sim, file = "results/youdrawit-eyefitting-example-simulated.csv", row.names = F, na = "")
+
 trial.feedback %>%
   ggplot(aes(x = x)) +
-  geom_line(aes(y = y)) +
-  geom_line(aes(y = ypca), color = "black", linetype = "dashed") +
-  geom_line(aes(y = yloess), color = "steelblue") +
+  geom_line(aes(y = y, color = "OLS", linetype = "OLS")) +
+  geom_line(aes(y = ypca, color = "PCA", linetype = "PCA")) +
+  geom_line(aes(y = ydrawn, color = "Drawn (loess)", linetype = "Drawn (loess)")) +
   geom_point(data = trial.sim, aes(y = y)) +
   facet_wrap(~parm_id) +
   theme_bw() +
-  theme(aspect.ratio = 1) +
-  scale_x_continuous(limits = c(0,20))
+  theme(aspect.ratio = 1,
+        legend.position = "bottom") +
+  scale_x_continuous(limits = c(0,20)) +
+  scale_color_manual("", values = c("steelblue", "black", "black")) +
+  scale_linetype_manual("", values = c("solid", "solid", "dashed"))
 ```
 
 ### Calculate all PCA
@@ -133,6 +139,8 @@ eyefitting_model_data <- eyefitting_data %>%
          residualols = residualdrawn,
          residualols.loess = residualloess) %>%
   dplyr::select(participantID, nick_name, study_starttime, age, gender, academic_study, recruitment, plotID, start_time, end_time, parm_id, x, yols, ypca, ydrawn, yloess, residualols, residualols.loess, residualpca, residualpca.loess)
+
+# write.csv(eyefitting_model_data, "results/youdrawit-eyefitting-model-data.csv", row.names = F, na = "")
 
 # head(eyefitting_model_data)
 ```
@@ -189,15 +197,17 @@ eyefitting_model_data %>%
 + x (0, 20)
 
 **Response:** raw residuals
+
 + residualols = ydrawn - yols, denoted $e_{ols}$
 + residualpca = ydrawn - ypca, denoted $e_{pca}$
 
 **Experimental Design:**    
+
 + Each participant saw each of the 4 plots (new simulated data for each)
     
 **ANOVA Table:**
 
-```{r, anova-gamm}
+```{r, anova-gammm, echo = F}
 sv <- c("participantID", "parm_id", "x", "x:parm_id", "residual")
 df <- c("(50 - 1) = 49", "(4 - 1) = 3", "1", "(4 - 1) = 3", "143 - by subtraction")
 data.frame("SV" = sv, "DF" = df) %>% kable()
@@ -232,7 +242,9 @@ $$y_{drawn} - y_{pca} = e_{ij,pca} = \left[\gamma_0 + \alpha_i\right] + \left[s_
 
 # OLS
 # tic()
-eyefitting.ols.gamm <- bam(residualols ~ parm_id + s(x) + s(x, by = parm_id) + s(participantID, bs = "re"),
+eyefitting.ols.gamm <- bam(residualols ~ parm_id + s(x) + s(x, by = parm_id) + 
+                             s(participantID, bs = "re") +
+                             s(x,participantID, bs = "re"),
             method = "REML",
             data = eyefitting_model_data)
 # toc()
@@ -244,8 +256,8 @@ plot(eyefitting.ols.gamm, pages = 1, all.terms=TRUE)
 # tic()
 eyefitting.pca.gamm <- bam(residualpca ~ -1 + parm_id + s(x) +
                              s(x, by = parm_id) +
-                             s(participantID, bs = "re"),
-                             # s(x,participantID, bs = "re")
+                             s(participantID, bs = "re") +
+                             s(x,participantID, bs = "re"),
                            method = "REML",
                            data = eyefitting_model_data)
 # toc()
@@ -270,15 +282,36 @@ eyefitting.grid.gamm$pca.pred <- eyefitting.pca.preds$prediction
 eyefitting.grid.gamm$pca.lower <- eyefitting.pca.preds$prediction - (1.96 * eyefitting.pca.preds$se)
 eyefitting.grid.gamm$pca.upper <- eyefitting.pca.preds$prediction + (1.96 * eyefitting.pca.preds$se)
 
+# write.csv(eyefitting.grid.gamm, "results/youdrawit-eyefitting-gammpred-data.csv", row.names = F, na = "")
+
 # Plot Predictions
 eyefitting.grid.gamm %>%
   filter((parm_id %in% c("F", "N", "S") | (x <= 16 & x >= 4))) %>%
   ggplot(aes(x = x)) +
   geom_line(data = eyefitting_model_data, aes(x = x, y = residualpca, group = plotID, color = "PCA"), alpha = 0.1) +
   geom_line(data = eyefitting_model_data, aes(x = x, y = residualols, group = plotID, color = "OLS"), alpha = 0.1) +
-  geom_ribbon(aes(ymin = ols.lower, ymax = ols.upper, fill = "OLS"), color = NA, alpha = 0.7) +
+  geom_ribbon(aes(ymin = ols.lower, ymax = ols.upper, fill = "OLS"), color = NA, alpha = 0.5) +
   geom_line(aes(y = ols.pred, color = "OLS")) +
-  geom_ribbon(aes(ymin = pca.lower, ymax = pca.upper, fill = "PCA"), color = NA, alpha = 0.7) +
+  geom_ribbon(aes(ymin = pca.lower, ymax = pca.upper, fill = "PCA"), color = NA, alpha = 0.5) +
+  geom_line(aes(y = pca.pred, color = "PCA")) +
+  geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
+  facet_wrap(~parm_id) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_y_continuous("Residual") +
+  scale_color_manual("Estimates", values = c("steelblue", "orange")) +
+  scale_fill_manual("Estimates", values = c("steelblue", "orange")) +
+  ggtitle("Eyefitting GAMM")
+
+# Plot Predictions
+eyefitting.grid.gamm %>%
+  filter((parm_id %in% c("F", "N", "S") | (x <= 16 & x >= 4))) %>%
+  ggplot(aes(x = x)) +
+  # geom_line(data = eyefitting_model_data, aes(x = x, y = residualpca, group = plotID, color = "PCA"), alpha = 0.1) +
+  # geom_line(data = eyefitting_model_data, aes(x = x, y = residualols, group = plotID, color = "OLS"), alpha = 0.1) +
+  geom_ribbon(aes(ymin = ols.lower, ymax = ols.upper, fill = "OLS"), color = NA, alpha = 0.5) +
+  geom_line(aes(y = ols.pred, color = "OLS")) +
+  geom_ribbon(aes(ymin = pca.lower, ymax = pca.upper, fill = "PCA"), color = NA, alpha = 0.5) +
   geom_line(aes(y = pca.pred, color = "PCA")) +
   geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
   facet_wrap(~parm_id) +
@@ -298,15 +331,17 @@ eyefitting.grid.gamm %>%
 + x (0, 20)
 
 **Response:** raw residuals
+
 + residualols = ydrawn - yols, denoted $e_{ols}$
 + residualpca = ydrawn - ypca, denoted $e_{pca}$
 
 **Experimental Design:**    
+
 + Each participant saw each of the 4 plots (new simulated data for each)
     
 **ANOVA Table:**
 
-```{r, anova-lmer}
+```{r, anova-lmer, echo = F}
 sv <- c("participantID", "parm_id", "x", "x:parm_id", "residual")
 df <- c("(50 - 1) = 49", "(4 - 1) = 3", "1", "(4 - 1) = 3", "143 - by subtraction")
 data.frame("SV" = sv, "DF" = df) %>% kable()
@@ -365,15 +400,37 @@ eyefitting.pca.preds.lmer <- emmeans(eyefitting.pca.grid.lmer, ~ parm_id:x, cov.
 eyefitting.preds.lmer <- eyefitting.ols.preds.lmer %>%
   full_join(eyefitting.pca.preds.lmer, by = c("x", "parm_id"), suffix = c(".ols", ".pca"))
 
+# write.csv(eyefitting.preds.lmer, "results/youdrawit-eyefitting-lmerpred-data.csv", row.names = F, na = "")
+
+
 # Plot Predictions
 eyefitting.preds.lmer %>%
   filter((parm_id %in% c("F", "N", "S") | (x <= 16 & x >= 4))) %>%
   ggplot(aes(x = x)) +
   geom_line(data = eyefitting_model_data, aes(x = x, y = residualols, group = plotID, color = "OLS"), alpha = 0.1) +
   geom_line(data = eyefitting_model_data, aes(x = x, y = residualpca, group = plotID, color = "PCA"), alpha = 0.1) +
-  geom_ribbon(aes(ymin = asymp.LCL.ols, ymax = asymp.UCL.ols, fill = "OLS"), color = NA, alpha = 0.7) +
+  geom_ribbon(aes(ymin = asymp.LCL.ols, ymax = asymp.UCL.ols, fill = "OLS"), color = NA, alpha = 0.5) +
   geom_line(aes(y = emmean.ols, color = "OLS")) +
-  geom_ribbon(aes(ymin = asymp.LCL.pca, ymax = asymp.UCL.pca, fill = "PCA"), color = NA, alpha = 0.7) +
+  geom_ribbon(aes(ymin = asymp.LCL.pca, ymax = asymp.UCL.pca, fill = "PCA"), color = NA, alpha = 0.5) +
+  geom_line(aes(y = emmean.pca, color = "PCA")) +
+  geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
+  facet_wrap(~parm_id) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_y_continuous("Residual") +
+  scale_color_manual("Estimates", values = c("steelblue", "orange")) +
+  scale_fill_manual("Estimates", values = c("steelblue", "orange")) +
+  ggtitle("Eyefitting LMER")
+
+# Plot Predictions
+eyefitting.preds.lmer %>%
+  filter((parm_id %in% c("F", "N", "S") | (x <= 16 & x >= 4))) %>%
+  ggplot(aes(x = x)) +
+  # geom_line(data = eyefitting_model_data, aes(x = x, y = residualols, group = plotID, color = "OLS"), alpha = 0.1) +
+  # geom_line(data = eyefitting_model_data, aes(x = x, y = residualpca, group = plotID, color = "PCA"), alpha = 0.1) +
+  geom_ribbon(aes(ymin = asymp.LCL.ols, ymax = asymp.UCL.ols, fill = "OLS"), color = NA, alpha = 0.5) +
+  geom_line(aes(y = emmean.ols, color = "OLS")) +
+  geom_ribbon(aes(ymin = asymp.LCL.pca, ymax = asymp.UCL.pca, fill = "PCA"), color = NA, alpha = 0.5) +
   geom_line(aes(y = emmean.pca, color = "PCA")) +
   geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
   facet_wrap(~parm_id) +
@@ -393,13 +450,14 @@ eyefitting.preds.lmer %>%
 + Fit (OLS, PCA)
 
 **Response:**
+
 + Sum of Squares (Ordinary)
     + $SS_{OLS} = \sum_{x\in[0,20]}(e^2_{ij,OLS})=\sum_{x\in[0,20]}\left((y_{ij,drawn} - y_{ij,OLS})^2\right)$
     + $SS_{PCA} = \sum_{x\in[0,20]}(e^2_{ij,PCA})=\sum_{x\in[0,20]}\left((y_{ij,drawn} - y_{ij,PCA})^2\right)$
 
 **ANOVA Table:**
 
-```{r, anova-SS}
+```{r, anova-SS, echo = F}
 sv <- c("participantID", "parm_id", "fit", "parm_id:fit", "participantID:parm_id:fit - aka residual")
 df <- c("(50 - 1) = 49", "(4 - 1) = 3", "(2 - 1) = 1", "(4 - 1)(2 - 1) = 3", "143 - by subtraction")
 data.frame("SV" = sv, "DF" = df) %>% kable()
@@ -434,8 +492,10 @@ plot(ss.lmer)
 
 ss.emmeans <- emmeans(ss.lmer, ~parm_id:Fit, type = "response") %>%
   as_tibble()
+write.csv(ss.emmeans, "results/youdrawit-ssEmmeans-lmer.csv", row.names = F, na = "")
 ss.slicediffs <- pairs(emmeans(ss.lmer, ~Fit | parm_id, type = "response"), infer = c(TRUE, TRUE)) %>% 
   as_tibble()
+write.csv(ss.slicediffs, "results/youdrawit-ssSlicediffs-lmer.csv", row.names = F, na = "")
 
 ss.emmeans %>%
   ggplot(aes(x = parm_id, y = response, group = Fit, fill = Fit)) +
