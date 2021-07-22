@@ -2,7 +2,7 @@
 title: "You Draw It: Exponential Prediction"  
 subtitle: "Pilot Data (Twitter / Reddit / Direct Email)"
 author: "Emily Robinson"
-date: "May 21, 2021"
+date: "June 20, 2021"
 output: html_document
 ---
 
@@ -43,6 +43,8 @@ users <- dbReadTable(db_con,"users") %>%
   filter(study_starttime > 1620152231) %>%
   select(-ip_address) %>%
   mutate(participantID = as.factor(as.character(as.numeric(as.factor(paste(nick_name, "_", study_starttime, sep = ""))))))
+# write.csv(users, "youdrawit-users-data.csv", row.names = F, na = "")
+
 
 # Import exponential prediction feedback data
 exp_feedback <- dbReadTable(db_con,"feedback") %>%
@@ -62,9 +64,11 @@ exp_feedback <- dbReadTable(db_con,"feedback") %>%
          beta = as.factor(as.character(beta)),
          sd = as.factor(as.character(sd)),
          points_end = as.factor(as.character(points_end)))
+# write.csv(exp_feedback, "youdrawit-feedback-data.csv", row.names = F, na = "")
 
 # Import exponential prediction simulated data
 exp_simulated_data <- dbReadTable(db_con,"simulated_data") %>%
+  mutate(SimObs = 1:n()) %>%
   filter(study_starttime > 1620152231) %>%
   filter(parm_id %in% c("beta0.1-10-true",  "beta0.1-10-false", 
                         "beta0.1-15-true",  "beta0.1-15-false", 
@@ -79,6 +83,7 @@ exp_simulated_data <- dbReadTable(db_con,"simulated_data") %>%
   mutate(beta = as.factor(as.character(beta)),
          sd = as.factor(as.character(sd)),
          points_end = as.factor(as.character(points_end)))
+# write.csv(exp_simulated_data, "youdrawit-simulated-data.csv", row.names = F, na = "")
 
 # Disconnect from database
 dbDisconnect(db_con)
@@ -101,6 +106,7 @@ exp_feedback %>%
               names_from = "parm_id",
               values_from = "count") %>%
   arrange(as.numeric(as.character(participantID))) %>%
+  filter(total != 8) %>%
   knitr::kable()
 ```
 
@@ -120,12 +126,11 @@ exp_simulated_data %>%
               names_from = "parm_id",
               values_from = "count") %>%
   arrange(as.numeric(as.character(participantID))) %>%
+  filter(total != 8) %>%
   knitr::kable()
 ```
 
-## Users
-
-```{r users}
+```{r users, include = F}
 users %>% select(participantID, age, gender, academic_study, recruitment) %>% knitr::kable()
 ```
 
@@ -193,8 +198,8 @@ exp_simulated_data %>%
   filter(dataset == "line_data") %>%
   arrange(participantID, x) %>%
   ggplot(aes(x = x)) +
-  geom_line(data = exp_feedback.smooth, aes(y = yloess, group = plotID, color = scale), alpha = 0.7) +
-  geom_line(alpha = 0.2, aes(y = y, group = participantID)) +
+  geom_line(data = exp_feedback.smooth, aes(y = yloess, group = plotID, color = scale), alpha = 0.5) +
+  geom_line(alpha = 0.1, aes(y = y, group = participantID)) +
   facet_grid(beta ~ points_end, scales = "free", labeller = labeller(beta = label_both, points_end = label_both)) +
   theme_bw() +
   theme(aspect.ratio = 1) +
@@ -224,7 +229,7 @@ exp.spaghetti.plot.raw
 exp.spaghetti.plot.smooth <- exp_feedback.smooth %>%
   arrange(participantID, scale, x) %>%
   ggplot(aes(x = x, y = residual.loess, group = plotID, color = scale)) +
-  geom_line(alpha = 0.7) +
+  geom_line(alpha = 0.5) +
   geom_hline(yintercept = 0, color = "black", linetype = "dashed", alpha = 0.5) +
   facet_grid(beta ~ points_end, scales = "free", labeller = labeller(beta = label_both, points_end = label_both)) +
   theme_bw() +

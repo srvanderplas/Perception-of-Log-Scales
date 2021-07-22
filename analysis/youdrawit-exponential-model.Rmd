@@ -1,0 +1,285 @@
+---
+title: "You Draw It - Exponential"
+author: "Emily Robinson"
+date: "June 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+```
+
+# SETUP
+
++ Load libraries
++ Functions for computing confidence intervals
+
+```{r setup2}
+library(tidyverse)
+library(readr)
+library(openssl)
+library(mgcv)
+library(lme4)
+library(tictoc)
+`%!in%` = function(x,y) !(x %in% y)
+source("gamm-predict-function.R")
+```
+
+## EXPONENTIAL DATA
+
++ Note that we have the feedback data (includes x, y- from nls(), and ydrawn). 
+
+```{r exponential-data}
+feedback_smooth  <- read_csv("data/youdrawit-feedback-smooth.csv")
+
+exp_data <- feedback_smooth %>%
+  filter(parm_id %!in% c("S", "F", "V", "N")) %>%
+  separate(parm_id, into = c("beta", "points_end", "linear"), sep = "-") %>%
+  mutate(beta = substr(beta, 5, 8),
+         scale = as.factor(ifelse(linear == "true", "Linear", "Log"))) %>%
+  select(participantID, nick_name, study_starttime, age, gender, academic_study, recruitment, plotID, start_time, end_time, beta, points_end, scale, x, y, ydrawn, yloess, residualdrawn, residualloess) %>%
+  arrange(participantID, x)
+
+factorCols = c('participantID', 'nick_name', 'age', 'gender', 'academic_study', 'recruitment', 'plotID', 'beta', 'points_end', 'scale')
+exp_data[,factorCols] <- lapply(exp_data[,factorCols], factor)
+# summary(exp_data)
+```
+
+# RAW DATA PLOTS
+
+## yloess
+
+```{r yloess-plot}
+exp_data %>%
+  ggplot(aes(x = x)) +
+  geom_line(aes(y = yloess, group = plotID, color = scale), alpha = 0.5) +
+  geom_line(alpha = 0.1, aes(y = y, group = participantID)) +
+  facet_grid(beta ~ points_end, scales = "free", labeller = labeller(beta = label_both, points_end = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_color_manual("Scale", values = c("steelblue", "orange")) +
+  scale_x_continuous(limits = c(10, 20))
+```
+
+# residualloess
+
+```{r residial-loess-plot}
+exp_data %>%
+  ggplot(aes(x = x)) +
+  geom_line(aes(y = residualloess, group = plotID, color = scale), alpha = 0.5) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_grid(beta ~ points_end, scales = "free", labeller = labeller(beta = label_both, points_end = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_color_manual("Scale", values = c("steelblue", "orange")) +
+  scale_x_continuous(limits = c(10, 20))
+```
+
+# GAMM MODELS
+
+**Treatments: 2 x 2 x 2 factorial with a regression over x**
+
++ beta (0.1, 0.23)
++ points_end (10, 15)
++ scale (log, linear)
++ x (0, 20)
+
+**Response:** raw residuals
++ residual = ydrawn - ynls, denoted $e_{nls}$
+
+**Experimental Design:**    
++ Each participant saw a total of 8 plots. Each of the 2 data sets (new simulated data for each) on each of the 2 scales and 2 points_end values. In other words, I believe it is a "split plot" design where beta is "applied" to the data set (i.e. beta x participantID) while points_end and scale were "applied" to the plot (i.e. plotID = beta x scale x points_end x participantID).
+    
+**ANOVA Table:**
+
+```{r, anova-gamm, echo = F}
+sv <- c("participantID", 
+        "beta", 
+        "beta:participantID", 
+        "points_end", 
+        "scale", 
+        "beta:points_end", 
+        "beta:scale", 
+        "points_end:scale",
+        "beta:points_end:scale", 
+        "beta:points_end:scale:participantID", 
+        "x", 
+        "x:beta", 
+        "x:points_end", 
+        "x:scale", 
+        "x:beta:points_end", 
+        "x:beta:scale",
+        "x:points_end:scale",
+        "x:beta:points_end:scale", 
+        "Autocorrelation?")
+df <- c("(50 - 1) = 49", 
+        "(2 - 1) = 1", 
+        "(2 - 1)(50 - 1) = 49", 
+        "(2 - 1) = 1",
+        "(2 - 1) = 1",
+        "(2 - 1)(2 - 1) = 1",
+        "(2 - 1)(2 - 1) = 1",
+        "(2 - 1)(2 - 1) = 1",
+        "(2 - 1)(2 - 1)(2 - 1) = 1",
+        "(50 - 1)(2 + 2 + 2) = 294",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "?")
+data.frame("SV" = sv, "DF" = df) %>% knitr::kable()
+```
+
+**GAMM Model:**
+
+$$y_{drawn} - y_{nls} = e_{ijkl,nls} = \left[\gamma_0 + \beta_i + \rho_j + \delta_k + \beta\rho_{ij} + \beta\delta_{ik} + \rho\delta_{jk} + \beta\rho\delta_{ijk}\right] + \left[s_0(x_{ij}) + s_{\beta_i}(x_{ijkl}) + s_{\rho_j}(x_{ijkl}) + s_{\delta_k}(x_{ijkl}) + s_{\beta\rho_{ij}}(x_{ijkl}) + s_{\beta\delta_{ik}}(x_{ijkl}) + s_{\rho\delta_{jk}}(x_{ijkl}) + s_{\beta\rho\delta_{ijk}}(x_{ijkl}) \right] + p_{l} + \epsilon_{ijkl}$$
+
++ $\gamma_0$ is the overall intercept
++ $\beta_i$ is the effect of the beta parameter (i.e. growth) on the intercept
++ $\rho_j$ is the effect of the points end choice (10, 15) on the intercept
++ $\delta_k$ is the effect of the choice of scale on the intercept
++ $\beta\rho_{ij}$ is the effect of the interaction between beta and points end on the intercept
++ $\beta\delta_{ik}$ is the effect of the interaction between beta and scale on the intercept
++ $\rho\delta_{jk}$ is the effect of the interaction between points end and scale on the intercept
++ $\beta\rho\delta_{ijk}$ is the effect of the interaction between beta, points end and scale on the intercept
++ $s_0$ is the overall spline equation for x
++ $s_{\beta_i}$ is the adjustment to the overall spline equation due to the beta parameter (i.e. growth)
++ $s_{\rho_j}$ is the adjustment to the overall spline equation due to the points end choice (10, 15) on the intercept
++ $s_{\delta_k}$ is the adjustment to the overall spline equation due to the choice of scale on the intercept
++ $s_{\beta\rho_{ij}}$ is the adjustment to the overall spline equation due to the interaction between beta and points end on the intercept
++ $s_{\beta\delta_{ik}}$ is the adjustment to the overall spline equation due to the interaction between beta and scale on the intercept
++ $s_{\rho\delta_{jk}}$ is the adjustment to the overall spline equation due to the interaction between points end and scale on the intercept
++ $s_{\beta\rho\delta_{ijk}}$ is the adjustment to the overall spline equation due to the interaction between beta, points end and scale on the intercept
++ $p_{l} \sim N(0, \sigma^2_{participant})$ 
++ $\epsilon_{ijkl} \sim N(0, \sigma^2)$.
+
+## Full model:
+
+```{r gamm-model-full}
+# tic()
+exp.gamm.full <- bam(residualdrawn ~ beta*points_end*scale +
+                     s(x) +
+                     s(x, by = beta) +
+                     s(x, by = points_end) +
+                     s(x, by = scale) +
+                     s(x, by = beta:points_end) +
+                     s(x, by = beta:scale) +
+                     s(x, by = points_end:scale) +
+                     s(x, by = beta:points_end:scale) +
+                     s(participantID, bs = "re") +
+                     s(x,participantID, bs = "re"),
+                     method = "REML",
+                     data = exp_data)
+plot(exp.gamm.full, pages = 8, all.terms=TRUE)
+# toc()
+# summary(exp.gamm.full)
+# anova(exp.gamm.full)
+
+# Obtain Predictions
+grid_data.exp.full <- expand_grid(beta = c("0.1", "0.23"),
+                         points_end = c("10", "15"),
+                         scale = c("Linear", "Log"),
+                         x = seq(10,20, 0.5),
+                         participantID = exp_data$participantID[1])
+preds.exp.full <- predict_gamm(exp.gamm.full, newdata = grid_data.exp.full, se = T, re_form = NA)
+grid_data.exp.full$estimate <- preds.exp.full$prediction
+grid_data.exp.full$lower <- preds.exp.full$prediction - (1.96 * preds.exp.full$se)
+grid_data.exp.full$upper <- preds.exp.full$prediction + (1.96 * preds.exp.full$se)
+# head(grid_data.exp.full)
+```
+
+```{r plot-predictions-full}
+# Plot Predictions
+grid_data.exp.full %>%
+  ggplot(aes(x = x, y = estimate, group = scale, color = scale, fill = scale)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), color = NA, alpha = 0.7) +
+  geom_line() +
+  geom_line(data = exp_data, aes(x = x, y = residualdrawn, group = plotID), alpha = 0.2) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_grid(beta ~ points_end, scales = "free", labeller = labeller(beta = label_both, points_end = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_y_continuous("Residual \n (yloess - y)") +
+  scale_color_manual("Scale", values = c("steelblue", "orange")) +
+  scale_fill_manual("Scale", values = c("steelblue", "orange"))
+
+# Plot Predictions
+grid_data.exp.full %>%
+  ggplot(aes(x = x, y = estimate, group = scale, color = scale, fill = scale)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), color = NA, alpha = 0.3) +
+  geom_line() +
+  # geom_line(data = exp_data, aes(x = x, y = residualdrawn, group = plotID), alpha = 0.2) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_grid(beta ~ points_end, scales = "free", labeller = labeller(beta = label_both, points_end = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_y_continuous("Residual \n (yloess - y)") +
+  scale_color_manual("Scale", values = c("steelblue", "orange")) +
+  scale_fill_manual("Scale", values = c("steelblue", "orange"))
+```
+
+## Condensed model:
+
+```{r gamm-model-reduced}
+#tick()
+exp.gamm.reduced <- bam(residualdrawn ~ -1 + beta:points_end:scale + 
+                        s(x, by = beta:points_end:scale) +
+                        s(participantID, bs = "re") +
+                        s(x,participantID, bs = "re"),
+                        method = "REML",
+                        data = exp_data)
+plot(exp.gamm.reduced, pages = 2,all.terms=TRUE)
+# toc()
+# summary(exp.gamm.reduced)
+# anova(exp.gamm.reduced)
+
+# Obtain Predictions
+grid_data.exp.reduced <- expand_grid(beta = c("0.1", "0.23"),
+                         points_end = c("10", "15"),
+                         scale = c("Linear", "Log"),
+                         x = seq(10,20, 0.5),
+                         participantID = exp_data$participantID[1])
+preds.exp.reduced <- predict_gamm(exp.gamm.reduced, newdata = grid_data.exp.reduced, se = T, re_form = NA)
+grid_data.exp.reduced$estimate <- preds.exp.reduced$prediction
+grid_data.exp.reduced$lower <- preds.exp.reduced$prediction - (1.96 * preds.exp.reduced$se)
+grid_data.exp.reduced$upper <- preds.exp.reduced$prediction + (1.96 * preds.exp.reduced$se)
+# head(grid_data.exp.reduced)
+```
+
+```{r plot-predictions-reduced}
+# Plot Predictions
+grid_data.exp.reduced %>%
+  ggplot(aes(x = x, y = estimate, group = scale, color = scale, fill = scale)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), color = NA, alpha = 0.4) +
+  geom_line() +
+  geom_line(data = exp_data, aes(x = x, y = residualdrawn, group = plotID), alpha = 0.2) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_grid(beta ~ points_end, scales = "free", labeller = labeller(beta = label_both, points_end = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_y_continuous("Residual \n (yloess - y)") +
+  scale_color_manual("Scale", values = c("steelblue", "orange")) +
+  scale_fill_manual("Scale", values = c("steelblue", "orange"))
+
+# Plot Predictions
+grid_data.exp.reduced %>%
+  ggplot(aes(x = x, y = estimate, group = scale, color = scale, fill = scale)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), color = NA, alpha = 0.4) +
+  geom_line() +
+  # geom_line(data = exp_data, aes(x = x, y = residualdrawn, group = plotID), alpha = 0.2) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_grid(beta ~ points_end, scales = "free", labeller = labeller(beta = label_both, points_end = label_both)) +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_y_continuous("Residual \n (yloess - y)") +
+  scale_color_manual("Scale", values = c("steelblue", "orange")) +
+  scale_fill_manual("Scale", values = c("steelblue", "orange"))
+```

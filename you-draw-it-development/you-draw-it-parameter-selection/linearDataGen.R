@@ -85,3 +85,13 @@ data <- list(line_data = line_data_S, point_data = point_data_S)
 # data_to_json(data)
 
 plot(point_data_S$x, point_data_S$y)
+
+write.csv(linear_data, "data\\youdrawit\\youdrawit-eyefitting-simdata-example.csv", row.names = F, na = "")
+linear_data %>%
+  filter(data == "point_data") %>%
+  filter(dataset %in% c("F", "N", "S") | (x < 16 & x > 4)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  facet_grid(~dataset) +
+  theme_bw() +
+  theme(aspect.ratio = 1)
