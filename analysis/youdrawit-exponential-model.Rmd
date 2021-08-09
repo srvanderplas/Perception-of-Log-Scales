@@ -47,6 +47,7 @@ exp_data <- feedback_smooth %>%
 factorCols = c('participantID', 'nick_name', 'age', 'gender', 'academic_study', 'recruitment', 'plotID', 'beta', 'points_end', 'scale')
 exp_data[,factorCols] <- lapply(exp_data[,factorCols], factor)
 # summary(exp_data)
+write.csv(exp_data, file = "results/youdrawit-exponential-prediction-model-data.csv", row.names = F, na = "")
 ```
 
 # RAW DATA PLOTS
@@ -229,7 +230,7 @@ grid_data.exp.full %>%
 ## Condensed model:
 
 ```{r gamm-model-reduced}
-#tick()
+#tic()
 exp.gamm.reduced <- bam(residualdrawn ~ -1 + beta:points_end:scale + 
                         s(x, by = beta:points_end:scale) +
                         s(participantID, bs = "re") +
@@ -256,6 +257,8 @@ grid_data.exp.reduced$upper <- preds.exp.reduced$prediction + (1.96 * preds.exp.
 
 ```{r plot-predictions-reduced}
 # Plot Predictions
+write.csv(grid_data.exp.reduced, file = "results/youdrawit-exponential-prediction-gamm-preds.csv", row.names = F, na = "")
+
 grid_data.exp.reduced %>%
   ggplot(aes(x = x, y = estimate, group = scale, color = scale, fill = scale)) +
   geom_ribbon(aes(ymin = lower, ymax = upper), color = NA, alpha = 0.4) +
