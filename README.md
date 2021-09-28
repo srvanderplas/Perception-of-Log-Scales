@@ -32,7 +32,7 @@ The final study is designed to test an individuals' ability to translate a graph
 
 **Papers**
 
-+ [2021 JSM Student Paper](https://srvanderplas.github.io/Perception-of-Log-Scales/manuscripts/jsm-2021-student-paper-submission/jsm-2021-student-paper-submission.pdf)
++ [2021 JSM Student Paper](https://srvanderplas.github.io/Perception-of-Log-Scales/manuscripts/jsm-2021-student-paper-submission/Emily-Robinson-jsm2021-student-paper-competition/manuscript.pdf)
 + Download Emily's dissertation [here](https://github.com/earobinson95/EmilyARobinson-UNL-dissertation/raw/2bf2a4613c95c5f93ae065fbe97ffef43bd68560/_book/thesis.pdf); [Github repository](https://github.com/earobinson95/EmilyARobinson-UNL-dissertation)
 + Eye Fitting Straight Lines in the Modern Era [(In Preparation)](https://earobinson95.github.io/Eye-Fitting-Straight-Lines-in-the-Modern-Era/Eye-Fitting-Straight-Lines-in-the-Modern-Era.pdf)
 
