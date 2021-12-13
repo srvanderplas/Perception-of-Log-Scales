@@ -108,7 +108,7 @@ Common methods of fitting trends by eye involved maneuvering a string, black thr
 <!-- The author then computed one iterative calculation of the relative potency based on starting values as indicated by the pair of lines provided by each participant and compared these relative potency estimates to that which was estimated by the full probit technique (reaching convergence through multiple iterations). -->
 <!-- Results indicated that one cycle of iterations for calculating the relative potency was sufficient based on the starting values provided by eye from the participants. -->
 
-@mosteller1981eye, sought to understand the properties of least squares and other computed lines by establishing one systematic method of fitting lines by eye. 
+@mosteller1981eye sought to understand the properties of least squares and other computed lines by establishing one systematic method of fitting lines by eye. 
 Participants were asked to fit lines by eye to four scatter-plots using an 8.5 x 11 inch transparency with a straight line etched completely across the middle. 
 A latin square design with packets of the set of points stapled together in four different sequences was used to determine if there is an effect of order of presentation.
 It was found that order of presentation had no effect and that participants tended to fit the slope of the principal axis (error minimized orthogonally, both horizontal and vertical, to the regression line) over the slope of the least squares regression line (error minimized vertically to the regression line).
@@ -158,7 +158,7 @@ All data processing was conducted in R statistical software. Data were simulated
 
 ## Study Design
 
-This experiment was conducted as part of a larger study; for simplicity, we focus on the study design and methods related to the current study. 
+This experiment was conducted as part of a larger study; for simplicity, we focus on the study design and methods related to the you-draw-it paradigm. 
 Each scatter-plot was the graphical representation of a data set that was generated randomly, independently for each participant at the start of the experiment.
 Participants in the study are shown two 'You Draw It' practice plots in order to train participants in the skills associated with executing the task. 
 During the practice session, participants are provided with instruction prompts accompanied by a .gif and a practice plot.
@@ -276,7 +276,7 @@ eyefitting.gamm.plot
 
 # Discussion and Conclusion
 
-The intent of research was to adapt 'You Draw It' from the New York Times feature as a tool and method for testing graphics
+The intent of research was to adapt 'You Draw It' from the New York Times feature as a tool and method for testing graphics.
 The study conducted by @mosteller1981eye was replicated using the 'You Draw It' method providing support for the validity of the tool.
 Our results indicated that when shown points following a linear trend, participants tended to fit a line closer to a regression based on the principal axis over the ordinary least squares regression line.
 This trend was most prominent when shown data simulated with larger variances. 
