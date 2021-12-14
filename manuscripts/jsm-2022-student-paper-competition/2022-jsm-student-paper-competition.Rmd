@@ -53,47 +53,64 @@ library(cowplot)
 library(ggforce)
 ```
 
+<!-- # Introduction -->
+
+<!-- Data visualization has become a central tool in modern data science. -->
+<!-- @unwin2020data defines data visualization as the art of using graphic displays to show data. Graphics illustrate the relationship between two sets of information or variables.  -->
+<!-- Graphical displays are useful for data cleaning, exploratory data analysis, identifying trends, evaluating model output, and presenting results. -->
+
+<!-- When creating a graphic, we must consider the design choices most effective for conveying the intended result. For instance, we must decide to highlight the relationship between two variables in a scatterplot by including a trend line, or adding color to highlight clustering [@vanderplas2017clusters]. -->
+<!-- These design choices require that we understand the perception and visual biases that come into play when creating graphics, and as graphics are evaluated visually, we must use human testing to ground our understanding in empiricism. -->
+<!-- Efforts in the field of graphics have developed graphical testing tools and methods such as the lineup protocol [@buja2009statistical] to provide a framework for inferential testing. -->
+<!-- Through experimentation, methods such as the lineup protocol allow researchers to conduct studies geared at understanding human ability to conduct tasks related to the perception of statistical charts such as differentiation, prediction, estimation, and extrapolation. -->
+
+<!-- ## Graph Perception -->
+
+<!-- With the widespread use of graphics, work has been done to understand the effect of charts and graphs on human perception and higher cognitive processing such as learning and analysis [@green2009personal]. -->
+<!-- @carpenter1998model established the process of graph comprehension in which viewers interact with charts by first perceptually observing the visual features and later translating to cognitive processing of the information depicted by those features. -->
+<!-- Much of the research on the perception of visual features in charts has been conducted in psychophysics and test for accuracy and quantitative comparisons when understanding a plot.  -->
+<!-- Cleveland and McGill conducted a series of cognitive tasks designed to establish a hierarchy of visual components for making comparisons [@cleveland1984graphical]. For example, it is more effective to display information on an $x$ or $y$ axis rather than using color in order to reduce the visual effort necessary to make numerical comparisons. -->
+<!-- Other early studies evaluated human perception of lines.  -->
+<!-- For instance, @cleveland1985graphical found that assessing the position of points along an axis is easier than determining the slope of a line. -->
+<!-- The results of these cognitive tasks provide some consistent guidance for chart design; however, other methods of visual testing can further evaluate design choices and help us understand cognitive biases related to the evaluation of statistical charts. -->
+
 # Introduction
-
-Data visualization has become a central tool in modern data science.
-@unwin2020data defines data visualization as the art of using graphic displays to show data. Graphics illustrate the relationship between two sets of information or variables. 
-Graphical displays are useful for data cleaning, exploratory data analysis, identifying trends, evaluating model output, and presenting results.
-
-When creating a graphic, we must consider the design choices most effective for conveying the intended result. For instance, we must decide to highlight the relationship between two variables in a scatterplot by including a trend line, or adding color to highlight clustering [@vanderplas2017clusters].
+We all use statistical graphics, but how do we know that the graphics we use are communicating properly? When creating a graphic, we must consider the design choices most effective for conveying the intended result. For instance, we must decide to highlight the relationship between two variables in a scatterplot by including a trend line, or adding color to highlight clustering [@vanderplas2017clusters].
 These design choices require that we understand the perception and visual biases that come into play when creating graphics, and as graphics are evaluated visually, we must use human testing to ground our understanding in empiricism.
-Efforts in the field of graphics have developed graphical testing tools and methods such as the lineup protocol [@buja2009statistical] to provide a framework for inferential testing.
-Through experimentation, methods such as the lineup protocol allow researchers to conduct studies geared at understanding human ability to conduct tasks related to the perception of statistical charts such as differentiation, prediction, estimation, and extrapolation.
 
-## Graph Perception
-
-With the widespread use of graphics, work has been done to understand the effect of charts and graphs on human perception and higher cognitive processing such as learning and analysis [@green2009personal].
-@carpenter1998model established the process of graph comprehension in which viewers interact with charts by first perceptually observing the visual features and later translating to cognitive processing of the information depicted by those features.
 Much of the research on the perception of visual features in charts has been conducted in psychophysics and test for accuracy and quantitative comparisons when understanding a plot. 
 Cleveland and McGill conducted a series of cognitive tasks designed to establish a hierarchy of visual components for making comparisons [@cleveland1984graphical]. For example, it is more effective to display information on an $x$ or $y$ axis rather than using color in order to reduce the visual effort necessary to make numerical comparisons.
 Other early studies evaluated human perception of lines. 
 For instance, @cleveland1985graphical found that assessing the position of points along an axis is easier than determining the slope of a line.
 The results of these cognitive tasks provide some consistent guidance for chart design; however, other methods of visual testing can further evaluate design choices and help us understand cognitive biases related to the evaluation of statistical charts.
 
+<!-- Efforts in the field of graphics have developed graphical testing tools and methods such as the lineup protocol [@buja2009statistical] to provide a framework for inferential testing. -->
+<!-- Through experimentation, methods such as the lineup protocol allow researchers to conduct studies geared at understanding human ability to conduct tasks related to the perception of statistical charts such as differentiation, prediction, estimation, and extrapolation. -->
+
 ## Testing Statistical Graphics
 
 Graphical tests are useful for studying the perception of statistical graphs. 
 Studies might ask participants to identify differences in graphs, read information off of a chart accurately, use data to make correct real-world decisions, or predict the next few observations.
-All of these types of tests require different levels of use and manipulation of the information being presented in the chart. Early researchers studied graphs from a psychological perspective [@spence1990visual; @lewandowsky1989perception]. 
+All of these types of tests require different levels of use and manipulation of the information being presented in the chart. 
+Early researchers studied graphs from a psychological perspective [@spence1990visual; @lewandowsky1989perception]. 
 These studies generally tested participants ability to detect a stimulus or a difference between two stimuli.
-Here we focus on the how graphical testing has developed in statistics.
+In statistical graphics research, @vanderplas2015signs uses methods of psychophysics to estimate the effect of sign illusions by adjusting the sine illusion up and down.
 
 A major development in statistical graphics research is Wilkinson’s Grammar of Graphics [@wilkinson2013grammar].
-The grammar of graphics serves as the fundamental framework for data visualization with the notion that graphics are built from the ground up by specifying exactly how to create a particular graph from a given data set. 
-Visual representations are constructed through the use of “tidy data” which is characterized as a data set in which each variable is in its own column, each observation is in its own row, and each value is in its own cell [@wickham2016r]. 
-Graphics are viewed as a mapping from variables in a data set (or statistics computed from the data) to visual attributes such as the axes, colors, shapes, or facets on the canvas in which the chart is displayed. 
+The grammar of graphics serves as the fundamental framework for data visualization with the notion that graphics are built from the ground up by specifying exactly how to create a particular graph from a given data set.
+<!-- Visual representations are constructed through the use of “tidy data” which is characterized as a data set in which each variable is in its own column, each observation is in its own row, and each value is in its own cell [@wickham2016r]. -->
+Graphics are viewed as a mapping from variables in a data set (or statistics computed from the data) to visual attributes such as the axes, colors, shapes, or facets on the canvas in which the chart is displayed.
 Software, such as Hadley Wickham’s ggplot2 [@wickham2011ggplot2], aims to implement the framework of creating charts and graphics as the grammar of graphics recommends.
 
-One useful tool for testing statistical graphics is the concept of a lineup. 
-@buja2009statistical introduced the lineup protocol in which data plots are depicted and interpreted as statistics. 
-Supported by the grammar of graphics, a data plot can be characterized as a statistic, defined as, “a functional mapping of a variable or set of variables” [@vanderplas2020testing]. 
-This allows the data plot to be tested similar to other statistics, by comparing the actual data plot
-to a set of plots with the absence of any data structure we can test the likelihood of any perceived structure being significant. 
-The construction of data plots as statistics allow for easy experimentation, granting researchers the ability to compare the effectiveness of and understand the perception of different types of charts [@vanderplas2017clusters; @vanderplas2015spatial; @hofmann2012graphical]. The lineup protocol is one such example of the development of tools designed for statistical graphical testing. The advancement of graphing software provides the tools necessary to develop new methods of testing graphics. 
+Efforts in the field of statistical graphics have developed graphical testing tools and methods such as the lineup protocol [@buja2009statistical] to provide a framework for inferential testing.
+Through experimentation, methods such as the lineup protocol allow researchers to conduct studies geared at understanding human ability to conduct tasks related to the perception of statistical charts such as differentiation, prediction, estimation, and extrapolation [@vanderplas2017clusters; @vanderplas2015spatial; @hofmann2012graphical].
+<!-- One useful tool for testing statistical graphics is the concept of a lineup.  -->
+<!-- @buja2009statistical introduced the lineup protocol in which data plots are depicted and interpreted as statistics.  -->
+<!-- Supported by the grammar of graphics, a data plot can be characterized as a statistic, defined as, “a functional mapping of a variable or set of variables” [@vanderplas2020testing].  -->
+<!-- This allows the data plot to be tested similar to other statistics, by comparing the actual data plot -->
+<!-- to a set of plots with the absence of any data structure we can test the likelihood of any perceived structure being significant.  -->
+<!-- The construction of data plots as statistics allow for easy experimentation, granting researchers the ability to compare the effectiveness of and understand the perception of different types of charts [@vanderplas2017clusters; @vanderplas2015spatial; @hofmann2012graphical].  -->
+The advancement of graphing software provides the tools necessary to develop new methods of testing statistical graphics. 
 
 ## Fitting Trends by Eye
 
@@ -128,16 +145,20 @@ After the reader has completed drawing the line, the actual observed values are 
 
 In this paper, we establish 'You Draw It', adapted from the New York Times feature, as a tool for graphical testing. 
 The 'You Draw It' method is validated by replicating the study conducted by @mosteller1981eye. 
-Based on previous research surrounding "ensemble perception," we hypothesize that regression lines fit by human perception resemble regression lines based on the principal axis rather than an ordinary least squares regression line.
+Based on previous research surrounding "ensemble perception," we hypothesize that visual regression tends to mimic principle component regression rather than a ordinary least squares regression.
+In order to assess this hypothesis, we introduce a method for statistically modeling the participant drawn lines using generalized additive mixed models.
+<!-- Using generalized additive mixed models, we assess the hypothesis that visual regression tends to mimic principle component regression rather than least squares regression. -->
 
 # Methods
 
 ## Participants
 
-Participants were recruited through through Twitter, Reddit, and direct email in May 2021. 
+Participants were recruited through through Twitter, Reddit, and direct email in May 2021.
 A total of 35 individuals completed 119 unique 'You Draw It' task plots; all completed you draw it task plots were included in the analysis. 
 All participants had normal or corrected to normal vision and signed an informed consent form.
 The experimental tasks took approximately 15 minutes to complete.
+While convenience sampling took place, this is primarily a perceptual task and previous results have found few differences between expert and non-expert participants in this context [@vanderplas2015spatial].
+Data collected in this study serves the purpose of a pilot study intended to lay the foundation for future data collection and provides promising results for understanding the perception of regression.
 Participants completed the experiment on their own computers in an environment of their choosing. The experiment was conducted and distributed through an RShiny application found [here](https://shiny.srvanderplas.com/you-draw-it/).
 
 ## 'You Draw It' Task
@@ -276,19 +297,21 @@ eyefitting.gamm.plot
 
 # Discussion and Conclusion
 
-The intent of research was to adapt 'You Draw It' from the New York Times feature as a tool and method for testing graphics.
-The study conducted by @mosteller1981eye was replicated using the 'You Draw It' method providing support for the validity of the tool.
-Our results indicated that when shown points following a linear trend, participants tended to fit a line closer to a regression based on the principal axis over the ordinary least squares regression line.
-This trend was most prominent when shown data simulated with larger variances. 
-These results indicate that humans perform "ensemble perception" in a statistical graphic setting as participants minimized the distance from the their regression line over both the $x$ and $y$ axis simultaneously. 
-In addition, we allowed participants to draw trend lines that deviated from a straight line providing insight into the curvature the human eye perceives in a set of points.
+The intent of research was to adapt 'You Draw It' from the New York Times feature as a tool and method for testing graphics and introduce a method for statistically modeling the participant drawn lines.
+We provided support for the validity of the 'You Draw It' method by replicating the study found in @mosteller1981eye.
+Using generalized additive mixed models, we assessed the deviation of the participant drawn lines from the statistically fitted regression lines.
+Our results found that when shown points following a linear trend, participants visually fit a regression line that mimics the first principle component regression as opposed to ordinary least squares regression. 
+Data simulated with a larger variance provided strong support for a participants tendency to visually fit the first principle component regression.
+Our results indicate that participants minimized the distance from the their regression line over both the $x$ and $y$ axis simultaneously. 
+These results provide support that humans perform "ensemble perception" in a statistical graphic setting.
+We allowed participants to draw trend lines that deviated from a straight line and gained an insight into the curvature the human eye perceives in a set of points. 
 
 # Future Work
 
-This study provided a basis for the use of 'You Draw It' as a tool for testing graphics as well as provided support for "ensemble perception" in statistical graphics.
-Further investigation is necessary to implement the method in non-linear settings and with real data.
+This study provided a basis for the use of 'You Draw It' as a tool for testing statistical graphics and introduced a method for statistically modeling participant drawn lines using generalized additive mixed models.
+Further investigation is necessary to implement this method in non-linear settings and with real data.
 This tool could also be used to evaluate human ability to extrapolate data from trends. 
-In the future, an R package designed for easy implementation of 'You Draw It' task plots will help make this tool accessible to other researchers. 
+In the future, an R package designed for easy implementation of 'You Draw It' task plots will help make this tool accessible to other researchers.
 
 # References
 

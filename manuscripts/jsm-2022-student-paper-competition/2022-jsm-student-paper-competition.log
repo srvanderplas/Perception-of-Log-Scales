@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 21.12.10) (preloaded format=pdflatex 2021.12.11)  12 DEC 2021 20:14
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 21.12.10) (preloaded format=pdflatex 2021.12.11)  14 DEC 2021 15:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -597,70 +597,74 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 ]
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 2
-38.
+13.
 (C:\Users\ERobi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\t1cmtt.fd
 File: t1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
-<images/ydi-stimuli.png, id=111, 713.94pt x 196.662pt>
+<images/ydi-stimuli.png, id=107, 713.94pt x 196.662pt>
 File: images/ydi-stimuli.png Graphic file (type png)
 <use images/ydi-stimuli.png>
-Package pdftex.def Info: images/ydi-stimuli.png  used on input line 250.
+Package pdftex.def Info: images/ydi-stimuli.png  used on input line 225.
 (pdftex.def)             Requested size: 505.89pt x 139.3519pt.
 [2]
-<./images/eyefitting-lmer-residualplots-1.pdf, id=129, 650.43pt x 216.81pt>
+<./images/eyefitting-lmer-residualplots-1.pdf, id=126, 650.43pt x 216.81pt>
 File: ./images/eyefitting-lmer-residualplots-1.pdf Graphic file (type pdf)
 <use ./images/eyefitting-lmer-residualplots-1.pdf>
 Package pdftex.def Info: ./images/eyefitting-lmer-residualplots-1.pdf  used on 
-input line 336.
+input line 311.
 (pdftex.def)             Requested size: 505.89pt x 168.63472pt.
-[3] [4 <./images/ydi-stimuli.png> <./images/eyefitting-lmer-residualplots-1.pdf
->]
-<./images/eyefitting-gamm-residualplots-1.pdf, id=162, 650.43pt x 216.81pt>
+[3 <./images/ydi-stimuli.png>]
+<./images/eyefitting-gamm-residualplots-1.pdf, id=143, 650.43pt x 216.81pt>
 File: ./images/eyefitting-gamm-residualplots-1.pdf Graphic file (type pdf)
 <use ./images/eyefitting-gamm-residualplots-1.pdf>
 Package pdftex.def Info: ./images/eyefitting-gamm-residualplots-1.pdf  used on 
-input line 384.
+input line 359.
 (pdftex.def)             Requested size: 505.89pt x 168.63472pt.
 
-Underfull \vbox (badness 4366) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[5] [6 <./images/eyefitting-gamm-residualplots-1.pdf>]
-<./images/eyefitting-simplot-1.pdf, id=215, 650.43pt x 216.81pt>
+[4 <./images/eyefitting-lmer-residualplots-1.pdf>]
+Underfull \vbox (badness 1521) has occurred while \output is active []
+
+[5 <./images/eyefitting-gamm-residualplots-1.pdf>] [6
+
+]
+<./images/eyefitting-simplot-1.pdf, id=206, 650.43pt x 216.81pt>
 File: ./images/eyefitting-simplot-1.pdf Graphic file (type pdf)
 <use ./images/eyefitting-simplot-1.pdf>
 Package pdftex.def Info: ./images/eyefitting-simplot-1.pdf  used on input line 
-617.
+575.
 (pdftex.def)             Requested size: 247.94499pt x 82.6467pt.
 
 pdfTeX warning (ext4): destination with the same identifier (name{fitted-regres
 sion-lines}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.626 ... Lines }}\label{fitted-regression-lines}}
+l.584 ... Lines }}\label{fitted-regression-lines}}
                                                   
 Underfull \vbox (badness 6493) has occurred while \output is active []
 
-<./images/ols-vs-pca-example-1.pdf, id=217, 433.62pt x 216.81pt>
+<./images/ols-vs-pca-example-1.pdf, id=208, 433.62pt x 216.81pt>
 File: ./images/ols-vs-pca-example-1.pdf Graphic file (type pdf)
 <use ./images/ols-vs-pca-example-1.pdf>
 Package pdftex.def Info: ./images/ols-vs-pca-example-1.pdf  used on input line 
-659.
+617.
 (pdftex.def)             Requested size: 223.14897pt x 111.57402pt.
 
 pdfTeX warning (ext4): destination with the same identifier (name{residual-tren
 ds}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.668 ...esidual Trends }}\label{residual-trends}}
+l.626 ...esidual Trends }}\label{residual-trends}}
                                                    [7
 
 
  <./images/eyefitting-simplot-1.pdf> <./images/ols-vs-pca-example-1.pdf>]
-<./images/eyefitting-example-plot-1.pdf, id=243, 289.08pt x 289.08pt>
+<./images/eyefitting-example-plot-1.pdf, id=234, 289.08pt x 289.08pt>
 File: ./images/eyefitting-example-plot-1.pdf Graphic file (type pdf)
 <use ./images/eyefitting-example-plot-1.pdf>
 Package pdftex.def Info: ./images/eyefitting-example-plot-1.pdf  used on input 
-line 685.
+line 643.
 (pdftex.def)             Requested size: 185.95874pt x 185.95892pt.
 [8 <./images/eyefitting-example-plot-1.pdf>] (2022-jsm-student-paper-competitio
 n.aux)
@@ -669,13 +673,13 @@ LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `2022-jsm-student-paper-competition.out' has 
 not changed.
-(rerunfilecheck)             Checksum: 10D8ED192E2DDFDC831B267FB6FE035B;3386.
+(rerunfilecheck)             Checksum: 1DC5C3F6C0223C581A84E38D7DDD4BD2;3245.
  ) 
 Here is how much of TeX's memory you used:
- 12912 strings out of 478625
- 217139 string characters out of 2842393
- 541035 words of memory out of 3000000
- 30764 multiletter control sequences out of 15000+600000
+ 12903 strings out of 478625
+ 217124 string characters out of 2842393
+ 542035 words of memory out of 3000000
+ 30761 multiletter control sequences out of 15000+600000
  417256 words of font info for 64 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  60i,12n,63p,696b,397s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -694,10 +698,10 @@ ublic/amsfonts/cm/cmmi7.pfb><C:/Users/ERobi/AppData/Local/Programs/MiKTeX 2.9/f
 onts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/ERobi/AppData/Local/Programs/
 MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/ERobi/AppData/Loca
 l/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on 2022-jsm-student-paper-competition.pdf (8 pages, 678120 bytes
+Output written on 2022-jsm-student-paper-competition.pdf (8 pages, 675168 bytes
 ).
 PDF statistics:
- 616 PDF objects out of 1000 (max. 8388607)
- 90 named destinations out of 1000 (max. 500000)
- 215 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 605 PDF objects out of 1000 (max. 8388607)
+ 84 named destinations out of 1000 (max. 500000)
+ 207 words of extra memory for PDF output out of 10000 (max. 10000000)
 
