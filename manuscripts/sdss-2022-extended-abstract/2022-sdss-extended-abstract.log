@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2022.1.6)  7 JAN 2022 17:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2022.1.6)  10 JAN 2022 11:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -252,13 +252,13 @@ Underfull \hbox (badness 10000) in paragraph at lines 161--163
 Here is how much of TeX's memory you used:
  4742 strings out of 480313
  87050 string characters out of 5895529
- 424061 words of memory out of 5000000
+ 423061 words of memory out of 5000000
  22543 multiletter control sequences out of 15000+600000
  422566 words of font info for 81 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  55i,11n,62p,258b,292s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/Users/ERobi/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}<c:/Users/ERobi/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/Users/ERobi/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/Users/ERobi/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb><c:/Users/ERobi/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb><c:/Users/ERobi/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/courier/ucrb8a.pfb><c:/Users/ERobi/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb><c:/Users/ERobi/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/times/utmb8a.pfb><c:/Users/ERobi/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/times/utmr8a.pfb><c:/Users/ERobi/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on 2022-sdss-extended-abstract.pdf (2 pages, 404488 bytes).
+Output written on 2022-sdss-extended-abstract.pdf (2 pages, 404360 bytes).
 PDF statistics:
  60 PDF objects out of 1000 (max. 8388607)
  35 compressed objects within 1 object stream
