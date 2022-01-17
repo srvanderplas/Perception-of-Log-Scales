@@ -1,0 +1,53 @@
+\documentclass[10pt]{article}
+
+\usepackage{sdss2020} % Uses Times Roman font (either newtx or times package)
+\usepackage{url}
+\usepackage{latexsym}
+\usepackage{amsmath, amsthm, amsfonts}
+\usepackage{algorithm, algorithmic}  
+\usepackage{graphicx}
+
+$for(header-includes)$
+$header-includes$
+$endfor$
+
+\title{$title$}
+
+%\author{by $for(author)$$author.name$$sep$, $endfor$}
+\author{
+  Emily A. Robinson \\
+  \small{University of Nebraska - Lincoln}\\
+  \small{Lincoln, NE} \\
+  \small{\tt emily.robinson@huskers.unl.edu} \\\And
+ Susan VanderPlas \\
+  \small{University of Nebraska - Lincoln}\\
+  \small{Lincoln, NE} \\
+  \small{\tt susan.vanderplas@unl.edu} \\\And
+  Reka Howard \\
+  \small{University of Nebraska - Lincoln}\\
+  \small{Lincoln, NE} \\
+  \small{\tt rekahoward@unl.edu} \\}
+
+\date{}
+
+\begin{document}
+\maketitle
+$if(abstract)$
+\begin{abstract}
+$abstract$
+\end{abstract}
+$endif$
+
+{\bf Keywords:} $keywords$
+
+$body$
+
+\bibliographystyle{sdss2020}
+$if(bibliography)$
+\bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
+$endif$
+% \bibliography{references}
+
+\end{document}
+
+
