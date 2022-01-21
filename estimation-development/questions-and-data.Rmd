@@ -14,6 +14,7 @@ knitr::opts_chunk$set(
 )
 library(tidyverse)
 library(patchwork)
+library(scales)
 library(readr)
 library(readxl)
 library(here)
@@ -131,7 +132,117 @@ library(here)
 
 + See Table 1 Graph interpretation scoring rubric
 
-## Data
+
+## Scenario and Questions
+
+### One Population:
+
+
+```{r one-population-data}
+set.seed(56156)
+data <- tibble(x = seq(3000, 3050, 1),
+               y = 5*exp(0.15*(x-3000) + rnorm(length(x), mean = 0, sd = 0.25)) + 30)
+
+linear.plot <- data %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  theme_bw() +
+  # geom_smooth(method = 'gam', se = F, size = 1, linetype = "dashed") +
+  theme(aspect.ratio = 1) +
+  scale_y_continuous("Population", limits = c(0, 10000), breaks = seq(0, 10000, 2000), labels = comma) +
+  scale_x_continuous("Year") +
+  ggtitle("Linear Scale")
+
+log.plot <- data %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  theme_bw() +
+  # geom_smooth(method = 'gam', se = F, size = 1, linetype = "dashed") +
+  theme(aspect.ratio = 1) +
+  scale_y_continuous("Population", limits = c(10, 10000), labels = comma, trans = "log10") +
+  scale_x_continuous("Year") +
+  ggtitle("Log Scale")
+
+linear.plot + log.plot
+```
+
+**Elementary: literal reading of the data**
+
++ What is the population of creatures in year 3010?
++ In what year does the population of creatures reach 4,000?
+
+**Intermediate: read between the data**
+
++ How many creatures did the population increase by between 3020 and 3040? (additive)
++ How many times more creatures are there in 3040 than in 3020? (multiplicative)
++ How many years does it take for the initial population of creatures in 3000 to double? (multiplicative)
++ Between 3030 and 3040, how does the population of creatures change? (open-ended; look for wording?)
+
+**Advanced: Read between the data**
+
++ Probably not considering.
+
+***Things to Consider***
+
++ Grid lines matter. Are the values you are asking them to estimate on a grid-line?
++ Tick marks and how often matter - will they be calculating?
++ Rate of growth will matter a lot.
+
+### Two Populations:
+
+
+```{r two-populations-data}
+set.seed(56156)
+data <- tibble(x = seq(3000, 3050, 1),
+               y1 = 5*exp(0.15*(x-3000)) + 30,
+               y2 = 5*exp(0.12*(x-3000)) + 300) %>%
+  pivot_longer(cols = c("y1", "y2"),
+               names_to = "group",
+               values_to = "population")
+
+linear.plot <- data %>%
+  ggplot(aes(x = x, y = population, color = group, group = group)) +
+  geom_line(size = 1.1) +
+  theme_bw() +
+  theme(aspect.ratio = 1,
+        legend.position = "bottom") +
+  scale_y_continuous("Population", limits = c(0, 10000), breaks = seq(0, 10000, 2000), labels = comma) +
+  scale_x_continuous("Year") +
+  ggtitle("Linear Scale") +
+  scale_color_manual(values = c("navy", "orange2"))
+
+log.plot <- data %>%
+  ggplot(aes(x = x, y = population, color = group, group = group)) +
+  geom_line(size = 1.1) +
+  theme_bw() +
+  theme(aspect.ratio = 1,
+        legend.position = "bottom") +
+  scale_y_continuous("Population", trans = "log10", labels = comma) +
+  scale_x_continuous("Year") +
+  scale_color_manual(values = c("navy", "orange2")) +
+  ggtitle("Log Scale")
+
+linear.plot + log.plot
+```
+
+**Elementary: literal reading of the data**
+
++ 
+
+**Intermediate: read between the data**
+
++ 
+
+**Advanced: Read between the data**
+
++ Probably not considering.
+
+***Things to Consider***
+
++ Grid lines matter. Are the values you are asking them to estimate on a gridline?
+
+
+## Ideas
 
 ### Growth of Invasive species
 
