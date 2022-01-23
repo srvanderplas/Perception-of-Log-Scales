@@ -133,7 +133,7 @@ library(here)
 + See Table 1 Graph interpretation scoring rubric
 
 
-## Scenario and Questions
+## [Scenario and Questions](https://emily-robinson.shinyapps.io/estimation-app-development/)
 
 ### One Population:
 
@@ -187,6 +187,7 @@ linear.plot + log.plot
 + Grid lines matter. Are the values you are asking them to estimate on a grid-line?
 + Tick marks and how often matter - will they be calculating?
 + Rate of growth will matter a lot.
++ Where you ask them to read the data from will matter (e.g. 3000 vs 3040).
 
 ### Two Populations:
 
@@ -227,19 +228,23 @@ linear.plot + log.plot
 
 **Elementary: literal reading of the data**
 
-+ 
++ What is the population when both groups are equal?
++ How many years does it take for the population of group 1 to equal the population of group 2?
 
 **Intermediate: read between the data**
 
-+ 
++ How many more creatures did group 2 have than group 1 in 3020? (additive)
++ How many times larger was the starting population of group 2 than group 1? (multiplicative)
++ Considering the two curves of the graph only as marks on a piece of paper, how do the changes in these two curves compare? (open-ended)
 
 **Advanced: Read between the data**
 
-+ Probably not considering.
++ From 3000 to 3020, what which population had a higher reproductive rate?
++ Which population do you expect to be larger in 3100?
 
 ***Things to Consider***
 
-+ Grid lines matter. Are the values you are asking them to estimate on a gridline?
++ Rate of growth and when they cross will matter.
 
 
 ## Ideas
