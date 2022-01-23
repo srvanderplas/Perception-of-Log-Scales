@@ -59,12 +59,15 @@ shinyUI(fluidPage(
           conditionalPanel("input.numPops == 'One'",
             column(width = 7,
               helpText(h4("Scenario: words go here.")),
-              tabPanel("Single Population", plotOutput("onePop_plot", height = "500px"))
+              plotOutput("onePop_plot", height = "500px"),
+              verbatimTextOutput("nlsCoef_table")
             ),
             column(width = 5,
                    helpText(h4("Data Simulation")),
-                   withMathJax(helpText("$$\\text{population} = \\alpha\\cdot e^{\\beta\\cdot (\\text{year} - \\text{min year}) + \\epsilon} + \\gamma$$")),
-                   withMathJax(helpText("$$\\text{where } \\epsilon \\sim N(0, \\sigma^2)$$")),
+                   withMathJax(helpText("$$\\text{population} = \\alpha\\cdot e^{\\beta\\cdot (\\text{year} - \\text{min year})} + \\theta$$")),
+                   checkboxInput("multiplicativeErrors",
+                               "Multiplicative Errors",
+                               value = T),
                    
                    fluidRow(
                    column(width = 3,
@@ -83,10 +86,10 @@ shinyUI(fluidPage(
                                        step = 0.05)
                    ),
                    column(width = 3,
-                          numericInput("gamma0", 
-                                       "$$\\gamma$$",
+                          numericInput("theta0", 
+                                       "$$\\theta$$",
                                        value = 30,
-                                       min = 0, 
+                                       min = -50, 
                                        max = 500),
                    ),
                    column(width = 3,
@@ -110,6 +113,7 @@ shinyUI(fluidPage(
                                "Scale",
                                choices = c("Linear", "Log10", "Log2"),
                                selected = "Linear"),
+
                    uiOutput("popRange"),
                    checkboxInput("trendline",
                                  "Trendline",
