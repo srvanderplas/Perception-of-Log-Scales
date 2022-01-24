@@ -1,0 +1,327 @@
+---
+title: "Estimation Questions & Data"
+author: "Emily Robinson"
+date: "Spring 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE,
+	fig.align = 'center'
+)
+library(tidyverse)
+library(patchwork)
+library(scales)
+library(readr)
+library(readxl)
+library(here)
+```
+
+## References
+
+[Joram, E., Gabriele, A. J., Bertheau, M., Gelman, R., & Subrahmanyam, K. (2005). Children's use of the reference point strategy for measurement estimation. Journal for Research in Mathematics Education, 36(1), 4-23.](https://www.jstor.org/stable/pdf/30034918.pdf?casa_token=4KmpbCEPov0AAAAA:G7X0qvFWm03VHrtVo3PQedNQxCNz4_gu1Jo5UNRsm7DHCZQDW3yjxMa8R06H3bCGe2ixysryUEGCdTVF1S5sSF2N8In87dPO_9TQ9Rv0IrAPSpau-g)
+
++ Interested in the relationship among strategy use and accuracy of students' representations of standard measurement units and measurement accuracy.
++ Students were asked to estimate the lengths of two objects.
++ After estimation, students were asked
+  + "How did you come up with your answer?"
+  + "What were you thinking about when you came up with your answer?"
+  + "Can you show me how you came up with your answer?"
+  + "How did that help you come up with your answer?"
+  + "Do you know how tall your cousin is?" - reference point
++ Results: students who used a reference point had a more accurate representation of standard units and estimates of length.
+
+<br>
+[Becker, G., Moore, S. E., & Lawrence, M. (2019). trackr: a framework for enhancing discoverability and reproducibility of data visualizations and other artifacts in R. Journal of Computational and Graphical Statistics, 28(3), 644-658.](https://scholar.google.com/scholar_url?url=https://www.tandfonline.com/doi/pdf/10.1080/10618600.2019.1585259&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&d=9960771689545072655&ei=MMXlYfu9ArqO6rQPo5uBoAU&scisig=AAGBfm0k6Vr_ethV-AsN0Qx60C56PS0lKw)
+
+  + Open-ended estimation tasks elicit certain well-known biases such as the tendency to round to multiples of 5 or 10.
+  + Long-term interaction with a complex graph or chart showing multiple layers of data is generally not ideal within this paradigm, which requires a fixed set of numerical assessments that do not accurately represent how we explore a new, complex graphic.
+  
+<br>
+[Curcio, F. R. (1987). Comprehension of mathematical relationships expressed in graphs. Journal for research in mathematics education, 18(5), 382-393.](https://www.jstor.org/stable/pdf/749086.pdf?casa_token=YSF91TLfyecAAAAA:2Yfu1-Ce2ghoiKYX3y18RoFdqFxDsLnK0LnxvCfISsAFDsGGm6zAMswZm2Ofz7M5zvitn3Xqpna2e2EFruTuF12OWFXmKZNEpPzw-C9E0j73nJr0mA)
+
++ Prior Knowledge Inventory
+  + Topic
+  + Mathematical Content
+  + Graphical Form
++ Comprehension - 6 Multiple Choice Items:
+  + 2 literal items (requiring a literal reading of the data, title, or axis label)
+    + What does this graph tell you?
+    + How tall was xxx?
+  + 2 comparison items (requiring comparisons and the use of mathematical concepts and skills to "read between the data)
+    + Who was the tallest?
+    + How much taller was x than y?
+  + 2 extension items (requiring an extension, prediction, or inference to "read beyond the data")
+    + If x grows 5 centimeters and y grows 10 centimeters by Sept. 1981, who will be taller, and by how much?
+    + If z is 5 years old, which of the following is a correct statement?
+
+<br>
+[Friel, S. N., Curcio, F. R., & Bright, G. W. (2001). Making sense of graphs: Critical factors influencing comprehension and instructional implications. Journal for Research in mathematics Education, 32(2), 124-158.](https://scholar.google.com/scholar_url?url=https://www.jstor.org/stable/pdf/749671.pdf%3Fcasa_token%3DP-xvzvhOuUUAAAAA:tFasUO-_wxPaHjDnFatHnKLQEe1TzdPppsvp9z5XKTgJxxJKBa389bSFABKQCEnFLrS0GBcDSAheJdobK0TvynryBtalanSSziriK0JhWimnOF_9UA&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&d=8351939406697532386&ei=7sTlYfORA4y5yQSO1oSwAw&scisig=AAGBfm0Xhpbq3bXi6Fn6tIL0WnSEbNUiDw)
+
++ Many researchers have focused on graph comprehension as reading and interpreting graphs. Very few have addressed other possible aspects of graph comprehension, including graph construction or invention or graph choice.
++ Comprehension of information in written or symbolic form involves three kinds of behaviors (Jolliffe, 1991; Wood, 1968) that seem to be related to graph comprehension: (1) translation, (2) interpretation, and (3) extrapolation/interpolation.
++ Questioning (i.e., question asking and question posing) is an important aspect of comprehension. Researchers have proposed that question-asking is a fundamental component of cognition and plays a central role in the comprehension of text (Graesser, Swamer, Baggett, & Sell, 1996).
+  + Low-level: address the content and interpretation of explicit material
+  + deep questions: involve inference, application, synthesis, and evaluation.
++ Three levels of graph comprehension have emerged: (see Table 1)
+  + Elementary level focused on extracting data from a graph (i.e. locating, translating)
+    + What was the value of Stock X on June 15th?
+    + How many boxes of raisins have 30 raisins in them?
+    + What is the projected food production in 1985 for the developed countries?
+    + What was petroleum use in 1980?
+    + What is the value of B?
+  + Intermediate level characterized by interpolating and finding relationships in the data as shown on a graph (i.e. integrating, interpreting)
+    + Over the first five days, how did the value of Stock X change?
+    + How many boxes of raisins have more than 34 raisins in them?
+    + Considering the two curves of the graph only as marks on a piece of paper, how do the changes in these two curves compare?
+    + Given your understanding of the relationship between changes in the two curves and given your understanding of what each curve represents, what interpreation can be made about the relationship between the two curves?
+    + Between 1970 and 1985 how has the use of petroleum changed?
+    + Is D greater than C?
+    + Is A + B equal to C + D?
+  + Advanced level: Requires extrapolating from the data and analyzing the relationships implicit in a graph (i.e. generating, predicting)
+    + For the period of June 15 to June 30, what was the trend for the value of Stock X?
+    + If students opened one more box of raisins, how many raisins might they expect to find?
+    + If this graph was offered as a piece of evidence to prove true the statement 'Storks bring babies,' how would you describe the connection between the graph and attempt to prove the statement true?
+    + Which fuel is predicted to show the most dramatic increase in use?
+    + Which fuels show the same pattern of growth?
+    + Is the variability of the data points large?
++ Contextual Setting: Carpenter and Shah (1995 & 1998)
+  + Conceptual processes that translate the visual features into conceptual relations when one interprets titles, labels, and scales as well as any other keys or symbols that are part of the display. 
+  + Researchers must consider the effect of the graph's visual characteristics and the graph's context on one's comprehension.
++ Characteristics:
+  + Scale:
+    + Beeby and Taylor (cited in MacDonald-Ross, 1977) found that in reading data from line graphs, people persistently misread the scale on the vertical axis; when only alternate lines were numbered, the unnumbered lines were read as halves.
+    + Dunham and Osborne (1991) found that if students do not attend to scale when they use line graphs for lab or stat data, they may have problems in interpreting asymmetric scales and in choosing appropriate scales to make good use of the grpahing space.
+    + Leinhardt, Zaslavsky, and Stein (1990) noted that the shape of a graph changes depending on the scale; this change may create a "conceptual demand" (p.17) that affects the mental image a graph user is able to construct.
+    
+<br>
+[Glazer, N. (2011). Challenges with graph interpretation: A review of the literature. Studies in science education, 47(2), 183-210.](https://www.tandfonline.com/doi/pdf/10.1080/03057267.2011.605307?casa_token=D1VJNamFfmQAAAAA:5G5nalOZNka09OhcN-JWUWLVMt2BDPr7fiersy_U4k7m0CbOo1kluwnPiL9J6llgEzjZxgrn0R8)
+
++ Graph interpretation can be divided into three major levels based on the kinds of questions the graphs are used to answer (NCTM, 2000; Wainer 1992)
+  + Elementary comprehension level focuses on extracting specific data points (How many cars were sold in 1980?)
+  + Intermediate level of understanding is characterized by finding trends and relationships in the data (what is the relationship between car sales and engine size between 1970 and 1985?)
+  + Advanced comprehension level requires extrapolation from the data and analysis of relations expressed in the data, such as generalising to a population, making prediction about an unknown, a comparison of trends and observing groupings (comparing sales change between two types of car size or what will the weather be tomorrow?)
++ See NCTM 2000
+
+<br>
+[McMahon, R., Stauffacher, M., & Knutti, R. (2015). The unseen uncertainties in climate change: reviewing comprehension of an IPCC scenario graph. Climatic change, 133(2), 141-154.](https://link.springer.com/content/pdf/10.1007/s10584-015-1473-4.pdf)
+
++ Research Questions:
+  + How is science visualising the different types of uncertanty?
+  + Can non-technical audiences differentiate between the different types of uncertainties?
+  + What are the main issues regarding the representation of climate uncertainties?
+  + How do novice reader perceive uncertainty in the context of climate change?
+  + How does a non-technical audience percieve climate science?
++ Graph interpretation:
+  + Graph salience
+    + What in your opinion is the main message of this graph?
+  + Knowledge = Scientific literacy + Content knowledge
+    + Are you familiar with the IPCC organization and if so where have you come across this organization?
+    + What type of disciplines do you think currently work on the IPCC report?
+  + Understanding of graph conventions and schemas
+    + Looking at the green line what is the expected global mean temperature at the end of the century?
++ Comprehension -> conceptualization: helps an observer to form a pragmatic judgment of the information displayed, and these comprehension tasks measure how well a reader can add meaning to the information observed
+  + What do you perceive in this graph to be the pathway with the least impact for society?
+  + Can you explain what this faded colour here represents and how would you use this information?
+  
+<br>
+[Boote, S. K. (2014). Assessing and understanding line graph interpretations using a scoring rubric of organized cited factors. Journal of Science Teacher Education, 25(3), 333-354.](https://www.tandfonline.com/doi/pdf/10.1007/s10972-012-9318-8?casa_token=X6RQSxRESBIAAAAA:6VhM01MVS3T1ep06DWYKRIoltqlHhCqBgNgNjaJRWmmCJfrYCg8QVDkGZWfwvYPIPBnzfpCHqK4)
+
++ See Table 1 Graph interpretation scoring rubric
+
+
+## [Scenario and Questions](https://emily-robinson.shinyapps.io/estimation-app-development/)
+
+### One Population:
+
+
+```{r one-population-data}
+set.seed(56156)
+data <- tibble(x = seq(3000, 3050, 1),
+               y = 5*exp(0.15*(x-3000) + rnorm(length(x), mean = 0, sd = 0.25)) + 30)
+
+linear.plot <- data %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  theme_bw() +
+  # geom_smooth(method = 'gam', se = F, size = 1, linetype = "dashed") +
+  theme(aspect.ratio = 1) +
+  scale_y_continuous("Population", limits = c(0, 10000), breaks = seq(0, 10000, 2000), labels = comma) +
+  scale_x_continuous("Year") +
+  ggtitle("Linear Scale")
+
+log.plot <- data %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  theme_bw() +
+  # geom_smooth(method = 'gam', se = F, size = 1, linetype = "dashed") +
+  theme(aspect.ratio = 1) +
+  scale_y_continuous("Population", limits = c(10, 10000), labels = comma, trans = "log10") +
+  scale_x_continuous("Year") +
+  ggtitle("Log Scale")
+
+linear.plot + log.plot
+```
+
+**Elementary: literal reading of the data**
+
++ What is the population of creatures in year 3010?
++ In what year does the population of creatures reach 4,000?
+
+**Intermediate: read between the data**
+
++ How many creatures did the population increase by between 3020 and 3040? (additive)
++ How many times more creatures are there in 3040 than in 3020? (multiplicative)
++ How many years does it take for the initial population of creatures in 3000 to double? (multiplicative)
++ Between 3030 and 3040, how does the population of creatures change? (open-ended; look for wording?)
+
+**Advanced: Read between the data**
+
++ Probably not considering.
+
+***Things to Consider***
+
++ Grid lines matter. Are the values you are asking them to estimate on a grid-line?
++ Tick marks and how often matter - will they be calculating?
++ Rate of growth will matter a lot.
++ Where you ask them to read the data from will matter (e.g. 3000 vs 3040).
+
+### Two Populations:
+
+
+```{r two-populations-data}
+set.seed(56156)
+data <- tibble(x = seq(3000, 3050, 1),
+               y1 = 5*exp(0.15*(x-3000)) + 30,
+               y2 = 5*exp(0.12*(x-3000)) + 300) %>%
+  pivot_longer(cols = c("y1", "y2"),
+               names_to = "group",
+               values_to = "population")
+
+linear.plot <- data %>%
+  ggplot(aes(x = x, y = population, color = group, group = group)) +
+  geom_line(size = 1.1) +
+  theme_bw() +
+  theme(aspect.ratio = 1,
+        legend.position = "bottom") +
+  scale_y_continuous("Population", limits = c(0, 10000), breaks = seq(0, 10000, 2000), labels = comma) +
+  scale_x_continuous("Year") +
+  ggtitle("Linear Scale") +
+  scale_color_manual(values = c("navy", "orange2"))
+
+log.plot <- data %>%
+  ggplot(aes(x = x, y = population, color = group, group = group)) +
+  geom_line(size = 1.1) +
+  theme_bw() +
+  theme(aspect.ratio = 1,
+        legend.position = "bottom") +
+  scale_y_continuous("Population", trans = "log10", labels = comma) +
+  scale_x_continuous("Year") +
+  scale_color_manual(values = c("navy", "orange2")) +
+  ggtitle("Log Scale")
+
+linear.plot + log.plot
+```
+
+**Elementary: literal reading of the data**
+
++ What is the population when both groups are equal?
++ How many years does it take for the population of group 1 to equal the population of group 2?
+
+**Intermediate: read between the data**
+
++ How many more creatures did group 2 have than group 1 in 3020? (additive)
++ How many times larger was the starting population of group 2 than group 1? (multiplicative)
++ Considering the two curves of the graph only as marks on a piece of paper, how do the changes in these two curves compare? (open-ended)
+
+**Advanced: Read between the data**
+
++ From 3000 to 3020, what which population had a higher reproductive rate?
++ Which population do you expect to be larger in 3100?
+
+***Things to Consider***
+
++ Rate of growth and when they cross will matter.
+
+
+## Ideas
+
+### Growth of Invasive species
+
+### Pandemic case counts (do we want to avoid?)
++ [Ebola](https://www.kaggle.com/imdevskp/ebola-outbreak-20142016-complete-dataset)
++ [SARS](https://www.kaggle.com/imdevskp/sars-outbreak-2003-complete-dataset)
+
+### [Unit sales of the Apple iPhone worldwide from 2007 to 2018 (in millions)](https://www.statista.com/statistics/276306/global-apple-iphone-sales-since-fiscal-year-2007/#:~:text=In%20their%202018%20fiscal%20year,stayed%20relatively%20stable%20since%20then.)
+  
+```{r iphone-sales}
+iphone_sales <- read_xlsx(path = here("estimation-development/datasets/iphone-sales.xlsx"),
+                          sheet = "Data")
+iphone_sales_linear <- iphone_sales %>%
+  ggplot(aes(x = Year, y = Sales_millions)) +
+  geom_point() +
+  geom_smooth() +
+  theme_bw() +
+  theme(aspect.ratio = 1)
+
+iphone_sales_log <- iphone_sales %>%
+  ggplot(aes(x = Year, y = Sales_millions)) +
+  geom_point() +
+  geom_smooth() +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_y_continuous(trans = scales::log10_trans())
+
+iphone_sales_linear + iphone_sales_log
+```
+
+### [Yelp's annual net revenue from 2007 to 2020](https://www.statista.com/statistics/278022/yelps-annual-net-revenue/)
+
+```{r yelp-revenue}
+yelp_revenue <- read_xlsx(path = here("estimation-development/datasets/yelp-revenue.xlsx"),
+                          sheet = "Data")
+yelp_revenue_linear <- yelp_revenue %>%
+  ggplot(aes(x = Year, y = Revenue_millions)) +
+  geom_point() +
+  geom_smooth() +
+  theme_bw() +
+  theme(aspect.ratio = 1)
+
+yelp_revenue_log <- yelp_revenue %>%
+  ggplot(aes(x = Year, y = Revenue_millions)) +
+  geom_point() +
+  geom_smooth() +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_y_continuous(trans = scales::log10_trans())
+
+yelp_revenue_linear + yelp_revenue_log
+```
+
+### Computing Power
+  
+```{r computing-power}
+load(here("data/supercomputers.Rdata"))
+
+computing_power_linear <- computing_power %>%
+  ggplot(aes(x = date, y = cores)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth() +
+  theme_bw() +
+  theme(aspect.ratio = 1)
+
+computing_power_log <- computing_power %>%
+  ggplot(aes(x = date, y = cores)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth() +
+  theme_bw() +
+  theme(aspect.ratio = 1) +
+  scale_y_continuous(trans = scales::log10_trans())
+
+computing_power_linear + computing_power_log
+```
+  
+  
