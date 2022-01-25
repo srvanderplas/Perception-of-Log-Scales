@@ -124,7 +124,7 @@ shinyUI(fluidPage(
         # Output Plot ----------------------------------------------------------
         
         column(width = 7,
-          helpText(h4("Scenario: words go here.")),
+          img(src='tribbles.png', width="100%", align = "center"),
           plotOutput("onePop_plot", height = "500px"),
           verbatimTextOutput("nlsCoef_table")
         ),
