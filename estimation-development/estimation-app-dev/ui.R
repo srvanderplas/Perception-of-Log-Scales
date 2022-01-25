@@ -124,7 +124,7 @@ shinyUI(fluidPage(
         # Output Plot ----------------------------------------------------------
         
         column(width = 7,
-          img(src='tribbles.png', width="100%", align = "center"),
+          img(src='tribbles-pile.png', width="100%", align = "center"),
           plotOutput("onePop_plot", height = "500px"),
           verbatimTextOutput("nlsCoef_table")
         ),
