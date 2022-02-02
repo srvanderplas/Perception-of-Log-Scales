@@ -43,27 +43,27 @@ scenario_text_data <- dbReadTable(con, "scenario_text_data")
 
 dbDisconnect(con)
 
-# ----------------------------------------------------------------------------------------------------
-# Randomization --------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
-rand <- tibble(
-  dataset = sample(c("dataset1", "dataset2"), 2, replace = F),
-  creature = sample(unique(estimation_questions$qtext[estimation_questions$q_id == "scenario"]), 2, replace = F),
-  scale    = sample(c("linear", "log2"), 2, replace = F)
-) 
-
-randomization <- rand %>%
-  expand_grid(q_id = c("scenario", "Q0", sample(c("QE1", "QE2", "QI1", "QI2", "QI3"), 5))) %>%
-  left_join(estimation_questions, by = c("creature", "q_id"))
-
-simulated_data <- rand %>%
-  right_join(simulated_data, by = "dataset")
 
 # ----------------------------------------------------------------------------------------------------
 # Shiny Server ---------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------
 
 shinyServer(function(input, output, session) {
+
+  # Randomization --------------------------------------------------------------
+  
+  rand <- tibble(
+    dataset = sample(c("dataset1", "dataset2"), 2, replace = F),
+    creature = sample(unique(estimation_questions$qtext[estimation_questions$q_id == "scenario"]), 2, replace = F),
+    scale    = sample(c("linear", "log2"), 2, replace = F)
+  ) 
+  
+  randomization <- rand %>%
+    expand_grid(q_id = c("scenario", "Q0", sample(c("QE1", "QE2", "QI1", "QI2", "QI3"), 5))) %>%
+    left_join(estimation_questions, by = c("creature", "q_id"))
+  
+  simulated_data <- rand %>%
+    right_join(simulated_data, by = "dataset")
   
     # This needs to be run every connection, not just once.
     study_starttime = now()
