@@ -12,8 +12,7 @@ Emily Robinson, Susan VanderPlas, Reka Howard
 + Trend Types: Simulated 3-Parameter Exponential
 
 # Data Simulation
-+ Data was simulated for each individual upon start of experiment.
-+ See `code/data-generation.R` for data simulation functions.
++ Two data sets were simulated with identical parameters. Data sets were randomly assigned to the scenarios.
 
 *Algorithm: Exponential Data Generation* 
 
@@ -21,18 +20,23 @@ Emily Robinson, Susan VanderPlas, Reka Howard
 
 **Out:** 
 
-# Plot Generation
-+ See `www/js/shinydrawr-d3v5.js` for D3.js code.
-
 # Study Design
 
 ## Treatment Design
 
-+ Scale: Linear; Log
-+ Questions:
++ Scale
+  + Linear
+  + Log
++ Questions
+  + Q0:
+  + QE1:
+  + QE2:
+  + QI1:
+  + QI2:
+  + QI3:
 
 ## Experimental Design
-+ See `code/randomization.R`.
++ Split plot RCBD: Linear/Log was assigned to the scenario (random order). Then Q0 was the initial question followed by the additional 5 questions in random orders.
 
 # Data Files
 + Data file can be found in `estimation_data.db`.

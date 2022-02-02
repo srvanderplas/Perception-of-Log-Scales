@@ -136,7 +136,6 @@ fluidPage(
     # This panel is for lineup questions
     conditionalPanel(
       condition = "input.ready && !input.done",
-      # checkboxInput("show_finished", "Show Finished?", value = T),
       hr(),
       uiOutput("question_textUI"),
       hr(),

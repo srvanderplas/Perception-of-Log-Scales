@@ -46,12 +46,18 @@ dbDisconnect(con)
 # ----------------------------------------------------------------------------------------------------
 # Randomization --------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------
-randomization <- tibble(
+rand <- tibble(
+  dataset = sample(c("dataset1", "dataset2"), 2, replace = F),
   creature = sample(unique(estimation_questions$qtext[estimation_questions$q_id == "scenario"]), 2, replace = F),
   scale    = sample(c("linear", "log2"), 2, replace = F)
-) %>%
+) 
+
+randomization <- rand %>%
   expand_grid(q_id = c("scenario", "Q0", sample(c("QE1", "QE2", "QI1", "QI2", "QI3"), 5))) %>%
   left_join(estimation_questions, by = c("creature", "q_id"))
+
+simulated_data <- rand %>%
+  right_join(simulated_data, by = "dataset")
 
 # ----------------------------------------------------------------------------------------------------
 # Shiny Server ---------------------------------------------------------------------------------------
@@ -69,20 +75,18 @@ shinyServer(function(input, output, session) {
         scenario   = as.character(scenario_text_data[scenario_text_data$creature == as.character(randomization[1, "creature"]), "text"]),
         qreq       = experiment$num_qs,
         qleft      = experiment$num_qs,
-        qcounter   = experiment$num_qs - experiment$num_qs + 1,
+        qcounter   = 1,
         trialsreq  = experiment$trialsreq,
         trialsleft = NA,
 
         submitted = FALSE,
         starttime = NULL,
-        done      = TRUE,
         
-        scale       = as.character(randomization[1, "scale"]),
-        q_id        = as.character(randomization[1, "q_id"]),
+        scale         = as.character(randomization[1, "scale"]),
+        q_id          = as.character(randomization[1, "q_id"]),
         creature_name = as.character(randomization[1, "creature"]),
-        response    = NULL,
-        
-        result      = "")
+        dataset_id    = as.character(randomization[1, "dataset"])
+        )
 
     # Only start experiment when consent is provided
     observeEvent(input$beginexp, {
@@ -169,16 +173,12 @@ shinyServer(function(input, output, session) {
     observeEvent(input$submit, {
       
         if (values$qleft > 0 &&
-            # !is.null(input$response) &&
-            # input$response != "" &&
-            # (length(input$question_text) > 0) &&
-            # values$done &&
+            (!is.null(input$question_text) && input$question_text != "" && !is.na(input$question_text)) &&
+            values$q_id != "scenario" &&
             !any(input$dimension < window_dim_min)) {
 
             # Things to do when estimate is given and submitted
             # disable("submit")
-
-            if (values$qcounter < values$qreq) {
 
                 values$result <- "Submitted!"
 
@@ -187,11 +187,12 @@ shinyServer(function(input, output, session) {
                                            study_starttime = study_starttime,
                                            start_time      = values$starttime,
                                            end_time        = now(),
-                                           order           = values$q_counter,
+                                           order           = values$qcounter,
                                            q_id            = values$q_id,
                                            creature        = values$creature_name,
+                                           dataset         = values$dataset_id,
                                            scale           = values$scale,
-                                           response        = values$response
+                                           response        = input$question_text
                                            )
 
                 # Write results to database
@@ -202,15 +203,15 @@ shinyServer(function(input, output, session) {
                 # Update variables for next question
                 values$qleft    = values$qleft - 1
                 values$qcounter = values$qcounter + 1
-                values$response = NULL
                 
                 values$creature_name = as.character(randomization[values$qcounter, "creature"])
+                values$dataset_id    = as.character(randomization[values$qcounter, "dataset"])
                 values$scale         = as.character(randomization[values$qcounter, "scale"])
                 values$q_id          = as.character(randomization[values$qcounter, "q_id"])
                 values$scenario      = as.character(scenario_text_data[scenario_text_data == values$creature_name, "text"])
                 
-            } else if (values$qcounter == values$qreq) { # Generate completion code
-
+            if (values$qcounter > values$qreq) { # Generate completion code
+            
                 values$scenario <- "All done! Congratulations!"
                 #values$scenario <- paste("All done! Congratulations! Please click the URL to complete the study:")
                 updateCheckboxInput(session, "done", value = TRUE)
@@ -218,6 +219,20 @@ shinyServer(function(input, output, session) {
 
             values$submitted <- TRUE
             
+            } else if (values$q_id == "scenario") {
+              
+              # Update variables for next question
+              values$qleft    = values$qleft - 1
+              values$qcounter = values$qcounter + 1
+              values$result   = NULL
+              
+              values$creature_name = as.character(randomization[values$qcounter, "creature"])
+              values$scale         = as.character(randomization[values$qcounter, "scale"])
+              values$q_id          = as.character(randomization[values$qcounter, "q_id"])
+              values$scenario      = as.character(scenario_text_data[scenario_text_data == values$creature_name, "text"])
+              
+              values$submitted <- TRUE
+              
             } else {
                 # Don't let them move ahead without answering the question
                 showNotification("Please provide an answer.")
@@ -231,13 +246,17 @@ shinyServer(function(input, output, session) {
     
     # This renders the scenario text
     output$scenario_text <- renderUI({
-      HTML(values$scenario)
+      
+      if (values$q_id == "scenario" || values$qcounter > values$qreq) {
+        HTML(values$scenario)
+      }
+      
     })
 
     # This renders the question text
     output$question_textUI <- renderUI({
       input$submit
-      # values$starttime <- now()
+      values$starttime <- now()
       
       # Reset UI selections
       # values$submitted    <- FALSE
@@ -259,7 +278,7 @@ shinyServer(function(input, output, session) {
         helpText(h5(paste("Hit 'Submit' to begin answering questions about the", 
                        as.character(randomization[values$qcounter, "creature"]),
                        "population.", sep = " "))
-                 )
+        )
      }
       
     }) # End Render Question Text
@@ -282,13 +301,13 @@ shinyServer(function(input, output, session) {
             
             if(values$scale == "linear"){
             finalPlot <- basePlot + 
-              scale_y_continuous(paste(values$creature_name, "Population"),
+              scale_y_continuous(paste(str_to_title(values$creature_name), "Population"),
                                  limits = c(100, 55000),
                                  breaks = seq(0, 55000, 5000),
                                  labels = comma)
             } else if (values$scale == "log2"){
             finalPlot <- basePlot + 
-              scale_y_continuous(paste(values$creature_name, "Population"),
+              scale_y_continuous(paste(str_to_title(values$creature_name), "Population"),
                                  trans = "log2",
                                  limits = c(100, 55000),
                                  breaks = 2^seq(0,10000,1),
@@ -302,18 +321,20 @@ shinyServer(function(input, output, session) {
     # This outputs either plot or tribble/ewok image
     output$figure <- renderUI({
       
-      if (values$q_id != "scenario" && values$qcounter != values$qreq) {
+      if (values$q_id != "scenario" && values$qcounter <= values$qreq) {
         
         plotOutput("data_plot", height = "500px")
         
-      } else if (values$q_id == "scenario") {
+      } else if (values$qcounter > values$qreq) {
+        imagepath <- "ewoks-tribbles.jpg"
+        img(src = imagepath, width="60%", align = "center")
+      }
+      
+      else if (values$q_id == "scenario") {
         
         imagepath <- paste(values$creature_name, ".jpg", sep = "")
         img(src = imagepath, width="60%", align = "center")
         
-      } else if (values$qcounter == values$qreq) {
-        imagepath <- "ewoks-tribbles.jpg"
-        img(src = imagepath, width="60%", align = "center")
       }
       
     })
