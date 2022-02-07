@@ -151,16 +151,18 @@ fluidPage(
     conditionalPanel(condition = "!input.welcome",
                      h4(textOutput("welcome_header")),
                      uiOutput("welcome_text"),
-                     
-                     helpText(h4("Example Scenario")),
-                     HTML("Recently, a flying squirrel population was discovered on a college campus. The squirrel population on campus is illustrated in the graph. We need your help answering a few questions regarding the population of squirrels."),
-                     
-                     helpText(h5("What is the population of squirrels in 2022?")),
-                     img(src = "example-linear.png", width="35%", align = "center"),
-                     helpText(h5("From 2020 to 2025, the population increases by ___ squirrels.")),
-                     img(src = "example-linear.png", width="35%", align = "center"),
-                     helpText(h5("How many times more squirrels are there in 2030 than in 2020?")),
-                     img(src = "example-log.png", width="35%", align = "center")
+                     br(),
+                     helpText(h4("Example 1:")),
+                     HTML("Recently, a flying squirrel population was discovered on a college campus. The squirrel population on campus is illustrated in the graph. We need your help answering a few questions regarding the population of flying squirrels on campus."),
+                     br(),
+                     br(),
+                     img(src = "example-linear-drawing.png", width="90%", align = "center"),
+                     br(),
+                     helpText(h4("Example 2:")),
+                     HTML("After winter, bunnies began inhabiting a valley. The bunny population in the valley is illustrated in the graph. We need your help answering a few questions regarding the population of bunnies in the valley."),
+                     br(),
+                     br(),
+                     img(src = "example-log-drawing.png", width="90%", align = "center"),
     ),
     conditionalPanel(condition = "input.welcome && !input.ready",
                      h4(textOutput("demo_text"))

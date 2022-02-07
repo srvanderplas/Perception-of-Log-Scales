@@ -51,6 +51,7 @@ dbDisconnect(con)
 shinyServer(function(input, output, session) {
 
   # Randomization --------------------------------------------------------------
+  # This needs to be run every connection, not just once.
   
   rand <- tibble(
     dataset = sample(c("dataset1", "dataset2"), 2, replace = F),
@@ -62,8 +63,22 @@ shinyServer(function(input, output, session) {
     expand_grid(q_id = c("scenario", "Q0", sample(c("QE1", "QE2", "QI1", "QI2", "QI3"), 5))) %>%
     left_join(estimation_questions, by = c("creature", "q_id"))
   
+  
+  # Startrek (Tribbles)
+  # stardate = 4523.3 (universe year = Fri Jan 11 2267 21:58:18)
+  # https://trekguide.com/Stardates.htm
+  # 1 week span: Jan 11, 2267 (4516.69) to Jan 18, 2267 (4567.19) = 50.5 stardates
+  # 4516.69 - 3000 (+ 1516.69)
+  # Let's round to 4500 (+ 1500)
+  
+  # Star Wars (Ewoks)
+  # Galactic Civil War 0 - 5 ABY....
+  # https://starwars.fandom.com/wiki/Timeline_of_galactic_history
+  # Start at 0 ABY (After the Battle of Yavin) (- 3000)
+  
   simulated_data <- rand %>%
-    right_join(simulated_data, by = "dataset")
+    right_join(simulated_data, by = "dataset") %>%
+    mutate(date = ifelse(creature == "tribble", x + 1500, x - 3000))
   
     # This needs to be run every connection, not just once.
     study_starttime = now()
@@ -273,7 +288,7 @@ shinyServer(function(input, output, session) {
       } else if (values$q_id == "scenario") {
       
         helpText(h5(paste("Hit 'Submit' to begin answering questions about the", 
-                       as.character(randomization[values$qcounter, "creature"]),
+                       str_to_title(as.character(randomization[values$qcounter, "creature"])),
                        "population.", sep = " "))
         )
      }
@@ -287,28 +302,43 @@ shinyServer(function(input, output, session) {
       
             basePlot <- simulated_data %>%
               filter(creature == values$creature_name) %>%
-              ggplot(aes(x = x, y = y)) +
+              ggplot(aes(x = date, y = y)) +
               geom_point() +
               theme_bw() +
               theme(aspect.ratio = 1,
                     axis.title = element_text(size = 14),
                     axis.text = element_text(size = 12)
-              ) +
-              scale_x_continuous("Year", expand = c(0.01,0.01))
+              )
+            
+            if(values$creature_name == "tribble"){
+              
+              basePlot <- basePlot +
+                scale_x_continuous("Stardate", expand = c(0.01,0.01))
+              
+            } else if (values$creature_name == "ewok"){
+              
+              basePlot <- basePlot +
+                scale_x_continuous("ABY \n (After the Battle of Yavin)", expand = c(0.01,0.01))
+              
+            }
             
             if(values$scale == "linear"){
+              
             finalPlot <- basePlot + 
               scale_y_continuous(paste(str_to_title(values$creature_name), "Population"),
                                  limits = c(100, 55000),
                                  breaks = seq(0, 55000, 5000),
                                  labels = comma)
+            
             } else if (values$scale == "log2"){
+              
             finalPlot <- basePlot + 
               scale_y_continuous(paste(str_to_title(values$creature_name), "Population"),
                                  trans = "log2",
                                  limits = c(100, 55000),
                                  breaks = 2^seq(0,10000,1),
                                  labels = comma)
+            
             }
             
             finalPlot
