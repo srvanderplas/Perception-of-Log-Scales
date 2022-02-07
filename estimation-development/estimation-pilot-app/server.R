@@ -120,9 +120,6 @@ shinyServer(function(input, output, session) {
     })
 
     # ---- Example -------------------------------------------------------------
-
-    
-    
     
     
     # ---- Demographic information ---------------------------------------------

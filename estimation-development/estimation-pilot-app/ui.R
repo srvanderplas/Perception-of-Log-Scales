@@ -69,7 +69,7 @@ fluidPage(
       h4("Welcome"),
       helpText(
         "In this survey points following a trend will be shown.",
-        "We would like you to finish drawing the trend for the light yellow box using your mouse."),
+        "We would like you to provide estimated values for the associated questions."),
       helpText(
         "Finally we would like to collect some information about you.",
         "(age category, education and gender)"),
@@ -151,6 +151,16 @@ fluidPage(
     conditionalPanel(condition = "!input.welcome",
                      h4(textOutput("welcome_header")),
                      uiOutput("welcome_text"),
+                     
+                     helpText(h4("Example Scenario")),
+                     HTML("Recently, a flying squirrel population was discovered on a college campus. The squirrel population on campus is illustrated in the graph. We need your help answering a few questions regarding the population of squirrels."),
+                     
+                     helpText(h5("What is the population of squirrels in 2022?")),
+                     img(src = "example-linear.png", width="35%", align = "center"),
+                     helpText(h5("From 2020 to 2025, the population increases by ___ squirrels.")),
+                     img(src = "example-linear.png", width="35%", align = "center"),
+                     helpText(h5("How many times more squirrels are there in 2030 than in 2020?")),
+                     img(src = "example-log.png", width="35%", align = "center")
     ),
     conditionalPanel(condition = "input.welcome && !input.ready",
                      h4(textOutput("demo_text"))
