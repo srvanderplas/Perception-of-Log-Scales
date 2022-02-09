@@ -63,7 +63,6 @@ shinyServer(function(input, output, session) {
     expand_grid(q_id = c("scenario", "Q0", sample(c("QE1", "QE2", "QI1", "QI2", "QI3"), 5))) %>%
     left_join(estimation_questions, by = c("creature", "q_id"))
   
-  
   # Startrek (Tribbles)
   # stardate = 4523.3 (universe year = Fri Jan 11 2267 21:58:18)
   # https://trekguide.com/Stardates.htm
@@ -353,7 +352,7 @@ shinyServer(function(input, output, session) {
         plotOutput("data_plot", height = "500px")
         
       } else if (values$qcounter > values$qreq) {
-        imagepath <- "ewoks-tribbles.jpg"
+        imagepath <- "ewok-tribble.jpg"
         img(src = imagepath, width="60%", align = "center")
       }
       
