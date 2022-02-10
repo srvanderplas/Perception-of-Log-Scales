@@ -353,13 +353,19 @@ shinyServer(function(input, output, session) {
         
       } else if (values$qcounter > values$qreq) {
         imagepath <- "ewok-tribble.jpg"
-        div(img(src = imagepath, width="40%"), style="text-align: center;")
+        tags$figure(
+          div(img(src = imagepath, width="60%"), style="text-align: center"),
+          br(),
+          tags$figcaption("Artwork modified from @allison_horst", style = "text-align: center; color: lightgray"))
       }
       
       else if (values$q_id == "scenario") {
         
         imagepath <- paste(values$creature_name, ".jpg", sep = "")
-        div(img(src = imagepath, width="40%"), style="text-align: center;")
+        tags$figure(
+          div(img(src = imagepath, width="60%"), style="text-align: center"),
+          br(),
+          tags$figcaption("Artwork modified from @allison_horst", style = "text-align: center; color: lightgray"))
         
       }
       
