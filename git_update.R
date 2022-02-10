@@ -19,14 +19,17 @@ modified <- unlist(tmp[modified])
 
 # If db has been modified
 if ("lineups-pilot-app/exp_data.db" %in% modified |
-    "you-draw-it-development/you-draw-it-pilot-app/you_draw_it_data.db" %in% modified) {
+    "you-draw-it-development/you-draw-it-pilot-app/you_draw_it_data.db" %in% modified | 
+    "estimation-development/estimation-pilot-app/estimation_data.db" %in% modified) {
 
   # Add changed db to commit and commit
   git2r::add(repo = '.', "lineups-pilot-app/exp_data.db")
   try(git2r::commit("lineups-pilot-app/exp_data.db", message = "Update lineup data"))
   git2r::add(repo = '.', "you-draw-it-development/you-draw-it-pilot-app/you_draw_it_data.db")
   try(git2r::commit("you-draw-it-development/you-draw-it-pilot-app/you_draw_it_data.db", message = "Update you-draw-it data"))
-
+  git2r::add(repo = '.', "estimation-development/estimation-pilot-app/estimation_data.db")
+  try(git2r::commit("estimation-development/estimation-pilot-app/estimation_data.db", message = "Update estimation data"))
+  
   # Update
   git2r::pull(repo = repo, credentials = cred)
   git2r::push(getwd(), credentials = cred)
