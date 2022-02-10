@@ -353,13 +353,13 @@ shinyServer(function(input, output, session) {
         
       } else if (values$qcounter > values$qreq) {
         imagepath <- "ewok-tribble.jpg"
-        img(src = imagepath, width="60%", align = "center")
+        div(img(src = imagepath, width="40%"), style="text-align: center;")
       }
       
       else if (values$q_id == "scenario") {
         
         imagepath <- paste(values$creature_name, ".jpg", sep = "")
-        img(src = imagepath, width="60%", align = "center")
+        div(img(src = imagepath, width="40%"), style="text-align: center;")
         
       }
       
