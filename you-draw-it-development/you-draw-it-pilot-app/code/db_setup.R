@@ -73,13 +73,22 @@ base_plot <- simulated_data %>%
 
 linear_plot <- base_plot +
   scale_y_continuous("Population",
-                     labels = comma)
+                     labels = comma,
+                     limits = c(100, 55000),
+                     breaks = seq(0, 55000, 5000),
+                     minor_breaks = c())
 
 log_plot <- base_plot + 
   scale_y_continuous("Population",
                      trans = "log2",
                      breaks = 2^seq(0,10000,1),
-                     labels = comma)
+                     labels = comma,
+                     minor_breaks = c(2^seq(0,10000,1) + (2^seq(0,10000,1)/2), 2^seq(0,10000,1) + 3*(2^seq(0,10000,1)/4))
+                     # minor_breaks = 2^seq(0,10000,1) + (2^seq(0,10000,1)/2)
+                     # minor_breaks = seq(0, 55000, 5000)
+                     # minor_breaks = c(156, 312)
+                     # minor_breaks = c()
+  )
 
 final_plot <- linear_plot / log_plot
 final_plot

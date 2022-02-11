@@ -327,7 +327,8 @@ shinyServer(function(input, output, session) {
               scale_y_continuous(paste(str_to_title(values$creature_name), "Population"),
                                  limits = c(100, 55000),
                                  breaks = seq(0, 55000, 5000),
-                                 labels = comma)
+                                 labels = comma,
+                                 minor_breaks = c())
             
             } else if (values$scale == "log2"){
               
@@ -336,7 +337,8 @@ shinyServer(function(input, output, session) {
                                  trans = "log2",
                                  limits = c(100, 55000),
                                  breaks = 2^seq(0,10000,1),
-                                 labels = comma)
+                                 labels = comma,
+                                 minor_breaks = c())
             
             }
             
@@ -370,5 +372,30 @@ shinyServer(function(input, output, session) {
       }
       
     })
+    
+    # output$simple_calculator <- renderUI({
+    # 
+    #   if(values$q_id != "scenario" && values$q_id != "Q0") {
+    #     textInput("calc",
+    #               "Basic Calculator (e.g. 2 + 2 = 4)",
+    #               value = "")
+    #   }
+    # })
+    # 
+    # output$calculation <- renderText({
+    #   input$submit
+    # 
+    #   if(!is.null(input$calc) && input$calc != "") {
+    #     eval(parse(text=input$calc)) %>% as.character()
+    #   }
+    # })
+    # 
+    # output$notepad <- renderUI({
+    #   input$submit
+    #   
+    #   if(values$q_id != "scenario" && values$q_id != "Q0") {
+    #   textAreaInput("notes", "Notes", "Put notes here...", width = "500px")
+    #   }
+    # })
     
 }) # End app definition

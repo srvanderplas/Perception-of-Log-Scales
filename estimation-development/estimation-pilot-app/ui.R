@@ -172,7 +172,11 @@ fluidPage(
         br(),
         h4(htmlOutput("scenario_text")),
         br(),
-        uiOutput("figure")
+        uiOutput("figure")#,
+        # br(),
+        # uiOutput("simple_calculator"),
+        # verbatimTextOutput("calculation"),
+        # uiOutput("notepad")
       )
     )
   )
