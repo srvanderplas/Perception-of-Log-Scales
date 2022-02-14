@@ -61,6 +61,7 @@ true_parameters <- dbReadTable(db_con, "true_parameters")
 # dbWriteTable(db_con,  "simulated_data", simulated_data)
 # simulated_data <- dbReadTable(db_con, "simulated_data")
 simulated_data
+# write.csv(simulated_data, "estimation-development/estimation-pilot-app/simulated-data.csv", row.names = F, na = "")
 
 # plot simulated data
 base_plot <- simulated_data %>% 
