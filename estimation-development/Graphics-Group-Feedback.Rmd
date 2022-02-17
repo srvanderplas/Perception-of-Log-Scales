@@ -1,0 +1,50 @@
+---
+title: "Estimation Pilot Study: Graphics Group Feedback"
+author: "Emily Robinson"
+date: "February 17, 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE,
+	fig.align = 'center'
+)
+library(tidyverse)
+library(patchwork)
+library(scales)
+library(readr)
+library(readxl)
+library(here)
+```
+
+Slides can be found [here](https://earobinson95.github.io/presentations/ISU-Graphics-Group/2022-02-16-intergalactic-population-estimation/index.html#1)
+
+Time: ~ 15 minutes was good
+
+Questions I got while completing the study:
+
++ Add a hint (text response) for "How does the population change?"
++ Emphasize to approximate, not exact.
++ Are the graphs on the linear scale?
+
+Feedback:
+
++ Participants did not notice that it was the same data across the two studies.
++ Tell people it is a log scale:
+  + The line was straight which made people initially think it was linear and did not notice it was doubling.
+  + Add a title or axis text indicating log scale.
++ Interpolating between grid lines was HARD on the log scale.
+  
+Other suggestions:
+
++ Have multiple logs (log10, log2)
++ Maybe decrease the range on the y axis (rather than 128 - 65000, say 2 - 562?)
++ Add a pop-up calculator.
++ Make examples available on all slides.
++ Use plotly so people can hover over points (this goes agains the point)
+  
+  
+  
