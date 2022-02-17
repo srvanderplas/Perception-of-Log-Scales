@@ -59,8 +59,13 @@ shinyServer(function(input, output, session) {
     scale    = sample(c("linear", "log2"), 2, replace = F)
   ) 
   
-  randomization <- rand %>%
-    expand_grid(q_id = c("scenario", "Q0", sample(c("QE1", "QE2", "QI1", "QI2", "QI3"), 5))) %>%
+  randomization1 <- rand[1,] %>%
+    expand_grid(q_id = c("scenario", "Q0", sample(c("QE1", "QE2", "QI1", "QI2", "QI3"), 5)))
+  
+  randomization2 <- rand[2,] %>%
+    expand_grid(q_id = c("scenario", "Q0", sample(c("QE1", "QE2", "QI1", "QI2", "QI3"), 5)))
+  
+  randomization <- rbind(randomization1, randomization2) %>%
     left_join(estimation_questions, by = c("creature", "q_id"))
   
   # Startrek (Tribbles)
