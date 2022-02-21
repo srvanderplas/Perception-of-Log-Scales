@@ -3,9 +3,10 @@
 # ----------------------------------------------------------------------------------------------------
 
 # Shiny Specific
-# Shinyhelper
 library(shiny)
 library(shinyjs)
+library(shinyBS)
+library(shinyhelper)
 
 # Data Management and Plotting
 library(tidyverse)
@@ -279,15 +280,31 @@ shinyServer(function(input, output, session) {
       
       if (values$q_id == "Q0") {
         
-        textInput("question_text",
-                  randomization[values$qcounter, "qtext"],
-                  value = "")
+        tagList(
+          textInput("question_text",
+                    randomization[values$qcounter, "qtext"],
+                    value = ""),
+          # %>%
+          # helper(type = "markdown",
+          #        icon = "question-circle",
+          #        colour = "black",
+          #        title = "Plot",
+          #        content = c("In words, provide a description of the population.")),
+          
+          bsTooltip("question_text", "In words, provide a description of the population."),
+
+        )
         
       } else if (values$q_id != "Q0" && values$q_id != "scenario") {
         
-        numericInput("question_text",
-                     randomization[values$qcounter, "qtext"],
-                     value = "")
+        tagList(
+          numericInput("question_text",
+                       randomization[values$qcounter, "qtext"],
+                       value = ""),
+          
+          bsTooltip(id = "question_text", 
+                    title = "Provide a numerical approximation.")
+        )
         
       } else if (values$q_id == "scenario") {
       
@@ -378,29 +395,54 @@ shinyServer(function(input, output, session) {
       
     })
     
-    # output$simple_calculator <- renderUI({
-    # 
-    #   if(values$q_id != "scenario" && values$q_id != "Q0") {
-    #     textInput("calc",
-    #               "Basic Calculator (e.g. 2 + 2 = 4)",
-    #               value = "")
-    #   }
-    # })
-    # 
-    # output$calculation <- renderText({
-    #   input$submit
-    # 
-    #   if(!is.null(input$calc) && input$calc != "") {
-    #     eval(parse(text=input$calc)) %>% as.character()
-    #   }
-    # })
-    # 
-    # output$notepad <- renderUI({
-    #   input$submit
-    #   
-    #   if(values$q_id != "scenario" && values$q_id != "Q0") {
-    #   textAreaInput("notes", "Notes", "Put notes here...", width = "500px")
-    #   }
-    # })
+    output$simple_calculator <- renderUI({
+      input$submit
+
+      if(values$q_id != "scenario" && values$q_id != "Q0") {
+        
+        tagList(
+          
+          helpText(h5("Below are resources for you to use as you are making numerical approximations.")),
+          br(),
+          
+          column(width = 9,
+          textInput("calc",
+                    "Basic Calculator (e.g. 2 + 2 = 4)",
+                    value = "")),
+          
+          column(width = 3,
+          actionButton("calcEval", "Evaluate")),
+          
+        )
+      }
+    })
+    
+    calculationVals <- eventReactive(input$calcEval, {
+      
+      if(!is.null(input$calc) && input$calc != "" & is.numeric(eval(parse(text=input$calc)))) {
+        eval(parse(text=input$calc)) %>% as.character()
+      } else {
+        "Please enter in a valid expression."
+      }
+      
+    })
+    
+    output$calculation <- renderText({
+      input$submit
+
+      calculationVals()
+      
+    })
+
+    output$notepad <- renderUI({
+      input$submit
+
+      if(values$q_id != "scenario" && values$q_id != "Q0") {
+      tagList(
+        textAreaInput("notes", "Notes", "Put notes here...", width = "500px", height = "250px"),
+        actionButton("examplePopup", "Show Examples", onclick = "window.open('examples-popup.png')")
+      )
+      }
+    })
     
 }) # End app definition
