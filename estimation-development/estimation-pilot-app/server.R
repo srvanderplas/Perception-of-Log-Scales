@@ -27,7 +27,7 @@ sqlite.driver <- dbDriver("SQLite")
 experiment_name <- "emily-log-estimation-pilot-app"
 
 # implement window dimensions
-window_dim_min <- c(200, 200) # width, height
+window_dim_min <- c(600, 600) # width, height
 
 # connect to database
 con <- dbConnect(sqlite.driver, dbname = "estimation_data.db")
@@ -209,7 +209,8 @@ shinyServer(function(input, output, session) {
                                            creature        = values$creature_name,
                                            dataset         = values$dataset_id,
                                            scale           = values$scale,
-                                           response        = input$question_text
+                                           response        = input$question_text,
+                                           scratchpad      = input$notes
                                            )
 
                 # Write results to database
@@ -254,6 +255,23 @@ shinyServer(function(input, output, session) {
                 # Don't let them move ahead without answering the question
                 showNotification("Please provide an answer.")
             }
+    })
+    
+    observeEvent(input$calcEval, {
+      calc_data <-    tibble(ip_address      = input$ipid,
+                             nick_name       = input$nickname,
+                             study_starttime = study_starttime,
+                             q_id            = values$q_id,
+                             creature        = values$creature_name,
+                             dataset         = values$dataset_id,
+                             scale           = values$scale,
+                             expression      = input$calc,
+                             evaluated       = calculationVals())
+      
+      # Write results to database
+      con <- dbConnect(sqlite.driver, dbname = "estimation_data.db")
+      dbWriteTable(con, "calc_feedback", calc_data, append = TRUE, row.names = FALSE)
+      dbDisconnect(con)
     })
     
     # Output info on which question/page you're on
@@ -436,7 +454,7 @@ shinyServer(function(input, output, session) {
         calculationVals()
       }
     })
-
+  
     output$notepad <- renderUI({
       input$submit
       

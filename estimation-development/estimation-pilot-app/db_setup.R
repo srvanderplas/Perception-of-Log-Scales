@@ -133,6 +133,7 @@ scenario_text_data
 # Galactic Civil War 0 - 5 ABY....
 # https://starwars.fandom.com/wiki/Timeline_of_galactic_history
 # Start at 0 ABY (After the Battle of Yavin) (- 3000)
+true_parameters <- dbReadTable(db_con, "true_parameters")
 
 estimation_questions <- dbReadTable(db_con, "estimation_questions")
 # estimation_questions <- tibble(q_id = rep(c("scenario", "Q0", "QE1", "QE2", "QI1", "QI2", "QI3"),2),
@@ -142,7 +143,7 @@ estimation_questions <- dbReadTable(db_con, "estimation_questions")
 #                                qtext = c("tribble",
 #                                          "Between stardates 4530 and 4540, how does the population of Tribbles change?",
 #                                          "What is the population of Tribbles in stardate 4510?",
-#                                          "At what stardate does the population of Tribbles reach 4,000?",
+#                                          "In what stardate does the population of Tribbles reach 4,000?",
 #                                          "From 4520 to 4540, the population increases by ____ Tribbles.",
 #                                          "How many times more Tribbles are there in 4540 than in 4520?",
 #                                          "How long does it take for the population of Tribbles in stardate 4510 to double?",
@@ -155,7 +156,37 @@ estimation_questions <- dbReadTable(db_con, "estimation_questions")
 #                                          "From 20 ABY to 40 ABY, the population increases by ____ Ewoks.",
 #                                          "How many times more Ewoks are there in 40 ABY than in 20 ABY?",
 #                                          "How long does it take for the population of Ewoks in 10 ABY to double?"
-#                                         )
+#                                         ),
+#                                
+#                                true_value = c(NA,
+#                                               
+#                                               NA,
+#                                               
+#                                               true_parameters$alpha*exp(true_parameters$beta*(3010 - true_parameters$xmin)) + true_parameters$theta,
+#                                               
+#                                               log((4000 - true_parameters$theta)/true_parameters$alpha)/true_parameters$beta + true_parameters$xmin + 1500,
+#                                               
+#                                               (true_parameters$alpha*exp(true_parameters$beta*(3040 - true_parameters$xmin)) + true_parameters$theta) - (true_parameters$alpha*exp(true_parameters$beta*(3020 - true_parameters$xmin)) + true_parameters$theta),
+#                                               
+#                                               (true_parameters$alpha*exp(true_parameters$beta*(3040 - true_parameters$xmin)) + true_parameters$theta)/(true_parameters$alpha*exp(true_parameters$beta*(3020 - true_parameters$xmin)) + true_parameters$theta),
+#                                               
+#                                               log((((true_parameters$alpha*exp(true_parameters$beta*(3010 - true_parameters$xmin)) + true_parameters$theta)*2) - true_parameters$theta)/true_parameters$alpha)/true_parameters$beta + true_parameters$xmin,
+#                                               
+#                                               NA,
+#                                               
+#                                               NA,
+#                                               
+#                                               true_parameters$alpha*exp(true_parameters$beta*(3010 - true_parameters$xmin)) + true_parameters$theta,
+#                                               
+#                                               log((4000 - true_parameters$theta)/true_parameters$alpha)/true_parameters$beta + true_parameters$xmin - 3000,
+#                                               
+#                                               (true_parameters$alpha*exp(true_parameters$beta*(3040 - true_parameters$xmin)) + true_parameters$theta) - (true_parameters$alpha*exp(true_parameters$beta*(3020 - true_parameters$xmin)) + true_parameters$theta),
+#                                               
+#                                               (true_parameters$alpha*exp(true_parameters$beta*(3040 - true_parameters$xmin)) + true_parameters$theta)/(true_parameters$alpha*exp(true_parameters$beta*(3020 - true_parameters$xmin)) + true_parameters$theta),
+#                                               
+#                                               log((((true_parameters$alpha*exp(true_parameters$beta*(3010 - true_parameters$xmin)) + true_parameters$theta)*2) - true_parameters$theta)/true_parameters$alpha)/true_parameters$beta + true_parameters$xmin
+#                                               
+#                                )
 #                                )
 # dbRemoveTable(db_con, "estimation_questions")
 # dbWriteTable(db_con, "estimation_questions", estimation_questions)
@@ -179,7 +210,29 @@ users <- dbReadTable(db_con,"users")
 # users <- dbReadTable(db_con,"users")
 users
 
-# Feedback Drawn Data ---------------------------------------------------
+# Feedback Estimates ---------------------------------------------------
+
+feedback <- dbReadTable(db_con, "feedback")
+# feedback <- tibble(ip_address = "test",
+#                    nick_name  = "test",
+#                    study_starttime = NA,
+#                    start_time = NA,
+#                    end_time   = NA,
+#                    order      = NA,
+#                    q_id       = NA,
+#                    creature   = "test",
+#                    dataset    = NA,
+#                    scale      = NA,
+#                    response   = "test",
+#                    scratchpad = "test"
+#                    )
+# feedback <- feedback[0,]
+# dbRemoveTable(db_con, "feedback")
+# dbWriteTable(db_con, "feedback", feedback)
+# feedback <- dbReadTable(db_con, "feedback")
+feedback
+
+# Feedback Estimated Data ---------------------------------------------------
 
 feedback <- dbReadTable(db_con, "feedback")
 # feedback <- tibble(ip_address = "test",
@@ -199,6 +252,25 @@ feedback <- dbReadTable(db_con, "feedback")
 # dbWriteTable(db_con, "feedback", feedback)
 # feedback <- dbReadTable(db_con, "feedback")
 feedback
+
+# Feedback Calculation Data -------------------------------------------
+
+calc_feedback <- dbReadTable(db_con, "calc_feedback")
+# calc_feedback <- tibble(ip_address = "test",
+#                         nick_name  = "test",
+#                         study_starttime = NA,
+#                         q_id       = NA,
+#                         creature   = "test",
+#                         dataset    = NA,
+#                         scale      = NA,
+#                         expression = "test",
+#                         evaluated  = NA
+#                    )
+# calc_feedback <- calc_feedback[0,]
+# dbRemoveTable(db_con, "calc_feedback")
+# dbWriteTable(db_con, "calc_feedback", calc_feedback)
+# calc_feedback <- dbReadTable(db_con, "calc_feedback")
+calc_feedback
 
 # Disconnect to data base ---------------------------------------------
 
