@@ -41,7 +41,6 @@ inputBrowserDims <- tags$head(
     });
   '))
 
-
 fluidPage(
   theme = shinytheme("cerulean"),
   tags$style(type = "text/css",

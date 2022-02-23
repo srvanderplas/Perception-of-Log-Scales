@@ -445,10 +445,20 @@ shinyServer(function(input, output, session) {
         if(values$q_id != "scenario" && values$q_id != "Q0") {
           tagList(
             textAreaInput("notes", "Scratchpad", "Put scratch-work here...", width = "500px", height = "250px"),
-            actionButton("examplePopup", "Show Examples", onclick = "window.open('examples-popup.png')")
+            # actionButton("examplePopup", "Show Examples", onclick = "window.open('examples-popup.png')")
+            actionButton("examplePopup", "Show Examples")
           )
         }
       }
+    })
+    
+    observeEvent(input$examplePopup, {
+      showModal(modalDialog(
+        includeHTML("www/test.html"),
+        easyClose = TRUE,
+        size = "l"
+      )
+      )
     })
     
 }) # End app definition
