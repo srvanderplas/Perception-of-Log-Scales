@@ -346,7 +346,7 @@ shinyServer(function(input, output, session) {
             if(values$scale == "linear"){
               
             finalPlot <- basePlot + 
-              scale_y_continuous(paste(str_to_title(values$creature_name), "Population"),
+              scale_y_continuous(paste(str_to_title(values$creature_name), "Population \n (Linear Scale)"),
                                  limits = c(100, 55000),
                                  breaks = seq(0, 55000, 5000),
                                  labels = comma,
@@ -355,7 +355,7 @@ shinyServer(function(input, output, session) {
             } else if (values$scale == "log2"){
               
             finalPlot <- basePlot + 
-              scale_y_continuous(paste(str_to_title(values$creature_name), "Population"),
+              scale_y_continuous(paste(str_to_title(values$creature_name), "Population \n (Log Scale)"),
                                  trans = "log2",
                                  limits = c(100, 55000),
                                  breaks = 2^seq(0,10000,1),
@@ -398,22 +398,24 @@ shinyServer(function(input, output, session) {
     output$simple_calculator <- renderUI({
       input$submit
 
-      if(values$q_id != "scenario" && values$q_id != "Q0") {
-        
-        tagList(
+      if (values$q_id != "scenario" && values$qcounter <= values$qreq) {
+        if(values$q_id != "scenario" && values$q_id != "Q0") {
           
-          helpText(h5("Below are resources for you to use as you are making numerical approximations.")),
-          br(),
-          
-          column(width = 9,
-          textInput("calc",
-                    "Basic Calculator (e.g. 2 + 2 = 4)",
-                    value = "")),
-          
-          column(width = 3,
-          actionButton("calcEval", "Evaluate")),
-          
-        )
+          tagList(
+            
+            helpText(h5("Below are resources for you to use as you are making numerical approximations.")),
+            br(),
+            
+            column(width = 9,
+            textInput("calc",
+                      "Basic Calculator (e.g. 2 + 2 = 4)",
+                      value = "")),
+            
+            column(width = 3,
+            actionButton("calcEval", "Evaluate")),
+            
+          )
+        }
       }
     })
     
@@ -430,18 +432,22 @@ shinyServer(function(input, output, session) {
     output$calculation <- renderText({
       input$submit
 
-      calculationVals()
-      
+      if (values$q_id != "scenario" && values$qcounter <= values$qreq) {
+        calculationVals()
+      }
     })
 
     output$notepad <- renderUI({
       input$submit
-
-      if(values$q_id != "scenario" && values$q_id != "Q0") {
-      tagList(
-        textAreaInput("notes", "Notes", "Put notes here...", width = "500px", height = "250px"),
-        actionButton("examplePopup", "Show Examples", onclick = "window.open('examples-popup.png')")
-      )
+      
+      if (values$q_id != "scenario" && values$qcounter <= values$qreq) {
+        
+        if(values$q_id != "scenario" && values$q_id != "Q0") {
+          tagList(
+            textAreaInput("notes", "Scratchpad", "Put scratch-work here...", width = "500px", height = "250px"),
+            actionButton("examplePopup", "Show Examples", onclick = "window.open('examples-popup.png')")
+          )
+        }
       }
     })
     
