@@ -46,6 +46,7 @@ dbDisconnect(con)
 
 options(shiny.sanitize.errors = TRUE)
 
+
 #' validate calculator input
 #' 
 #' validate calculator: textInput
@@ -59,7 +60,7 @@ options(shiny.sanitize.errors = TRUE)
 #' \dontrun{validinp_character(input$txt)}
 #' \dontrun{validinp_character(input$radiobox, pattern="^((ab)|(cd))$")}
 #' \dontrun{validinp_character(input$chkboxgrp, many=TRUE}
-validinp_calculator <- function(x, pattern="^[[:alnum:]. _+-/*]*$", many=FALSE) {
+validinp_calculator <- function(x, pattern="^[[:digit:]\\. _+-/* log\\(\\)]*$", many=FALSE) {
   if(many && is.null(x)) return(character(0))  ## hack for checkboxGroupInput
   if(!( is.character(x) && (many || length(x)==1) && 
         all(!is.na(x)) && all(grepl(pattern,x)) )) {
@@ -447,11 +448,13 @@ shinyServer(function(input, output, session) {
             
             helpText(h5("Below are resources for you to use as you are making numerical approximations.")),
             br(),
-            
             column(width = 9,
             textInput("calc",
                       "Basic Calculator (e.g. 2 + 2 = 4)",
                       value = "")),
+            
+            bsTooltip("calc", 
+                      title = "Valid Calculator Inputs: + - / * log() log2() log10()"),
             
             column(width = 3,
             actionButton("calcEval", "Evaluate")),
@@ -464,11 +467,11 @@ shinyServer(function(input, output, session) {
     calculationVals <- eventReactive(input$calcEval, {
       
       shiny::validate(
-        need(try(calc_expression <- validinp_calculator(input$calc)), "Please provide a valid calculator expression (+ - / *)")
+        need(try(calc_expression <- validinp_calculator(input$calc)), "Please provide a valid calculator expression. Valid Inputs: + - / * log() log2() log10()")
       )
       
       shiny::validate(
-        need(try(calc_evaluation <- eval(parse(text = input$calc))), "Please provide a valid calculator expression (+ - / *)")
+        need(try(calc_evaluation <- eval(parse(text = input$calc))), "Please provide a valid calculator expression. Valid Inputs: + - / * log() log2() log10()")
       )
       
       if(!is.null(input$calc) && input$calc != "" && is.numeric(calc_evaluation)) {
