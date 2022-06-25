@@ -1,0 +1,118 @@
+---
+title: "Estimation Pilot Analysis"
+author: "Emily Robinson"
+date: "Graphics Group Feb. 17, 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+library(RSQLite)
+library(DBI)
+library(tidyverse)
+library(patchwork)
+library(here)
+library(scales)
+```
+
+## Data
+
+```{r db-connect}
+
+# connect to db
+filename <- here("estimation-development/estimation-pilot-app/estimation_data.db")
+sqlite.driver <- dbDriver("SQLite")
+db_con <- dbConnect(sqlite.driver, dbname = filename)
+dbListTables(db_con)
+
+# read in data sets
+simulated_data  <- dbReadTable(db_con,"simulated_data")
+true_parameters <- dbReadTable(db_con, "true_parameters")
+scenario_text_data <- dbReadTable(db_con, "scenario_text_data")
+estimation_questions <- dbReadTable(db_con, "estimation_questions")
+users <- dbReadTable(db_con,"users")
+feedback <- dbReadTable(db_con, "feedback")
+
+# disconnect from db
+dbDisconnect(db_con)
+
+solutions <- tibble(q_id = c("Q0", "QE1", "QE2", "QI1", "QI2", "QI3"),
+                     true_value = c(NA, 
+                                    
+                                    true_parameters$alpha*exp(true_parameters$beta*(3010 - true_parameters$xmin)) + true_parameters$theta,
+                                    
+                                    
+                     log((4000 - true_parameters$theta)/true_parameters$alpha)/true_parameters$beta + true_parameters$xmin,
+                     
+                     
+                     (true_parameters$alpha*exp(true_parameters$beta*(3040 - true_parameters$xmin)) + true_parameters$theta) - (true_parameters$alpha*exp(true_parameters$beta*(3020 - true_parameters$xmin)) + true_parameters$theta),
+                     
+                     
+                     (true_parameters$alpha*exp(true_parameters$beta*(3040 - true_parameters$xmin)) + true_parameters$theta)/(true_parameters$alpha*exp(true_parameters$beta*(3020 - true_parameters$xmin)) + true_parameters$theta),
+                     
+                     log((((true_parameters$alpha*exp(true_parameters$beta*(3010 - true_parameters$xmin)) + true_parameters$theta)*2) - true_parameters$theta)/true_parameters$alpha)/true_parameters$beta + true_parameters$xmin
+                     
+                     )
+                     )
+```
+
+```{r combine-data}
+all_data <- full_join(users, feedback, by = c("ip_address", "nick_name", "study_starttime")) %>%
+  full_join(estimation_questions, by = c("q_id", "creature")) %>%
+  full_join(solutions, by = c("q_id"))
+```
+
+```{r simulated-data-plot, fig.width = 5, fig.height = 5}
+# plot simulated data
+base_plot <- simulated_data %>% 
+  ggplot(aes(x = x, y = y)) +
+  geom_point(alpha = 0.3) +
+  geom_line(aes(y = y0), color = "steelblue", size = 1) +
+  facet_grid(~dataset) +
+  theme_bw() +
+  theme(aspect.ratio = 1)
+
+linear_plot <- base_plot +
+  scale_y_continuous("Population",
+                     labels = comma,
+                     limits = c(100, 55000),
+                     breaks = seq(0, 55000, 5000),
+                     minor_breaks = c())
+
+log_plot <- base_plot + 
+  scale_y_continuous("Population",
+                     trans = "log2",
+                     breaks = 2^seq(0,10000,1),
+                     labels = comma,
+                     # minor_breaks = c(2^seq(0,10000,1) + (2^seq(0,10000,1)/2), 2^seq(0,10000,1) + 3*(2^seq(0,10000,1)/4))
+                     # minor_breaks = 2^seq(0,10000,1) + (2^seq(0,10000,1)/2)
+                     # minor_breaks = seq(0, 55000, 5000)
+                     # minor_breaks = c(156, 312)
+                     minor_breaks = c()
+  )
+
+final_plot <- linear_plot / log_plot
+final_plot
+```
+
+## Visuals
+
+```{r visuals, fig.width = 9, fig.height = 9}
+
+estimation_questions %>% knitr::kable()
+
+all_data %>%
+  filter(recruitment != "I am the researcher",
+         q_id != "Q0") %>%
+  # mutate(response = ifelse(q_id))
+  ggplot(aes(x = scale, y = as.numeric(response), color = nick_name)) +
+  geom_jitter(width = 0.2) +
+  geom_hline(aes(yintercept = true_value), linetype = "dashed") +
+  facet_wrap(~q_id, scales = "free") +
+  theme_bw() +
+  theme(aspect.ratio = 1)
+```

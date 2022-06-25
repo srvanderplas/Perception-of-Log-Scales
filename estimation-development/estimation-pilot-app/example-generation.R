@@ -13,10 +13,15 @@ linear_plot <- example_data1 %>%
   scale_x_continuous("Year") +
   theme_bw() +
   theme(aspect.ratio = 1) +
-  scale_y_continuous("Squirrel Population", labels = comma, limits = c(0, 160), breaks = seq(0,160,20))
+  scale_y_continuous("Squirrel Population \n (Linear Scale)", 
+                     labels = comma, 
+                     limits = c(0, 160), 
+                     breaks = seq(0,160,20),
+                     minor_breaks = c()
+                     )
 
 linear_plot
-# ggsave(linear_plot, filename = "estimation-development/estimation-pilot-app/www/example-linear.png", width = 4, height = 4)
+ggsave(linear_plot, filename = "estimation-development/estimation-pilot-app/www/example-linear.png", width = 4, height = 4)
 
 # bunnies
 set.seed(56156)
@@ -29,7 +34,12 @@ log_plot <- example_data2 %>%
   scale_x_continuous("Year") +
   theme_bw() +
   theme(aspect.ratio = 1) + 
-  scale_y_continuous("Bunny Population", labels = comma, trans = "log2", breaks = 2^seq(0,100,1))
+  scale_y_continuous("Bunny Population \n (Log Scale)", 
+                     labels = comma, 
+                     trans = "log2", 
+                     breaks = 2^seq(0,100,1),
+                     minor_breaks = c()
+                     )
 
 log_plot
-# ggsave(log_plot, filename = "estimation-development/estimation-pilot-app/www/example-log.png", width = 4, height = 4)
+ggsave(log_plot, filename = "estimation-development/estimation-pilot-app/www/example-log.png", width = 4, height = 4)

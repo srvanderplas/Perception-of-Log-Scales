@@ -1,5 +1,7 @@
 library(shiny)
 library(shinyjs)
+library(shinyBS)
+library(shinyhelper)
 library(shinythemes)
 library(r2d3)
 
@@ -38,7 +40,6 @@ inputBrowserDims <- tags$head(
         Shiny.setInputValue("dimension", dimension);
     });
   '))
-
 
 fluidPage(
   theme = shinytheme("cerulean"),
@@ -172,11 +173,16 @@ fluidPage(
         br(),
         h4(htmlOutput("scenario_text")),
         br(),
-        uiOutput("figure")#,
-        # br(),
-        # uiOutput("simple_calculator"),
-        # verbatimTextOutput("calculation"),
-        # uiOutput("notepad")
+        column(width = 8,
+          uiOutput("figure")
+        ),
+        column(width = 4,
+          uiOutput("simple_calculator"),
+          column(width = 12,
+            verbatimTextOutput("calculation"),
+            uiOutput("notepad")
+          )
+        )
       )
     )
   )

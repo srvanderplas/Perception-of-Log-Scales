@@ -3,9 +3,10 @@
 # ----------------------------------------------------------------------------------------------------
 
 # Shiny Specific
-# Shinyhelper
 library(shiny)
 library(shinyjs)
+library(shinyBS)
+library(shinyhelper)
 
 # Data Management and Plotting
 library(tidyverse)
@@ -26,7 +27,7 @@ sqlite.driver <- dbDriver("SQLite")
 experiment_name <- "emily-log-estimation-pilot-app"
 
 # implement window dimensions
-window_dim_min <- c(200, 200) # width, height
+window_dim_min <- 600 # width, height
 
 # connect to database
 con <- dbConnect(sqlite.driver, dbname = "estimation_data.db")
@@ -42,6 +43,31 @@ estimation_questions <- dbReadTable(con, "estimation_questions")
 scenario_text_data <- dbReadTable(con, "scenario_text_data")
 
 dbDisconnect(con)
+
+options(shiny.sanitize.errors = TRUE)
+
+
+#' validate calculator input
+#' 
+#' validate calculator: textInput
+#' 
+#' @param x input
+#' @param pattern that input has to match (regexp)
+#' @param many TRUE if more than 1 string (checkboxGroupInput)
+#' @return validated input
+#' @export
+#' @examples
+#' \dontrun{validinp_character(input$txt)}
+#' \dontrun{validinp_character(input$radiobox, pattern="^((ab)|(cd))$")}
+#' \dontrun{validinp_character(input$chkboxgrp, many=TRUE}
+validinp_calculator <- function(x, pattern="^[[:digit:]\\. _+-/* log\\(\\)]*$", many=FALSE) {
+  if(many && is.null(x)) return(character(0))  ## hack for checkboxGroupInput
+  if(!( is.character(x) && (many || length(x)==1) && 
+        all(!is.na(x)) && all(grepl(pattern,x)) )) {
+    stop("Invalid input from shiny UI")
+  }
+  x
+}
 
 
 # ----------------------------------------------------------------------------------------------------
@@ -208,7 +234,8 @@ shinyServer(function(input, output, session) {
                                            creature        = values$creature_name,
                                            dataset         = values$dataset_id,
                                            scale           = values$scale,
-                                           response        = input$question_text
+                                           response        = input$question_text,
+                                           scratchpad      = input$notes
                                            )
 
                 # Write results to database
@@ -255,6 +282,23 @@ shinyServer(function(input, output, session) {
             }
     })
     
+    observeEvent(input$calcEval, {
+      calc_data <-    tibble(ip_address      = input$ipid,
+                             nick_name       = input$nickname,
+                             study_starttime = study_starttime,
+                             q_id            = values$q_id,
+                             creature        = values$creature_name,
+                             dataset         = values$dataset_id,
+                             scale           = values$scale,
+                             expression      = input$calc,
+                             evaluated       = calculationVals())
+      
+      # Write results to database
+      con <- dbConnect(sqlite.driver, dbname = "estimation_data.db")
+      dbWriteTable(con, "calc_feedback", calc_data, append = TRUE, row.names = FALSE)
+      dbDisconnect(con)
+    })
+    
     # Output info on which question/page you're on
     output$status <- renderText({
       paste("Question", values$qcounter, "of", values$qreq)
@@ -279,15 +323,31 @@ shinyServer(function(input, output, session) {
       
       if (values$q_id == "Q0") {
         
-        textInput("question_text",
-                  randomization[values$qcounter, "qtext"],
-                  value = "")
+        tagList(
+          textInput("question_text",
+                    randomization[values$qcounter, "qtext"],
+                    value = ""),
+          # %>%
+          # helper(type = "markdown",
+          #        icon = "question-circle",
+          #        colour = "black",
+          #        title = "Plot",
+          #        content = c("In words, provide a description of the population.")),
+          
+          bsTooltip("question_text", "In words, provide a description of the population."),
+
+        )
         
       } else if (values$q_id != "Q0" && values$q_id != "scenario") {
         
-        numericInput("question_text",
-                     randomization[values$qcounter, "qtext"],
-                     value = "")
+        tagList(
+          numericInput("question_text",
+                       randomization[values$qcounter, "qtext"],
+                       value = ""),
+          
+          bsTooltip(id = "question_text", 
+                    title = "Provide a numerical approximation.")
+        )
         
       } else if (values$q_id == "scenario") {
       
@@ -329,7 +389,7 @@ shinyServer(function(input, output, session) {
             if(values$scale == "linear"){
               
             finalPlot <- basePlot + 
-              scale_y_continuous(paste(str_to_title(values$creature_name), "Population"),
+              scale_y_continuous(paste(str_to_title(values$creature_name), "Population \n (Linear Scale)"),
                                  limits = c(100, 55000),
                                  breaks = seq(0, 55000, 5000),
                                  labels = comma,
@@ -338,7 +398,7 @@ shinyServer(function(input, output, session) {
             } else if (values$scale == "log2"){
               
             finalPlot <- basePlot + 
-              scale_y_continuous(paste(str_to_title(values$creature_name), "Population"),
+              scale_y_continuous(paste(str_to_title(values$creature_name), "Population \n (Log Scale)"),
                                  trans = "log2",
                                  limits = c(100, 55000),
                                  breaks = 2^seq(0,10000,1),
@@ -378,29 +438,79 @@ shinyServer(function(input, output, session) {
       
     })
     
-    # output$simple_calculator <- renderUI({
-    # 
-    #   if(values$q_id != "scenario" && values$q_id != "Q0") {
-    #     textInput("calc",
-    #               "Basic Calculator (e.g. 2 + 2 = 4)",
-    #               value = "")
-    #   }
-    # })
-    # 
-    # output$calculation <- renderText({
-    #   input$submit
-    # 
-    #   if(!is.null(input$calc) && input$calc != "") {
-    #     eval(parse(text=input$calc)) %>% as.character()
-    #   }
-    # })
-    # 
-    # output$notepad <- renderUI({
-    #   input$submit
-    #   
-    #   if(values$q_id != "scenario" && values$q_id != "Q0") {
-    #   textAreaInput("notes", "Notes", "Put notes here...", width = "500px")
-    #   }
-    # })
+    output$simple_calculator <- renderUI({
+      input$submit
+
+      if (values$q_id != "scenario" && values$qcounter <= values$qreq) {
+        if(values$q_id != "scenario" && values$q_id != "Q0") {
+          
+          tagList(
+            
+            helpText(h5("Below are resources for you to use as you are making numerical approximations.")),
+            br(),
+            column(width = 9,
+            textInput("calc",
+                      "Basic Calculator (e.g. 2 + 2 = 4)",
+                      value = "")),
+            
+            bsTooltip("calc", 
+                      title = "Valid Calculator Inputs: + - / * log() log2() log10()"),
+            
+            column(width = 3,
+            actionButton("calcEval", "Evaluate")),
+            
+          )
+        }
+      }
+    })
+    
+    calculationVals <- eventReactive(input$calcEval, {
+      
+      shiny::validate(
+        need(try(calc_expression <- validinp_calculator(input$calc)), "Please provide a valid calculator expression. Valid Inputs: + - / * log() log2() log10()")
+      )
+      
+      shiny::validate(
+        need(try(calc_evaluation <- eval(parse(text = input$calc))), "Please provide a valid calculator expression. Valid Inputs: + - / * log() log2() log10()")
+      )
+      
+      if(!is.null(input$calc) && input$calc != "" && is.numeric(calc_evaluation)) {
+        eval(parse(text = input$calc)) %>% as.character() 
+      }
+      
+    })
+    
+    
+    output$calculation <- renderText({
+      input$submit
+
+      if (values$q_id != "scenario" && values$qcounter <= values$qreq) {
+        calculationVals()
+      }
+    })
+  
+    output$notepad <- renderUI({
+      input$submit
+      
+      if (values$q_id != "scenario" && values$qcounter <= values$qreq) {
+        
+        if(values$q_id != "scenario" && values$q_id != "Q0") {
+          tagList(
+            textAreaInput("notes", "Scratchpad", "Put scratch-work here...", width = "500px", height = "250px"),
+            # actionButton("examplePopup", "Show Examples", onclick = "window.open('examples-popup.png')")
+            actionButton("examplePopup", "Show Examples")
+          )
+        }
+      }
+    })
+    
+    observeEvent(input$examplePopup, {
+      showModal(modalDialog(
+        includeHTML("www/test.html"),
+        easyClose = TRUE,
+        size = "l"
+      )
+      )
+    })
     
 }) # End app definition
