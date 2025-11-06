@@ -204,8 +204,17 @@ expSim <- function(xMid, xRange = c(0,20), yRange = c(1,100)){
   
   lineData   <- tibble(xLine = seq(xRange[1],xRange[2],0.1),
                        yLine = ((yRange[1]-yRange[2])/(xRange[2]-xRange[1]))*(xLine-xRange[1])+yRange[2])
-  pointsData <- tibble(xPoint = c(xRange[1], (xMid-0.1), (xMid+0.1), xRange[2]),
-                       yPoint = c(yRange[1], lineData$yLine[lineData$xLine == xMid], lineData$yLine[lineData$xLine == xMid], yRange[2]))
+  pointsData <- tibble(xPoint = c(xRange[1], 
+                                  (xMid-0.1), 
+                                  (xMid+0.1), 
+                                  xRange[2]
+                                  ),
+                       yPoint = c(yRange[1], 
+                                  lineData$yLine[lineData$xLine == xMid], 
+                                  lineData$yLine[lineData$xLine == xMid], 
+                                  yRange[2]
+                                  )
+                       )
   
   
   lm.fit <- lm(log(yPoint) ~ xPoint, data = pointsData)

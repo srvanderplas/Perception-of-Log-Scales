@@ -81,6 +81,8 @@ df <- computing_power %>%
 
 rm(mem_path, url, data_file, computing_power, list_links, mem, hd, cnames, ctype)
 
+write.csv(df, file = "computer-memory-data.csv", row.names = FALSE, na = "")
+
 ans <- df %>%
   unnest(data) %>%
   mutate(year = floor(dec_date)) %>%

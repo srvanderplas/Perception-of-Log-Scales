@@ -1,5 +1,7 @@
 library(shiny)
 library(shinyjs)
+library(rvest)
+library(xml2)
 library(r2d3)
 library(tidyverse)
 library(gridSVG)

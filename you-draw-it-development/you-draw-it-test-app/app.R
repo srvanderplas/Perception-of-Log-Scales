@@ -74,7 +74,8 @@ drawr <- function(data,
                             data_tab1_color = data_tab1_color, 
                             drawn_line_color = drawn_line_color,
                             show_finished = show_finished,
-                            shiny_message_loc = shiny_message_loc)
+                            shiny_message_loc = shiny_message_loc),
+             d3_version = 5
              )
   
 }
